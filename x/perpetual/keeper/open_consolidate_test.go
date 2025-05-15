@@ -22,7 +22,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				openPositionMsg := &types.MsgOpen{
@@ -32,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -48,7 +48,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 			"perpetual pool does not exist",
 		},
 		{
-			"Mtp health will be low for the safety factor",
+			"Force Closed: Mtp health will be low for the safety factor",
 			func() (*types.MsgOpen, *types.MTP, *types.MTP) {
 				suite.ResetSuite()
 
@@ -56,7 +56,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				suite.SetPerpetualPool(1)
-				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				_, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)
@@ -81,7 +81,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 
 				return openPositionMsg, &mtp, &mtp
 			},
-			"mtp health would be too low for safety factor",
+			"",
 		},
 		{
 			"Sucess: MTP consolidation",
@@ -92,7 +92,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				suite.SetPerpetualPool(1)
-				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				_, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)
@@ -147,7 +147,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				suite.SetPerpetualPool(1)
-				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				_, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)
@@ -186,7 +186,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				suite.SetPerpetualPool(1)
-				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				_, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)

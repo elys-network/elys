@@ -2,9 +2,10 @@ package epochs
 
 import (
 	"context"
-	"cosmossdk.io/core/appmodule"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/core/appmodule"
 
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
@@ -18,7 +19,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/elys-network/elys/x/epochs/client/cli"
 	"github.com/elys-network/elys/x/epochs/keeper"
 	"github.com/elys-network/elys/x/epochs/migrations"
 	"github.com/elys-network/elys/x/epochs/types"
@@ -92,11 +92,6 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 // GetTxCmd returns the epochs module's root tx command.
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return nil
-}
-
-// GetQueryCmd returns the epochs module's root query command.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
 }
 
 // ----------------------------------------------------------------------------
@@ -175,8 +170,8 @@ func (am AppModule) EndBlock(_ context.Context) error {
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
-func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
-	return []simtypes.WeightedProposalContent{}
+func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalMsg {
+	return []simtypes.WeightedProposalMsg{}
 }
 
 // RegisterStoreDecoder registers a decoder for supply module's types

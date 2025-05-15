@@ -8,6 +8,7 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
@@ -73,7 +74,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				joinCoins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyZeroDec())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 		},
@@ -137,7 +138,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyZeroDec())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, osmomath.ZeroBigDec(), osmomath.OneBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 		},
@@ -204,7 +205,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 
 				// must panic
 				suite.Require().Panics(func() {
-					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, sdkmath.LegacyZeroDec())
+					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, osmomath.ZeroBigDec(), osmomath.OneBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 					suite.Require().Error(err)
 				})
 			},
@@ -282,7 +283,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyNewDecWithPrec(10, 2))
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, osmomath.NewBigDecWithPrec(10, 2), osmomath.OneBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 		},

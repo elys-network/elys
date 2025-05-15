@@ -1,39 +1,36 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) GetTokenARate(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
 	tokenA string,
 	tokenB string,
-	accPoolKeeper AccountedPoolKeeper,
-) (rate sdkmath.LegacyDec, err error) {
+) (rate osmomath.BigDec, err error) {
 	// balancer pricing if normal amm pool
 	if !p.PoolParams.UseOracle {
 		Aasset, Basset, err := p.parsePoolAssetsByDenoms(tokenA, tokenB)
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), err
 		}
 		return CalculateTokenARate(
-			Aasset.Token.Amount.ToLegacyDec(), Aasset.Weight.ToLegacyDec(),
-			Basset.Token.Amount.ToLegacyDec(), Basset.Weight.ToLegacyDec(),
+			osmomath.BigDecFromSDKInt(Aasset.Token.Amount), osmomath.BigDecFromSDKInt(Aasset.Weight),
+			osmomath.BigDecFromSDKInt(Basset.Token.Amount), osmomath.BigDecFromSDKInt(Basset.Weight),
 		), nil
 	}
 
-	priceA := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenA)
+	priceA := oracleKeeper.GetDenomPrice(ctx, tokenA)
 	if priceA.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenA)
+		return osmomath.ZeroBigDec(), fmt.Errorf("token price not set: %s", tokenA)
 	}
-	priceB := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenB)
+	priceB := oracleKeeper.GetDenomPrice(ctx, tokenB)
 	if priceB.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenB)
+		return osmomath.ZeroBigDec(), fmt.Errorf("token price not set: %s", tokenB)
 	}
 
 	return priceA.Quo(priceB), nil

@@ -8,6 +8,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
@@ -26,27 +27,44 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	params := k.GetParams(ctx)
+	ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "amm pool not found")
+	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 	if err != nil {
 		return nil, err
 	}
 
-	ratio := msg.Price.Quo(tradingAssetPrice)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+
+	if forceClosed {
+		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+		return &types.MsgUpdateTakeProfitPriceResponse{}, nil
+	}
+
+	params := k.GetParams(ctx)
+	ratio := osmomath.BigDecFromDec(msg.Price).Quo(tradingAssetPrice)
 	if mtp.Position == types.Position_LONG {
-		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
+		if ratio.LT(params.GetBigDecMinimumLongTakeProfitPriceRatio()) || ratio.GT(params.GetBigDecMaximumLongTakeProfitPriceRatio()) {
 			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
-		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
+		if ratio.GT(params.GetBigDecMaximumShortTakeProfitPriceRatio()) {
 			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}
 
 	mtp.TakeProfitPrice = msg.Price
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
+	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp)
 	if err != nil {
 		return nil, err
@@ -71,23 +89,22 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 
 	k.SetPool(ctx, pool)
 
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
-	}
-
 	if k.hooks != nil {
-		params := k.GetParams(ctx)
 		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	event := sdk.NewEvent(types.EventOpen,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
-		sdk.NewAttribute("address", mtp.Address),
+	event := sdk.NewEvent(types.EventUpdateTakeProfitPrice,
+		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+		sdk.NewAttribute("owner", mtp.Address),
 		sdk.NewAttribute("take_profit_price", mtp.TakeProfitPrice.String()),
+		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
+		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
+		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

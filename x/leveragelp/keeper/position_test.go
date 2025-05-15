@@ -204,7 +204,7 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			Liabilities:       math.NewInt(0),
 			AmmPoolId:         info.PoolId,
 			PositionHealth:    math.LegacyNewDec(0),
-			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
+			StopLossPrice:     info.StopLossPrice,
 		}
 		leveragelp.SetPosition(ctx, &position)
 	}

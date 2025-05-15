@@ -3,19 +3,21 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params) (exitingCoins sdk.Coins, err error) {
-	exitingCoins, _, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
+// return exitingCoins, weightBalanceBonus, slippage, swapFee, slippageCoins, nil
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, snapshot SnapshotPool, exitingShares math.Int, tokenOutDenom string, params Params, takerFees osmomath.BigDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
+	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 	if err != nil {
-		return sdk.Coins{}, err
+		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
 	}
 
 	if err := p.processExitPool(ctx, exitingCoins, exitingShares); err != nil {
-		return sdk.Coins{}, err
+		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
 	}
 
-	return exitingCoins, nil
+	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 }
 
 // exitPool exits the pool given exitingCoins and exitingShares.

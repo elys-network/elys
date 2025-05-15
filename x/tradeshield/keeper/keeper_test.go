@@ -20,13 +20,14 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/suite"
 )
 
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   math.LegacyDec
+	price   osmomath.BigDec
 }
 
 const (
@@ -40,12 +41,12 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   math.LegacyMustNewDecFromStr("5.0"),
+			price:   osmomath.MustNewBigDecFromStr("5.0"),
 		},
 	}
 
@@ -101,7 +102,7 @@ func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
-			Price:     v.price,
+			Price:     v.price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),

@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,7 +24,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	}
 
 	// Check if collateral is not more than borrowed
-	debtBefore := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	debtBefore := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 	maxAllowedCollateral := debtBefore.GetTotalLiablities()
 	if collateral.GT(maxAllowedCollateral) {
 		return errorsmod.Wrap(types.ErrInvalidCollateral, fmt.Sprintf("Cannot add more than: %s", maxAllowedCollateral.String()))
@@ -35,7 +36,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 		return err
 	}
 
-	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, collateral))
+	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, collateral), position.BorrowPoolId, position.AmmPoolId)
 	if err != nil {
 		return err
 	}
@@ -48,10 +49,10 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	if err != nil {
 		return err
 	}
-	position.PositionHealth = positionHealth
+	position.PositionHealth = positionHealth.Dec()
 
 	// Update Liabilities
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 	position.Liabilities = debt.GetTotalLiablities()
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(position.Collateral.Denom, collateral))
 

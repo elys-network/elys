@@ -1,8 +1,9 @@
 package types
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -24,7 +25,7 @@ func (msg *MsgClosePositions) ValidateBasic() error {
 	}
 
 	if len(msg.Liquidate) == 0 && len(msg.StopLoss) == 0 && len(msg.TakeProfit) == 0 {
-		return fmt.Errorf("liquidate, stop loss, take profit all are empty")
+		return errors.New("liquidate, stop loss, take profit all are empty")
 	}
 
 	for _, position := range msg.Liquidate {

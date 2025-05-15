@@ -35,7 +35,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
 					Creator:         positionCreator.String(),
@@ -44,7 +44,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -66,7 +66,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
 					Creator:         positionCreator.String(),
@@ -75,7 +75,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -88,7 +88,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					Price:   math.LegacyNewDec(2),
 				}
 			},
-			"asset price uatom not found",
+			"price for outToken not set: uatom",
 		},
 		{
 			"success: Stop Loss price updated",
@@ -97,7 +97,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
 					Creator:         positionCreator.String(),
@@ -106,7 +106,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -128,7 +128,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
 					Creator:         positionCreator.String(),
@@ -137,7 +137,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -196,6 +196,51 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				}
 			},
 			"stop loss price cannot be less than equal to tradingAssetPrice for short",
+		},
+		{
+			"Force close when trying to update stop loss in unhealthy position",
+			func() *types.MsgUpdateStopLoss {
+				suite.ResetSuite()
+
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				_, _, ammPool := suite.SetPerpetualPool(1)
+				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+					Asset:     "ATOM",
+					Price:     math.LegacyMustNewDecFromStr("2"),
+					Source:    "elys",
+					Provider:  oracleProvider.String(),
+					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+				})
+
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(5),
+					Position:        types.Position_LONG,
+					PoolId:          ammPool.PoolId,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+					TakeProfitPrice: math.LegacyMustNewDecFromStr("2.9"),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				suite.Require().NoError(err)
+
+				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+					Asset:     "ATOM",
+					Price:     math.LegacyMustNewDecFromStr("0.00001"),
+					Source:    "elys",
+					Provider:  oracleProvider.String(),
+					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+				})
+
+				return &types.MsgUpdateStopLoss{
+					Creator: positionCreator.String(),
+					Id:      position.Id,
+					Price:   math.LegacyMustNewDecFromStr("2"),
+				}
+			},
+			"",
 		},
 	}
 

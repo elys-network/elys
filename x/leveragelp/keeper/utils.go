@@ -1,18 +1,17 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	storetypes "cosmossdk.io/core/store"
-
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/elys-network/elys/utils"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) error {
@@ -37,14 +36,25 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.P
 	return nil, nil
 }
 
+// TODO simplify this design. Double check happening, one at pool level, one at global level
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "leverage lp pool: %d", poolId)
 	}
 
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
-		return errorsmod.Wrap(types.ErrInvalidPosition, "pool health too low to open new positions")
+		return errors.New("pool health too low to open new positions")
+	}
+	ammPool, found := k.amm.GetPool(ctx, poolId)
+	if !found {
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
+	}
+
+	poolLeveragelpRatio := pool.GetBigDecLeveragedLpAmount().Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
+
+	if poolLeveragelpRatio.GT(pool.GetBigDecMaxLeveragelpRatio()) {
+		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil
 }
@@ -71,30 +81,35 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types.Position) ([]*types.QueryPosition, error) {
 	updatedLeveragePositions := []*types.QueryPosition{}
 	for _, position := range positions {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-		}
-		exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), position.LeveragedLpAmount, baseCurrency)
+
+		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 		if err != nil {
 			return nil, err
 		}
 
-		exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
-
-		updated_leverage := sdkmath.LegacyZeroDec()
-		denomimator := exitAmountAfterFee.ToLegacyDec().Sub(position.Liabilities.ToLegacyDec())
-		if denomimator.IsPositive() {
-			updated_leverage = exitAmountAfterFee.ToLegacyDec().Quo(denomimator)
+		ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		if err != nil {
+			return nil, err
 		}
-		if position.Liabilities.IsPositive() {
-			position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec())
+
+		debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+		debtValue := position.GetBigDecLiabilities().Mul(debtDenomPrice)
+
+		positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
+
+		updated_leverage := osmomath.ZeroBigDec()
+		denominator := positionValue.Sub(debtValue)
+		if denominator.IsPositive() {
+			updated_leverage = positionValue.Quo(denominator)
+		}
+		if debtValue.IsPositive() {
+			position.PositionHealth = positionValue.Quo(debtValue).Dec()
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
-			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyNewDecFromIntWithPrec(exitAmountAfterFee, 6),
+			UpdatedLeverage:  updated_leverage.Dec(),
+			PositionUsdValue: positionValue.Dec(),
 		})
 	}
 	return updatedLeveragePositions, nil
@@ -102,16 +117,19 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
-	params := k.stableKeeper.GetParams(ctx)
-	hours := sdkmath.LegacyNewDec(365 * 24)
 
 	for _, position := range positions {
+		pool, found := k.stableKeeper.GetPoolByDenom(ctx, position.Position.Collateral.Denom)
+		if !found {
+			return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", position.Position.Collateral.Denom))
+		}
+
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
-		interestRateHour := params.InterestRate.Quo(hours)
-		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		price := k.oracleKeeper.GetDenomPrice(ctx, position.Position.Collateral.Denom)
+		interestRateHour := pool.GetBigDecInterestRate().Quo(utils.HoursInYear)
+		positionAndInterest.InterestRateHour = interestRateHour.Dec()
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(position.Position.GetBigDecLiabilities()).Mul(price).Dec()
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 
@@ -135,7 +153,7 @@ func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 		if err == nil {
 			positionHealth, err := k.GetPositionHealth(ctx, position)
 			if err == nil {
-				position.PositionHealth = positionHealth
+				position.PositionHealth = positionHealth.Dec()
 				k.SetPosition(ctx, &position)
 			}
 		}

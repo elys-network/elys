@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
+
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
@@ -22,17 +23,17 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			name:      "valid authority",
 			authority: sender.String(),
 			params: types.Params{
-				DepositDenom:         "stake",
-				RedemptionRate:       sdkmath.LegacyNewDec(1),
-				EpochLength:          100,
-				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
-				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
-				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
-				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
-				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
-				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
-				TotalValue:           sdkmath.OneInt(),
-				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
+				LegacyDepositDenom:         "stake",
+				LegacyRedemptionRate:       sdkmath.LegacyNewDec(1),
+				EpochLength:                100,
+				LegacyInterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
+				LegacyInterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyInterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
+				LegacyInterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyInterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyHealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
+				TotalValue:                 sdkmath.OneInt(),
+				LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
 			expected: nil,
 		},
@@ -40,17 +41,17 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			name:      "invalid authority",
 			authority: "invalid_authority",
 			params: types.Params{
-				DepositDenom:         "stake",
-				RedemptionRate:       sdkmath.LegacyNewDec(1),
-				EpochLength:          100,
-				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
-				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
-				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
-				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
-				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
-				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
-				TotalValue:           sdkmath.OneInt(),
-				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
+				LegacyDepositDenom:         "stake",
+				LegacyRedemptionRate:       sdkmath.LegacyNewDec(1),
+				EpochLength:                100,
+				LegacyInterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
+				LegacyInterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyInterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
+				LegacyInterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyInterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				LegacyHealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
+				TotalValue:                 sdkmath.OneInt(),
+				LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
 			expected: errors.New("invalid authority"),
 		},

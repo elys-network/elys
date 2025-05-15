@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // InternalSwapExactAmountOut is a method for swapping to get an exact number of tokens out of a pool,
@@ -22,47 +23,49 @@ func (k Keeper) InternalSwapExactAmountOut(
 	tokenInDenom string,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
-	swapFee math.LegacyDec,
-) (tokenInAmount math.Int, err error) {
+	swapFee osmomath.BigDec,
+	takersFee osmomath.BigDec,
+) (tokenInAmount math.Int, weightBalanceReward sdk.Coin, err error) {
 	if tokenInDenom == tokenOut.Denom {
-		return math.Int{}, errors.New("cannot trade the same denomination in and out")
+		return math.Int{}, sdk.Coin{}, errors.New("cannot trade the same denomination in and out")
 	}
 
 	defer func() {
 		if r := recover(); r != nil {
 			tokenInAmount = math.Int{}
 			err = fmt.Errorf("function SwapExactAmountOut failed due to an internal reason: %v", r)
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 
 	poolOutBal := pool.GetTotalPoolLiquidity().AmountOf(tokenOut.Denom)
 	if tokenOut.Amount.GTE(poolOutBal) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
+		return math.Int{}, sdk.Coin{}, errorsmod.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
 	}
 
 	params := k.GetParams(ctx)
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
+	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFee)
 	if err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.Coin{}, err
 	}
 	tokenInAmount = tokenIn.Amount
 
 	if tokenInAmount.LTE(math.ZeroInt()) {
-		return math.Int{}, types.ErrTokenOutAmountZero
+		return math.Int{}, sdk.Coin{}, types.ErrTokenOutAmountZero
 	}
 
 	if tokenInAmount.GT(tokenInMaxAmount) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
+		return math.Int{}, sdk.Coin{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, true)
+	bonusToken, err := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, slippageAmount, oracleInAmount.Dec().TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFee, true)
 	if err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.Coin{}, err
 	}
 
 	// track slippage
-	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt()))
+	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.Dec().RoundInt()))
 
-	return tokenInAmount, nil
+	return tokenInAmount, bonusToken, nil
 }

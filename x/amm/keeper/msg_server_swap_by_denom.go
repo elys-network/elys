@@ -3,13 +3,12 @@ package keeper
 import (
 	"context"
 
-	sdkmath "cosmossdk.io/math"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom) (*types.MsgSwapByDenomResponse, error) {
@@ -30,7 +29,7 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, sdkmath.LegacyZeroDec(), 0)
+	inRoute, outRoute, _, spotPrice, _, _, _, slippage, weightBonus, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, osmomath.ZeroBigDec(), 0)
 	if err != nil {
 		return nil, err
 	}
@@ -63,13 +62,15 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		}
 
 		return &types.MsgSwapByDenomResponse{
-			Amount:    sdk.NewCoin(msg.DenomOut, res.TokenOutAmount),
-			InRoute:   inRoute,
-			OutRoute:  nil,
-			SpotPrice: spotPrice,
-			SwapFee:   res.SwapFee,
-			Discount:  res.Discount,
-			Recipient: res.Recipient,
+			Amount:      sdk.NewCoin(msg.DenomOut, res.TokenOutAmount),
+			InRoute:     inRoute,
+			OutRoute:    nil,
+			SpotPrice:   spotPrice.Dec(),
+			SwapFee:     res.SwapFee,
+			Discount:    res.Discount,
+			Recipient:   res.Recipient,
+			Slippage:    slippage.Dec(),
+			WeightBonus: weightBonus.Dec(),
 		}, nil
 	}
 
@@ -103,7 +104,7 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 			Amount:    sdk.NewCoin(msg.DenomIn, res.TokenInAmount),
 			InRoute:   nil,
 			OutRoute:  outRoute,
-			SpotPrice: spotPrice,
+			SpotPrice: spotPrice.Dec(),
 			SwapFee:   res.SwapFee,
 			Discount:  res.Discount,
 			Recipient: res.Recipient,

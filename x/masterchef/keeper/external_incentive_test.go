@@ -140,7 +140,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares

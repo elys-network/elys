@@ -82,6 +82,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -93,10 +94,10 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
-	updated_leverage := sdkmath.LegacyNewDec(5)
+	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666912249")
 
 	suite.Require().Equal(position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
@@ -105,10 +106,10 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		Position: &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyNewDec(5000).Quo(sdkmath.LegacyNewDec(1000000)),
+			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100278"),
 		},
-		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671233"),
-		InterestRateHourUsd: sdkmath.LegacyZeroDec(),
+		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671232"),
+		InterestRateHourUsd: sdkmath.LegacyMustNewDecFromStr("0.000000068493150684"),
 	}
 	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil})
 

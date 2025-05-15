@@ -1,40 +1,53 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
-	params := k.GetParams(ctx)
-	if params.TotalValue.IsZero() {
-		return params.InterestRate
+func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool) osmomath.BigDec {
+	if pool.NetAmount.IsZero() {
+		return pool.GetBigDecInterestRate()
 	}
 
-	interestRateMax := params.InterestRateMax
-	interestRateMin := params.InterestRateMin
-	interestRateIncrease := params.InterestRateIncrease
-	interestRateDecrease := params.InterestRateDecrease
-	healthGainFactor := params.HealthGainFactor
-	prevInterestRate := params.InterestRate
+	interestRateMax := pool.GetBigDecInterestRateMax()
+	interestRateMin := pool.GetBigDecInterestRateMin()
+	interestRateIncrease := pool.GetBigDecInterestRateIncrease()
+	interestRateDecrease := pool.GetBigDecInterestRateDecrease()
+	healthGainFactor := pool.GetBigDecHealthGainFactor()
+	prevInterestRate := pool.GetBigDecInterestRate()
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	depositDenom := k.GetDepositDenom(ctx)
+	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
-	targetInterestRate := healthGainFactor.
-		Mul(borrowed.ToLegacyDec()).
-		Quo(params.TotalValue.ToLegacyDec())
+
+	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
+	borrowRatio := osmomath.ZeroBigDec()
+	if pool.NetAmount.IsPositive() {
+		borrowRatio = osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount)).Quo(pool.GetBigDecNetAmount())
+	}
+
+	maxAllowed := pool.GetBigDecMaxLeverageRatio().Mul(healthGainFactor)
+	if borrowRatio.GT(maxAllowed) {
+		borrowRatio = maxAllowed
+	}
+
+	if maxAllowed.IsZero() {
+		borrowRatio = osmomath.ZeroBigDec()
+		maxAllowed = osmomath.OneBigDec()
+	}
+
+	targetInterestRate := interestRateMin.Add((borrowRatio.Quo(maxAllowed).Mul((interestRateMax.Sub(interestRateMin)))))
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate
-	if interestRateChange.GTE(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
+	if interestRateChange.GTE(interestRateDecrease.Mul(osmomath.NewBigDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
 		interestRate = targetInterestRate
 	} else if interestRateChange.GT(interestRateIncrease) {
 		interestRate = prevInterestRate.Add(interestRateIncrease)
-	} else if interestRateChange.LT(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) {
+	} else if interestRateChange.LT(interestRateDecrease.Mul(osmomath.NewBigDec(-1))) {
 		interestRate = prevInterestRate.Sub(interestRateDecrease)
 	}
 

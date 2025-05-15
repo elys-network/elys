@@ -20,10 +20,6 @@ const _ = grpc.SupportPackageIsVersion7
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
-	BandPriceResult(ctx context.Context, in *QueryBandPriceRequest, opts ...grpc.CallOption) (*QueryBandPriceResponse, error)
-	// LastBandRequestId query the last BandPrice result id
-	LastBandRequestId(ctx context.Context, in *QueryLastBandRequestIdRequest, opts ...grpc.CallOption) (*QueryLastBandRequestIdResponse, error)
 	// Queries a AssetInfo by denom.
 	AssetInfo(ctx context.Context, in *QueryGetAssetInfoRequest, opts ...grpc.CallOption) (*QueryGetAssetInfoResponse, error)
 	// Queries a list of AssetInfo items.
@@ -49,24 +45,6 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, "/elys.oracle.Query/Params", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) BandPriceResult(ctx context.Context, in *QueryBandPriceRequest, opts ...grpc.CallOption) (*QueryBandPriceResponse, error) {
-	out := new(QueryBandPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.oracle.Query/BandPriceResult", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LastBandRequestId(ctx context.Context, in *QueryLastBandRequestIdRequest, opts ...grpc.CallOption) (*QueryLastBandRequestIdResponse, error) {
-	out := new(QueryLastBandRequestIdResponse)
-	err := c.cc.Invoke(ctx, "/elys.oracle.Query/LastBandRequestId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -133,10 +111,6 @@ func (c *queryClient) PriceFeederAll(ctx context.Context, in *QueryAllPriceFeede
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
-	BandPriceResult(context.Context, *QueryBandPriceRequest) (*QueryBandPriceResponse, error)
-	// LastBandRequestId query the last BandPrice result id
-	LastBandRequestId(context.Context, *QueryLastBandRequestIdRequest) (*QueryLastBandRequestIdResponse, error)
 	// Queries a AssetInfo by denom.
 	AssetInfo(context.Context, *QueryGetAssetInfoRequest) (*QueryGetAssetInfoResponse, error)
 	// Queries a list of AssetInfo items.
@@ -158,12 +132,6 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
-}
-func (UnimplementedQueryServer) BandPriceResult(context.Context, *QueryBandPriceRequest) (*QueryBandPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BandPriceResult not implemented")
-}
-func (UnimplementedQueryServer) LastBandRequestId(context.Context, *QueryLastBandRequestIdRequest) (*QueryLastBandRequestIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LastBandRequestId not implemented")
 }
 func (UnimplementedQueryServer) AssetInfo(context.Context, *QueryGetAssetInfoRequest) (*QueryGetAssetInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssetInfo not implemented")
@@ -210,42 +178,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_BandPriceResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryBandPriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).BandPriceResult(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.oracle.Query/BandPriceResult",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).BandPriceResult(ctx, req.(*QueryBandPriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LastBandRequestId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLastBandRequestIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LastBandRequestId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.oracle.Query/LastBandRequestId",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LastBandRequestId(ctx, req.(*QueryLastBandRequestIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -368,14 +300,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
-		},
-		{
-			MethodName: "BandPriceResult",
-			Handler:    _Query_BandPriceResult_Handler,
-		},
-		{
-			MethodName: "LastBandRequestId",
-			Handler:    _Query_LastBandRequestId_Handler,
 		},
 		{
 			MethodName: "AssetInfo",

@@ -51,7 +51,7 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 
 	params := k.GetParams(ctx)
 
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
@@ -60,12 +60,11 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 
 	// lpTokenPrice * lpTokenAmount / totalDebt = params.SafetyFactor
 	// lpTokenPrice = totalDebt * params.SafetyFactor / lpTokenAmount
-	totalDebt := debt.GetTotalLiablities()
-	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	liquidationPrice := params.SafetyFactor.MulInt(totalDebt).Mul(usdcDenomPrice).MulInt(ammtypes.OneShare).QuoInt(position.LeveragedLpAmount)
+	totalDebt := debt.GetBigDecTotalLiablities()
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+	liquidationPrice := params.GetBigDecSafetyFactor().Mul(totalDebt).Mul(debtDenomPrice).Mul(ammtypes.OneShareBigDec).Quo(position.GetBigDecLeveragedLpAmount())
 
 	return &types.QueryLiquidationPriceResponse{
-		Price: liquidationPrice,
+		Price: liquidationPrice.Dec(),
 	}, nil
 }

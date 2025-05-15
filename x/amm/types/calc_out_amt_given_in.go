@@ -2,8 +2,8 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CalcOutAmtGivenIn calculates tokens to be swapped out given the provided
@@ -11,48 +11,37 @@ import (
 func (p Pool) CalcOutAmtGivenIn(
 	ctx sdk.Context,
 	oracle OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	swapFee sdkmath.LegacyDec,
-	accountedPool AccountedPoolKeeper,
-) (sdk.Coin, sdkmath.LegacyDec, error) {
+	swapFee osmomath.BigDec,
+) (sdk.Coin, osmomath.BigDec, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), err
 	}
+	outWeight := osmomath.BigDecFromSDKInt(poolAssetOut.Weight)
+	inWeight := osmomath.BigDecFromSDKInt(poolAssetIn.Weight)
 
-	tokenAmountInAfterFee := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFee))
-	poolTokenInBalance := sdkmath.LegacyNewDecFromInt(poolAssetIn.Token.Amount)
-	// accounted pool balance
-	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
-	if acountedPoolAssetInAmt.IsPositive() {
-		poolTokenInBalance = sdkmath.LegacyNewDecFromInt(acountedPoolAssetInAmt)
-	}
-
-	poolTokenOutBalance := sdkmath.LegacyNewDecFromInt(poolAssetOut.Token.Amount)
-	// accounted pool balance
-	accountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
-	if accountedPoolAssetOutAmt.IsPositive() {
-		poolTokenOutBalance = sdkmath.LegacyNewDecFromInt(accountedPoolAssetOutAmt)
-	}
-
-	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
-
-	outWeight := sdkmath.LegacyNewDecFromInt(poolAssetOut.Weight)
-	inWeight := sdkmath.LegacyNewDecFromInt(poolAssetIn.Weight)
 	if p.PoolParams.UseOracle {
-		_, poolAssetIn, poolAssetOut, err := snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
+		_, poolAssetIn, poolAssetOut, err = snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
 		if err != nil {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
+			return sdk.Coin{}, osmomath.ZeroBigDec(), err
 		}
-		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
+		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
+			return sdk.Coin{}, osmomath.ZeroBigDec(), err
 		}
 		inWeight = oracleWeights[0].Weight
 		outWeight = oracleWeights[1].Weight
 	}
+
+	tokenAmountInAfterFee := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(osmomath.OneBigDec().Sub(swapFee))
+
+	poolTokenInBalance := osmomath.BigDecFromSDKInt(poolAssetIn.Token.Amount)
+	poolTokenOutBalance := osmomath.BigDecFromSDKInt(poolAssetOut.Token.Amount)
+
+	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
@@ -64,31 +53,31 @@ func (p Pool) CalcOutAmtGivenIn(
 		outWeight,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), err
 	}
 
 	if tokenAmountOut.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
+		return sdk.Coin{}, osmomath.ZeroBigDec(), ErrTokenOutAmountZero
 	}
 
-	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
+	rate, err := p.GetTokenARate(ctx, oracle, tokenIn.Denom, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), err
 	}
 
 	amountOutWithoutSlippage := tokenAmountInAfterFee.Mul(rate)
 
 	// check if amountOutWithoutSlippage is zero to avoid division by zero
 	if amountOutWithoutSlippage.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
+		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
 	}
 
-	slippage := sdkmath.LegacyOneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
+	slippage := osmomath.OneBigDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
 	// We ignore the decimal component, as we round down the token amount out.
-	tokenAmountOutInt := tokenAmountOut.TruncateInt()
+	tokenAmountOutInt := tokenAmountOut.Dec().TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
+		return sdk.Coin{}, osmomath.ZeroBigDec(), ErrTokenOutAmountZero
 	}
 
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, nil

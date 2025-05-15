@@ -6,10 +6,10 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -44,60 +44,71 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				ctx.Logger().Error(fmt.Sprintf("pool not found for id: %d", position.AmmPoolId))
 				continue
 			}
-			ammPool, poolErr := k.GetAmmPool(ctx, pool.AmmPoolId)
-			if poolErr != nil {
-				ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
-				continue
-			}
 
-			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool, ammPool)
+			cacheContextForUnhealthy, writeForUnhealthy := ctx.CacheContext()
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, position, pool)
 			if err == nil {
+				writeForUnhealthy()
 				continue
 			}
 			if isHealthy && !closeAttempted {
-				_, _, _ = k.CheckAndCloseAtStopLoss(ctx, position, pool, ammPool)
+				ammPool, poolErr := k.GetAmmPool(ctx, pool.AmmPoolId)
+				if poolErr != nil {
+					ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
+					continue
+				}
+				cacheContextForStopLoss, writeForStopLoss := ctx.CacheContext()
+				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, position, pool, ammPool)
+				if err == nil {
+					writeForStopLoss()
+				}
 			}
 		}
 	}
 }
 
-func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, closeAttempted bool, health math.LegacyDec, err error) {
+func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *types.Position, pool types.Pool) (isHealthy, closeAttempted bool, health osmomath.BigDec, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-			}
+			err = fmt.Errorf("CheckAndLiquidateUnhealthyPosition (leverageLP) function panicked: %v", r) // Capture the panic as an error
+			closeAttempted = true
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, false, math.LegacyZeroDec(), err
+		return false, false, osmomath.ZeroBigDec(), err
 	}
-	position.PositionHealth = h
+	position.PositionHealth = h.Dec()
 	k.SetPosition(ctx, position)
 
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
 
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
-	liab := debt.GetTotalLiablities()
-	if isHealthy || liab.IsZero() {
+	if isHealthy {
 		return true, false, h, errors.New("position is healthy to close")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, true)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), true)
 	if err != nil {
-		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
+		ctx.Logger().Error(errorsmod.Wrap(err, "error executing liquidation for unhealthy").Error())
 		return isHealthy, true, h, err
 	}
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventCloseUnhealthyPosition,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
+		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
-		sdk.NewAttribute("collateral", position.Collateral.String()),
+		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
+		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("liabilities", position.Liabilities.String()),
-		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
+		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
+		sdk.NewAttribute("reason", "unhealthy"),
+		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
+		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
+		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
 	))
 	return isHealthy, true, h, nil
 }
@@ -105,9 +116,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, closeAttempted bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-			}
+			err = fmt.Errorf("CheckAndCloseAtStopLoss (leverageLP) function panicked: %v", r) // Capture the panic as an error
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)
@@ -115,31 +125,38 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, false, err
 	}
-	position.PositionHealth = h
+	position.PositionHealth = h.Dec()
 	k.SetPosition(ctx, position)
 
-	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	lpTokenPrice, err := ammPool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
 		return false, false, err
 	}
 
-	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.StopLossPrice)
+	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.GetBigDecStopLossPrice())
 	if !underStopLossPrice {
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
 	}
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositionStopLoss,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
+		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
-		sdk.NewAttribute("collateral", position.Collateral.String()),
+		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
+		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("liabilities", position.Liabilities.String()),
-		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
+		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
+		sdk.NewAttribute("reason", "stop_loss"),
+		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
+		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
+		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_taker_fee", exitFee.String()),
 	))
 	return underStopLossPrice, true, nil
 }

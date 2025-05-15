@@ -8,6 +8,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -182,17 +183,33 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 	return
 }
 
+// SetAllLegacySpotOrderPriceToNewOrderPriceStructure set all legacy spot order price to new order price structure
+func (k Keeper) SetAllLegacySpotOrderPriceToNewOrderPriceStructure(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingSpotOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var order types.SpotOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		order.OrderPrice = order.LegacyOrderPriceV1.Rate
+		order.LegacyOrderPriceV1 = types.LegacyOrderPriceV1{}
+		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
+	}
+}
+
 // ExecuteStopLossOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.GT(order.OrderPrice.Rate) {
+	if marketPrice.GT(order.GetBigDecOrderPrice()) {
 		// skip the order
 		return nil, nil
 	}
@@ -209,8 +226,8 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
@@ -229,15 +246,15 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 // ExecuteLimitSellOrder executes a limit sell order
 func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.LT(order.OrderPrice.Rate) {
+	if marketPrice.LT(order.GetBigDecOrderPrice()) {
 		// skip the order
 		return nil, nil
 	}
@@ -254,11 +271,24 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+
+	params := k.GetParams(ctx)
+	expectedAmount := marketPrice.Mul(osmomath.BigDecFromSDKInt(order.OrderAmount.Amount))
+	gotAmount := osmomath.BigDecFromSDKInt(res.Amount.Amount)
+	tolerance := osmomath.ZeroBigDec()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
+	}
+
+	if tolerance.GT(params.GetBigDecTolerance()) {
+		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
+	}
 	if err != nil {
 		return res, err
 	}
@@ -274,15 +304,15 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 // ExecuteLimitBuyOrder executes a limit buy order
 func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.GT(order.OrderPrice.Rate) {
+	if marketPrice.GT(order.GetBigDecOrderPrice()) {
 		// skip the order
 		return nil, nil
 	}
@@ -299,11 +329,24 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+
+	params := k.GetParams(ctx)
+	expectedAmount := osmomath.BigDecFromSDKInt(order.OrderAmount.Amount).Quo(marketPrice)
+	gotAmount := osmomath.BigDecFromSDKInt(res.Amount.Amount)
+	tolerance := osmomath.ZeroBigDec()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
+	}
+
+	if tolerance.GT(params.GetBigDecTolerance()) {
+		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
+	}
 	if err != nil {
 		return res, err
 	}

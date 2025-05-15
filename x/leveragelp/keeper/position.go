@@ -1,18 +1,19 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -26,7 +27,7 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 	}
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &position)
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	position.Liabilities = debt.GetTotalLiablities()
 	return position, nil
 }
@@ -146,7 +147,7 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 		bytesValue := iterator.Value()
 		err := k.cdc.Unmarshal(bytesValue, &position)
 		if err == nil {
-			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 			position.Liabilities = debt.GetTotalLiablities()
 			positions = append(positions, position)
 		}
@@ -175,7 +176,7 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 		if err != nil {
 			return err
 		}
-		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 		position.Liabilities = debt.GetTotalLiablities()
 		positionList = append(positionList, &position)
 		return nil
@@ -234,7 +235,7 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
 		k.cdc.MustUnmarshal(value, &position)
-		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 		position.Liabilities = debt.GetTotalLiablities()
 		positions = append(positions, &position)
 		return nil
@@ -247,33 +248,32 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 }
 
 // GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
-func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdkmath.LegacyDec, error) {
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
-	debtAmount := debt.GetTotalLiablities()
+func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (osmomath.BigDec, error) {
+	if position.LeveragedLpAmount.IsZero() {
+		return osmomath.ZeroBigDec(), nil
+	}
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
+	debtAmount := debt.GetBigDecTotalLiablities()
 	if debtAmount.IsZero() {
-		return sdkmath.LegacyMaxSortableDec, nil
+		maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
+		return maxDec, nil
 	}
 
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+	debtValue := debtAmount.Mul(debtDenomPrice)
 
-	leveragedLpAmount := sdkmath.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
-
-	for _, commitment := range commitments.CommittedTokens {
-		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
-	}
-
-	exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
+	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 
-	exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
+	ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	if err != nil {
+		return osmomath.ZeroBigDec(), err
+	}
+	positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
-	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
+	health := positionValue.Quo(debtValue)
 
 	return health, nil
 }
@@ -313,12 +313,12 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if found {
 				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
-				pool.Health = k.CalculatePoolHealth(ctx, &pool)
+				pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
 				k.SetPool(ctx, pool)
 			}
 
 			// Repay any balance, delete position
-			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 			repayAmount := debt.GetTotalLiablities()
 
 			// Check if position has enough coins to repay else repay partial
@@ -331,7 +331,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			}
 
 			if repayAmount.IsPositive() {
-				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
+				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.BorrowPoolId, position.AmmPoolId)
 			} else {
 				userAmount = bal.Amount
 			}
@@ -351,4 +351,71 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			}
 		}
 	}
+}
+
+func (k Keeper) SetAllPositions(ctx sdk.Context) {
+	iterator := k.GetPositionIterator(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		leveragedLpAmount := sdkmath.ZeroInt()
+		commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
+
+		poolDenom := ammtypes.GetPoolShareDenom(position.AmmPoolId)
+		for _, commitment := range commitments.CommittedTokens {
+			if poolDenom == commitment.Denom {
+				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
+			}
+		}
+
+		// Set correct lev amount
+		position.LeveragedLpAmount = leveragedLpAmount
+		position.BorrowPoolId = stabletypes.UsdcPoolId
+		k.SetPosition(ctx, &position)
+	}
+
+	// Pool liabilities are reset in stablestake migration
+	k.V18MigratonPoolLiabilities(ctx)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		// After setting pool liabilities
+		balance := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+		if balance.IsPositive() {
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+			totalLiab := debt.GetTotalLiablities()
+			if totalLiab.GT(balance.Amount) {
+				totalLiab = balance.Amount
+			}
+			if totalLiab.IsPositive() {
+				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, totalLiab), position.AmmPoolId, position.BorrowPoolId)
+			}
+			if balance.Amount.GT(totalLiab) {
+				payToUser := balance.Amount.Sub(totalLiab)
+				k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(position.Address), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, payToUser)})
+			}
+		}
+
+		if position.LeveragedLpAmount.IsZero() {
+			k.DestroyPosition(ctx, sdk.MustAccAddressFromBech32(position.Address), position.Id)
+		}
+	}
+	return
+}
+
+func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
+	iterator := k.GetPositionIterator(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.UsdcPoolId)
+		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
+		k.SetPosition(ctx, &position)
+	}
+	return
 }

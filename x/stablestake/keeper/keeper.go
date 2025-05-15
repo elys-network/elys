@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -19,6 +20,8 @@ type (
 		bk                 types.BankKeeper
 		commitmentKeeper   *commitmentkeeper.Keeper
 		assetProfileKeeper types.AssetProfileKeeper
+		oracleKeeper       types.OracleKeeper
+		ammKeeper          types.AmmKeeper
 		hooks              types.StableStakeHooks
 	}
 )
@@ -30,6 +33,8 @@ func NewKeeper(
 	bk types.BankKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
+	oracleKeeper types.OracleKeeper,
+	ammKeeper types.AmmKeeper,
 ) *Keeper {
 
 	// ensure that authority is a valid AccAddress
@@ -44,6 +49,8 @@ func NewKeeper(
 		bk:                 bk,
 		commitmentKeeper:   commitmentKeeper,
 		assetProfileKeeper: assetProfileKeeper,
+		oracleKeeper:       oracleKeeper,
+		ammKeeper:          ammKeeper,
 	}
 }
 

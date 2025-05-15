@@ -91,7 +91,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares
@@ -175,7 +175,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().Len(res.TotalRewards, 0)
 
 	// first user exit pool
-	_, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// check rewards after 100 block
@@ -228,5 +228,5 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 
 	pool, found := suite.app.MasterchefKeeper.GetPoolInfo(ctx, pools[0].PoolId)
 	suite.Require().Equal(true, found)
-	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
+	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973501")
 }

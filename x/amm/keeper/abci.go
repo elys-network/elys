@@ -5,20 +5,20 @@ import (
 	"strings"
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec {
+func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) osmomath.BigDec {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
+	return pool.StackedRatioFromSnapshot(snapshot)
 }
 
 func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
@@ -183,13 +183,35 @@ func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
+	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
 	msgs := k.ExecuteSwapRequests(ctx)
 	if len(msgs) > 0 {
 		bz, _ := json.Marshal(msgs)
 		k.Logger(ctx).Debug("Executed swap requests: " + string(bz))
 	}
+
+	// Set amm and accounted pools in oracle kv store
+	// TODO this is being used for price feeder, migrate to query in price feeder and the remove this
+	//ammPools := k.GetAllPool(ctx)
+	//for _, ammPool := range ammPools {
+	//	if ammPool.PoolParams.UseOracle {
+	//		oraclePool := oracletypes.Pool{
+	//			PoolId: ammPool.PoolId,
+	//		}
+	//
+	//		oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
+	//		for _, poolAsset := range ammPool.PoolAssets {
+	//			oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
+	//				Token:                  poolAsset.Token,
+	//				Weight:                 poolAsset.Weight,
+	//				ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
+	//			})
+	//		}
+	//		oraclePool.PoolAssets = oraclePoolAssets
+	//		k.oracleKeeper.SetPool(ctx, oraclePool)
+	//	}
+	//}
 
 	k.ClearOutdatedSlippageTrack(ctx)
 }

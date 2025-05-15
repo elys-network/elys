@@ -1,10 +1,12 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/runtime"
 	gomath "math"
+
+	"cosmossdk.io/core/store"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store/prefix"
@@ -28,7 +30,6 @@ type (
 		oracleKeeper        ammtypes.OracleKeeper
 		stableKeeper        types.StableStakeKeeper
 		commKeeper          types.CommitmentKeeper
-		assetProfileKeeper  types.AssetProfileKeeper
 		masterchefKeeper    types.MasterchefKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
 
@@ -45,7 +46,6 @@ func NewKeeper(
 	oracleKeeper ammtypes.OracleKeeper,
 	stableKeeper types.StableStakeKeeper,
 	commitmentKeeper types.CommitmentKeeper,
-	assetProfileKeeper types.AssetProfileKeeper,
 	masterchefKeeper types.MasterchefKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
@@ -63,7 +63,6 @@ func NewKeeper(
 		oracleKeeper:        oracleKeeper,
 		stableKeeper:        stableKeeper,
 		commKeeper:          commitmentKeeper,
-		assetProfileKeeper:  assetProfileKeeper,
 		masterchefKeeper:    masterchefKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
 	}
@@ -99,8 +98,8 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 
 	tokensOut := sdk.NewCoins(tokenOutAmount)
 	// Estimate swap
-	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, math.LegacyZeroDec())
+	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
+	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensOut, tokenInDenom, osmomath.ZeroBigDec())
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -112,22 +111,22 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 }
 
 func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) {
-	pool.Health = k.CalculatePoolHealth(ctx, pool)
+	pool.Health = k.CalculatePoolHealth(ctx, pool).Dec()
 	k.SetPool(ctx, *pool)
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.LegacyDec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) osmomath.BigDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return math.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	if ammPool.TotalShares.Amount.IsZero() {
-		return math.LegacyOneDec()
+		return osmomath.OneBigDec()
 	}
 
-	return math.LegacyNewDecFromBigInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount).BigInt()).
-		Quo(math.LegacyNewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
+	return osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount)).
+		Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 }
 
 func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) storetypes.Iterator {

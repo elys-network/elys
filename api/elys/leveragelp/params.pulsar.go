@@ -871,6 +871,8 @@ var (
 	fd_Params_fallback_enabled     protoreflect.FieldDescriptor
 	fd_Params_number_per_block     protoreflect.FieldDescriptor
 	fd_Params_enabled_pools        protoreflect.FieldDescriptor
+	fd_Params_exit_buffer          protoreflect.FieldDescriptor
+	fd_Params_stop_loss_enabled    protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -885,6 +887,8 @@ func init() {
 	fd_Params_fallback_enabled = md_Params.Fields().ByName("fallback_enabled")
 	fd_Params_number_per_block = md_Params.Fields().ByName("number_per_block")
 	fd_Params_enabled_pools = md_Params.Fields().ByName("enabled_pools")
+	fd_Params_exit_buffer = md_Params.Fields().ByName("exit_buffer")
+	fd_Params_stop_loss_enabled = md_Params.Fields().ByName("stop_loss_enabled")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -1006,6 +1010,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.ExitBuffer != "" {
+		value := protoreflect.ValueOfString(x.ExitBuffer)
+		if !f(fd_Params_exit_buffer, value) {
+			return
+		}
+	}
+	if x.StopLossEnabled != false {
+		value := protoreflect.ValueOfBool(x.StopLossEnabled)
+		if !f(fd_Params_stop_loss_enabled, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -1039,6 +1055,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.NumberPerBlock != int64(0)
 	case "elys.leveragelp.Params.enabled_pools":
 		return len(x.EnabledPools) != 0
+	case "elys.leveragelp.Params.exit_buffer":
+		return x.ExitBuffer != ""
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		return x.StopLossEnabled != false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1073,6 +1093,10 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.NumberPerBlock = int64(0)
 	case "elys.leveragelp.Params.enabled_pools":
 		x.EnabledPools = nil
+	case "elys.leveragelp.Params.exit_buffer":
+		x.ExitBuffer = ""
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		x.StopLossEnabled = false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1119,6 +1143,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		}
 		listValue := &_Params_9_list{list: &x.EnabledPools}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.Params.exit_buffer":
+		value := x.ExitBuffer
+		return protoreflect.ValueOfString(value)
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		value := x.StopLossEnabled
+		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1159,6 +1189,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		lv := value.List()
 		clv := lv.(*_Params_9_list)
 		x.EnabledPools = *clv.list
+	case "elys.leveragelp.Params.exit_buffer":
+		x.ExitBuffer = value.Interface().(string)
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		x.StopLossEnabled = value.Bool()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1201,6 +1235,10 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field fallback_enabled of message elys.leveragelp.Params is not mutable"))
 	case "elys.leveragelp.Params.number_per_block":
 		panic(fmt.Errorf("field number_per_block of message elys.leveragelp.Params is not mutable"))
+	case "elys.leveragelp.Params.exit_buffer":
+		panic(fmt.Errorf("field exit_buffer of message elys.leveragelp.Params is not mutable"))
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		panic(fmt.Errorf("field stop_loss_enabled of message elys.leveragelp.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1233,6 +1271,10 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "elys.leveragelp.Params.enabled_pools":
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_Params_9_list{list: &list})
+	case "elys.leveragelp.Params.exit_buffer":
+		return protoreflect.ValueOfString("")
+	case "elys.leveragelp.Params.stop_loss_enabled":
+		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.Params"))
@@ -1336,6 +1378,13 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
 		}
+		l = len(x.ExitBuffer)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.StopLossEnabled {
+			n += 2
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1364,6 +1413,23 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.StopLossEnabled {
+			i--
+			if x.StopLossEnabled {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x58
+		}
+		if len(x.ExitBuffer) > 0 {
+			i -= len(x.ExitBuffer)
+			copy(dAtA[i:], x.ExitBuffer)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExitBuffer)))
+			i--
+			dAtA[i] = 0x52
 		}
 		if len(x.EnabledPools) > 0 {
 			var pksize2 int
@@ -1759,6 +1825,58 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				} else {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnabledPools", wireType)
 				}
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExitBuffer", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ExitBuffer = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 11:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StopLossEnabled", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.StopLossEnabled = bool(v != 0)
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1914,6 +2032,8 @@ type Params struct {
 	FallbackEnabled     bool     `protobuf:"varint,7,opt,name=fallback_enabled,json=fallbackEnabled,proto3" json:"fallback_enabled,omitempty"`
 	NumberPerBlock      int64    `protobuf:"varint,8,opt,name=number_per_block,json=numberPerBlock,proto3" json:"number_per_block,omitempty"` // Number of positions to process per block
 	EnabledPools        []uint64 `protobuf:"varint,9,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
+	ExitBuffer          string   `protobuf:"bytes,10,opt,name=exit_buffer,json=exitBuffer,proto3" json:"exit_buffer,omitempty"`
+	StopLossEnabled     bool     `protobuf:"varint,11,opt,name=stop_loss_enabled,json=stopLossEnabled,proto3" json:"stop_loss_enabled,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1999,6 +2119,20 @@ func (x *Params) GetEnabledPools() []uint64 {
 	return nil
 }
 
+func (x *Params) GetExitBuffer() string {
+	if x != nil {
+		return x.ExitBuffer
+	}
+	return ""
+}
+
+func (x *Params) GetStopLossEnabled() bool {
+	if x != nil {
+		return x.StopLossEnabled
+	}
+	return false
+}
+
 var File_elys_leveragelp_params_proto protoreflect.FileDescriptor
 
 var file_elys_leveragelp_params_proto_rawDesc = []byte{
@@ -2039,7 +2173,7 @@ var file_elys_leveragelp_params_proto_rawDesc = []byte{
 	0x52, 0x0f, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65,
 	0x64, 0x12, 0x28, 0x0a, 0x10, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x5f, 0x70, 0x65, 0x72, 0x5f,
 	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x6e, 0x75, 0x6d,
-	0x62, 0x65, 0x72, 0x50, 0x65, 0x72, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x22, 0x97, 0x04, 0x0a, 0x06,
+	0x62, 0x65, 0x72, 0x50, 0x65, 0x72, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x22, 0x97, 0x05, 0x0a, 0x06,
 	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
 	0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
 	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
@@ -2073,7 +2207,15 @@ var file_elys_leveragelp_params_proto_rawDesc = []byte{
 	0x52, 0x0e, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x50, 0x65, 0x72, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
 	0x12, 0x23, 0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c,
 	0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
-	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x42, 0xb1, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
+	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x52, 0x0a, 0x0b, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x62, 0x75,
+	0x66, 0x66, 0x65, 0x72, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x65,
+	0x78, 0x69, 0x74, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x12, 0x2a, 0x0a, 0x11, 0x73, 0x74, 0x6f,
+	0x70, 0x5f, 0x6c, 0x6f, 0x73, 0x73, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x0b,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x73, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x45, 0x6e,
+	0x61, 0x62, 0x6c, 0x65, 0x64, 0x42, 0xb1, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
 	0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x0b, 0x50,
 	0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69,
 	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
