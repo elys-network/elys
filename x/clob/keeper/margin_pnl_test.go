@@ -44,6 +44,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		expectedMarketBalanceChange math.Int // Should be opposite of SubAcc change - Changed to math.Int
 		expectedErr                 bool
 		expectedErrMsg              string
+		preSetup                    func()
 	}{
 		// --- Case 1: Increase Short ---
 		{
@@ -248,6 +249,25 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 			// Expecting error return
 			expectedErrMsg: "newRequiredInitialMargin (105000000) must be greater than oldPerpetual.Margin (1000000000) for seller when position is increased from negative to more negative", // Match fmt.Errorf string
 		},
+		{
+			name:           "Error: invalid trade quantity",
+			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
+			trade:          types.Trade{buyerAcc, sellerAcc, MarketId, math.LegacyNewDec(5), math.LegacyNewDec(-10), false, false},
+			isBuyer:        true,
+			expectedErr:    true,
+			expectedErrMsg: "trade quantity must be greater than zero", // Contains the error message from fmt.Errorf
+		},
+		{
+			name:           "Error: denom price error",
+			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
+			trade:          types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),
+			isBuyer:        true,
+			expectedErr:    true,
+			expectedErrMsg: "denom (uusdc) price not found", // Contains the error message from fmt.Errorf
+			preSetup: func() {
+				suite.app.OracleKeeper.RemovePrice(suite.ctx, "USDC", "test", uint64(suite.ctx.BlockTime().Unix()))
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -272,6 +292,9 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 			initialMarketBalance := suite.GetAccountBalance(marketAccAddr, QuoteDenom)
 			initialCounterpartyBalance := suite.GetAccountBalance(counterpartySubAccount.GetTradingAccountAddress(), QuoteDenom)
 
+			if tc.preSetup != nil {
+				tc.preSetup()
+			}
 			// --- Execute ---
 			perpetualToPass := tc.oldPerpetual // Pass copy
 			updatedPerpetual, err := suite.app.ClobKeeper.SettleMarginAndRPnL(suite.ctx, market, perpetualToPass, false, tc.trade, tc.isBuyer)

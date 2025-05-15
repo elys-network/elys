@@ -242,6 +242,7 @@ func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.Perpetu
 			MaxAbsFundingRate:       math.LegacyMustNewDecFromStr("0.05"),
 			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
 			TwapPricesWindow:        15,
+			LiquidationFeeShareRate: math.LegacyMustNewDecFromStr("0.01"),
 		}
 		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 		list = append(list, market)
@@ -408,4 +409,10 @@ func (suite *KeeperTestSuite) SetTwapPriceDirectly(marketId uint64, price math.L
 		CumulativePrice:   math.LegacyOneDec().Add(price),
 		Timestamp:         2,
 	})
+}
+
+func (suite *KeeperTestSuite) SetTwapRecordDirectly(val types.TwapPrice) {
+	// Implementation depends on how GetCurrentTwapPrice is controlled/mocked
+	// Simplest for this example: set the global mock variable
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, val)
 }
