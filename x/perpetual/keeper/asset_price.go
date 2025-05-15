@@ -30,11 +30,11 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 	}
 
 	if info.Decimal < USDCInfo.Decimals {
-		baseUnitMultiplier := utils.Pow10(USDCInfo.Decimals - info.Decimal)
-		return price, price.Quo(USDCPrice).Mul(baseUnitMultiplier), nil
+		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
+		return price, price.Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
 	} else {
-		baseUnitMultiplier := utils.Pow10(info.Decimal - USDCInfo.Decimals)
-		return price, price.Quo(USDCPrice).Quo(baseUnitMultiplier), nil
+		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
+		return price, price.Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
 	}
 }
 
@@ -52,10 +52,10 @@ func (k Keeper) ConvertPriceToAssetUsdcDenomRatio(ctx sdk.Context, asset string,
 		return osmomath.ZeroBigDec(), fmt.Errorf("error converting price to base units, asset price %s not found", ptypes.BaseCurrency)
 	}
 	if info.Decimal < USDCInfo.Decimals {
-		baseUnitMultiplier := utils.Pow10(USDCInfo.Decimals - info.Decimal)
-		return price.Quo(USDCPrice).Mul(baseUnitMultiplier), nil
+		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
+		return price.Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
 	} else {
-		baseUnitMultiplier := utils.Pow10(info.Decimal - USDCInfo.Decimals)
-		return price.Quo(USDCPrice).Quo(baseUnitMultiplier), nil
+		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
+		return price.Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
 	}
 }

@@ -90,6 +90,7 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int
 	return osmomath.BigDecFromSDKInt(amount).Mul(tokenPrice)
 }
 
+// CalcAmmPrice Panics if decimal is > 18, but we do not support >18 as per AddAssetEntry in AssetProfile
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found || denom == usdcDenom {
@@ -102,7 +103,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmo
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, math.NewInt(utils.Pow10(decimal).TruncateInt64()))
+	tokenIn := sdk.NewCoin(denom, math.NewInt(utils.Pow10Int64(decimal)))
 	discount := osmomath.OneBigDec()
 	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, osmomath.ZeroBigDec())
 	if err != nil {
