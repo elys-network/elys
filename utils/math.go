@@ -40,6 +40,9 @@ func Pow10(decimal uint64) osmomath.BigDec {
 	return value
 }
 
+// Pow10Int64 returns 10 raised to the power of the input decimal value as an int64.
+// Panics if decimal is greater than 18.
+// Way faster than Pow10 (100x)
 func Pow10Int64(decimal uint64) int64 {
 	if decimal <= 18 {
 		return pow10Int64Cache[decimal]
