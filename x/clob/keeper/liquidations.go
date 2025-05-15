@@ -58,6 +58,9 @@ func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 		ctx.Logger().Info(fmt.Sprintf("ForcedLiquidation: Position %d (market %d) (liquidation closing ratio: %s), ADL set", perpetual.Id, market.Id, closingRatio.String()))
 
 		// TODO: Emit event: LiquidationRequiresADL with closing ratio
+	} else {
+		// A case where say a previous liquidation triggers ADL due to lack of insurance fund or lack of orders, but now liquidtion can be done again.
+		k.DeletePerpetualADL(ctx, perpetual.MarketId, perpetual.Id)
 	}
 
 	if closingRatio.IsZero() {
