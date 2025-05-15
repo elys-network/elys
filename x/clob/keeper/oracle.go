@@ -12,20 +12,22 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (math.LegacyDec, er
 		return math.LegacyDec{}, fmt.Errorf("asset info (%s) not found for denom", denom)
 	}
 
-	price, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
+	priceBigDec, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	if !found {
 		return math.LegacyDec{}, fmt.Errorf("asset price not found for denom (%s)", denom)
 	}
-	if price.Price.LTE(math.LegacyZeroDec()) || price.Price.IsNil() {
-		return math.LegacyDec{}, fmt.Errorf("asset price (%s) is invalid", price.Price)
+	price := priceBigDec.Dec()
+	if price.LTE(math.LegacyZeroDec()) || price.IsNil() {
+		return math.LegacyDec{}, fmt.Errorf("asset price (%s) is invalid", price.String())
 	}
-	return price.Price, nil
+	return price, nil
 }
 
 func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) (math.LegacyDec, error) {
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	price := k.oracleKeeper.GetDenomPrice(ctx, denom)
 	if price.IsNil() || price.IsZero() {
 		return math.LegacyDec{}, fmt.Errorf("denom (%s) price not found", denom)
 	}
-	return price, nil
+	// No major benefit to use 36 decimal places in clob as everything is synthetic except margin amount
+	return price.Dec(), nil
 }
