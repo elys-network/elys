@@ -65,8 +65,8 @@ func AbsDifferenceWithSign(a, b sdkmath.LegacyDec) (sdkmath.LegacyDec, bool) {
 	}
 }
 
-func GetPaddedDecString(price math.LegacyDec) string {
-	dec := decimal.NewFromBigInt(price.BigInt(), -18).StringFixed(math.LegacyPrecision)
+func GetPaddedDecString(price sdkmath.LegacyDec) string {
+	dec := decimal.NewFromBigInt(price.BigInt(), -18).StringFixed(sdkmath.LegacyPrecision)
 	return getPaddedPriceFromString(dec)
 }
 
