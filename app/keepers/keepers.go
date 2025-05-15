@@ -540,7 +540,6 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.DistrKeeper,
 		icsValidatorKeeper,
 		distrtypes.ModuleName,
 		cast.ToBool(appOpts.Get("telemetry.enabled")),

@@ -322,28 +322,24 @@ func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     sdkmath.LegacyNewDec(1000000),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
 		Price:     sdkmath.LegacyNewDec(1000000),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
 		Price:     sdkmath.LegacyNewDec(100),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     sdkmath.LegacyNewDec(100),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})

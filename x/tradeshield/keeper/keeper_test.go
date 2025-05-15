@@ -103,7 +103,6 @@ func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})

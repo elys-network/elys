@@ -267,14 +267,12 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyMustNewDecFromStr("4.39"),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     math.LegacyMustNewDecFromStr("4.39"),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
@@ -414,14 +412,12 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyNewDec(5),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     math.LegacyNewDec(5),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})

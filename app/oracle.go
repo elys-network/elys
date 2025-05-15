@@ -321,7 +321,6 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 		app.OracleKeeper.SetPrice(ctx, ojooracletypes.Price{
 			Asset:       price.Asset,
 			Price:       price.Price,
-			Source:      price.Source,
 			Provider:    price.Provider,
 			Timestamp:   price.Timestamp,
 			BlockHeight: price.BlockHeight,
@@ -331,11 +330,10 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	//Migrate AssetInfos
 	for _, assetInfo := range assetInfos {
 		app.OracleKeeper.SetAssetInfo(ctx, ojooracletypes.AssetInfo{
-			Denom:      assetInfo.Denom,
-			Display:    assetInfo.Display,
-			BandTicker: assetInfo.BandTicker,
-			ElysTicker: assetInfo.ElysTicker,
-			Decimal:    assetInfo.Decimal,
+			Denom:   assetInfo.Denom,
+			Display: assetInfo.Display,
+			Ticker:  assetInfo.ElysTicker,
+			Decimal: assetInfo.Decimal,
 		})
 		app.LegacyOracleKeepper.RemoveAssetInfo(ctx, assetInfo.Denom)
 	}

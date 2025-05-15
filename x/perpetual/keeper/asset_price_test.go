@@ -19,7 +19,6 @@ func (suite *PerpetualKeeperTestSuite) TestGetAssetPriceAndAssetUsdcDenomRatio()
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -47,7 +46,6 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

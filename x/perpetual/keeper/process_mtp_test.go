@@ -337,7 +337,6 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     sdkmath.LegacyMustNewDecFromStr("8.1"),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
@@ -483,7 +482,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     tradingAssetPrice.Dec().QuoInt64(4),
-		Source:    "elys",
 		Provider:  authtypes.NewModuleAddress("provider").String(),
 		Timestamp: uint64(ctx.BlockTime().Unix() + 6),
 	})

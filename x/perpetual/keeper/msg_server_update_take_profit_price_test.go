@@ -150,7 +150,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(15),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -189,7 +188,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(15),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -226,7 +224,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(3),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})

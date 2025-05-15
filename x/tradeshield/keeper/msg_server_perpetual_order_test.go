@@ -71,7 +71,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(10),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})

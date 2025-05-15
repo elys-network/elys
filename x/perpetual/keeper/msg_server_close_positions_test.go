@@ -199,7 +199,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyMustNewDecFromStr("2.00"),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -251,7 +250,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     tradingAssetPrice.MulInt64(4).Dec(),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})

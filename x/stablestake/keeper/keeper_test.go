@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"testing"
+
+	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -62,7 +63,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, ojooracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyOneDec(),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
