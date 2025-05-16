@@ -181,8 +181,6 @@ func TestCalcExitPool(t *testing.T) {
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
 				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(0))
-				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
-				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
 				PoolParams:  types.PoolParams{UseOracle: true},
