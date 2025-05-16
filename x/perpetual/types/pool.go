@@ -3,8 +3,10 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -204,4 +206,8 @@ func (p Pool) GetBigDecFundingRate() osmomath.BigDec {
 
 func (p PoolAsset) GetBigDecLiabilities() osmomath.BigDec {
 	return osmomath.BigDecFromSDKInt(p.Liabilities)
+}
+
+func (pool Pool) GetInsuranceAccount() sdk.AccAddress {
+	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurnace_fund/%d", pool.AmmPoolId))
 }

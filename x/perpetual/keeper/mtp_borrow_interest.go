@@ -83,7 +83,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 	insuranceAmount := math.ZeroInt()
 	// if full interest is paid then only collect insurance fund
 	if fullyPaid {
-		insuranceAmount, err = k.CollectInsuranceFund(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, ammPool)
+		insuranceAmount, err = k.CollectInsuranceFund(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, ammPool, *pool)
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), fullyPaid, err
 		}
