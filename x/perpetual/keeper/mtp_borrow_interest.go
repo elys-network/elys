@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -72,6 +73,22 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		// Since not enough custody left, we can only pay this much, position health goes to 0
 		borrowInterestPaymentInCustody = mtp.Custody
 		fullyPaid = false
+
+		insuranceBalance := k.bankKeeper.GetBalance(ctx, pool.GetInsuranceAccount(), mtp.CustodyAsset)
+		if insuranceBalance.Amount.GTE(unpaidInterestCustody) {
+			coin := sdk.NewCoin(mtp.CustodyAsset, unpaidInterestCustody)
+			err = k.SendToAmmPool(ctx, pool.GetInsuranceAccount(), ammPool, sdk.NewCoins(coin))
+			if err != nil {
+				return math.ZeroInt(), math.ZeroInt(), false, err
+			}
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventPaidFromInsuranceFund,
+				sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+				sdk.NewAttribute("owner", mtp.Address),
+				sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
+				sdk.NewAttribute("position", mtp.Position.String()),
+				sdk.NewAttribute("amount", coin.String()),
+			))
+		}
 	}
 
 	mtp.BorrowInterestPaidCustody = mtp.BorrowInterestPaidCustody.Add(borrowInterestPaymentInCustody)
