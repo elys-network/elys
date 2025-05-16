@@ -290,16 +290,14 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAsset string, ammPool *ammtypes.Pool) (math.Int, error) {
+func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAsset string, ammPool *ammtypes.Pool, pool types.Pool) (math.Int, error) {
 	params := k.GetParams(ctx)
-	fundAddr := sdk.MustAccAddressFromBech32(params.BorrowInterestPaymentFundAddress)
-
 	insuranceAmount := osmomath.BigDecFromSDKInt(amount).Mul(params.GetBigDecBorrowInterestPaymentFundPercentage()).Dec().TruncateInt()
 
 	if !insuranceAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, insuranceAmount))
 
-		err := k.SendFromAmmPool(ctx, ammPool, fundAddr, takeCoins)
+		err := k.SendFromAmmPool(ctx, ammPool, pool.GetInsuranceAccount(), takeCoins)
 		if err != nil {
 			return math.ZeroInt(), err
 		}
