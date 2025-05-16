@@ -84,7 +84,7 @@ func TestUpdateVestingInfo(t *testing.T) {
 	require.NoError(t, err)
 }
 
-// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with wrong gov address
+// TestKeeper_UpdateVestingInfoWithWrongGovAddress tests the UpdateVestingInfo function with wrong gov address
 func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
@@ -109,7 +109,7 @@ func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with negative num blocks
+// TestKeeper_UpdateVestingInfoWithNegativeNumBlocks tests the UpdateVestingInfo function with negative num blocks
 func TestKeeper_UpdateVestingInfoWithNegativeNumBlocks(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
