@@ -88,6 +88,15 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 				sdk.NewAttribute("position", mtp.Position.String()),
 				sdk.NewAttribute("amount", coin.String()),
 			))
+		} else {
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventInsufficientInsuranceFund,
+				sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+				sdk.NewAttribute("owner", mtp.Address),
+				sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
+				sdk.NewAttribute("position", mtp.Position.String()),
+				sdk.NewAttribute("amount", insuranceBalance.String()),
+				sdk.NewAttribute("denom", mtp.CustodyAsset),
+			))
 		}
 	}
 
