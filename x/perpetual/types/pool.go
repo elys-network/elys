@@ -209,5 +209,5 @@ func (p PoolAsset) GetBigDecLiabilities() osmomath.BigDec {
 }
 
 func (pool Pool) GetInsuranceAccount() sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurnace_fund/%d", pool.AmmPoolId))
+	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurance_fund/%d", pool.AmmPoolId))
 }
