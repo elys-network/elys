@@ -138,7 +138,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrPoolNotFound
 		}
 
-		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, tokenInDenom, tokenOutDenom)
+		rate, err := pool.GetTokenARateNormalized(ctx, k.oracleKeeper, tokenInDenom, tokenOutDenom)
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
