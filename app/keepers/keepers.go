@@ -530,9 +530,6 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper,
-		app.ScopedOracleKeeper,
 	)
 
 	app.OracleKeeper = oraclekeeper.NewKeeper(
