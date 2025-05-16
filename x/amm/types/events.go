@@ -7,11 +7,12 @@ import (
 )
 
 const (
-	TypeEvtPoolJoined      = "pool_joined"
-	TypeEvtPoolExited      = "pool_exited"
-	TypeEvtPoolCreated     = "pool_created"
-	TypeEvtTokenSwapped    = "token_swapped"
-	TypeEvtTokenSwappedFee = "token_swapped_fee"
+	TypeEvtPoolJoined          = "pool_joined"
+	TypeEvtPoolExited          = "pool_exited"
+	TypeEvtPoolCreated         = "pool_created"
+	TypeEvtTokenSwapped        = "token_swapped"
+	TypeEvtUpFrontTokenSwapped = "upfront_token_swapped"
+	TypeEvtTokenSwappedFee     = "token_swapped_fee"
 
 	AttributeValueCategory = ModuleName
 	AttributeKeyPoolId     = "pool_id"
@@ -29,6 +30,12 @@ const (
 func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
 		NewSwapEvent(sender, recipient, poolId, input, output),
+	})
+}
+
+func EmitUpFrontSwapEvent(ctx sdk.Context, sender sdk.AccAddress, input sdk.Coin, output sdk.Coin, swapFee string) {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		NewUpFrontSwapEvent(sender, input, output, swapFee),
 	})
 }
 
@@ -59,6 +66,16 @@ func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coi
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensIn, input.String()),
 		sdk.NewAttribute(AttributeKeyTokensOut, output.String()),
+	)
+}
+
+func NewUpFrontSwapEvent(sender sdk.AccAddress, input sdk.Coin, output sdk.Coin, swapFee string) sdk.Event {
+	return sdk.NewEvent(
+		TypeEvtUpFrontTokenSwapped,
+		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyTokensIn, input.String()),
+		sdk.NewAttribute(AttributeKeyTokensOut, output.String()),
+		sdk.NewAttribute(AttributeKeySwapFee, swapFee),
 	)
 }
 
