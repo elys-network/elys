@@ -41,7 +41,9 @@ func (k Keeper) GetAndSetOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
 		}
 	} else {
 		if mtp.Liabilities.IsZero() {
-			return errors.New("liabilities is zero while calculating open price")
+			// This is special case, when just adding collateral, liabilities of a new MTP before consolidating will be 0
+			mtp.OpenPrice = osmomath.ZeroBigDec().Dec()
+			return nil
 		}
 		// open price = (custody - collateral) / liabilities
 		openPrice = osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral)).Quo(mtp.GetBigDecLiabilities())

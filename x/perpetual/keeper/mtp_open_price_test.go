@@ -102,7 +102,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAndSetOpenPrice() {
 				Collateral:       math.NewInt(100_000_000),
 			},
 			expectedOpenPrice: math.LegacyZeroDec(), // Expect 0
-			expectedErr:       errors.New("liabilities is zero while calculating open price"),
+			expectedErr:       nil,
 		},
 		{
 			name: "SHORT position, valid calculation",
