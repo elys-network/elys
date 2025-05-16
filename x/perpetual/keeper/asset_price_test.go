@@ -32,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAssetPriceAndAssetUsdcDenomRatio()
 	tradingAssetPrice, tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, "wei")
 	suite.Require().NoError(err)
 	suite.Require().Equal(osmomath.MustNewBigDecFromStr("1500"), tradingAssetPrice)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("1530.612244897959183673469387755102040816"), tradingAssetPriceDenomRatio)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673469387"), tradingAssetPriceDenomRatio)
 }
 
 func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
@@ -58,5 +58,5 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 
 	tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.ConvertPriceToAssetUsdcDenomRatio(suite.ctx, "wei", osmomath.MustNewBigDecFromStr("1500"))
 	suite.Require().NoError(err)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("1530.612244897959183673469387755102040816"), tradingAssetPriceDenomRatio)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673469387"), tradingAssetPriceDenomRatio)
 }

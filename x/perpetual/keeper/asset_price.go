@@ -9,7 +9,8 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// returns asset price and and asset price in denom ratio(price*(10^usdcDecimals-assetDecimals))
+// GetAssetPriceAndAssetUsdcDenomRatio returns asset price and asset price in denom ratio(price*(10^usdcDecimals-assetDecimals))
+// Units are uusdc per base token, example: uusdc per uatom, uusdc per wei, uusdc per satoshi
 func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (osmomath.BigDec, osmomath.BigDec, error) {
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, asset)
 	if !found {
@@ -24,9 +25,15 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 	if !found {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s not found", asset)
 	}
+	if price.IsZero() {
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s is zero", asset)
+	}
 	USDCPrice, found := k.oracleKeeper.GetAssetPrice(ctx, USDCInfo.DisplayName)
 	if !found {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s not found", ptypes.BaseCurrency)
+	}
+	if USDCPrice.IsZero() {
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s is zero", ptypes.BaseCurrency)
 	}
 
 	if info.Decimal < USDCInfo.Decimals {
@@ -58,4 +65,20 @@ func (k Keeper) ConvertPriceToAssetUsdcDenomRatio(ctx sdk.Context, asset string,
 		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
 		return price.Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
 	}
+}
+
+func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) (osmomath.BigDec, error) {
+	price := k.oracleKeeper.GetDenomPrice(ctx, denom)
+	if price.IsZero() {
+		return osmomath.ZeroBigDec(), fmt.Errorf("denom price %s is zero", denom)
+	}
+	return price, nil
+}
+
+func (k Keeper) GetDenomDecimal(ctx sdk.Context, denom string) (uint64, error) {
+	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
+	if !found {
+		return 0, fmt.Errorf("asset info %s not found", denom)
+	}
+	return info.Decimal, nil
 }
