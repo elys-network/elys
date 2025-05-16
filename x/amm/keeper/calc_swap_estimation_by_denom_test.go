@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -17,6 +18,20 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 
 	suite.SetupTest()
 	suite.SetupStableCoinPrices()
+
+	// Set up oracle asset info
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.Elys,
+		Decimal: 6,
+	})
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.BaseCurrency,
+		Decimal: 6,
+	})
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   "uusda",
+		Decimal: 6,
+	})
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
