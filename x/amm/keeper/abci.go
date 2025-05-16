@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -193,25 +195,25 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 	// Set amm and accounted pools in oracle kv store
 	// TODO this is being used for price feeder, migrate to query in price feeder and the remove this
-	//ammPools := k.GetAllPool(ctx)
-	//for _, ammPool := range ammPools {
-	//	if ammPool.PoolParams.UseOracle {
-	//		oraclePool := oracletypes.Pool{
-	//			PoolId: ammPool.PoolId,
-	//		}
-	//
-	//		oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
-	//		for _, poolAsset := range ammPool.PoolAssets {
-	//			oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
-	//				Token:                  poolAsset.Token,
-	//				Weight:                 poolAsset.Weight,
-	//				ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
-	//			})
-	//		}
-	//		oraclePool.PoolAssets = oraclePoolAssets
-	//		k.oracleKeeper.SetPool(ctx, oraclePool)
-	//	}
-	//}
+	ammPools := k.GetAllPool(ctx)
+	for _, ammPool := range ammPools {
+		if ammPool.PoolParams.UseOracle {
+			oraclePool := oracletypes.Pool{
+				PoolId: ammPool.PoolId,
+			}
+
+			oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
+			for _, poolAsset := range ammPool.PoolAssets {
+				oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
+					Token:                  poolAsset.Token,
+					Weight:                 poolAsset.Weight,
+					ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
+				})
+			}
+			oraclePool.PoolAssets = oraclePoolAssets
+			k.oracleKeeper.SetPool(ctx, oraclePool)
+		}
+	}
 
 	k.ClearOutdatedSlippageTrack(ctx)
 }
