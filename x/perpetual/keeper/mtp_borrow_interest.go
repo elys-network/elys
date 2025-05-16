@@ -96,6 +96,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 				sdk.NewAttribute("position", mtp.Position.String()),
 				sdk.NewAttribute("amount", insuranceBalance.String()),
 				sdk.NewAttribute("denom", mtp.CustodyAsset),
+				sdk.NewAttribute("unpaid_interest_custody", unpaidInterestCustody.String()),
 			))
 		}
 	}
