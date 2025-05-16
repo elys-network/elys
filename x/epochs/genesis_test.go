@@ -59,6 +59,7 @@ func TestEpochsExportGenesis(t *testing.T) {
 				CurrentEpochStartHeight: 0,
 				EpochCountingStarted:    false,
 			},
+			types.EightHourEpochInfo,
 		},
 	}
 
