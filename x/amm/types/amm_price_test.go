@@ -212,101 +212,57 @@ func TestGetTokenARateNormalized(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			osmomath.NewBigDec(4).Quo(osmomath.NewBigDec(3)),
+			osmomath.MustNewBigDecFromStr("1.333333333333333333333333000000000000"),
 			"",
 		},
-		// {
-		// 	"oracle pricing with equal decimals",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(10))
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDec(5))
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(AssetInfo{Decimal: 6}, true)
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(AssetInfo{Decimal: 6}, true)
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"tokenA",
-		// 	"tokenB",
-		// 	osmomath.NewBigDec(2),
-		// 	"",
-		// },
-		// {
-		// 	"oracle pricing with different decimals - tokenB has more",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(10))
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDec(5))
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(AssetInfo{Decimal: 6}, true)
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(AssetInfo{Decimal: 18}, true)
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"tokenA",
-		// 	"tokenB",
-		// 	osmomath.NewBigDec(2).MulInt64(utils.Pow10Int64(12)),
-		// 	"",
-		// },
-		// {
-		// 	"oracle pricing with different decimals - tokenA has more",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(10))
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDec(5))
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(AssetInfo{Decimal: 18}, true)
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(AssetInfo{Decimal: 6}, true)
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"tokenA",
-		// 	"tokenB",
-		// 	osmomath.NewBigDec(2).QuoInt64(utils.Pow10Int64(12)),
-		// 	"",
-		// },
-		// {
-		// 	"token price not set for tokenA",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(osmomath.ZeroBigDec())
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"unknownToken",
-		// 	"tokenB",
-		// 	osmomath.ZeroBigDec(),
-		// 	"token price not set: unknownToken",
-		// },
-		// {
-		// 	"asset info not found for tokenA",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(10))
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDec(5))
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(AssetInfo{}, false)
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"tokenA",
-		// 	"tokenB",
-		// 	osmomath.ZeroBigDec(),
-		// 	"asset info not found for token: tokenA",
-		// },
-		// {
-		// 	"asset info not found for tokenB",
-		// 	func(oracleKeeper *mocks.OracleKeeper) {
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDec(10))
-		// 		oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDec(5))
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(AssetInfo{Decimal: 6}, true)
-		// 		oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(AssetInfo{}, false)
-		// 	},
-		// 	&types.Pool{
-		// 		PoolParams: types.PoolParams{UseOracle: true},
-		// 	},
-		// 	"tokenA",
-		// 	"tokenB",
-		// 	osmomath.ZeroBigDec(),
-		// 	"asset info not found for token: tokenB",
-		// },
+		{
+			"oracle pricing with equal decimals",
+			func(oracleKeeper *mocks.OracleKeeper) {
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDecWithPrec(10, 6))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDecWithPrec(5, 6))
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(oracletypes.AssetInfo{Decimal: 6}, true)
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(oracletypes.AssetInfo{Decimal: 6}, true)
+			},
+			&types.Pool{
+				PoolParams: types.PoolParams{UseOracle: true},
+			},
+			"tokenA",
+			"tokenB",
+			osmomath.NewBigDec(2),
+			"",
+		},
+		{
+			"oracle pricing with different decimals - tokenB has more",
+			func(oracleKeeper *mocks.OracleKeeper) {
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDecWithPrec(10, 6))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDecWithPrec(5, 18))
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(oracletypes.AssetInfo{Decimal: 6}, true)
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(oracletypes.AssetInfo{Decimal: 18}, true)
+			},
+			&types.Pool{
+				PoolParams: types.PoolParams{UseOracle: true},
+			},
+			"tokenA",
+			"tokenB",
+			osmomath.NewBigDec(2),
+			"",
+		},
+		{
+			"oracle pricing with different decimals - tokenA has more",
+			func(oracleKeeper *mocks.OracleKeeper) {
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(osmomath.NewBigDecWithPrec(10, 18))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(osmomath.NewBigDecWithPrec(5, 6))
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenA").Return(oracletypes.AssetInfo{Decimal: 18}, true)
+				oracleKeeper.On("GetAssetInfo", mock.Anything, "tokenB").Return(oracletypes.AssetInfo{Decimal: 6}, true)
+			},
+			&types.Pool{
+				PoolParams: types.PoolParams{UseOracle: true},
+			},
+			"tokenA",
+			"tokenB",
+			osmomath.NewBigDec(2),
+			"",
+		},
 	}
 
 	for _, tc := range testCases {
