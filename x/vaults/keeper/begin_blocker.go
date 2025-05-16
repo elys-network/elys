@@ -14,7 +14,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			// TODO: Fix this, deduct fee on per year basis
 			coin.Amount = coin.Amount.ToLegacyDec().Mul(vault.ManagementFee).RoundInt()
 		}
-		// send coins
+		// send coins to protocol revenue address and manager address
 		err := k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(vault.Manager), coins)
 		if err != nil {
 			// log error

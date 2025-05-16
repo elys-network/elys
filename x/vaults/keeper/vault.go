@@ -64,3 +64,8 @@ func (k Keeper) GetNextVaultId(ctx sdk.Context) uint64 {
 	}
 	return latestVault.Id + 1
 }
+
+// BenchmarkVault, let's say benchmark is btc?usdc, at start 100$
+// after a month 125$ value btc?usdc, now if vault has tvl > 125 that means vault has performed well
+
+// Improvments v2, handle rewards for user withdrawing using commitment module, staked eden/etc
