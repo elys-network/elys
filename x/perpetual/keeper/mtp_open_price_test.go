@@ -155,7 +155,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAndSetOpenPrice() {
 				Position:         types.Position_SHORT,
 				Custody:          math.NewInt(5000_000_000), // 6000
 				Collateral:       math.NewInt(2000_000_000),
-				Liabilities:      math.LegacyMustNewDecFromStr("4000000000000000000").TruncateInt(), // 4 ETH
+				Liabilities:      math.LegacyMustNewDecFromStr("2000000000000000000").TruncateInt(), // 2 ETH
 			},
 			expectedOpenPrice: math.LegacyMustNewDecFromStr("1500"), // (custody - collateral) / liabilities
 			expectedErr:       nil,
