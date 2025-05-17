@@ -51,6 +51,9 @@ func generateUpgradeVersion() string {
 	if rcVersion != "" {
 		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
 	}
+	if parts[1] != "0" && parts[1] != "999999" {
+		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
+	}
 	return fmt.Sprintf("v%s", majorVersion)
 }
 
