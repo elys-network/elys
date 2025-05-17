@@ -12,15 +12,6 @@ import (
 func (k msgServer) UpFrontSwapExactAmountIn(goCtx context.Context, msg *types.MsgUpFrontSwapExactAmountIn) (*types.MsgUpFrontSwapExactAmountInResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Swap event is handled elsewhere
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-		),
-	})
-
 	return k.Keeper.UpFrontSwapExactAmountIn(ctx, msg)
 }
 
@@ -40,6 +31,8 @@ func (k Keeper) UpFrontSwapExactAmountIn(ctx sdk.Context, msg *types.MsgUpFrontS
 	if err != nil {
 		return nil, err
 	}
+	tokenOutCoin := sdk.Coin{Denom: msg.Routes[len(msg.Routes)-1].TokenOutDenom, Amount: tokenOutAmount}
+	types.EmitUpFrontSwapEvent(ctx, sender, msg.TokenIn, tokenOutCoin, swapFee.String())
 
 	return &types.MsgUpFrontSwapExactAmountInResponse{
 		TokenOutAmount: tokenOutAmount,

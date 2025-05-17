@@ -145,7 +145,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	// Set params
 	params = mk.GetParams(ctx)
-	params.BorrowInterestPaymentFundAddress = addr[2].String()
+	params.LegacyBorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	err = mk.SetParams(ctx, &params)
 	suite.Require().NoError(err)

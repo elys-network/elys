@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"sort"
 	"strings"
 	"testing"
@@ -27,10 +28,18 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const (
+	ATOM = "ATOM"
+	BTC  = "BTC"
+	ETH  = "ETH"
+	USDC = "USDC"
+)
+
 type assetPriceInfo struct {
 	denom   string
 	display string
 	price   osmomath.BigDec
+	decimal uint64
 }
 
 const (
@@ -45,26 +54,37 @@ var (
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
 			price:   osmomath.OneBigDec(),
+			decimal: 6,
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
 			price:   osmomath.OneBigDec(),
+			decimal: 6,
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
 			price:   osmomath.MustNewBigDecFromStr("3.0"),
+			decimal: 6,
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
 			price:   osmomath.MustNewBigDecFromStr("5.0"),
+			decimal: 6,
 		},
 		"wei": {
 			denom:   "wei",
 			display: "ETH",
 			price:   osmomath.MustNewBigDecFromStr("1500.0"),
+			decimal: 18,
+		},
+		"sat": {
+			denom:   "sat",
+			display: "BTC",
+			price:   osmomath.MustNewBigDecFromStr("100000.0"),
+			decimal: 8,
 		},
 	}
 )
@@ -125,10 +145,31 @@ func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 	provider := oracleProvider
 
 	for _, v := range priceMap {
+		suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+			BaseDenom:                v.denom,
+			Decimals:                 v.decimal,
+			Denom:                    v.denom,
+			Path:                     "",
+			IbcChannelId:             "",
+			IbcCounterpartyChannelId: "",
+			DisplayName:              v.display,
+			DisplaySymbol:            v.display,
+			Network:                  "",
+			Address:                  "",
+			ExternalSymbol:           "",
+			TransferLimit:            "",
+			Permissions:              nil,
+			UnitDenom:                "",
+			IbcCounterpartyDenom:     "",
+			IbcCounterpartyChainId:   "",
+			Authority:                "",
+			CommitEnabled:            true,
+			WithdrawEnabled:          true,
+		})
 		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
 			Denom:   v.denom,
 			Display: v.display,
-			Decimal: 6,
+			Decimal: v.decimal,
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
@@ -148,7 +189,7 @@ func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
 			Denom:   priceMap[v].denom,
 			Display: priceMap[v].display,
-			Decimal: 6,
+			Decimal: priceMap[v].decimal,
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
@@ -165,6 +206,23 @@ func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []st
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
 		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
+}
+
+func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, price math.LegacyDec) {
+	assetInfo, found := suite.app.OracleKeeper.GetAssetInfo(ctx, denom)
+	suite.Require().True(found)
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	suite.app.OracleKeeper.RemovePrice(ctx, assetInfo.Display, "elys", uint64(ctx.BlockTime().Unix()))
+	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+		Asset:     assetInfo.Display,
+		Price:     price,
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix() + 1),
+	})
+	priceUpdated, found := suite.app.OracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
+	suite.Require().True(found)
+	suite.Require().Equal(priceUpdated.Dec(), price)
 }
 
 func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() math.Int {

@@ -8,6 +8,7 @@ import (
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -68,6 +69,20 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 				BaseDenom: ptypes.BaseCurrency,
 				Denom:     ptypes.BaseCurrency,
 				Decimals:  6,
+			})
+
+			// Set up oracle asset info
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   ptypes.Elys,
+				Decimal: 6,
+			})
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   ptypes.BaseCurrency,
+				Decimal: 6,
+			})
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   "uusda",
+				Decimal: 6,
 			})
 
 			// bootstrap accounts
@@ -232,6 +247,20 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenomWithOutRoute() {
 				BaseDenom: ptypes.BaseCurrency,
 				Denom:     ptypes.BaseCurrency,
 				Decimals:  6,
+			})
+
+			// Set up oracle asset info
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   ptypes.Elys,
+				Decimal: 6,
+			})
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   ptypes.BaseCurrency,
+				Decimal: 6,
+			})
+			suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+				Denom:   "uusda",
+				Decimal: 6,
 			})
 
 			// bootstrap accounts
