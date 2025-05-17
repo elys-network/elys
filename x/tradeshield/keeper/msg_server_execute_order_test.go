@@ -262,8 +262,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 		suite.Run(tc.name, func() {
 			msg := tc.prerequisiteFunction()
 			msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
-			// allOrders := suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx)
-			// suite.Require().Equal(len(allOrders), 0)
 			_, err := msgSrvr.ExecuteOrders(suite.ctx, msg)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
