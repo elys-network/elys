@@ -25,10 +25,10 @@ func TestGenerateUpgradeVersion(t *testing.T) {
 	version.Version = "v4.0.0-rc0"
 	require.Equal(t, "v4-rc0", generateUpgradeVersion())
 
-	version.Version = "v4.0.0-rc1"
-	require.Equal(t, "v4-rc1", generateUpgradeVersion())
+	version.Version = "v4.1.0-rc1"
+	require.Equal(t, "v4.1-rc1", generateUpgradeVersion())
 
 	// devnet
-	version.Version = "2e561b347baaad345e9a73f4cbfcdcbf3c958d20"
-	require.Equal(t, "2e561b347baaad345e9a73f4cbfcdcbf3c958d20", generateUpgradeVersion())
+	version.Version = "v2e561b347baaad345e9a73f4cbfcdcbf3c958d20"
+	require.Equal(t, "v2e561b347baaad345e9a73f4cbfcdcbf3c958d20", generateUpgradeVersion())
 }
