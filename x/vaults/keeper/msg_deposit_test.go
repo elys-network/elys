@@ -14,12 +14,12 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 	// Create the vault first with the correct authority
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := types.MsgAddVault{
-		Creator:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:   "ustake",
-		MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:   []string{"ustake"},
-		AllowedActions: []uint64{},
-		RewardCoins:    []string{},
+		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		DepositDenom:  "ustake",
+		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:  []string{"ustake"},
+		BenchmarkCoin: "uatom",
+		RewardCoins:   []string{},
 	}
 	_, err := msgServer.AddVault(suite.ctx, &addVault)
 	suite.Require().NoError(err)

@@ -18,8 +18,7 @@ message Vault {
   // Coins allowed to trade in the vault
   repeated string allowed_coins = 3;
   repeated string reward_coins = 4;
-  // Actions that can be performed on the vault
-  repeated uint64 allowed_actions = 5;
+  string benchmark_coin = 5;
   string manager = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 7;
   string management_fee = 8 [

@@ -11,50 +11,50 @@ import (
 
 func (suite *KeeperTestSuite) TestMsgServerAddVault() {
 	for _, tc := range []struct {
-		desc           string
-		creator        sdk.AccAddress
-		depositDenom   string
-		maxAmountUsd   sdkmath.LegacyDec
-		allowedCoins   []string
-		rewardCoins    []string
-		allowedActions []uint64
-		Manager        sdk.AccAddress
-		setup          func()
-		expectError    bool
+		desc          string
+		creator       sdk.AccAddress
+		depositDenom  string
+		maxAmountUsd  sdkmath.LegacyDec
+		allowedCoins  []string
+		rewardCoins   []string
+		benchmarkCoin string
+		Manager       sdk.AccAddress
+		setup         func()
+		expectError   bool
 	}{
 		{
-			desc:           "successful vault creation",
-			creator:        authtypes.NewModuleAddress(govtypes.ModuleName),
-			depositDenom:   "uusdc",
-			maxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-			allowedCoins:   []string{"uusdc", "uatom"},
-			rewardCoins:    []string{"uelys"},
-			allowedActions: []uint64{1, 2, 3},
-			Manager:        sdk.AccAddress([]byte("manager")),
-			setup:          func() {},
-			expectError:    false,
+			desc:          "successful vault creation",
+			creator:       authtypes.NewModuleAddress(govtypes.ModuleName),
+			depositDenom:  "uusdc",
+			maxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+			allowedCoins:  []string{"uusdc", "uatom"},
+			rewardCoins:   []string{"uelys"},
+			benchmarkCoin: "uatom",
+			Manager:       sdk.AccAddress([]byte("manager")),
+			setup:         func() {},
+			expectError:   false,
 		},
 		{
-			desc:           "invalid authority",
-			creator:        sdk.AccAddress([]byte("invalid_creator")),
-			depositDenom:   "uusdc",
-			maxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-			allowedCoins:   []string{"uusdc"},
-			rewardCoins:    []string{"uelys"},
-			allowedActions: []uint64{1},
-			setup:          func() {},
-			expectError:    true,
+			desc:          "invalid authority",
+			creator:       sdk.AccAddress([]byte("invalid_creator")),
+			depositDenom:  "uusdc",
+			maxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+			allowedCoins:  []string{"uusdc"},
+			rewardCoins:   []string{"uelys"},
+			benchmarkCoin: "uatom",
+			setup:         func() {},
+			expectError:   true,
 		},
 		{
-			desc:           "empty deposit denom",
-			creator:        sdk.AccAddress([]byte("creator2")),
-			depositDenom:   "",
-			maxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-			allowedCoins:   []string{"uusdc"},
-			rewardCoins:    []string{"uelys"},
-			allowedActions: []uint64{1},
-			setup:          func() {},
-			expectError:    true,
+			desc:          "empty deposit denom",
+			creator:       sdk.AccAddress([]byte("creator2")),
+			depositDenom:  "",
+			maxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+			allowedCoins:  []string{"uusdc"},
+			rewardCoins:   []string{"uelys"},
+			benchmarkCoin: "uatom",
+			setup:         func() {},
+			expectError:   true,
 		},
 	} {
 		suite.Run(tc.desc, func() {
@@ -65,13 +65,13 @@ func (suite *KeeperTestSuite) TestMsgServerAddVault() {
 
 			// Prepare the message
 			msg := types.MsgAddVault{
-				Creator:        tc.creator.String(),
-				DepositDenom:   tc.depositDenom,
-				MaxAmountUsd:   tc.maxAmountUsd,
-				AllowedCoins:   tc.allowedCoins,
-				RewardCoins:    tc.rewardCoins,
-				AllowedActions: tc.allowedActions,
-				Manager:        tc.Manager.String(),
+				Creator:       tc.creator.String(),
+				DepositDenom:  tc.depositDenom,
+				MaxAmountUsd:  tc.maxAmountUsd,
+				AllowedCoins:  tc.allowedCoins,
+				RewardCoins:   tc.rewardCoins,
+				BenchmarkCoin: tc.benchmarkCoin,
+				Manager:       tc.Manager.String(),
 			}
 
 			_, err := msgServer.AddVault(suite.ctx, &msg)
@@ -88,7 +88,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddVault() {
 				suite.Require().Equal(tc.maxAmountUsd, vault.MaxAmountUsd)
 				suite.Require().Equal(tc.allowedCoins, vault.AllowedCoins)
 				suite.Require().Equal(tc.rewardCoins, vault.RewardCoins)
-				suite.Require().Equal(tc.allowedActions, vault.AllowedActions)
+				suite.Require().Equal(tc.benchmarkCoin, vault.BenchmarkCoin)
 				suite.Require().Equal(tc.Manager.String(), vault.Manager)
 
 				// Verify module account was created
@@ -107,12 +107,12 @@ func (suite *KeeperTestSuite) TestMsgServerAddVault_SequentialIds() {
 	// Create multiple vaults and verify IDs are sequential
 	for i := 1; i <= 5; i++ {
 		msg := types.MsgAddVault{
-			Creator:        suite.app.VaultsKeeper.GetAuthority(),
-			DepositDenom:   "uusdc",
-			MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-			AllowedCoins:   []string{"uusdc"},
-			RewardCoins:    []string{"uelys"},
-			AllowedActions: []uint64{1},
+			Creator:       suite.app.VaultsKeeper.GetAuthority(),
+			DepositDenom:  "uusdc",
+			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+			AllowedCoins:  []string{"uusdc"},
+			RewardCoins:   []string{"uelys"},
+			BenchmarkCoin: "uatom",
 		}
 
 		_, err := msgServer.AddVault(suite.ctx, &msg)

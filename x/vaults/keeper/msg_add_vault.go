@@ -23,11 +23,11 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 		DepositDenom:   req.DepositDenom,
 		MaxAmountUsd:   req.MaxAmountUsd,
 		AllowedCoins:   req.AllowedCoins,
-		AllowedActions: req.AllowedActions,
 		RewardCoins:    req.RewardCoins,
 		Manager:        req.Manager,
 		ManagementFee:  req.ManagementFee,
 		PerformanceFee: req.PerformanceFee,
+		BenchmarkCoin:  req.BenchmarkCoin,
 	}
 	k.SetVault(ctx, vault)
 
