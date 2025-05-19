@@ -61,6 +61,11 @@ type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator sdk.AccAddress) commitmenttypes.Commitments
 	CommitmentVestingInfo(goCtx context.Context, req *commitmenttypes.QueryCommitmentVestingInfoRequest) (*commitmenttypes.QueryCommitmentVestingInfoResponse, error)
 	GetAllCommitmentsWithPagination(ctx sdk.Context, pagination *query.PageRequest) ([]*commitmenttypes.Commitments, *query.PageResponse, error)
+	CommitClaimedRewards(ctx sdk.Context, msg *commitmenttypes.MsgCommitClaimedRewards) (*commitmenttypes.MsgCommitClaimedRewardsResponse, error)
+	UncommitTokens(ctx sdk.Context, creator sdk.AccAddress, denom string, amount sdkmath.Int, isLiquidation bool) error
+	ProcessTokenVesting(ctx sdk.Context, denom string, amount sdkmath.Int, creator sdk.AccAddress) error
+	CancelVest(ctx sdk.Context, msg *commitmenttypes.MsgCancelVest) (*commitmenttypes.MsgCancelVestResponse, error)
+	ClaimVesting(ctx sdk.Context, msg *commitmenttypes.MsgClaimVesting) (*commitmenttypes.MsgClaimVestingResponse, error)
 }
 
 type TierKeeper interface {

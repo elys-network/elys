@@ -6,6 +6,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	ptypes "github.com/elys-network/elys/x/parameter/types"
+
 	"github.com/elys-network/elys/x/vaults/types"
 )
 
@@ -39,6 +41,35 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 	case *types.MsgPerformAction_SwapByDenom:
 		// TODO: check if swap will be executed before end block otherwise we need to check what happened with the coins
 		_, err := k.amm.SwapByDenom(ctx, perform_action.SwapByDenom)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+		}
+	case *types.MsgPerformAction_CommitClaimedRewards:
+		_, err := k.commitement.CommitClaimedRewards(ctx, perform_action.CommitClaimedRewards)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+		}
+	case *types.MsgPerformAction_UncommitTokens:
+		if perform_action.UncommitTokens.Denom != ptypes.Eden && perform_action.UncommitTokens.Denom != ptypes.EdenB {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: unsupported denom")
+		}
+
+		err := k.commitement.UncommitTokens(ctx, vaultAddress, perform_action.UncommitTokens.Denom, perform_action.UncommitTokens.Amount, false)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+		}
+	case *types.MsgPerformAction_Vest:
+		err := k.commitement.ProcessTokenVesting(ctx, perform_action.Vest.Denom, perform_action.Vest.Amount, vaultAddress)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+		}
+	case *types.MsgPerformAction_CancelVest:
+		_, err := k.commitement.CancelVest(ctx, perform_action.CancelVest)
+		if err != nil {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+		}
+	case *types.MsgPerformAction_ClaimVesting:
+		_, err := k.commitement.ClaimVesting(ctx, perform_action.ClaimVesting)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
