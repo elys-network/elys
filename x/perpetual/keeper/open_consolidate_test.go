@@ -178,7 +178,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			},
 		},
 		{
-			"Sucess: add collateral for the existing position",
+			"Success: add collateral for the existing position",
 			func() *types.MsgOpen {
 				suite.ResetSuite()
 

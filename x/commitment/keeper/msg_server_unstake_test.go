@@ -63,7 +63,7 @@ func TestKeeper_UnstakeWithElys(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithElys tests the Unstake function with elys tokens and negative amount
+// TestKeeper_UnstakeWithElysNegativeAmount tests the Unstake function with elys tokens and negative amount
 func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)
@@ -112,7 +112,7 @@ func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithUncommit tests the Unstake function with uncommitting tokens and invalid validator address
+// TestKeeper_UnstakeWithUncommitInvalidValidatorAddress tests the Unstake function with uncommitting tokens and invalid validator address
 func TestKeeper_UnstakeWithUncommitInvalidValidatorAddress(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)
@@ -209,7 +209,7 @@ func TestKeeper_UnstakeWithUncommit(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithUncommit tests the Unstake function with uncommitting tokens and negative amount
+// TestKeeper_UnstakeWithUncommitNegativeAmount tests the Unstake function with uncommitting tokens and negative amount
 func TestKeeper_UnstakeWithUncommitNegativeAmount(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)
