@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/vaults/types"
 )
@@ -8,17 +9,28 @@ import (
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// Traverse all vaults and deduct management fee from all coins and send it to the vault's manager and protocol revenue address
 	vaults := k.GetAllVaults(ctx)
+	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
+	protocolAddress := k.masterchef.GetParams(ctx).ProtocolRevenueAddress
 	for _, vault := range vaults {
+		var protocolCoins sdk.Coins
 		coins := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
 		for _, coin := range coins {
-			// TODO: Fix this, deduct fee on per year basis
-			coin.Amount = coin.Amount.ToLegacyDec().Mul(vault.ManagementFee).RoundInt()
+			coin.Amount = (coin.Amount.ToLegacyDec().Mul(vault.ManagementFee).Quo(math.LegacyNewDecFromInt(math.NewInt(int64(totalBlocksPerYear))))).TruncateInt()
+
+			protocolFeeShare := coin.Amount.ToLegacyDec().Mul(vault.ProtocolFeeShare)
+			protocolCoins = protocolCoins.Add(sdk.NewCoin(coin.Denom, protocolFeeShare.TruncateInt()))
+			coin.Amount = coin.Amount.Sub(protocolFeeShare.TruncateInt())
 		}
 		// send coins to protocol revenue address and manager address
 		err := k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(vault.Manager), coins)
 		if err != nil {
 			// log error
 			k.Logger().Error("error sending coins to vault manager", "error", err)
+		}
+		err = k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(protocolAddress), protocolCoins)
+		if err != nil {
+			// log error
+			k.Logger().Error("error sending coins to protocol address", "error", err)
 		}
 	}
 }

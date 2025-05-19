@@ -117,7 +117,7 @@ func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64)
 	}
 
 	// TODO: Handle zero values for denom, we should not issue shares if price is not available
-	// TODO: Should it be based on desposit denom value ?
+	// TODO: Should it be based on deposit denom value ?
 	usdValue, err := k.VaultUsdValue(ctx, vaultId)
 	if err != nil {
 		return osmomath.ZeroBigDec()

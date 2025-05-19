@@ -26,6 +26,8 @@ type (
 		amm           types.AmmKeeper
 		commitement   types.CommitmentKeeper
 		accountKeeper types.AccountKeeper
+		pk            types.ParameterKeeper
+		masterchef    types.MasterchefKeeper
 	}
 )
 
@@ -38,6 +40,8 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	commitement types.CommitmentKeeper,
 	accountKeeper types.AccountKeeper,
+	pk types.ParameterKeeper,
+	masterchef types.MasterchefKeeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
@@ -52,6 +56,8 @@ func NewKeeper(
 		amm:           amm,
 		commitement:   commitement,
 		accountKeeper: accountKeeper,
+		pk:            pk,
+		masterchef:    masterchef,
 	}
 }
 

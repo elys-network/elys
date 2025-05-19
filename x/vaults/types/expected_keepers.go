@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -71,6 +73,17 @@ type CommitmentKeeper interface {
 type TierKeeper interface {
 	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
 	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parametertypes.Params)
+}
+
+// MasterchefKeeper defines expected interface for masterchef keeper
+type MasterchefKeeper interface {
+	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error
+	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
+	GetParams(ctx sdk.Context) (params mastercheftypes.Params)
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.

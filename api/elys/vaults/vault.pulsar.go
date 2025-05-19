@@ -107,16 +107,17 @@ func (x *_Vault_4_list) IsValid() bool {
 }
 
 var (
-	md_Vault                 protoreflect.MessageDescriptor
-	fd_Vault_deposit_denom   protoreflect.FieldDescriptor
-	fd_Vault_max_amount_usd  protoreflect.FieldDescriptor
-	fd_Vault_allowed_coins   protoreflect.FieldDescriptor
-	fd_Vault_reward_coins    protoreflect.FieldDescriptor
-	fd_Vault_benchmark_coin  protoreflect.FieldDescriptor
-	fd_Vault_manager         protoreflect.FieldDescriptor
-	fd_Vault_id              protoreflect.FieldDescriptor
-	fd_Vault_management_fee  protoreflect.FieldDescriptor
-	fd_Vault_performance_fee protoreflect.FieldDescriptor
+	md_Vault                    protoreflect.MessageDescriptor
+	fd_Vault_deposit_denom      protoreflect.FieldDescriptor
+	fd_Vault_max_amount_usd     protoreflect.FieldDescriptor
+	fd_Vault_allowed_coins      protoreflect.FieldDescriptor
+	fd_Vault_reward_coins       protoreflect.FieldDescriptor
+	fd_Vault_benchmark_coin     protoreflect.FieldDescriptor
+	fd_Vault_manager            protoreflect.FieldDescriptor
+	fd_Vault_id                 protoreflect.FieldDescriptor
+	fd_Vault_management_fee     protoreflect.FieldDescriptor
+	fd_Vault_performance_fee    protoreflect.FieldDescriptor
+	fd_Vault_protocol_fee_share protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -131,6 +132,7 @@ func init() {
 	fd_Vault_id = md_Vault.Fields().ByName("id")
 	fd_Vault_management_fee = md_Vault.Fields().ByName("management_fee")
 	fd_Vault_performance_fee = md_Vault.Fields().ByName("performance_fee")
+	fd_Vault_protocol_fee_share = md_Vault.Fields().ByName("protocol_fee_share")
 }
 
 var _ protoreflect.Message = (*fastReflection_Vault)(nil)
@@ -252,6 +254,12 @@ func (x *fastReflection_Vault) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if x.ProtocolFeeShare != "" {
+		value := protoreflect.ValueOfString(x.ProtocolFeeShare)
+		if !f(fd_Vault_protocol_fee_share, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -285,6 +293,8 @@ func (x *fastReflection_Vault) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ManagementFee != ""
 	case "elys.vaults.Vault.performance_fee":
 		return x.PerformanceFee != ""
+	case "elys.vaults.Vault.protocol_fee_share":
+		return x.ProtocolFeeShare != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -319,6 +329,8 @@ func (x *fastReflection_Vault) Clear(fd protoreflect.FieldDescriptor) {
 		x.ManagementFee = ""
 	case "elys.vaults.Vault.performance_fee":
 		x.PerformanceFee = ""
+	case "elys.vaults.Vault.protocol_fee_share":
+		x.ProtocolFeeShare = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -368,6 +380,9 @@ func (x *fastReflection_Vault) Get(descriptor protoreflect.FieldDescriptor) prot
 	case "elys.vaults.Vault.performance_fee":
 		value := x.PerformanceFee
 		return protoreflect.ValueOfString(value)
+	case "elys.vaults.Vault.protocol_fee_share":
+		value := x.ProtocolFeeShare
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -410,6 +425,8 @@ func (x *fastReflection_Vault) Set(fd protoreflect.FieldDescriptor, value protor
 		x.ManagementFee = value.Interface().(string)
 	case "elys.vaults.Vault.performance_fee":
 		x.PerformanceFee = value.Interface().(string)
+	case "elys.vaults.Vault.protocol_fee_share":
+		x.ProtocolFeeShare = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -456,6 +473,8 @@ func (x *fastReflection_Vault) Mutable(fd protoreflect.FieldDescriptor) protoref
 		panic(fmt.Errorf("field management_fee of message elys.vaults.Vault is not mutable"))
 	case "elys.vaults.Vault.performance_fee":
 		panic(fmt.Errorf("field performance_fee of message elys.vaults.Vault is not mutable"))
+	case "elys.vaults.Vault.protocol_fee_share":
+		panic(fmt.Errorf("field protocol_fee_share of message elys.vaults.Vault is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -488,6 +507,8 @@ func (x *fastReflection_Vault) NewField(fd protoreflect.FieldDescriptor) protore
 	case "elys.vaults.Vault.management_fee":
 		return protoreflect.ValueOfString("")
 	case "elys.vaults.Vault.performance_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.vaults.Vault.protocol_fee_share":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -597,6 +618,10 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.ProtocolFeeShare)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -625,6 +650,13 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ProtocolFeeShare) > 0 {
+			i -= len(x.ProtocolFeeShare)
+			copy(dAtA[i:], x.ProtocolFeeShare)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ProtocolFeeShare)))
+			i--
+			dAtA[i] = 0x52
 		}
 		if len(x.PerformanceFee) > 0 {
 			i -= len(x.PerformanceFee)
@@ -1015,6 +1047,38 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 				}
 				x.PerformanceFee = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ProtocolFeeShare", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ProtocolFeeShare = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1073,13 +1137,14 @@ type Vault struct {
 	// Max amount vault can hold in USD
 	MaxAmountUsd string `protobuf:"bytes,2,opt,name=max_amount_usd,json=maxAmountUsd,proto3" json:"max_amount_usd,omitempty"`
 	// Coins allowed to trade in the vault
-	AllowedCoins   []string `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
-	RewardCoins    []string `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
-	BenchmarkCoin  string   `protobuf:"bytes,5,opt,name=benchmark_coin,json=benchmarkCoin,proto3" json:"benchmark_coin,omitempty"`
-	Manager        string   `protobuf:"bytes,6,opt,name=manager,proto3" json:"manager,omitempty"`
-	Id             uint64   `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
-	ManagementFee  string   `protobuf:"bytes,8,opt,name=management_fee,json=managementFee,proto3" json:"management_fee,omitempty"`
-	PerformanceFee string   `protobuf:"bytes,9,opt,name=performance_fee,json=performanceFee,proto3" json:"performance_fee,omitempty"`
+	AllowedCoins     []string `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
+	RewardCoins      []string `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
+	BenchmarkCoin    string   `protobuf:"bytes,5,opt,name=benchmark_coin,json=benchmarkCoin,proto3" json:"benchmark_coin,omitempty"`
+	Manager          string   `protobuf:"bytes,6,opt,name=manager,proto3" json:"manager,omitempty"`
+	Id               uint64   `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
+	ManagementFee    string   `protobuf:"bytes,8,opt,name=management_fee,json=managementFee,proto3" json:"management_fee,omitempty"`
+	PerformanceFee   string   `protobuf:"bytes,9,opt,name=performance_fee,json=performanceFee,proto3" json:"performance_fee,omitempty"`
+	ProtocolFeeShare string   `protobuf:"bytes,10,opt,name=protocol_fee_share,json=protocolFeeShare,proto3" json:"protocol_fee_share,omitempty"`
 }
 
 func (x *Vault) Reset() {
@@ -1165,6 +1230,13 @@ func (x *Vault) GetPerformanceFee() string {
 	return ""
 }
 
+func (x *Vault) GetProtocolFeeShare() string {
+	if x != nil {
+		return x.ProtocolFeeShare
+	}
+	return ""
+}
+
 var File_elys_vaults_vault_proto protoreflect.FileDescriptor
 
 var file_elys_vaults_vault_proto_rawDesc = []byte{
@@ -1173,7 +1245,7 @@ var file_elys_vaults_vault_proto_rawDesc = []byte{
 	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67,
-	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xee, 0x03, 0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c,
+	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xcf, 0x04, 0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c,
 	0x74, 0x12, 0x23, 0x0a, 0x0d, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e,
 	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69,
 	0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x57, 0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d,
@@ -1204,17 +1276,23 @@ var file_elys_vaults_vault_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0e, 0x70, 0x65, 0x72, 0x66, 0x6f, 0x72,
-	0x6d, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x65, 0x65, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0a, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02,
-	0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75,
-	0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x65, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x63, 0x6f, 0x6c, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x18, 0x0a,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f,
+	0x6c, 0x46, 0x65, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f,
+	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0a, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa,
+	0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b,
+	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61,
+	0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
