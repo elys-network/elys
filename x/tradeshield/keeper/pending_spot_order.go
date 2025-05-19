@@ -276,6 +276,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+	if err != nil {
+		return res, err
+	}
 
 	params := k.GetParams(ctx)
 	expectedAmount := marketPrice.Mul(osmomath.BigDecFromSDKInt(order.OrderAmount.Amount))
@@ -288,9 +291,6 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 	if tolerance.GT(params.GetBigDecTolerance()) {
 		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
-	}
-	if err != nil {
-		return res, err
 	}
 
 	// Remove the order from the pending order list
@@ -334,6 +334,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+	if err != nil {
+		return res, err
+	}
 
 	params := k.GetParams(ctx)
 	expectedAmount := osmomath.BigDecFromSDKInt(order.OrderAmount.Amount).Quo(marketPrice)
@@ -346,9 +349,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 	if tolerance.GT(params.GetBigDecTolerance()) {
 		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
-	}
-	if err != nil {
-		return res, err
 	}
 
 	// Remove the order from the pending order list

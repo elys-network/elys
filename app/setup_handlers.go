@@ -42,14 +42,22 @@ func generateUpgradeVersion() string {
 		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
 	}
 	majorVersion := strings.TrimPrefix(parts[0], "v")
+	minorVersion := parts[1]
 	// required for testnet
 	patchParts := strings.Split(parts[2], "-")
 	rcVersion := ""
 	if len(patchParts) > 1 {
 		rcVersion = strings.Join(patchParts[1:], "-")
 	}
+	// testnet
 	if rcVersion != "" {
+		if minorVersion != "0" && minorVersion != "999999" {
+			return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
+		}
 		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
+	}
+	if minorVersion != "0" && minorVersion != "999999" {
+		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
 	}
 	return fmt.Sprintf("v%s", majorVersion)
 }
