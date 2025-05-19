@@ -1,16 +1,21 @@
 package keeper_test
 
 import (
+	"sort"
+	"strings"
 	"testing"
 
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
+
 	simapp "github.com/elys-network/elys/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -103,4 +108,39 @@ func (suite *KeeperTestSuite) SetupAssetProfile() {
 		CommitEnabled:            true,
 		WithdrawEnabled:          true,
 	})
+}
+
+func (suite *KeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
+		},
+		{
+			Token:                  sdk.NewCoin(asset2, assetAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
+		},
+	}
+	sort.Slice(poolAssets, func(i, j int) bool {
+		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
+	})
+	poolParams := ammtypes.PoolParams{
+		UseOracle: useOracle,
+		SwapFee:   swapFee,
+		FeeDenom:  ptypes.BaseCurrency,
+	}
+
+	createPoolMsg := &ammtypes.MsgCreatePool{
+		Sender:     creator.String(),
+		PoolParams: poolParams,
+		PoolAssets: poolAssets,
+	}
+
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, createPoolMsg)
+	suite.Require().NoError(err)
+	ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
+
+	return ammPool
 }
