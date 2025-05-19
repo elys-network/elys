@@ -31,18 +31,6 @@ func NewKeeper(
 	}
 }
 
-// GetPort returns the portID for the IBC app module. Used in ExportGenesis
-func (k Keeper) GetPort(ctx sdk.Context) string {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return string(store.Get(types.PortKey))
-}
-
-// SetPort sets the portID for the IBC app module. Used in InitGenesis
-func (k Keeper) SetPort(ctx sdk.Context, portID string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.PortKey, []byte(portID))
-}
-
 func (k Keeper) DeletePort(ctx sdk.Context) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.PortKey)
