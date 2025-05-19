@@ -2,7 +2,7 @@
 package clob
 
 import (
-	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
+	_ "cosmossdk.io/api/cosmos/base/v1beta1"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
@@ -15,124 +15,18 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_SubAccount_3_list)(nil)
-
-type _SubAccount_3_list struct {
-	list *[]*v1beta1.Coin
-}
-
-func (x *_SubAccount_3_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_SubAccount_3_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_SubAccount_3_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_SubAccount_3_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_SubAccount_3_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_SubAccount_3_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_SubAccount_3_list) NewElement() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_SubAccount_3_list) IsValid() bool {
-	return x.list != nil
-}
-
-var _ protoreflect.List = (*_SubAccount_4_list)(nil)
-
-type _SubAccount_4_list struct {
-	list *[]*v1beta1.Coin
-}
-
-func (x *_SubAccount_4_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_SubAccount_4_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_SubAccount_4_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_SubAccount_4_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_SubAccount_4_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_SubAccount_4_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_SubAccount_4_list) NewElement() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_SubAccount_4_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
-	md_SubAccount                   protoreflect.MessageDescriptor
-	fd_SubAccount_owner             protoreflect.FieldDescriptor
-	fd_SubAccount_market_id         protoreflect.FieldDescriptor
-	fd_SubAccount_available_balance protoreflect.FieldDescriptor
-	fd_SubAccount_total_balance     protoreflect.FieldDescriptor
-	fd_SubAccount_trade_nounce      protoreflect.FieldDescriptor
+	md_SubAccount              protoreflect.MessageDescriptor
+	fd_SubAccount_owner        protoreflect.FieldDescriptor
+	fd_SubAccount_id           protoreflect.FieldDescriptor
+	fd_SubAccount_trade_nounce protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_clob_subaccount_proto_init()
 	md_SubAccount = File_elys_clob_subaccount_proto.Messages().ByName("SubAccount")
 	fd_SubAccount_owner = md_SubAccount.Fields().ByName("owner")
-	fd_SubAccount_market_id = md_SubAccount.Fields().ByName("market_id")
-	fd_SubAccount_available_balance = md_SubAccount.Fields().ByName("available_balance")
-	fd_SubAccount_total_balance = md_SubAccount.Fields().ByName("total_balance")
+	fd_SubAccount_id = md_SubAccount.Fields().ByName("id")
 	fd_SubAccount_trade_nounce = md_SubAccount.Fields().ByName("trade_nounce")
 }
 
@@ -207,21 +101,9 @@ func (x *fastReflection_SubAccount) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.MarketId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.MarketId)
-		if !f(fd_SubAccount_market_id, value) {
-			return
-		}
-	}
-	if len(x.AvailableBalance) != 0 {
-		value := protoreflect.ValueOfList(&_SubAccount_3_list{list: &x.AvailableBalance})
-		if !f(fd_SubAccount_available_balance, value) {
-			return
-		}
-	}
-	if len(x.TotalBalance) != 0 {
-		value := protoreflect.ValueOfList(&_SubAccount_4_list{list: &x.TotalBalance})
-		if !f(fd_SubAccount_total_balance, value) {
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_SubAccount_id, value) {
 			return
 		}
 	}
@@ -248,12 +130,8 @@ func (x *fastReflection_SubAccount) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "elys.clob.SubAccount.owner":
 		return x.Owner != ""
-	case "elys.clob.SubAccount.market_id":
-		return x.MarketId != uint64(0)
-	case "elys.clob.SubAccount.available_balance":
-		return len(x.AvailableBalance) != 0
-	case "elys.clob.SubAccount.total_balance":
-		return len(x.TotalBalance) != 0
+	case "elys.clob.SubAccount.id":
+		return x.Id != uint64(0)
 	case "elys.clob.SubAccount.trade_nounce":
 		return x.TradeNounce != uint64(0)
 	default:
@@ -274,12 +152,8 @@ func (x *fastReflection_SubAccount) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "elys.clob.SubAccount.owner":
 		x.Owner = ""
-	case "elys.clob.SubAccount.market_id":
-		x.MarketId = uint64(0)
-	case "elys.clob.SubAccount.available_balance":
-		x.AvailableBalance = nil
-	case "elys.clob.SubAccount.total_balance":
-		x.TotalBalance = nil
+	case "elys.clob.SubAccount.id":
+		x.Id = uint64(0)
 	case "elys.clob.SubAccount.trade_nounce":
 		x.TradeNounce = uint64(0)
 	default:
@@ -301,21 +175,9 @@ func (x *fastReflection_SubAccount) Get(descriptor protoreflect.FieldDescriptor)
 	case "elys.clob.SubAccount.owner":
 		value := x.Owner
 		return protoreflect.ValueOfString(value)
-	case "elys.clob.SubAccount.market_id":
-		value := x.MarketId
+	case "elys.clob.SubAccount.id":
+		value := x.Id
 		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.SubAccount.available_balance":
-		if len(x.AvailableBalance) == 0 {
-			return protoreflect.ValueOfList(&_SubAccount_3_list{})
-		}
-		listValue := &_SubAccount_3_list{list: &x.AvailableBalance}
-		return protoreflect.ValueOfList(listValue)
-	case "elys.clob.SubAccount.total_balance":
-		if len(x.TotalBalance) == 0 {
-			return protoreflect.ValueOfList(&_SubAccount_4_list{})
-		}
-		listValue := &_SubAccount_4_list{list: &x.TotalBalance}
-		return protoreflect.ValueOfList(listValue)
 	case "elys.clob.SubAccount.trade_nounce":
 		value := x.TradeNounce
 		return protoreflect.ValueOfUint64(value)
@@ -341,16 +203,8 @@ func (x *fastReflection_SubAccount) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "elys.clob.SubAccount.owner":
 		x.Owner = value.Interface().(string)
-	case "elys.clob.SubAccount.market_id":
-		x.MarketId = value.Uint()
-	case "elys.clob.SubAccount.available_balance":
-		lv := value.List()
-		clv := lv.(*_SubAccount_3_list)
-		x.AvailableBalance = *clv.list
-	case "elys.clob.SubAccount.total_balance":
-		lv := value.List()
-		clv := lv.(*_SubAccount_4_list)
-		x.TotalBalance = *clv.list
+	case "elys.clob.SubAccount.id":
+		x.Id = value.Uint()
 	case "elys.clob.SubAccount.trade_nounce":
 		x.TradeNounce = value.Uint()
 	default:
@@ -373,22 +227,10 @@ func (x *fastReflection_SubAccount) Set(fd protoreflect.FieldDescriptor, value p
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_SubAccount) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.clob.SubAccount.available_balance":
-		if x.AvailableBalance == nil {
-			x.AvailableBalance = []*v1beta1.Coin{}
-		}
-		value := &_SubAccount_3_list{list: &x.AvailableBalance}
-		return protoreflect.ValueOfList(value)
-	case "elys.clob.SubAccount.total_balance":
-		if x.TotalBalance == nil {
-			x.TotalBalance = []*v1beta1.Coin{}
-		}
-		value := &_SubAccount_4_list{list: &x.TotalBalance}
-		return protoreflect.ValueOfList(value)
 	case "elys.clob.SubAccount.owner":
 		panic(fmt.Errorf("field owner of message elys.clob.SubAccount is not mutable"))
-	case "elys.clob.SubAccount.market_id":
-		panic(fmt.Errorf("field market_id of message elys.clob.SubAccount is not mutable"))
+	case "elys.clob.SubAccount.id":
+		panic(fmt.Errorf("field id of message elys.clob.SubAccount is not mutable"))
 	case "elys.clob.SubAccount.trade_nounce":
 		panic(fmt.Errorf("field trade_nounce of message elys.clob.SubAccount is not mutable"))
 	default:
@@ -406,14 +248,8 @@ func (x *fastReflection_SubAccount) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "elys.clob.SubAccount.owner":
 		return protoreflect.ValueOfString("")
-	case "elys.clob.SubAccount.market_id":
+	case "elys.clob.SubAccount.id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.SubAccount.available_balance":
-		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_SubAccount_3_list{list: &list})
-	case "elys.clob.SubAccount.total_balance":
-		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_SubAccount_4_list{list: &list})
 	case "elys.clob.SubAccount.trade_nounce":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
@@ -489,20 +325,8 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.MarketId != 0 {
-			n += 1 + runtime.Sov(uint64(x.MarketId))
-		}
-		if len(x.AvailableBalance) > 0 {
-			for _, e := range x.AvailableBalance {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if len(x.TotalBalance) > 0 {
-			for _, e := range x.TotalBalance {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
 		}
 		if x.TradeNounce != 0 {
 			n += 1 + runtime.Sov(uint64(x.TradeNounce))
@@ -539,42 +363,10 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 		if x.TradeNounce != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.TradeNounce))
 			i--
-			dAtA[i] = 0x28
+			dAtA[i] = 0x18
 		}
-		if len(x.TotalBalance) > 0 {
-			for iNdEx := len(x.TotalBalance) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.TotalBalance[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x22
-			}
-		}
-		if len(x.AvailableBalance) > 0 {
-			for iNdEx := len(x.AvailableBalance) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.AvailableBalance[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x1a
-			}
-		}
-		if x.MarketId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.MarketId))
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
 			i--
 			dAtA[i] = 0x10
 		}
@@ -668,9 +460,9 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MarketId", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 				}
-				x.MarketId = 0
+				x.Id = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -680,80 +472,12 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.MarketId |= uint64(b&0x7F) << shift
+					x.Id |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
 			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AvailableBalance", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.AvailableBalance = append(x.AvailableBalance, &v1beta1.Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AvailableBalance[len(x.AvailableBalance)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalBalance", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.TotalBalance = append(x.TotalBalance, &v1beta1.Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TotalBalance[len(x.TotalBalance)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 5:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradeNounce", wireType)
 				}
@@ -825,11 +549,9 @@ type SubAccount struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Owner            string          `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	MarketId         uint64          `protobuf:"varint,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	AvailableBalance []*v1beta1.Coin `protobuf:"bytes,3,rep,name=available_balance,json=availableBalance,proto3" json:"available_balance,omitempty"`
-	TotalBalance     []*v1beta1.Coin `protobuf:"bytes,4,rep,name=total_balance,json=totalBalance,proto3" json:"total_balance,omitempty"`
-	TradeNounce      uint64          `protobuf:"varint,5,opt,name=trade_nounce,json=tradeNounce,proto3" json:"trade_nounce,omitempty"`
+	Owner       string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	Id          uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	TradeNounce uint64 `protobuf:"varint,3,opt,name=trade_nounce,json=tradeNounce,proto3" json:"trade_nounce,omitempty"`
 }
 
 func (x *SubAccount) Reset() {
@@ -859,25 +581,11 @@ func (x *SubAccount) GetOwner() string {
 	return ""
 }
 
-func (x *SubAccount) GetMarketId() uint64 {
+func (x *SubAccount) GetId() uint64 {
 	if x != nil {
-		return x.MarketId
+		return x.Id
 	}
 	return 0
-}
-
-func (x *SubAccount) GetAvailableBalance() []*v1beta1.Coin {
-	if x != nil {
-		return x.AvailableBalance
-	}
-	return nil
-}
-
-func (x *SubAccount) GetTotalBalance() []*v1beta1.Coin {
-	if x != nil {
-		return x.TotalBalance
-	}
-	return nil
 }
 
 func (x *SubAccount) GetTradeNounce() uint64 {
@@ -897,39 +605,24 @@ var file_elys_clob_subaccount_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f,
-	0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xe8, 0x02, 0x0a, 0x0a, 0x53, 0x75, 0x62,
-	0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
-	0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65,
-	0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b,
-	0x65, 0x74, 0x49, 0x64, 0x12, 0x78, 0x0a, 0x11, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
-	0x65, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
-	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00,
-	0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b,
-	0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x10, 0x61, 0x76,
-	0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x70,
-	0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18,
-	0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e,
-	0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69,
-	0x6e, 0x73, 0x52, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
-	0x12, 0x21, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x74, 0x72, 0x61, 0x64, 0x65, 0x4e, 0x6f, 0x75,
-	0x6e, 0x63, 0x65, 0x42, 0x91, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0f, 0x53, 0x75, 0x62, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
-	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79,
-	0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c,
-	0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79,
-	0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x6f, 0x0a, 0x0a, 0x53, 0x75, 0x62, 0x41,
+	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
+	0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f,
+	0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x4e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x42, 0x91, 0x01, 0x0a, 0x0d, 0x63, 0x6f,
+	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0f, 0x53, 0x75, 0x62,
+	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58,
+	0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c,
+	0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -946,17 +639,14 @@ func file_elys_clob_subaccount_proto_rawDescGZIP() []byte {
 
 var file_elys_clob_subaccount_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_elys_clob_subaccount_proto_goTypes = []interface{}{
-	(*SubAccount)(nil),   // 0: elys.clob.SubAccount
-	(*v1beta1.Coin)(nil), // 1: cosmos.base.v1beta1.Coin
+	(*SubAccount)(nil), // 0: elys.clob.SubAccount
 }
 var file_elys_clob_subaccount_proto_depIdxs = []int32{
-	1, // 0: elys.clob.SubAccount.available_balance:type_name -> cosmos.base.v1beta1.Coin
-	1, // 1: elys.clob.SubAccount.total_balance:type_name -> cosmos.base.v1beta1.Coin
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_elys_clob_subaccount_proto_init() }

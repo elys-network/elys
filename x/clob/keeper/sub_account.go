@@ -1,10 +1,8 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
@@ -60,35 +58,17 @@ func (k Keeper) GetAllSubAccount(ctx sdk.Context) []types.SubAccount {
 
 func (k Keeper) SetSubAccount(ctx sdk.Context, s types.SubAccount) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetSubAccountKey(s.GetOwnerAccAddress(), s.MarketId)
+	key := types.GetSubAccountKey(s.GetOwnerAccAddress(), s.Id)
 	b := k.cdc.MustMarshal(&s)
 	store.Set(key, b)
 }
 
 func (k Keeper) SendFromSubAccount(ctx sdk.Context, subAccount types.SubAccount, to sdk.AccAddress, coins sdk.Coins) error {
-	negative := false
-	subAccount.AvailableBalance, negative = subAccount.AvailableBalance.SafeSub(coins...)
-	if negative {
-		return fmt.Errorf("insufficient funds in subaccount (%s, %d) to send from it balance: %s, amount: %s", subAccount.GetOwnerAccAddress(), subAccount.MarketId, subAccount.AvailableBalance.String(), coins.String())
-	}
 	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, subAccount.GetTradingAccountAddress(), to, coins)
 }
 
 func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount types.SubAccount, coins sdk.Coins) error {
-	subAccount.AvailableBalance = subAccount.AvailableBalance.Add(coins...)
 	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
-}
-
-func (k Keeper) GetAvailableBalanceValue(ctx sdk.Context, subAccount types.SubAccount) (totalValue math.LegacyDec, err error) {
-	for _, coin := range subAccount.AvailableBalance {
-		price, err := k.GetDenomPrice(ctx, coin.Denom)
-		if err != nil {
-			return totalValue, err
-		}
-		v := price.Mul(coin.Amount.ToLegacyDec())
-		totalValue = totalValue.Add(v)
-	}
-	return totalValue, nil
 }

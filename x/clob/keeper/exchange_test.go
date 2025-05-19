@@ -253,8 +253,8 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "Error: Market Not Found",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				_, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				buyerAcc.MarketId = 2
-				sellerAcc.MarketId = 2
+				buyerAcc.Id = 2
+				sellerAcc.Id = 2
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
 			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },

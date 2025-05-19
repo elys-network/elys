@@ -29,8 +29,8 @@ func (suite *KeeperTestSuite) TestGetLiquidationPrice() {
 		// suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{Height: suite.ctx.BlockHeight() + 1}) // Example
 
 		subAccount = types.SubAccount{
-			Owner:    "test_owner",
-			MarketId: MarketId,
+			Owner: "test_owner",
+			Id:    MarketId,
 			// Balances not directly used by GetLiquidationPrice for isolated margin
 		}
 		market = types.PerpetualMarket{

@@ -11,8 +11,11 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	if trade.Quantity.LTE(math.LegacyZeroDec()) {
 		return errors.New("trade quantity must be greater than zero")
 	}
-	if trade.SellerSubAccount.MarketId != trade.MarketId || trade.BuyerSubAccount.MarketId != trade.MarketId {
-		return errors.New("trade market id and subAccounts market id does not match")
+	if trade.SellerSubAccount.IsIsolated() && trade.SellerSubAccount.Id != trade.MarketId {
+		return errors.New("trade market id and subAccounts market id does not match for seller")
+	}
+	if trade.BuyerSubAccount.IsIsolated() && trade.BuyerSubAccount.Id != trade.MarketId {
+		return errors.New("trade market id and subAccounts market id does not match for buyer")
 	}
 
 	market, err := k.GetPerpetualMarket(ctx, trade.MarketId)

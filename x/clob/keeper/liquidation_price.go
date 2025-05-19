@@ -30,6 +30,7 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, 
 		}
 		return num.Quo(den), nil
 	} else {
+		// TODO implement this for cross margin account, need research
 		panic("implement me")
 	}
 }

@@ -82,7 +82,7 @@ func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAc
 		initialMarginValue := perpetual.MarginAmount.ToLegacyDec().Mul(price)
 		return initialMarginValue.Add(unrealizedPnLValue), nil
 	} else {
-		// TotalAccountValue
+		// TODO TotalAccountValue
 		panic("implement me")
 	}
 }
