@@ -34,27 +34,47 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		}
 	}
 
-	// TODO: Add week length in params
-	if k.GetEpochPosition(ctx, 1228800) == 0 {
+	if k.GetEpochPosition(ctx, k.GetParams(ctx).PerformanceFeeEpochLength) == 0 {
 		k.DeductPerformanceFee(ctx)
 	}
 }
 
 // get position of current block in epoch
-func (k Keeper) GetEpochPosition(ctx sdk.Context, epochLength int64) int64 {
+func (k Keeper) GetEpochPosition(ctx sdk.Context, epochLength uint64) uint64 {
 	if epochLength <= 0 {
 		epochLength = 1
 	}
-	currentHeight := ctx.BlockHeight()
+	currentHeight := uint64(ctx.BlockHeight())
 	return currentHeight % epochLength
 }
 
 func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
-	// TODO: deduct performance fee from vaults
 	vaults := k.GetAllVaults(ctx)
+	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
+	protocolAddress := k.masterchef.GetParams(ctx).ProtocolRevenueAddress
 	for _, vault := range vaults {
-		if vault.PerformanceFee > 0 {
-			// TODO: deduct performance fee from vaults
+		if vault.PerformanceFee.IsPositive() {
+			var protocolCoins sdk.Coins
+			coins := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
+			for _, coin := range coins {
+				coin.Amount = (coin.Amount.ToLegacyDec().Mul(vault.PerformanceFee).Quo(math.LegacyNewDecFromInt(math.NewInt(int64(totalBlocksPerYear))))).TruncateInt()
+
+				protocolFeeShare := coin.Amount.ToLegacyDec().Mul(vault.ProtocolFeeShare)
+				protocolCoins = protocolCoins.Add(sdk.NewCoin(coin.Denom, protocolFeeShare.TruncateInt()))
+				coin.Amount = coin.Amount.Sub(protocolFeeShare.TruncateInt())
+			}
+			// send coins to protocol revenue address and manager address
+			err := k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(vault.Manager), coins)
+			if err != nil {
+				// log error
+				k.Logger().Error("error sending performance fee to vault manager", "error", err)
+			}
+			err = k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(protocolAddress), protocolCoins)
+			if err != nil {
+				// log error
+				k.Logger().Error("error sending performance fee to protocol address", "error", err)
+			}
+
 		}
 	}
 }

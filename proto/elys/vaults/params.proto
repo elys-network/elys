@@ -10,4 +10,5 @@ option go_package = "github.com/elys-network/elys/x/vaults/types";
 message Params {
   option (amino.name) = "elys/x/vaults/Params";
   option (gogoproto.equal) = true;
+  uint64 performance_fee_epoch_length = 1; // in seconds
 }
