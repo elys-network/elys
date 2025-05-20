@@ -5,10 +5,10 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/oracle"
-	"github.com/elys-network/elys/x/oracle/types"
+	simapp "github.com/elys-network/elys/v4/app"
+	"github.com/elys-network/elys/v4/testutil/nullify"
+	"github.com/elys-network/elys/v4/x/oracle"
+	"github.com/elys-network/elys/v4/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 

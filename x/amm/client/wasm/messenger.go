@@ -2,8 +2,8 @@ package wasm
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
-	"github.com/elys-network/elys/x/amm/keeper"
+	wasmbindingstypes "github.com/elys-network/elys/v4/wasmbindings/types"
+	"github.com/elys-network/elys/v4/x/amm/keeper"
 )
 
 // Messenger handles messages for the AMM module.

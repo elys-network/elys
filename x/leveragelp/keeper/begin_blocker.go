@@ -7,8 +7,8 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

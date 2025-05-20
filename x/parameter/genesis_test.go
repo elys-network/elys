@@ -3,10 +3,10 @@ package parameter_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/parameter"
-	"github.com/elys-network/elys/x/parameter/types"
+	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
+	"github.com/elys-network/elys/v4/testutil/nullify"
+	"github.com/elys-network/elys/v4/x/parameter"
+	"github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

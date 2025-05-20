@@ -9,8 +9,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/commitment/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/commitment/types"
+	paramtypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.MsgStakeResponse, error) {

@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v4/x/estaking/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

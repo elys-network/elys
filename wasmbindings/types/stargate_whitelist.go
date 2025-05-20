@@ -16,7 +16,7 @@ import (
 
 	"github.com/cosmos/gogoproto/proto"
 
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
 )
 
 // stargateResponsePools keeps whitelist and its deterministic

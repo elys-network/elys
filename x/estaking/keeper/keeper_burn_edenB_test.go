@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	commkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	commkeeper "github.com/elys-network/elys/v4/x/commitment/keeper"
+	ctypes "github.com/elys-network/elys/v4/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromElysUnstaked() {

@@ -7,12 +7,12 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v4/app"
+	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
+	"github.com/elys-network/elys/v4/testutil/nullify"
+	"github.com/elys-network/elys/v4/x/amm/keeper"
+	"github.com/elys-network/elys/v4/x/amm/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 )

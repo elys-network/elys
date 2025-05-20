@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/sample"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v4/testutil/sample"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestClose() {

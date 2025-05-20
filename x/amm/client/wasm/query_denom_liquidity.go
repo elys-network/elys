@@ -5,7 +5,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
 )
 
 func (oq *Querier) queryDenomLiquidity(ctx sdk.Context, denomLiquidity *types.QueryGetDenomLiquidityRequest) ([]byte, error) {

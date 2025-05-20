@@ -1,7 +1,7 @@
 syntax = "proto3";
 package elys.masterchef;
 
-option go_package = "github.com/elys-network/elys/x/masterchef/types";
+option go_package = "github.com/elys-network/elys/v4/x/masterchef/types";
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";

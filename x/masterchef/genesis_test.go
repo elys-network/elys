@@ -3,11 +3,11 @@ package masterchef_test
 import (
 	"testing"
 
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v4/app"
 
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/masterchef"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v4/testutil/nullify"
+	"github.com/elys-network/elys/v4/x/masterchef"
+	"github.com/elys-network/elys/v4/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 )
 

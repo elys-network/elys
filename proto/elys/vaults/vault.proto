@@ -1,0 +1,47 @@
+syntax = "proto3";
+package elys.vaults;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "elys/vaults/tx.proto";
+
+option go_package = "github.com/elys-network/elys/v4/x/vaults/types";
+
+// Vault is a structure that defines a vault
+message Vault {
+  string deposit_denom = 1;
+  // Max amount vault can hold in USD
+  string max_amount_usd = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // Coins allowed to trade in the vault
+  repeated string allowed_coins = 3;
+  repeated string reward_coins = 4;
+  string benchmark_coin = 5;
+  string manager = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 id = 7;
+  string management_fee = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string performance_fee = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string protocol_fee_share = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Action withdraw_strategy = 11;
+  uint64 lockup_period = 12; // in seconds
+  string last_vault_usd_value = 13 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

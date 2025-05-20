@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestGetFundingPaymentRates() {

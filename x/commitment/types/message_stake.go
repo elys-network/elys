@@ -5,7 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	paramtypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 var _ sdk.Msg = &MsgStake{}

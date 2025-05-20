@@ -8,8 +8,8 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/stablestake/types"
+	commitmentkeeper "github.com/elys-network/elys/v4/x/commitment/keeper"
+	"github.com/elys-network/elys/v4/x/stablestake/types"
 )
 
 type (

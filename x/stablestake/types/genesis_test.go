@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v4/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 )
 

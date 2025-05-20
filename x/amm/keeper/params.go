@@ -4,9 +4,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"slices"
 )
 

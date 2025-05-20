@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/elys-network/elys/x/stablestake/keeper"
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v4/x/stablestake/keeper"
+	"github.com/elys-network/elys/v4/x/stablestake/types"
 )
 
 func SimulateMsgUnbond(

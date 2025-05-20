@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/spf13/cobra"
 )
 

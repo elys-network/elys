@@ -1,29 +1,30 @@
 package keeper_test
 
 import (
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"sort"
 	"strings"
 	"testing"
 	"time"
 
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v4/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v4/app"
+	oraclekeeper "github.com/elys-network/elys/v4/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )

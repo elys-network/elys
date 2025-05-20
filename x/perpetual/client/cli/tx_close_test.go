@@ -6,7 +6,7 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/x/perpetual/client/cli"
+	"github.com/elys-network/elys/v4/x/perpetual/client/cli"
 )
 
 func TestClosePosition(t *testing.T) {

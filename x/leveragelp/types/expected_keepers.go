@@ -5,10 +5,10 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v4/x/commitment/types"
+	stablestaketypes "github.com/elys-network/elys/v4/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

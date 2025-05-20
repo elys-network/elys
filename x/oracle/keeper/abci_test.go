@@ -4,7 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"time"
 
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v4/x/oracle/types"
 )
 
 // This test ensures old price data is automatically removed

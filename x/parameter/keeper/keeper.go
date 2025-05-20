@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 type (

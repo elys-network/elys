@@ -11,9 +11,9 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
+	stabletypes "github.com/elys-network/elys/v4/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

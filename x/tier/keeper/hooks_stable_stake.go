@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	stablestaketypes "github.com/elys-network/elys/v4/x/stablestake/types"
 )
 
 // Hooks wrapper struct for incentive keeper

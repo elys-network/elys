@@ -12,7 +12,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/amm/types";
+option go_package = "github.com/elys-network/elys/v4/x/amm/types";
 
 // Msg defines the Msg service.
 service Msg {

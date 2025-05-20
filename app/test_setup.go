@@ -31,11 +31,11 @@ import (
 	consumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccvprovidertypes "github.com/cosmos/interchain-security/v6/x/ccv/provider/types"
 	ccvtypes "github.com/cosmos/interchain-security/v6/x/ccv/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	atypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	"github.com/elys-network/elys/v4/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v4/x/stablestake/types"
 )
 
 // Initiate a new ElysApp object - Common function used by the following 2 functions.

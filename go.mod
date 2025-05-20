@@ -1,4 +1,4 @@
-module github.com/elys-network/elys
+module github.com/elys-network/elys/v4
 
 go 1.23.9
 

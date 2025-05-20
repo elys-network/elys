@@ -3,7 +3,7 @@ package migrations
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v4/x/commitment/types"
 )
 
 func (m Migrator) V7Migration(ctx sdk.Context) error {

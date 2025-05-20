@@ -2,8 +2,8 @@ package perpetual
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v4/x/perpetual/keeper"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

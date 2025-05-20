@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tradeshield/keeper"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v4/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v4/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerCreateSpotOrder() {

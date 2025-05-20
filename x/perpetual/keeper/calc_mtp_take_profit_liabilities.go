@@ -5,7 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp types.MTP) (math.Int, error) {

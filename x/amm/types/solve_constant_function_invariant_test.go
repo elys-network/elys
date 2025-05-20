@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

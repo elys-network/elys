@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestPool() {

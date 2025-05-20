@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/x/oracle/keeper"
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v4/x/oracle/keeper"
+	"github.com/elys-network/elys/v4/x/oracle/types"
 )
 
 func SimulateMsgFeedPrice(

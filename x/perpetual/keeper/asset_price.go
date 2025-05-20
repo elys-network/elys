@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/utils"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

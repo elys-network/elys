@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
 )
 
 func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) osmomath.BigDec {

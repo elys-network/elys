@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v4/x/perpetual/types";
 
 message PoolAsset {
   string liabilities = 1 [

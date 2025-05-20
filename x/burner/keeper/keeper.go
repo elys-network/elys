@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v4/x/burner/types"
 )
 
 type (

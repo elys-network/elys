@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestQueryGetPositions_InvalidRequest() {

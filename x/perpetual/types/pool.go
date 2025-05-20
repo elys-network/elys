@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

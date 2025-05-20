@@ -10,7 +10,7 @@ import "elys/tier/portfolio.proto";
 import "elys/tier/userdata.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/tier/types";
+option go_package = "github.com/elys-network/elys/v4/x/tier/types";
 
 // Query defines the gRPC querier service.
 service Query {

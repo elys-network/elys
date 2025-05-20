@@ -8,7 +8,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	wasmbindingstypes "github.com/elys-network/elys/v4/wasmbindings/types"
 )
 
 func (oq *Querier) queryAddresses(ctx sdk.Context, req *authtypes.QueryAccountsRequest) ([]byte, error) {

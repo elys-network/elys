@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v4/x/tokenomics/keeper"
 )
 
 type Migrator struct {

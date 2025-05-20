@@ -5,6 +5,6 @@ import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
-option go_package = "github.com/elys-network/elys/x/accountedpool/types";
+option go_package = "github.com/elys-network/elys/v4/x/accountedpool/types";
 // Msg defines the Msg service.
 service Msg { option (cosmos.msg.v1.service) = true; }

@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
 )
 
 func (k Keeper) UpdateAccountedPoolOnAmmChange(ctx sdk.Context, ammPool ammtypes.Pool) error {

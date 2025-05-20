@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

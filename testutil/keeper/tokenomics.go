@@ -15,8 +15,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v4/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v4/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
 )
 

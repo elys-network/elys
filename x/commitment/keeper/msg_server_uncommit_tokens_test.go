@@ -6,12 +6,12 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v4/app"
 
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	commitmentkeeper "github.com/elys-network/elys/v4/x/commitment/keeper"
+	"github.com/elys-network/elys/v4/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

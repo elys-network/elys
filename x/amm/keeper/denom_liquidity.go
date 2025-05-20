@@ -8,7 +8,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/types"
 )
 
 // SetDenomLiquidity sets a specific denomLiquidity in the store from its index

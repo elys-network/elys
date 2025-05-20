@@ -1,11 +1,12 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	sdkmath "cosmossdk.io/math"
+
+	"github.com/elys-network/elys/v4/testutil/sample"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

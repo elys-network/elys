@@ -6,8 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	commitmenttypes "github.com/elys-network/elys/v4/x/commitment/types"
+	"github.com/elys-network/elys/v4/x/masterchef/types"
 	"github.com/spf13/cobra"
 )
 

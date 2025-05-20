@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/tradeshield/client/cli"
-	"github.com/elys-network/elys/x/tradeshield/keeper"
-	"github.com/elys-network/elys/x/tradeshield/migrations"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v4/x/tradeshield/client/cli"
+	"github.com/elys-network/elys/v4/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v4/x/tradeshield/migrations"
+	"github.com/elys-network/elys/v4/x/tradeshield/types"
 )
 
 var (

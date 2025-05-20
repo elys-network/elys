@@ -1,14 +1,15 @@
 package types_test
 
 import (
-	"github.com/elys-network/elys/x/commitment/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/elys-network/elys/v4/x/commitment/types"
+	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v4/testutil/sample"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 func TestMsgVest_ValidateBasic(t *testing.T) {

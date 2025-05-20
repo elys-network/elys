@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

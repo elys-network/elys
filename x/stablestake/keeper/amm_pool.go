@@ -4,7 +4,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v4/x/stablestake/types"
 )
 
 func (k Keeper) GetAmmPool(ctx sdk.Context, id uint64) types.AmmPool {

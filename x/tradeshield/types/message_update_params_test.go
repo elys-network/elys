@@ -1,12 +1,13 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v4/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 

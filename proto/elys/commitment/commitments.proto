@@ -9,7 +9,7 @@ import "gogoproto/gogo.proto";
 import "elys/commitment/params.proto";
 import "amino/amino.proto";
 
-option go_package = "github.com/elys-network/elys/x/commitment/types";
+option go_package = "github.com/elys-network/elys/v4/x/commitment/types";
 
 // GenesisState defines the commitment module's genesis state.
 message Commitments {

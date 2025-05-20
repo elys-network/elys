@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

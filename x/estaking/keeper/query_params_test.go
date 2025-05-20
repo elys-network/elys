@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v4/x/estaking/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestParamsQuery() {

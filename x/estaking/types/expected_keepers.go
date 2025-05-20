@@ -7,10 +7,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
-	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v4/x/commitment/types"
+	parametertypes "github.com/elys-network/elys/v4/x/parameter/types"
+	tokenomictypes "github.com/elys-network/elys/v4/x/tokenomics/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

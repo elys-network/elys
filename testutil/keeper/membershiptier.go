@@ -14,8 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tier/keeper"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v4/x/tier/keeper"
+	"github.com/elys-network/elys/v4/x/tier/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, amount math.Int) {

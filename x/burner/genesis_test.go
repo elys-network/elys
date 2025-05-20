@@ -1,13 +1,14 @@
 package burner_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/burner"
-	"github.com/elys-network/elys/x/burner/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
+	"github.com/elys-network/elys/v4/testutil/nullify"
+	"github.com/elys-network/elys/v4/x/burner"
+	"github.com/elys-network/elys/v4/x/burner/types"
 	"github.com/stretchr/testify/require"
 )
 

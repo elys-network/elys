@@ -3,7 +3,7 @@ package elys.tokenomics;
 
 import "elys/tokenomics/inflation_entry.proto";
 
-option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+option go_package = "github.com/elys-network/elys/v4/x/tokenomics/types";
 
 message GenesisInflation {
   InflationEntry inflation = 1;

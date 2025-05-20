@@ -6,9 +6,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/app"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v4/app"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	"github.com/elys-network/elys/v4/x/commitment/types"
 	"github.com/stretchr/testify/require"
 )
 

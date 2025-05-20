@@ -5,10 +5,10 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	atypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	leveragelpmoduletypes "github.com/elys-network/elys/v4/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

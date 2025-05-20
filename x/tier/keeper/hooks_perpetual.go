@@ -2,8 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 // Hooks wrapper struct for tvl keeper

@@ -14,8 +14,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

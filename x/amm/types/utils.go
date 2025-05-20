@@ -3,9 +3,10 @@ package types
 import (
 	"errors"
 	"fmt"
-	"github.com/elys-network/elys/utils"
 	"strconv"
 	"strings"
+
+	"github.com/elys-network/elys/v4/utils"
 
 	sdkmath "cosmossdk.io/math"
 

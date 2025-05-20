@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 )
 
 // Update enabled pools through gov proposal

@@ -6,10 +6,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

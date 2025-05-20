@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v4/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {

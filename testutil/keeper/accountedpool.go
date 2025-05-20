@@ -13,8 +13,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/accountedpool/keeper"
-	"github.com/elys-network/elys/x/accountedpool/types"
+	"github.com/elys-network/elys/v4/x/accountedpool/keeper"
+	"github.com/elys-network/elys/v4/x/accountedpool/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,8 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

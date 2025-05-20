@@ -2,8 +2,8 @@ package amm
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/keeper"
+	"github.com/elys-network/elys/v4/x/amm/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

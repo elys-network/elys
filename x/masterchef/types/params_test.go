@@ -3,7 +3,7 @@ package types_test
 import (
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v4/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

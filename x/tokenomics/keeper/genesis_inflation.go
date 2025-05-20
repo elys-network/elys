@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v4/x/tokenomics/types"
 )
 
 // SetGenesisInflation set genesisInflation in the store

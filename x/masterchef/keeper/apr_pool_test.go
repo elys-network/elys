@@ -6,8 +6,8 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestCalculatePoolAprs() {

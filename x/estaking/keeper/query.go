@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v4/x/estaking/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

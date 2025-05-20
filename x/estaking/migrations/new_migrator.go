@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/x/estaking/keeper"
+	"github.com/elys-network/elys/v4/x/estaking/keeper"
 )
 
 type Migrator struct {

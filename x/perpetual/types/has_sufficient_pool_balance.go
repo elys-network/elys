@@ -2,7 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
 )
 
 // Check if amm pool has sufficcient balance

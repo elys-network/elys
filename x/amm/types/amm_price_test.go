@@ -5,13 +5,13 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/amm/types/mocks"
+	"github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v4/x/amm/types/mocks"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
 )
 
 func TestGetTokenARate(t *testing.T) {

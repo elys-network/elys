@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v4/x/tier/types"
 )
 
 var (

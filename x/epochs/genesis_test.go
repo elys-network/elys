@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/epochs"
-	"github.com/elys-network/elys/x/epochs/types"
+	"github.com/elys-network/elys/v4/app"
+	"github.com/elys-network/elys/v4/x/epochs"
+	"github.com/elys-network/elys/v4/x/epochs/types"
 )
 
 func TestEpochsExportGenesis(t *testing.T) {
