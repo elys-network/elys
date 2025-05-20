@@ -187,7 +187,10 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.GetBigDecTakeProfitBorrowFactor())
 	}
 
-	liquidationPrice := k.GetLiquidationPrice(ctx, *mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, *mtp)
+	if err != nil {
+		return nil, err
+	}
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
 	estimatedPnLAmount, err := k.GetEstimatedPnL(ctx, *mtp, baseCurrency, true)

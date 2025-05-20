@@ -7,7 +7,7 @@
 | Chain Info           | [See network details here](https://github.com/elys-network/networks)     |
 | Denomination         | uelys                                                                    |
 | Decimals             | 6 (1 elys= 1000000uelys)                                                 |
-| Version              | v3.0.0 |
+| Version              | v4.1.0                                                                   |
 | MainNet RPC Endpoint | https://rpc.elys.network:443                                             |
 | MainNet API Endpoint | https://api.elys.network:443                                             |
 | MainNet Explorer     | https://explorer.elys.network ; https://elysscan.io                      |

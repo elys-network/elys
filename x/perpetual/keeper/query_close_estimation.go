@@ -88,7 +88,10 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	mtp.Custody = mtp.GetBigDecCustody().Mul(osmomath.OneBigDec().Sub(closingRatio)).Dec().TruncateInt()
 	mtp.Collateral = mtp.GetBigDecCollateral().Mul(osmomath.OneBigDec().Sub(closingRatio)).Dec().TruncateInt()
 
-	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
+	}
 	executionPrice := osmomath.ZeroBigDec()
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {

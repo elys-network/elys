@@ -1,12 +1,11 @@
 package keeper
 
 import (
-	"errors"
-	"fmt"
-
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"errors"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -177,7 +176,10 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	if err != nil {
 		return nil, err
 	}
-	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	tradingAssetPrice, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
@@ -356,7 +358,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) osmomath.BigDec {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (osmomath.BigDec, error) {
 	liquidationPrice := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
@@ -373,7 +375,12 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) osmomath.Big
 		}
 	}
 
-	return liquidationPrice
+	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPrice, mtp.TradingAsset)
+	if err != nil {
+		return osmomath.ZeroBigDec(), err
+	}
+
+	return liquidationPrice, nil
 }
 
 func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {

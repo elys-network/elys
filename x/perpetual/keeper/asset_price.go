@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/utils"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -81,4 +80,30 @@ func (k Keeper) GetDenomDecimal(ctx sdk.Context, denom string) (uint64, error) {
 		return 0, fmt.Errorf("asset info %s not found", denom)
 	}
 	return info.Decimal, nil
+}
+
+// ConvertDenomRatioPriceToUSDPrice price -  units are uusdc per uatom, uusdc per wei, usd per sat
+// gets converted to usd per atom, usd per eth and usd per btc
+func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, price osmomath.BigDec, tradingAssetDenom string) (osmomath.BigDec, error) {
+	// units are uusdc per uatom, uusdc per wei, usd per sat
+	USDCInfo, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return osmomath.ZeroBigDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrencyDenomPrice, err := k.GetDenomPrice(ctx, USDCInfo.Denom)
+	if err != nil {
+		return osmomath.ZeroBigDec(), err
+	}
+
+	// Now the units are usd per uatom, usd per wei, usd per sat
+	price = price.Mul(baseCurrencyDenomPrice) // Now the units are usd per uatom, usd per wei, usd per sat
+
+	decimal, err := k.GetDenomDecimal(ctx, tradingAssetDenom)
+	if err != nil {
+		return osmomath.ZeroBigDec(), err
+	}
+
+	// Multiply by 10^decimal of taring asset
+	price = price.MulInt64(utils.Pow10Int64(decimal))
+	return price, nil
 }
