@@ -29,6 +29,7 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 		PerformanceFee:   req.PerformanceFee,
 		BenchmarkCoin:    req.BenchmarkCoin,
 		ProtocolFeeShare: req.ProtocolFeeShare,
+		WithdrawStrategy: req.WithdrawStrategy, // TODO: check withdraw strategy
 	}
 	k.SetVault(ctx, vault)
 

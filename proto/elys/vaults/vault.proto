@@ -3,6 +3,7 @@ package elys.vaults;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "elys/vaults/tx.proto";
 
 option go_package = "github.com/elys-network/elys/x/vaults/types";
 
@@ -36,4 +37,5 @@ message Vault {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  repeated Action withdraw_strategy = 11;
 }

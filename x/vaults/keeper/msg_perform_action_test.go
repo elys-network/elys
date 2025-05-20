@@ -49,12 +49,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         manager.String(),
-						PoolId:         1,
-						ShareAmountOut: math.NewInt(100),
-						MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         manager.String(),
+							PoolId:         1,
+							ShareAmountOut: math.NewInt(100),
+							MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+						},
 					},
 				},
 			},
@@ -97,12 +99,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 999, // Non-existent vault
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         manager.String(),
-						PoolId:         1,
-						ShareAmountOut: math.NewInt(100),
-						MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         manager.String(),
+							PoolId:         1,
+							ShareAmountOut: math.NewInt(100),
+							MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+						},
 					},
 				},
 			},
@@ -114,12 +118,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: invalidManager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         invalidManager.String(),
-						PoolId:         1,
-						ShareAmountOut: math.NewInt(100),
-						MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         invalidManager.String(),
+							PoolId:         1,
+							ShareAmountOut: math.NewInt(100),
+							MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+						},
 					},
 				},
 			},
@@ -131,8 +137,10 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: nil,
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: nil,
+					},
 				},
 			},
 			expectError: true,
@@ -143,12 +151,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         manager.String(),
-						PoolId:         0,
-						ShareAmountOut: math.NewInt(100),
-						MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         manager.String(),
+							PoolId:         0,
+							ShareAmountOut: math.NewInt(100),
+							MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+						},
 					},
 				},
 			},
@@ -160,12 +170,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         manager.String(),
-						PoolId:         1,
-						ShareAmountOut: math.NewInt(100),
-						MaxAmountsIn:   []sdk.Coin{},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         manager.String(),
+							PoolId:         1,
+							ShareAmountOut: math.NewInt(100),
+							MaxAmountsIn:   []sdk.Coin{},
+						},
 					},
 				},
 			},
@@ -177,12 +189,14 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_JoinPool{
-					JoinPool: &types.MsgJoinPool{
-						Sender:         manager.String(),
-						PoolId:         1,
-						ShareAmountOut: math.ZeroInt(),
-						MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_JoinPool{
+						JoinPool: &types.MsgJoinPool{
+							Sender:         manager.String(),
+							PoolId:         1,
+							ShareAmountOut: math.ZeroInt(),
+							MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: math.NewInt(100)}},
+						},
 					},
 				},
 			},
@@ -194,15 +208,17 @@ func (suite *KeeperTestSuite) TestMsgServerPerformAction() {
 			msg: &vaulttypes.MsgPerformAction{
 				Creator: manager.String(),
 				VaultId: 1,
-				Action: &vaulttypes.MsgPerformAction_SwapByDenom{
-					SwapByDenom: &types.MsgSwapByDenom{
-						Sender:    manager.String(),
-						Amount:    sdk.Coin{Denom: "uusdc", Amount: math.NewInt(100)},
-						MinAmount: sdk.Coin{Denom: "uelys", Amount: math.NewInt(90)},
-						MaxAmount: sdk.Coin{Denom: "uelys", Amount: math.NewInt(110)},
-						DenomIn:   "uusdc",
-						DenomOut:  "uelys",
-						Recipient: "invalid", // Should be vault address
+				Action: &vaulttypes.Action{
+					Action: &vaulttypes.Action_SwapByDenom{
+						SwapByDenom: &types.MsgSwapByDenom{
+							Sender:    manager.String(),
+							Amount:    sdk.Coin{Denom: "uusdc", Amount: math.NewInt(100)},
+							MinAmount: sdk.Coin{Denom: "uelys", Amount: math.NewInt(90)},
+							MaxAmount: sdk.Coin{Denom: "uelys", Amount: math.NewInt(110)},
+							DenomIn:   "uusdc",
+							DenomOut:  "uelys",
+							Recipient: "invalid", // Should be vault address
+						},
 					},
 				},
 			},
