@@ -33,4 +33,28 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.Logger().Error("error sending coins to protocol address", "error", err)
 		}
 	}
+
+	// TODO: Add week length in params
+	if k.GetEpochPosition(ctx, 1228800) == 0 {
+		k.DeductPerformanceFee(ctx)
+	}
+}
+
+// get position of current block in epoch
+func (k Keeper) GetEpochPosition(ctx sdk.Context, epochLength int64) int64 {
+	if epochLength <= 0 {
+		epochLength = 1
+	}
+	currentHeight := ctx.BlockHeight()
+	return currentHeight % epochLength
+}
+
+func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
+	// TODO: deduct performance fee from vaults
+	vaults := k.GetAllVaults(ctx)
+	for _, vault := range vaults {
+		if vault.PerformanceFee > 0 {
+			// TODO: deduct performance fee from vaults
+		}
+	}
 }

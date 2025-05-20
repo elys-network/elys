@@ -158,18 +158,20 @@ func (x *_Vault_11_list) IsValid() bool {
 }
 
 var (
-	md_Vault                    protoreflect.MessageDescriptor
-	fd_Vault_deposit_denom      protoreflect.FieldDescriptor
-	fd_Vault_max_amount_usd     protoreflect.FieldDescriptor
-	fd_Vault_allowed_coins      protoreflect.FieldDescriptor
-	fd_Vault_reward_coins       protoreflect.FieldDescriptor
-	fd_Vault_benchmark_coin     protoreflect.FieldDescriptor
-	fd_Vault_manager            protoreflect.FieldDescriptor
-	fd_Vault_id                 protoreflect.FieldDescriptor
-	fd_Vault_management_fee     protoreflect.FieldDescriptor
-	fd_Vault_performance_fee    protoreflect.FieldDescriptor
-	fd_Vault_protocol_fee_share protoreflect.FieldDescriptor
-	fd_Vault_withdraw_strategy  protoreflect.FieldDescriptor
+	md_Vault                      protoreflect.MessageDescriptor
+	fd_Vault_deposit_denom        protoreflect.FieldDescriptor
+	fd_Vault_max_amount_usd       protoreflect.FieldDescriptor
+	fd_Vault_allowed_coins        protoreflect.FieldDescriptor
+	fd_Vault_reward_coins         protoreflect.FieldDescriptor
+	fd_Vault_benchmark_coin       protoreflect.FieldDescriptor
+	fd_Vault_manager              protoreflect.FieldDescriptor
+	fd_Vault_id                   protoreflect.FieldDescriptor
+	fd_Vault_management_fee       protoreflect.FieldDescriptor
+	fd_Vault_performance_fee      protoreflect.FieldDescriptor
+	fd_Vault_protocol_fee_share   protoreflect.FieldDescriptor
+	fd_Vault_withdraw_strategy    protoreflect.FieldDescriptor
+	fd_Vault_lockup_period        protoreflect.FieldDescriptor
+	fd_Vault_last_vault_usd_value protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -186,6 +188,8 @@ func init() {
 	fd_Vault_performance_fee = md_Vault.Fields().ByName("performance_fee")
 	fd_Vault_protocol_fee_share = md_Vault.Fields().ByName("protocol_fee_share")
 	fd_Vault_withdraw_strategy = md_Vault.Fields().ByName("withdraw_strategy")
+	fd_Vault_lockup_period = md_Vault.Fields().ByName("lockup_period")
+	fd_Vault_last_vault_usd_value = md_Vault.Fields().ByName("last_vault_usd_value")
 }
 
 var _ protoreflect.Message = (*fastReflection_Vault)(nil)
@@ -319,6 +323,18 @@ func (x *fastReflection_Vault) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if x.LockupPeriod != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.LockupPeriod)
+		if !f(fd_Vault_lockup_period, value) {
+			return
+		}
+	}
+	if x.LastVaultUsdValue != "" {
+		value := protoreflect.ValueOfString(x.LastVaultUsdValue)
+		if !f(fd_Vault_last_vault_usd_value, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -356,6 +372,10 @@ func (x *fastReflection_Vault) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ProtocolFeeShare != ""
 	case "elys.vaults.Vault.withdraw_strategy":
 		return len(x.WithdrawStrategy) != 0
+	case "elys.vaults.Vault.lockup_period":
+		return x.LockupPeriod != uint64(0)
+	case "elys.vaults.Vault.last_vault_usd_value":
+		return x.LastVaultUsdValue != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -394,6 +414,10 @@ func (x *fastReflection_Vault) Clear(fd protoreflect.FieldDescriptor) {
 		x.ProtocolFeeShare = ""
 	case "elys.vaults.Vault.withdraw_strategy":
 		x.WithdrawStrategy = nil
+	case "elys.vaults.Vault.lockup_period":
+		x.LockupPeriod = uint64(0)
+	case "elys.vaults.Vault.last_vault_usd_value":
+		x.LastVaultUsdValue = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -452,6 +476,12 @@ func (x *fastReflection_Vault) Get(descriptor protoreflect.FieldDescriptor) prot
 		}
 		listValue := &_Vault_11_list{list: &x.WithdrawStrategy}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.Vault.lockup_period":
+		value := x.LockupPeriod
+		return protoreflect.ValueOfUint64(value)
+	case "elys.vaults.Vault.last_vault_usd_value":
+		value := x.LastVaultUsdValue
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -500,6 +530,10 @@ func (x *fastReflection_Vault) Set(fd protoreflect.FieldDescriptor, value protor
 		lv := value.List()
 		clv := lv.(*_Vault_11_list)
 		x.WithdrawStrategy = *clv.list
+	case "elys.vaults.Vault.lockup_period":
+		x.LockupPeriod = value.Uint()
+	case "elys.vaults.Vault.last_vault_usd_value":
+		x.LastVaultUsdValue = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -554,6 +588,10 @@ func (x *fastReflection_Vault) Mutable(fd protoreflect.FieldDescriptor) protoref
 		panic(fmt.Errorf("field performance_fee of message elys.vaults.Vault is not mutable"))
 	case "elys.vaults.Vault.protocol_fee_share":
 		panic(fmt.Errorf("field protocol_fee_share of message elys.vaults.Vault is not mutable"))
+	case "elys.vaults.Vault.lockup_period":
+		panic(fmt.Errorf("field lockup_period of message elys.vaults.Vault is not mutable"))
+	case "elys.vaults.Vault.last_vault_usd_value":
+		panic(fmt.Errorf("field last_vault_usd_value of message elys.vaults.Vault is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -592,6 +630,10 @@ func (x *fastReflection_Vault) NewField(fd protoreflect.FieldDescriptor) protore
 	case "elys.vaults.Vault.withdraw_strategy":
 		list := []*Action{}
 		return protoreflect.ValueOfList(&_Vault_11_list{list: &list})
+	case "elys.vaults.Vault.lockup_period":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.vaults.Vault.last_vault_usd_value":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Vault"))
@@ -710,6 +752,13 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		if x.LockupPeriod != 0 {
+			n += 1 + runtime.Sov(uint64(x.LockupPeriod))
+		}
+		l = len(x.LastVaultUsdValue)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -738,6 +787,18 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.LastVaultUsdValue) > 0 {
+			i -= len(x.LastVaultUsdValue)
+			copy(dAtA[i:], x.LastVaultUsdValue)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LastVaultUsdValue)))
+			i--
+			dAtA[i] = 0x6a
+		}
+		if x.LockupPeriod != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.LockupPeriod))
+			i--
+			dAtA[i] = 0x60
 		}
 		if len(x.WithdrawStrategy) > 0 {
 			for iNdEx := len(x.WithdrawStrategy) - 1; iNdEx >= 0; iNdEx-- {
@@ -1217,6 +1278,57 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 12:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LockupPeriod", wireType)
+				}
+				x.LockupPeriod = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.LockupPeriod |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 13:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastVaultUsdValue", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LastVaultUsdValue = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1275,15 +1387,17 @@ type Vault struct {
 	// Max amount vault can hold in USD
 	MaxAmountUsd string `protobuf:"bytes,2,opt,name=max_amount_usd,json=maxAmountUsd,proto3" json:"max_amount_usd,omitempty"`
 	// Coins allowed to trade in the vault
-	AllowedCoins     []string  `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
-	RewardCoins      []string  `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
-	BenchmarkCoin    string    `protobuf:"bytes,5,opt,name=benchmark_coin,json=benchmarkCoin,proto3" json:"benchmark_coin,omitempty"`
-	Manager          string    `protobuf:"bytes,6,opt,name=manager,proto3" json:"manager,omitempty"`
-	Id               uint64    `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
-	ManagementFee    string    `protobuf:"bytes,8,opt,name=management_fee,json=managementFee,proto3" json:"management_fee,omitempty"`
-	PerformanceFee   string    `protobuf:"bytes,9,opt,name=performance_fee,json=performanceFee,proto3" json:"performance_fee,omitempty"`
-	ProtocolFeeShare string    `protobuf:"bytes,10,opt,name=protocol_fee_share,json=protocolFeeShare,proto3" json:"protocol_fee_share,omitempty"`
-	WithdrawStrategy []*Action `protobuf:"bytes,11,rep,name=withdraw_strategy,json=withdrawStrategy,proto3" json:"withdraw_strategy,omitempty"`
+	AllowedCoins      []string  `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
+	RewardCoins       []string  `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
+	BenchmarkCoin     string    `protobuf:"bytes,5,opt,name=benchmark_coin,json=benchmarkCoin,proto3" json:"benchmark_coin,omitempty"`
+	Manager           string    `protobuf:"bytes,6,opt,name=manager,proto3" json:"manager,omitempty"`
+	Id                uint64    `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
+	ManagementFee     string    `protobuf:"bytes,8,opt,name=management_fee,json=managementFee,proto3" json:"management_fee,omitempty"`
+	PerformanceFee    string    `protobuf:"bytes,9,opt,name=performance_fee,json=performanceFee,proto3" json:"performance_fee,omitempty"`
+	ProtocolFeeShare  string    `protobuf:"bytes,10,opt,name=protocol_fee_share,json=protocolFeeShare,proto3" json:"protocol_fee_share,omitempty"`
+	WithdrawStrategy  []*Action `protobuf:"bytes,11,rep,name=withdraw_strategy,json=withdrawStrategy,proto3" json:"withdraw_strategy,omitempty"`
+	LockupPeriod      uint64    `protobuf:"varint,12,opt,name=lockup_period,json=lockupPeriod,proto3" json:"lockup_period,omitempty"` // in seconds
+	LastVaultUsdValue string    `protobuf:"bytes,13,opt,name=last_vault_usd_value,json=lastVaultUsdValue,proto3" json:"last_vault_usd_value,omitempty"`
 }
 
 func (x *Vault) Reset() {
@@ -1383,6 +1497,20 @@ func (x *Vault) GetWithdrawStrategy() []*Action {
 	return nil
 }
 
+func (x *Vault) GetLockupPeriod() uint64 {
+	if x != nil {
+		return x.LockupPeriod
+	}
+	return 0
+}
+
+func (x *Vault) GetLastVaultUsdValue() string {
+	if x != nil {
+		return x.LastVaultUsdValue
+	}
+	return ""
+}
+
 var File_elys_vaults_vault_proto protoreflect.FileDescriptor
 
 var file_elys_vaults_vault_proto_rawDesc = []byte{
@@ -1392,7 +1520,7 @@ var file_elys_vaults_vault_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67,
 	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0x2f, 0x74, 0x78, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x91, 0x05,
+	0x75, 0x6c, 0x74, 0x73, 0x2f, 0x74, 0x78, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9a, 0x06,
 	0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x23, 0x0a, 0x0d, 0x64, 0x65, 0x70, 0x6f, 0x73,
 	0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c,
 	0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x57, 0x0a, 0x0e,
@@ -1434,17 +1562,25 @@ var file_elys_vaults_vault_proto_rawDesc = []byte{
 	0x74, 0x65, 0x67, 0x79, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x65, 0x6c, 0x79,
 	0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52,
 	0x10, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
-	0x79, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74,
-	0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56,
-	0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75,
-	0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74,
-	0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c,
-	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x79, 0x12, 0x23, 0x0a, 0x0d, 0x6c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x5f, 0x70, 0x65, 0x72, 0x69,
+	0x6f, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6c, 0x6f, 0x63, 0x6b, 0x75, 0x70,
+	0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x62, 0x0a, 0x14, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x0d,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x6c, 0x61, 0x73, 0x74, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x55, 0x73, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63,
+	0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0a,
+	0x56, 0x61, 0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58,
+	0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02,
+	0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

@@ -38,4 +38,10 @@ message Vault {
     (gogoproto.nullable) = false
   ];
   repeated Action withdraw_strategy = 11;
+  uint64 lockup_period = 12; // in seconds
+  string last_vault_usd_value = 13 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

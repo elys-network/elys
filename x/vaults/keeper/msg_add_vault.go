@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/vaults/types"
@@ -19,18 +20,20 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 
 	vaultId := k.GetNextVaultId(ctx)
 	vault := types.Vault{
-		Id:               vaultId,
-		DepositDenom:     req.DepositDenom,
-		MaxAmountUsd:     req.MaxAmountUsd,
-		AllowedCoins:     req.AllowedCoins,
-		RewardCoins:      req.RewardCoins,
-		Manager:          req.Manager,
-		ManagementFee:    req.ManagementFee,
-		PerformanceFee:   req.PerformanceFee,
-		BenchmarkCoin:    req.BenchmarkCoin,
-		ProtocolFeeShare: req.ProtocolFeeShare,
-		WithdrawStrategy: req.WithdrawStrategy, // TODO: check withdraw strategy
+		Id:                vaultId,
+		DepositDenom:      req.DepositDenom,
+		MaxAmountUsd:      req.MaxAmountUsd,
+		AllowedCoins:      req.AllowedCoins,
+		RewardCoins:       req.RewardCoins,
+		Manager:           req.Manager,
+		ManagementFee:     req.ManagementFee,
+		PerformanceFee:    req.PerformanceFee,
+		BenchmarkCoin:     req.BenchmarkCoin,
+		ProtocolFeeShare:  req.ProtocolFeeShare,
+		WithdrawStrategy:  req.WithdrawStrategy, // TODO: check withdraw strategy
+		LastVaultUsdValue: math.LegacyZeroDec(),
 	}
+
 	k.SetVault(ctx, vault)
 
 	vaultAddress := types.NewVaultAddress(vault.Id)

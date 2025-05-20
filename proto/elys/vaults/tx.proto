@@ -142,6 +142,7 @@ message MsgAddVault {
     (gogoproto.nullable) = false
   ];
   repeated Action withdraw_strategy = 11;
+  uint64 lockup_period = 12; // in seconds
 }
 
 // MsgAddVaultResponse defines the response structure for adding vault
