@@ -8,7 +8,11 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
+	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/masterchef/types"
 
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -38,14 +42,22 @@ func generateUpgradeVersion() string {
 		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
 	}
 	majorVersion := strings.TrimPrefix(parts[0], "v")
+	minorVersion := parts[1]
 	// required for testnet
 	patchParts := strings.Split(parts[2], "-")
 	rcVersion := ""
 	if len(patchParts) > 1 {
 		rcVersion = strings.Join(patchParts[1:], "-")
 	}
+	// testnet
 	if rcVersion != "" {
+		if minorVersion != "0" && minorVersion != "999999" {
+			return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
+		}
 		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
+	}
+	if minorVersion != "0" && minorVersion != "999999" {
+		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
 	}
 	return fmt.Sprintf("v%s", majorVersion)
 }
@@ -71,6 +83,25 @@ func (app *ElysApp) setUpgradeHandler() {
 			//		return nil, err
 			//	}
 			//}
+
+			// 250USDC from protocol account to masterchef
+			params := app.MasterchefKeeper.GetParams(ctx)
+			protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
+			if err != nil {
+				return vm, errorsmod.Wrapf(err, "invalid protocol revenue address")
+			}
+
+			// Create 250 USDC coin
+			// get usdc denom
+			usdcDenom, _ := app.AssetprofileKeeper.GetUsdcDenom(ctx)
+			usdcAmount := sdk.NewCoin(usdcDenom, sdkmath.NewInt(250000000)) // 250 USDC with 6 decimals
+
+			// Send coins from protocol revenue address to masterchef module
+			err = app.BankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.NewCoins(usdcAmount))
+			if err != nil {
+				// log error
+				app.Logger().Error("failed to send USDC to masterchef", "error", err)
+			}
 
 			return vm, vmErr
 		},

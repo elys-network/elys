@@ -71,31 +71,6 @@ func (mtp MTP) Validate() error {
 	return nil
 }
 
-func (mtp *MTP) GetAndSetOpenPrice() {
-	openPrice := osmomath.ZeroBigDec()
-	if mtp.Position == Position_LONG {
-		if mtp.CollateralAsset == mtp.TradingAsset {
-			// open price = liabilities / (custody - collateral)
-			denominator := osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral))
-			if !denominator.IsZero() {
-				openPrice = mtp.GetBigDecLiabilities().Quo(denominator)
-			}
-		} else {
-			// open price = (collateral + liabilities) / custody
-			openPrice = osmomath.BigDecFromSDKInt(mtp.Collateral.Add(mtp.Liabilities)).Quo(mtp.GetBigDecCustody())
-		}
-	} else {
-		if mtp.Liabilities.IsZero() {
-			mtp.OpenPrice = openPrice.Dec()
-		} else {
-			// open price = (custody - collateral) / liabilities
-			openPrice = osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral)).Quo(mtp.GetBigDecLiabilities())
-		}
-	}
-	mtp.OpenPrice = openPrice.Dec()
-	return
-}
-
 func (mtp MTP) GetAccountAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(mtp.Address)
 }
@@ -195,4 +170,12 @@ func (f FundingRateBlock) GetBigDecFundingShareLong() osmomath.BigDec {
 
 func (f FundingRateBlock) GetBigDecFundingShareShort() osmomath.BigDec {
 	return osmomath.BigDecFromDec(f.FundingShareShort)
+}
+
+func (mtp MTP) IsLong() bool {
+	return mtp.Position == Position_LONG
+}
+
+func (mtp MTP) IsShort() bool {
+	return mtp.Position == Position_SHORT
 }

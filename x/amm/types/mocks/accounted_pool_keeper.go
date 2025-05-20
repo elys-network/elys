@@ -78,5 +78,7 @@ func NewAccountedPoolKeeper(t interface {
 	mock := &AccountedPoolKeeper{}
 	mock.Mock.Test(t)
 
+	t.Cleanup(func() { mock.AssertExpectations(t) })
+
 	return mock
 }
