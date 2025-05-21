@@ -59,14 +59,33 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				k.Logger().Error("error getting vault value", "error", err)
 				continue
 			}
-			diff := currentValue.Sub(vault.LastVaultUsdValue)
+			diff := currentValue.Dec().Sub(vault.LastVaultUsdValue)
+			vault.LastVaultUsdValue = currentValue.Dec()
 			if diff.IsPositive() {
-				performanceFee := diff.Mul(vault.PerformanceFee)
-				protocolCoins := performanceFee.Mul(vault.ProtocolFeeShare)
-				managerCoins := performanceFee.Sub(protocolCoins)
+				shares := diff.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
+
+				var protocolCoins sdk.Coins
+				coins := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
+				for _, coin := range coins {
+					coin.Amount = (coin.Amount.ToLegacyDec().Mul(shares).Quo(math.LegacyNewDecFromInt(math.NewInt(int64(totalBlocksPerYear))))).TruncateInt()
+
+					protocolFeeShare := coin.Amount.ToLegacyDec().Mul(vault.ProtocolFeeShare)
+					protocolCoins = protocolCoins.Add(sdk.NewCoin(coin.Denom, protocolFeeShare.TruncateInt()))
+					coin.Amount = coin.Amount.Sub(protocolFeeShare.TruncateInt())
+				}
+				// send coins to protocol revenue address and manager address
+				err := k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(vault.Manager), coins)
+				if err != nil {
+					// log error
+					k.Logger().Error("error sending performance fee to vault manager", "error", err)
+				}
+				err = k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(protocolAddress), protocolCoins)
+				if err != nil {
+					// log error
+					k.Logger().Error("error sending performance fee to protocol address", "error", err)
+				}
 
 			}
-
 		}
 	}
 }
