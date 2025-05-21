@@ -158,6 +158,11 @@ func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64)
 	if err != nil {
 		return osmomath.ZeroBigDec()
 	}
+	// TODO: Make sure performance is charged on profit only not deposits
+	// 100$ , 1 , 110$ , 210$, 50$, 160$
+	// 1 -> 1.1
+	// vaultusdValue - sum of deposits + withdraw_usd_value
+	// 160 - 200 + 50 = 10$
 
 	return usdValue.Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 }

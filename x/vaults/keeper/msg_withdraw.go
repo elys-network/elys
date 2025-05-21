@@ -10,6 +10,7 @@ import (
 	"github.com/elys-network/elys/x/vaults/types"
 )
 
+// TODO: Use this for withdraw
 // func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
 // 	ctx := sdk.UnwrapSDKContext(goCtx)
 // 	creator := sdk.MustAccAddressFromBech32(req.Withdrawer)
@@ -51,6 +52,7 @@ import (
 
 // 	return &types.MsgWithdrawResponse{}, nil
 // }
+// TODO: Add withdraw fee for amount received
 
 // Withdraw handles the withdrawal of funds from a vault
 func (k msgServer) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
