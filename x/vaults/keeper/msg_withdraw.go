@@ -135,5 +135,7 @@ func scaleActionAmounts(action *types.Action, shareRatio sdkmath.LegacyDec) *typ
 		}
 	}
 
+	// TODO: What if multiple exit from a lp shares
+
 	return &scaledAction
 }
