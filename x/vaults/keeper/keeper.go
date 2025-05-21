@@ -20,14 +20,15 @@ type (
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
-		authority     string
-		bk            types.BankKeeper
-		tierKeeper    *tierkeeper.Keeper
-		amm           types.AmmKeeper
-		commitement   types.CommitmentKeeper
-		accountKeeper types.AccountKeeper
-		pk            types.ParameterKeeper
-		masterchef    types.MasterchefKeeper
+		authority          string
+		bk                 types.BankKeeper
+		tierKeeper         *tierkeeper.Keeper
+		amm                types.AmmKeeper
+		commitement        types.CommitmentKeeper
+		accountKeeper      types.AccountKeeper
+		pk                 types.ParameterKeeper
+		masterchef         types.MasterchefKeeper
+		assetProfileKeeper types.AssetProfileKeeper
 	}
 )
 
@@ -42,22 +43,24 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	pk types.ParameterKeeper,
 	masterchef types.MasterchefKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
 	return Keeper{
-		cdc:           cdc,
-		storeService:  storeService,
-		authority:     authority,
-		bk:            bk,
-		tierKeeper:    tierKeeper,
-		amm:           amm,
-		commitement:   commitement,
-		accountKeeper: accountKeeper,
-		pk:            pk,
-		masterchef:    masterchef,
+		cdc:                cdc,
+		storeService:       storeService,
+		authority:          authority,
+		bk:                 bk,
+		tierKeeper:         tierKeeper,
+		amm:                amm,
+		commitement:        commitement,
+		accountKeeper:      accountKeeper,
+		pk:                 pk,
+		masterchef:         masterchef,
+		assetProfileKeeper: assetProfileKeeper,
 	}
 }
 

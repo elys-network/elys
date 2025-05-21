@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
@@ -85,6 +86,11 @@ type MasterchefKeeper interface {
 	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error
 	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
 	GetParams(ctx sdk.Context) (params mastercheftypes.Params)
+}
+
+type AssetProfileKeeper interface {
+	GetEntry(ctx sdk.Context, denom string) (atypes.Entry, bool)
+	SetEntry(ctx sdk.Context, entry atypes.Entry)
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.

@@ -8,6 +8,7 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	tiertypes "github.com/elys-network/elys/x/tier/types"
 
 	"github.com/elys-network/elys/x/vaults/types"
@@ -47,6 +48,34 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositer, shareCoins)
 	if err != nil {
 		return nil, err
+	}
+
+	_, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
+	if !found {
+		// Set an entity to assetprofile
+		entry := atypes.Entry{
+			Authority:                vaultAddress.String(),
+			BaseDenom:                shareDenom,
+			Decimals:                 6, // TODO: Get from assetprofile of deposit denom or keep it as 6
+			Denom:                    shareDenom,
+			Path:                     "",
+			IbcChannelId:             "",
+			IbcCounterpartyChannelId: "",
+			DisplayName:              shareDenom,
+			DisplaySymbol:            "",
+			Network:                  "",
+			Address:                  "",
+			ExternalSymbol:           "",
+			TransferLimit:            "",
+			Permissions:              make([]string, 0),
+			UnitDenom:                "",
+			IbcCounterpartyDenom:     "",
+			IbcCounterpartyChainId:   "",
+			CommitEnabled:            true,
+			WithdrawEnabled:          true,
+		}
+
+		k.assetProfileKeeper.SetEntry(ctx, entry)
 	}
 
 	// Commit LP token
