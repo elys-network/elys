@@ -2,8 +2,8 @@ package keeper_test
 
 import (
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -19,7 +19,6 @@ func (suite *PerpetualKeeperTestSuite) TestGetAssetPriceAndAssetUsdcDenomRatio()
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -47,7 +46,6 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

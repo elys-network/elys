@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"strings"
 
+	errorsmod "cosmossdk.io/errors"
+
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -76,13 +77,13 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			//oracleParams := app.OracleKeeper.GetParams(ctx)
-			//if len(oracleParams.MandatoryList) == 0 {
-			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//}
+			oracleParams := app.OracleKeeper.GetParams(ctx)
+			if len(oracleParams.MandatoryList) == 0 {
+				err := app.ojoOracleMigration(ctx, plan.Height+1)
+				if err != nil {
+					return nil, err
+				}
+			}
 
 			// 250USDC from protocol account to masterchef
 			params := app.MasterchefKeeper.GetParams(ctx)

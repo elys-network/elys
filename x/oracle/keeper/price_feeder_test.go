@@ -1,5 +1,6 @@
 package keeper_test
 
+/*
 import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"strconv"
@@ -59,3 +60,4 @@ func (suite *KeeperTestSuite) TestPriceFeederGetAll() {
 		nullify.Fill(keeper.GetAllPriceFeeder(ctx)),
 	)
 }
+*/
