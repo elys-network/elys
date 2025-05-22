@@ -19,7 +19,7 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 	}
 
 	minimumThreshold := k.GetPoolOpenThreshold(ctx)
-	if !pool.Health.IsNil() && pool.Health.LTE(minimumThreshold) {
+	if !pool.Health.IsNil() && pool.Health.GTE(minimumThreshold) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) health too low to open new positions", poolId)
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)
@@ -46,7 +46,7 @@ func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes
 			return osmomath.ZeroBigDec()
 		}
 
-		mul := balance.Quo(balance.Add(liabilities))
+		mul := liabilities.Quo(balance.Add(liabilities))
 		H = H.Mul(mul)
 	}
 	return H
