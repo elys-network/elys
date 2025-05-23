@@ -56,8 +56,6 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	ibcwasmkeeper "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/keeper"
-	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
@@ -136,7 +134,6 @@ type AppKeepers struct {
 	ICAControllerKeeper   icacontrollerkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	TransferKeeper        *ibctransferkeeper.Keeper
-	IBCWasmClientKeeper   *ibcwasmkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
@@ -405,24 +402,6 @@ func NewAppKeeper(
 		app.keys[ibchookstypes.StoreKey],
 	)
 	app.IBCHooksKeeper = &hooksKeeper
-
-	ibcWasmConfig := ibcwasmtypes.WasmConfig{
-		DataDir:               filepath.Join(homePath, "ibc_08-wasm"),
-		SupportedCapabilities: []string{"iterator", "stargate", "abort"},
-		ContractDebugMode:     false,
-	}
-
-	// We are using a separate VM here
-	ibcWasmClientKeeper := ibcwasmkeeper.NewKeeperWithConfig(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[ibcwasmtypes.StoreKey]),
-		app.IBCKeeper.ClientKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		ibcWasmConfig,
-		bApp.GRPCQueryRouter(),
-	)
-
-	app.IBCWasmClientKeeper = &ibcWasmClientKeeper
 
 	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix)
 	app.Ics20WasmHooks = &wasmHooks

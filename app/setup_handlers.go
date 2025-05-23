@@ -5,19 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
- 
+
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
-	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 const (
@@ -86,25 +82,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			//	}
 			//}
 
-			// 250USDC from protocol account to masterchef
-			params := app.MasterchefKeeper.GetParams(ctx)
-			protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-			if err != nil {
-				return vm, errorsmod.Wrapf(err, "invalid protocol revenue address")
-			}
-
-			// Create 250 USDC coin
-			// get usdc denom
-			usdcDenom, _ := app.AssetprofileKeeper.GetUsdcDenom(ctx)
-			usdcAmount := sdk.NewCoin(usdcDenom, sdkmath.NewInt(250000000)) // 250 USDC with 6 decimals
-
-			// Send coins from protocol revenue address to masterchef module
-			err = app.BankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.NewCoins(usdcAmount))
-			if err != nil {
-				// log error
-				app.Logger().Error("failed to send USDC to masterchef", "error", err)
-			}
-
 			return vm, vmErr
 		},
 	)
@@ -124,7 +101,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{ibcwasmtypes.StoreKey, ibchookstypes.StoreKey, packetforwardtypes.StoreKey},
+			Added: []string{ibchookstypes.StoreKey, packetforwardtypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
 			Deleted: []string{ibcfeetypes.StoreKey},
 		}
