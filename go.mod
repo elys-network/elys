@@ -24,7 +24,6 @@ require (
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.2.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
-	github.com/cosmos/ibc-go/modules/light-clients/08-wasm v0.4.2-0.20240730185033-ccd4dc278e72
 	github.com/cosmos/ibc-go/v8 v8.7.0
 	github.com/cosmos/interchain-security/v6 v6.3.0
 	github.com/gorilla/mux v1.8.1
@@ -54,7 +53,6 @@ require (
 	github.com/bufbuild/buf v1.31.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
-	github.com/cosmos/ibc-go/modules/apps/callbacks v0.2.1-0.20231113120333-342c00b0f8bd
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	golang.org/x/tools v0.24.0
