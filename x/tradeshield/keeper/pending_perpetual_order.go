@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
-	"github.com/elys-network/elys/v4/x/tradeshield/types"
+	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/tradeshield/types"
 )
 
 // GetPendingPerpetualOrderCount get the total number of pendingPerpetualOrder

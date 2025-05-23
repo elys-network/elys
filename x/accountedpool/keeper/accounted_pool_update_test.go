@@ -6,12 +6,12 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v4/app"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 
-	"github.com/elys-network/elys/v4/x/accountedpool/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/accountedpool/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/v4/utils"
+	"github.com/elys-network/elys/v5/utils"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"

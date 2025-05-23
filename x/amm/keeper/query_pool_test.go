@@ -8,9 +8,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/testutil/nullify"
-	"github.com/elys-network/elys/v4/x/amm/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func TestPoolQuerySingle(t *testing.T) {

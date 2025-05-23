@@ -4,10 +4,10 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/testutil/nullify"
-	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/tradeshield/types"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) createNPendingSpotOrder(n int) []types.SpotOrder {

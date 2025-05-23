@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	stablestakesimulation "github.com/elys-network/elys/v4/x/stablestake/simulation"
-	"github.com/elys-network/elys/v4/x/stablestake/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	stablestakesimulation "github.com/elys-network/elys/v5/x/stablestake/simulation"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 )
 
 // avoid unused import issue

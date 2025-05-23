@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	gomath "math"
+
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v4/x/perpetual/types"
-	gomath "math"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool {

@@ -5,12 +5,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/v4/x/commitment/keeper"
-	commitmenttypes "github.com/elys-network/elys/v4/x/commitment/types"
-	"github.com/elys-network/elys/v4/x/estaking/keeper"
-	"github.com/elys-network/elys/v4/x/estaking/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	commitmentkeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
+	commitmenttypes "github.com/elys-network/elys/v5/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/estaking/keeper"
+	"github.com/elys-network/elys/v5/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestMsgServer() {

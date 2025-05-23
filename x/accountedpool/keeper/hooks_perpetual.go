@@ -2,9 +2,9 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/accountedpool/types"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/accountedpool/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, EnableTakeProfitCustodyLiabilities bool) error {

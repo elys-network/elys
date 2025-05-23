@@ -6,9 +6,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/v4/x/amm/keeper"
-	"github.com/elys-network/elys/v4/x/amm/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/amm/keeper"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestMsgServerUpdatePoolParams() {

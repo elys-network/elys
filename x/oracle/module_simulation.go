@@ -9,9 +9,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	oraclesimulation "github.com/elys-network/elys/v4/x/oracle/simulation"
-	"github.com/elys-network/elys/v4/x/oracle/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	oraclesimulation "github.com/elys-network/elys/v5/x/oracle/simulation"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 // avoid unused import issue

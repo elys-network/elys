@@ -6,7 +6,7 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v4/x/commitment/client/cli"
+	"github.com/elys-network/elys/v5/x/commitment/client/cli"
 )
 
 func TestClaimKol(t *testing.T) {

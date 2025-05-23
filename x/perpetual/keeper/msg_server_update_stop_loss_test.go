@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/perpetual/keeper"
-	"github.com/elys-network/elys/v4/x/perpetual/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/keeper"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {

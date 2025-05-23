@@ -4,11 +4,11 @@ import (
 	"context"
 	"strings"
 
-	"github.com/elys-network/elys/v4/utils"
+	"github.com/elys-network/elys/v5/utils"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/tier/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/tier/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -5,11 +5,11 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	atypes "github.com/elys-network/elys/v4/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
-	"github.com/elys-network/elys/v4/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 // RemovePool removes a pool from the store

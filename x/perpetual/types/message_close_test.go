@@ -5,7 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v4/testutil/sample"
+	"github.com/elys-network/elys/v5/testutil/sample"
 	"github.com/stretchr/testify/assert"
 )
 

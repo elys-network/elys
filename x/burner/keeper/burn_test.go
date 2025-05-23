@@ -8,8 +8,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/x/burner/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/burner/types"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )

@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"context"
 
-	"github.com/elys-network/elys/v4/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v4/x/tradeshield/types"
+	"github.com/elys-network/elys/v5/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v5/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) setupMsgServer() (types.MsgServer, context.Context) {

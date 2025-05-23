@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/elys-network/elys/v4/x/tokenomics/types"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 type msgServer struct {

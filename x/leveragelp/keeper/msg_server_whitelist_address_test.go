@@ -4,9 +4,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/v4/app"
-	"github.com/elys-network/elys/v4/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v4/x/leveragelp/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerWhitelistAddress() {

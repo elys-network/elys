@@ -1,11 +1,12 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 	"github.com/spf13/cobra"
 )
 

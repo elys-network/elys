@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/elys-network/elys/v4/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
 )
 
 type msgServer struct {

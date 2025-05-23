@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/v4/x/commitment/keeper"
+	"github.com/elys-network/elys/v5/x/commitment/keeper"
 )
 
 type Migrator struct {

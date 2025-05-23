@@ -2,8 +2,8 @@ package membershiptier
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/tier/keeper"
-	"github.com/elys-network/elys/v4/x/tier/types"
+	"github.com/elys-network/elys/v5/x/tier/keeper"
+	"github.com/elys-network/elys/v5/x/tier/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

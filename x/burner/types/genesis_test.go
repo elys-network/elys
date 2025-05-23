@@ -1,10 +1,11 @@
 package types_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
-	"github.com/elys-network/elys/v4/x/burner/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/elys-network/elys/v5/x/burner/types"
 	"github.com/stretchr/testify/require"
 )
 

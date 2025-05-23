@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 )
 

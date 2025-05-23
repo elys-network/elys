@@ -3,10 +3,10 @@ package stablestake_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/testutil/nullify"
-	"github.com/elys-network/elys/v4/x/stablestake"
-	"github.com/elys-network/elys/v4/x/stablestake/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/stablestake"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 )
 

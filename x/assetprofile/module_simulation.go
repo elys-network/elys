@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	assetprofilesimulation "github.com/elys-network/elys/v4/x/assetprofile/simulation"
-	"github.com/elys-network/elys/v4/x/assetprofile/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	assetprofilesimulation "github.com/elys-network/elys/v5/x/assetprofile/simulation"
+	"github.com/elys-network/elys/v5/x/assetprofile/types"
 )
 
 // avoid unused import issue

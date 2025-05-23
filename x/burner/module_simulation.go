@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	burnersimulation "github.com/elys-network/elys/v4/x/burner/simulation"
-	"github.com/elys-network/elys/v4/x/burner/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	burnersimulation "github.com/elys-network/elys/v5/x/burner/simulation"
+	"github.com/elys-network/elys/v5/x/burner/types"
 )
 
 // avoid unused import issue

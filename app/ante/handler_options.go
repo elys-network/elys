@@ -9,7 +9,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibcconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
-	parameterkeeper "github.com/elys-network/elys/v4/x/parameter/keeper"
+	parameterkeeper "github.com/elys-network/elys/v5/x/parameter/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC

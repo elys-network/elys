@@ -14,16 +14,16 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
-	commitmenttypes "github.com/elys-network/elys/v4/x/commitment/types"
-	estakingtypes "github.com/elys-network/elys/v4/x/estaking/types"
-	mastercheftypes "github.com/elys-network/elys/v4/x/masterchef/types"
-	perpetualtypes "github.com/elys-network/elys/v4/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/v4/x/stablestake/types"
-	tradeshieldtypes "github.com/elys-network/elys/v4/x/tradeshield/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/v5/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/v5/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/v5/x/masterchef/types"
+	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/v5/x/tradeshield/types"
 
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/tier/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/tier/types"
 )
 
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {

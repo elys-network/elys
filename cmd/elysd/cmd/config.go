@@ -3,7 +3,7 @@ package cmd
 import (
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/app"
+	"github.com/elys-network/elys/v5/app"
 )
 
 func InitSDKConfig() {

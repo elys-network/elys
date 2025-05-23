@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/v4/x/oracle/types"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

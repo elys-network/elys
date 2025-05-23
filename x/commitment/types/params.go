@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // DefaultParams returns a default set of parameters

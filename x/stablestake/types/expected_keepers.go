@@ -6,9 +6,9 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v4/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 type AmmKeeper interface {

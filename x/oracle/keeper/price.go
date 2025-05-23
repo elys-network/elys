@@ -5,8 +5,8 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/utils"
-	"github.com/elys-network/elys/v4/x/oracle/types"
+	"github.com/elys-network/elys/v5/utils"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

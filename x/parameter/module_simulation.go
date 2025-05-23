@@ -5,9 +5,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v4/testutil/sample"
-	parametersimulation "github.com/elys-network/elys/v4/x/parameter/simulation"
-	"github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	parametersimulation "github.com/elys-network/elys/v5/x/parameter/simulation"
+	"github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // avoid unused import issue

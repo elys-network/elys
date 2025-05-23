@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
-	leveragelptypes "github.com/elys-network/elys/v4/x/leveragelp/types"
-	"github.com/elys-network/elys/v4/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	leveragelptypes "github.com/elys-network/elys/v5/x/leveragelp/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) OnLeverageLpEnablePool(ctx sdk.Context, ammPool ammtypes.Pool) error {

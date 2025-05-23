@@ -3,9 +3,9 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/utils"
-	"github.com/elys-network/elys/v4/x/amm/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v5/utils"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

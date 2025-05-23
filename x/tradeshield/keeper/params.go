@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/tradeshield/types"
+	"github.com/elys-network/elys/v5/x/tradeshield/types"
 )
 
 // SetParams set the params

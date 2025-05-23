@@ -1,14 +1,15 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) UpdateFundingFee(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (bool, math.Int, math.Int, error) {

@@ -4,12 +4,12 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/elys-network/elys/v4/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 
 	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v4/testutil/sample"
+	"github.com/elys-network/elys/v5/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 

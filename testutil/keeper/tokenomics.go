@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -15,8 +16,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v4/x/tokenomics/keeper"
-	"github.com/elys-network/elys/v4/x/tokenomics/types"
+	"github.com/elys-network/elys/v5/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
 )
 

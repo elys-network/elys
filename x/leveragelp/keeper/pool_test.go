@@ -6,10 +6,10 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/testutil/nullify"
-	"github.com/elys-network/elys/v4/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v4/x/leveragelp/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

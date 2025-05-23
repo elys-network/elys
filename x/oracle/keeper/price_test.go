@@ -6,9 +6,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/testutil/nullify"
-	"github.com/elys-network/elys/v4/x/oracle/keeper"
-	"github.com/elys-network/elys/v4/x/oracle/types"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/oracle/keeper"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {

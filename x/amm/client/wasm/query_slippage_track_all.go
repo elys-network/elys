@@ -5,7 +5,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func (oq *Querier) querySlippageTrackAll(ctx sdk.Context, slippageTrackAll *types.QuerySlippageTrackAllRequest) ([]byte, error) {

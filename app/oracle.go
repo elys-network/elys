@@ -4,8 +4,8 @@ package app
 //	"cosmossdk.io/math"
 //	sdk "github.com/cosmos/cosmos-sdk/types"
 //	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-//	leagacyOracletypes "github.com/elys-network/elys/v4/x/oracle/types"
-//	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
+//	leagacyOracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+//	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 //)
 //
 //var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{

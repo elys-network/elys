@@ -3,7 +3,7 @@ package keeper_test
 import (
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfo() {

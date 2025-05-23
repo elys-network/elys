@@ -6,13 +6,13 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/stablestake/keeper"
-	"github.com/elys-network/elys/v4/x/stablestake/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/stablestake/keeper"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 )
 
 func CreateNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.InterestBlock, int64) {

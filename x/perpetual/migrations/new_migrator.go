@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/v4/x/perpetual/keeper"
+	"github.com/elys-network/elys/v5/x/perpetual/keeper"
 )
 
 type Migrator struct {

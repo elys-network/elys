@@ -3,7 +3,7 @@ package elys.oracle;
 
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v4/x/oracle/types";
+option go_package = "github.com/elys-network/elys/v5/x/oracle/types";
 
 message PriceFeeder {
   string feeder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];

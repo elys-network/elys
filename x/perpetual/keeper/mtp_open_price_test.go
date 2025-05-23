@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"errors"
-	ptypes "github.com/elys-network/elys/v4/x/parameter/types"
-	"github.com/elys-network/elys/v4/x/perpetual/types"
+
+	"cosmossdk.io/math"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestGetAndSetOpenPrice() {

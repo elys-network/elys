@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	assetprofilemoduletypes "github.com/elys-network/elys/v4/x/assetprofile/types"
+	assetprofilemoduletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
 
 	"cosmossdk.io/log"
 	pruningtypes "cosmossdk.io/store/pruning/types"
@@ -21,7 +21,7 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v4/app"
+	"github.com/elys-network/elys/v5/app"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )

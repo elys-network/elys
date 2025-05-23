@@ -2,7 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v4/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 )
 
 type LeverageLpHooks interface {

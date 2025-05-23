@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 func (k msgServer) TogglePoolEdenRewards(goCtx context.Context, msg *types.MsgTogglePoolEdenRewards) (*types.MsgTogglePoolEdenRewardsResponse, error) {

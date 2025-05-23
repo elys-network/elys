@@ -16,8 +16,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v4/x/commitment/keeper"
-	"github.com/elys-network/elys/v4/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/commitment/keeper"
+	"github.com/elys-network/elys/v5/x/commitment/types"
 	"github.com/stretchr/testify/require"
 )
 

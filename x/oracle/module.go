@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/v4/x/oracle/client/cli"
-	"github.com/elys-network/elys/v4/x/oracle/keeper"
-	"github.com/elys-network/elys/v4/x/oracle/migrations"
-	"github.com/elys-network/elys/v4/x/oracle/types"
+	"github.com/elys-network/elys/v5/x/oracle/client/cli"
+	"github.com/elys-network/elys/v5/x/oracle/keeper"
+	"github.com/elys-network/elys/v5/x/oracle/migrations"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 var (

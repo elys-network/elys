@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/x/parameter/keeper"
-	"github.com/elys-network/elys/v4/x/parameter/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/parameter/keeper"
+	"github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

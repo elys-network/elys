@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/v4/api/elys/stablestake"
+	"github.com/elys-network/elys/v5/api/elys/stablestake"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/elys-network/elys/v4/utils"
+	"github.com/elys-network/elys/v5/utils"
 
 	sdkmath "cosmossdk.io/math"
 

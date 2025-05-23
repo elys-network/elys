@@ -3,7 +3,7 @@ package types_test
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func (suite *TestSuite) TestPoolAssetValidate() {

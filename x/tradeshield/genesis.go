@@ -2,8 +2,8 @@ package tradeshield
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v4/x/tradeshield/types"
+	"github.com/elys-network/elys/v5/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v5/x/tradeshield/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

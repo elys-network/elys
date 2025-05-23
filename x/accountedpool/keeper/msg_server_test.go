@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/x/accountedpool/keeper"
-	"github.com/elys-network/elys/v4/x/accountedpool/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/accountedpool/keeper"
+	"github.com/elys-network/elys/v5/x/accountedpool/types"
 	"github.com/stretchr/testify/require"
 )
 

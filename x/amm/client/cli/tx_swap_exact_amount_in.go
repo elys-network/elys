@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )

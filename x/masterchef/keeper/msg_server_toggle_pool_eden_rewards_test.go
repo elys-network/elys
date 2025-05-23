@@ -1,13 +1,14 @@
 package keeper_test
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"errors"
+
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v4/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestTogglePoolEdenRewards() {

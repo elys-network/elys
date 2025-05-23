@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "elys/assetprofile/params.proto";
 import "elys/assetprofile/entry.proto";
 
-option go_package = "github.com/elys-network/elys/v4/x/assetprofile/types";
+option go_package = "github.com/elys-network/elys/v5/x/assetprofile/types";
 
 // GenesisState defines the assetprofile module's genesis state.
 message GenesisState {

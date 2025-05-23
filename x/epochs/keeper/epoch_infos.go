@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v4/x/epochs/types"
+	"github.com/elys-network/elys/v5/x/epochs/types"
 )
 
 // GetEpochInfo returns epoch info by identifier

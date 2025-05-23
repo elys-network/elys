@@ -8,7 +8,7 @@ import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/elys-network/elys/v4/x/oracle/types";
+option go_package = "github.com/elys-network/elys/v5/x/oracle/types";
 
 // GenesisState defines the oracle module's genesis state.
 message GenesisState {

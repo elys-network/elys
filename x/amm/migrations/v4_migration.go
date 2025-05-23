@@ -2,7 +2,7 @@ package migrations
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func (m Migrator) V4Migration(ctx sdk.Context) error {

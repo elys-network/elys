@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v4/x/stablestake/types"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 )
 
 var numBlocks = 15768000 // Number of blocks in 2 year assuming block time 4 seconds

@@ -4,7 +4,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v4/x/estaking/types";
+option go_package = "github.com/elys-network/elys/v5/x/estaking/types";
 
 message IncentiveInfo {
   // reward amount in eden for 1 year

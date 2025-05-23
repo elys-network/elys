@@ -6,8 +6,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v4/x/stablestake/keeper"
-	"github.com/elys-network/elys/v4/x/stablestake/types"
+	"github.com/elys-network/elys/v5/x/stablestake/keeper"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 )
 

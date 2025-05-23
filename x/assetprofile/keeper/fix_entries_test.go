@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v4/testutil/keeper"
-	"github.com/elys-network/elys/v4/x/assetprofile/keeper"
-	"github.com/elys-network/elys/v4/x/assetprofile/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v5/x/assetprofile/types"
 )
 
 func createEntries(keeper *keeper.Keeper, ctx sdk.Context, entries []string) {
