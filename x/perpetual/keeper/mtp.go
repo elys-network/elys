@@ -384,7 +384,7 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (osmomath.Bi
 }
 
 func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
-	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
 		return math.ZeroInt(), nil
 	}
 	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.GetBigDecTakeProfitPrice())

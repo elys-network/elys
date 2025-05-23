@@ -1,12 +1,11 @@
 package types_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestCheckForStopLoss(t *testing.T) {
