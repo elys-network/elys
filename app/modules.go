@@ -42,12 +42,16 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	ibcwasm "github.com/cosmos/ibc-go/modules/light-clients/08-wasm"
+	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
 	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v8/modules/core"
@@ -96,12 +100,12 @@ var maccPerms = map[string][]string{
 	authtypes.FeeCollectorName:                    nil,
 	distrtypes.ModuleName:                         nil,
 	icatypes.ModuleName:                           nil,
+	ibchookstypes.ModuleName:                      nil,
 	stakingtypes.BondedPoolName:                   {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName:                {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:                           {authtypes.Burner},
 	oracletypes.ModuleName:                        {authtypes.Minter},
 	ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
-	ibcfeetypes.ModuleName:                        nil,
 	ccvconsumertypes.ConsumerRedistributeName:     {authtypes.Burner},
 	ccvconsumertypes.ConsumerToSendToProviderName: nil,
 
@@ -149,11 +153,13 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		ibctm.NewAppModule(),
+		ibcwasm.NewAppModule(*app.IBCWasmClientKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		transfer.NewAppModule(*app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		app.ConsumerModule, // Not defining it here directly because ConsumerModule needed for IBC router
+		ibchooks.NewAppModule(app.AccountKeeper),
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmTypes.ModuleName)),
 		epochsmodule.NewAppModule(appCodec, *app.EpochsKeeper),
 		assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper),
@@ -210,9 +216,10 @@ func simulationModules(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		ibc.NewAppModule(app.IBCKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		transfer.NewAppModule(*app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		app.ConsumerModule, // Not defining it here directly because ConsumerModule needed for IBC router
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		epochsmodule.NewAppModule(appCodec, *app.EpochsKeeper),
 		assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper),
 		oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper),
@@ -261,7 +268,6 @@ func orderBeginBlockers() []string {
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -284,6 +290,9 @@ func orderBeginBlockers() []string {
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
+		ibcwasmtypes.ModuleName,
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 	}
 }
 
@@ -306,7 +315,6 @@ func orderEndBlockers() []string {
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		capabilitytypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -335,10 +343,13 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		wasmTypes.ModuleName,
+		ibcwasmtypes.ModuleName,
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 
 		// Must be called after estaking and masterchef
 		ccvconsumertypes.ModuleName,
-		wasmTypes.ModuleName,
 	}
 }
 
@@ -364,10 +375,9 @@ func orderInitBlockers() []string {
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
-		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -389,9 +399,14 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		// wasm after ibc transfer
+		wasmTypes.ModuleName,
+		ibcwasmtypes.ModuleName,
+		// ibc_hooks after auth keeper
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		// crisis needs to be last so that the genesis state is consistent
 		// when it checks invariants
 		crisistypes.ModuleName,
-		wasmTypes.ModuleName,
 	}
 }
