@@ -195,7 +195,12 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// convert the fees into USD
 	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
-	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+	slippageAmountInUSD := osmomath.ZeroBigDec()
+	if givenOut {
+		slippageAmountInUSD = k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+	} else {
+		slippageAmountInUSD = k.CalculateUSDValue(ctx, tokenOut.Denom, slippageAmount.Dec().TruncateInt())
+	}
 	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount)
 	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount)
 	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
