@@ -48,8 +48,6 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	ibcwasm "github.com/cosmos/ibc-go/modules/light-clients/08-wasm"
-	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
 	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
@@ -153,7 +151,6 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		ibctm.NewAppModule(),
-		ibcwasm.NewAppModule(*app.IBCWasmClientKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transfer.NewAppModule(*app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
@@ -290,7 +287,6 @@ func orderBeginBlockers() []string {
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
-		ibcwasmtypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
 	}
@@ -344,7 +340,6 @@ func orderEndBlockers() []string {
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
-		ibcwasmtypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
 
@@ -401,7 +396,6 @@ func orderInitBlockers() []string {
 		tradeshieldmoduletypes.ModuleName,
 		// wasm after ibc transfer
 		wasmTypes.ModuleName,
-		ibcwasmtypes.ModuleName,
 		// ibc_hooks after auth keeper
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
