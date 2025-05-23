@@ -14,7 +14,8 @@ import (
 func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
 	p := Pool{
 		AmmPoolId:                            ammPool.PoolId,
-		Health:                               math.LegacyOneDec(),
+		BaseAssetLiabilitiesRatio:            math.LegacyZeroDec(),
+		QuoteAssetLiabilitiesRatio:           math.LegacyZeroDec(),
 		BorrowInterestRate:                   math.LegacyZeroDec(),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},

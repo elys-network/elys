@@ -98,7 +98,7 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			poolOpenThreshold, err := cmd.Flags().GetString(FlagPoolOpenThreshold)
+			poolMaxLiabilitiesThreshold, err := cmd.Flags().GetString(FlagPoolOpenThreshold)
 			if err != nil {
 				return err
 			}
@@ -136,7 +136,7 @@ func CmdUpdateParams() *cobra.Command {
 				BorrowInterestRateDecrease:             sdkmath.LegacyMustNewDecFromStr(borrowInterestRateDecrease),
 				HealthGainFactor:                       sdkmath.LegacyMustNewDecFromStr(healthGainFactor),
 				MaxOpenPositions:                       maxOpenPositions,
-				PoolOpenThreshold:                      sdkmath.LegacyMustNewDecFromStr(poolOpenThreshold),
+				PoolMaxLiabilitiesThreshold:            sdkmath.LegacyMustNewDecFromStr(poolMaxLiabilitiesThreshold),
 				BorrowInterestPaymentFundPercentage:    sdkmath.LegacyMustNewDecFromStr(borrowInterestPaymentFundPercentage),
 				LegacyBorrowInterestPaymentFundAddress: legacyBorrowInterestPaymentFundAddress,
 				SafetyFactor:                           sdkmath.LegacyMustNewDecFromStr(safetyFactor),

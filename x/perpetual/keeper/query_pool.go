@@ -45,7 +45,8 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			longRate, shortRate := k.GetFundingPaymentRates(ctx, pool)
 			pools = append(pools, types.PoolResponse{
 				AmmPoolId:                            pool.AmmPoolId,
-				Health:                               pool.Health,
+				BaseAssetLiabilitiesRatio:            pool.BaseAssetLiabilitiesRatio,
+				QuoteAssetLiabilitiesRatio:           pool.QuoteAssetLiabilitiesRatio,
 				BorrowInterestRate:                   pool.BorrowInterestRate,
 				PoolAssetsLong:                       pool.PoolAssetsLong,
 				PoolAssetsShort:                      pool.PoolAssetsShort,
@@ -93,7 +94,8 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 
 	pool := types.PoolResponse{
 		AmmPoolId:                            val.AmmPoolId,
-		Health:                               val.Health,
+		BaseAssetLiabilitiesRatio:            val.BaseAssetLiabilitiesRatio,
+		QuoteAssetLiabilitiesRatio:           val.QuoteAssetLiabilitiesRatio,
 		BorrowInterestRate:                   val.BorrowInterestRate,
 		PoolAssetsLong:                       val.PoolAssetsLong,
 		PoolAssetsShort:                      val.PoolAssetsShort,
