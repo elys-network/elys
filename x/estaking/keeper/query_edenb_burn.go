@@ -41,9 +41,13 @@ func (k Keeper) EdenBBurnAmount(goCtx context.Context, req *types.QueryEdenBBurn
 	edenBToBurn := osmomath.ZeroBigDec()
 
 	if req.TokenType == types.TokenType_TOKEN_TYPE_ELYS {
+		if req.Amount.GT(prevElysStaked.Amount) {
+			return nil, status.Error(codes.InvalidArgument, "amount is greater than staked Elys")
+		}
 		// Unstaked
 		unstakedElysDec := osmomath.BigDecFromSDKInt(req.Amount)
 		edenCommittedAndElysStakedDec := osmomath.BigDecFromSDKInt(edenCommitted.Add(prevElysStaked.Amount))
+
 		if edenCommittedAndElysStakedDec.GT(osmomath.ZeroBigDec()) {
 			edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(osmomath.BigDecFromSDKInt(totalEdenB))
 		}
@@ -51,6 +55,10 @@ func (k Keeper) EdenBBurnAmount(goCtx context.Context, req *types.QueryEdenBBurn
 			edenBToBurn = osmomath.BigDecFromSDKInt(totalEdenB)
 		}
 	} else if req.TokenType == types.TokenType_TOKEN_TYPE_EDEN {
+		if req.Amount.GT(edenCommitted) {
+			return nil, status.Error(codes.InvalidArgument, "amount is greater than eden committed")
+		}
+
 		unclaimedAmtDec := osmomath.BigDecFromSDKInt(req.Amount)
 		// This formula should be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
 		// So add uncommitted amount to committed eden bucket in calculation.
