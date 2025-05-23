@@ -29,6 +29,16 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "invariant",
 					Short:     "Query invariant values",
 				},
+				{
+					RpcMethod: "EdenBBurnAmount",
+					Use:       "edenb-burn-amount [address] [token_type] [amount]",
+					Short:     "Query the amount of EdenB that will be burned when unstaking",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{ProtoField: "address"},
+						{ProtoField: "token_type"},
+						{ProtoField: "amount"},
+					},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

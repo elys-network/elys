@@ -30,8 +30,7 @@ service Query {
   rpc EdenBBurnAmount(QueryEdenBBurnAmountRequest)
       returns (QueryEdenBBurnAmountResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/estaking/edenb-burn-amount/{address}/{token_type}/"
-        "{amount}";
+        "/elys-network/elys/estaking/edenb-burn-amount";
   }
 }
 
