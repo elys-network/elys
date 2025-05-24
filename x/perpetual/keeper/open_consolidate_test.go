@@ -165,7 +165,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				suite.Require().NoError(err)
 
 				openPositionMsg.Leverage = math.LegacyNewDec(3)
-				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("0.5")
+				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("1.5")
 
 				return openPositionMsg
 			},
@@ -174,7 +174,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				Collateral:      math.NewInt(800),
 				Liabilities:     math.NewInt(653),
 				Custody:         math.NewInt(4000),
-				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.692857142857142857"),
+				TakeProfitPrice: math.LegacyMustNewDecFromStr("1.5"),
 			},
 		},
 		{
