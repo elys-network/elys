@@ -36,7 +36,7 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 
 func (k Keeper) CalculateLiabilitiesRatioByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) math.LegacyDec {
 	poolAssets := pool.GetPoolAssets(position)
-	H := math.LegacyOneDec()
+	H := math.LegacyZeroDec()
 	for _, asset := range *poolAssets {
 
 		if asset.Liabilities.IsZero() {
@@ -54,9 +54,7 @@ func (k Keeper) CalculateLiabilitiesRatioByPosition(pool *types.Pool, ammPool am
 		if balance.Add(liabilities).IsZero() {
 			return math.LegacyZeroDec()
 		}
-
-		mul := liabilities.Quo(balance.Add(liabilities))
-		H = H.Mul(mul)
+		H = liabilities.Quo(balance.Add(liabilities))
 	}
 	return H
 }
