@@ -80,7 +80,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
-				suite.Require().Equal(tc.result, effectiveLeverage.Dec())
+				suite.Require().Equal(tc.result, effectiveLeverage)
 				suite.Require().NoError(err)
 			}
 		})

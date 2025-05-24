@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -100,7 +101,10 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmom
 	// If consolidating or adding collateral, this needs to be calculated again
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice = k.GetLiquidationPrice(ctx, *mtp).Dec()
+		stopLossPrice, err = k.GetLiquidationPrice(ctx, *mtp)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
+		}
 	}
 	mtp.StopLossPrice = stopLossPrice
 

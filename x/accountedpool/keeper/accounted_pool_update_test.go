@@ -55,9 +55,10 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	apk.SetAccountedPool(ctx, accountedPool)
 
 	perpetualPool := perpetualtypes.Pool{
-		AmmPoolId:          0,
-		Health:             sdkmath.LegacyNewDec(1),
-		BorrowInterestRate: sdkmath.LegacyNewDec(1),
+		AmmPoolId:                  0,
+		BaseAssetLiabilitiesRatio:  sdkmath.LegacyZeroDec(),
+		QuoteAssetLiabilitiesRatio: sdkmath.LegacyZeroDec(),
+		BorrowInterestRate:         sdkmath.LegacyNewDec(1),
 		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{
 				Liabilities:           sdkmath.NewInt(400),

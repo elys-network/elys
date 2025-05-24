@@ -34,7 +34,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(8),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(8),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 	testCases := []struct {
@@ -295,7 +295,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
-				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.GetBigDecMinimumLongTakeProfitPriceRatio()).QuoInt64(2).Dec()
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MinimumLongTakeProfitPriceRatio).QuoInt64(2)
 			},
 			func(mtp *types.MTP) {
 			},
@@ -304,7 +304,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			"take profit price above maximum ratio",
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
 			func() {
-				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.GetBigDecMaximumLongTakeProfitPriceRatio()).MulInt64(2).Dec()
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MaximumLongTakeProfitPriceRatio).MulInt64(2)
 			},
 			func(mtp *types.MTP) {
 			},

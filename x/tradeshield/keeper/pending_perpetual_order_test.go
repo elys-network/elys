@@ -142,7 +142,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 
 	err = suite.app.TradeshieldKeeper.ExecuteLimitCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
-	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000000000000000000000)")
+	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000)")
 
 	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
 	suite.Require().True(found)
@@ -208,7 +208,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 
 	err = suite.app.TradeshieldKeeper.ExecuteMarketCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
-	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000000000000000000000)")
+	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000)")
 
 	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
 	suite.Require().True(found)
