@@ -10,7 +10,7 @@ import (
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	types1 "github.com/elys-network/elys/x/amm/types"
+	types1 "github.com/elys-network/elys/v5/x/amm/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/x/oracle/keeper"
+	"github.com/elys-network/elys/v5/x/oracle/keeper"
 )
 
 type Migrator struct {

@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v5/app"
 
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // TestKeeper_CommitmentVestingInfo tests the CommitmentVestingInfo method

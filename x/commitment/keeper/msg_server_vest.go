@@ -7,8 +7,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket

@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/elys-network/elys/x/oracle/keeper"
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v5/x/oracle/keeper"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {

@@ -6,7 +6,7 @@ import "elys/estaking/incentive.proto";
 import "elys/estaking/dex_rewards_tracker.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/estaking/types";
+option go_package = "github.com/elys-network/elys/v5/x/estaking/types";
 
 message LegacyParams {
   IncentiveInfo stake_incentives = 1;

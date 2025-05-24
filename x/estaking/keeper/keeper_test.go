@@ -8,11 +8,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	simapp "github.com/elys-network/elys/app"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
-	ckeeper "github.com/elys-network/elys/x/commitment/keeper"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	aptypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ckeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
+	ctypes "github.com/elys-network/elys/v5/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/stretchr/testify/suite"
 )
 

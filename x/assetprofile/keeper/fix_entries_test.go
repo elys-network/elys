@@ -1,14 +1,15 @@
 package keeper_test
 
 import (
-	"github.com/stretchr/testify/require"
 	"slices"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/assetprofile/keeper"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v5/x/assetprofile/types"
 )
 
 func createEntries(keeper *keeper.Keeper, ctx sdk.Context, entries []string) {

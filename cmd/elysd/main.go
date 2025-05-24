@@ -5,8 +5,8 @@ import (
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	"github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/cmd/elysd/cmd"
+	"github.com/elys-network/elys/v5/app"
+	"github.com/elys-network/elys/v5/cmd/elysd/cmd"
 )
 
 func main() {

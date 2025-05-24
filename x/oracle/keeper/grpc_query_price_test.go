@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryPrice() {

@@ -10,10 +10,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/x/amm/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
-	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	commitmentkeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
+	pkeeper "github.com/elys-network/elys/v5/x/parameter/keeper"
+	tierkeeper "github.com/elys-network/elys/v5/x/tier/keeper"
 )
 
 type (
