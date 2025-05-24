@@ -208,10 +208,10 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
-		TradingAssetPrice: tradingAssetPrice.Dec(),
+		TradingAssetPrice: tradingAssetPrice,
 		Pnl:               sdk.Coin{baseCurrency, pnl},
-		LiquidationPrice:  liquidationPrice.Dec(),
-		EffectiveLeverage: effectiveLeverage.Dec(),
+		LiquidationPrice:  liquidationPrice,
+		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
 			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
 			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
@@ -302,10 +302,11 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	var tradingAssetPrice, tradingAssetPriceDenomRatio osmomath.BigDec
+	var tradingAssetPrice math.LegacyDec
+	var tradingAssetPriceDenomRatio osmomath.BigDec
 	var err error
 	if useTakeProfitPrice {
-		tradingAssetPrice = mtp.GetBigDecTakeProfitPrice()
+		tradingAssetPrice = mtp.TakeProfitPrice
 		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
 		if err != nil {
 			return math.Int{}, err
@@ -358,7 +359,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (osmomath.BigDec, error) {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
 	liquidationPrice := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
@@ -377,17 +378,17 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (osmomath.Bi
 
 	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPrice, mtp.TradingAsset)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 
-	return liquidationPrice, nil
+	return liquidationPrice.Dec(), nil
 }
 
 func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
 	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
 		return math.ZeroInt(), nil
 	}
-	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.GetBigDecTakeProfitPrice())
+	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
 	}

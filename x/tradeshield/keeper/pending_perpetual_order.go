@@ -204,12 +204,12 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.GT(order.GetBigDecTriggerPrice()) {
+		if marketPrice.GT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.LT(order.GetBigDecTriggerPrice()) {
+		if marketPrice.LT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
@@ -253,12 +253,12 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.LT(order.GetBigDecTriggerPrice()) {
+		if marketPrice.LT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.GT(order.GetBigDecTriggerPrice()) {
+		if marketPrice.GT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}

@@ -74,17 +74,17 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 	var limitPriceDenomRatio osmomath.BigDec
 	if useLimitPrice {
-		assetPriceAtOpen = osmomath.BigDecFromDec(req.LimitPrice)
+		assetPriceAtOpen = req.LimitPrice
 		limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, req.TradingAsset, assetPriceAtOpen)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	if req.Position == types.Position_LONG && osmomath.BigDecFromDec(req.TakeProfitPrice).LTE(assetPriceAtOpen) {
+	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
 	}
-	if req.Position == types.Position_SHORT && osmomath.BigDecFromDec(req.TakeProfitPrice).GTE(assetPriceAtOpen) {
+	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
 	}
 
@@ -106,14 +106,14 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if req.Position == types.Position_SHORT {
 		proxyLeverage = req.Leverage.Add(math.LegacyOneDec())
 	}
-	leveragedAmount := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(proxyLeverage).Dec().TruncateInt()
+	leveragedAmount := proxyLeverage.MulInt(req.Collateral.Amount).TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
 	slippage := osmomath.ZeroBigDec()
 	mtp.Collateral = req.Collateral.Amount
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
-	liabilities := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
+	liabilities := eta.MulInt(req.Collateral.Amount).TruncateInt()
 	weightBreakingFee := osmomath.ZeroBigDec()
 	if req.Position == types.Position_LONG {
 		//getting custody
@@ -131,7 +131,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
-			amountIn := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
+			amountIn := eta.MulInt(req.Collateral.Amount).TruncateInt()
 			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
@@ -146,7 +146,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	//getting Liabilities
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		amountOut := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
+		amountOut := eta.MulInt(req.Collateral.Amount).TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
 		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
 		if err != nil {
@@ -173,18 +173,18 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if err != nil {
 		return nil, err
 	}
-	executionPrice := mtp.GetBigDecOpenPrice()
+	executionPrice := mtp.OpenPrice
 
 	err = mtp.UpdateMTPTakeProfitBorrowFactor()
 	if err != nil {
 		return nil, err
 	}
-	hourlyInterestRate := osmomath.ZeroBigDec()
-	blocksPerYear := osmomath.NewBigDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
-	blocksPerSecond := blocksPerYear.QuoInt64(86400 * 365)                                       // in seconds
-	startBlock := ctx.BlockHeight() - osmomath.NewBigDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
+	hourlyInterestRate := math.LegacyZeroDec()
+	blocksPerYear := math.LegacyNewDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
+	blocksPerSecond := blocksPerYear.QuoInt64(86400 * 365)                                      // in seconds
+	startBlock := ctx.BlockHeight() - math.LegacyNewDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
 	if startBlock > 0 {
-		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.GetBigDecTakeProfitBorrowFactor())
+		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.TakeProfitBorrowFactor)
 	}
 
 	liquidationPrice, err := k.GetLiquidationPrice(ctx, *mtp)
@@ -198,7 +198,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, req.PoolId, mtp.GetBigDecTakeProfitBorrowFactor())
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, req.PoolId, mtp.TakeProfitBorrowFactor)
 
 	longRate, shortRate := k.GetFundingRate(ctx, uint64(ctx.BlockHeight()), uint64(ctx.BlockTime().Unix()), req.PoolId)
 	fundingRate := longRate
@@ -220,20 +220,20 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
-		EffectiveLeverage:  effectiveLeverage.Dec(),
+		EffectiveLeverage:  effectiveLeverage,
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
-		HourlyInterestRate: hourlyInterestRate.Dec(),
+		HourlyInterestRate: hourlyInterestRate,
 		PositionSize:       sdk.NewCoin(positionAsset, positionSize),
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
-		LiquidationPrice:   liquidationPrice.Dec(),
+		LiquidationPrice:   liquidationPrice,
 		EstimatedPnl:       sdk.Coin{Denom: baseCurrency, Amount: estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage.Dec(),
-		PriceImpact:        priceImpact.Dec(),
-		BorrowInterestRate: borrowInterestRate.Dec(),
-		FundingRate:        fundingRate.Dec(),
+		PriceImpact:        priceImpact,
+		BorrowInterestRate: borrowInterestRate,
+		FundingRate:        fundingRate,
 		Custody:            sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		LimitPrice:         req.LimitPrice,

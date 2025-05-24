@@ -32,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 

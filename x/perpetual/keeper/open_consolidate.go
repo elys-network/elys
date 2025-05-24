@@ -75,7 +75,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
 		}
-		stopLossPrice = liquidationPrice.Dec()
+		stopLossPrice = liquidationPrice
 	}
 	existingMtp.StopLossPrice = stopLossPrice
 

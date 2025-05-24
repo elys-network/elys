@@ -1,14 +1,13 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
-
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -124,7 +123,7 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uint64, poolId uint64, takeProfitBorrowFactor osmomath.BigDec) osmomath.BigDec {
+func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uint64, poolId uint64, takeProfitBorrowFactor math.LegacyDec) math.LegacyDec {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestRatePrefix)
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetInterestRateKey(startBlock, poolId)
@@ -141,7 +140,7 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-		totalInterestRate := endInterestBlock.GetBigDecInterestRate().Sub(startInterestBlock.GetBigDecInterestRate())
+		totalInterestRate := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
 		finalInterestRate := totalInterestRate.
@@ -149,9 +148,9 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 			QuoInt64(numberOfBlocks).
 			QuoInt64(blocksPerYear)
 
-		return osmomath.MaxBigDec(
+		return math.LegacyMaxDec(
 			finalInterestRate.Mul(takeProfitBorrowFactor),
-			k.GetParams(ctx).GetBigDecBorrowInterestRateMin().MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
+			k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
 		)
 	}
 
@@ -172,24 +171,24 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 
-			totalInterestRate := endInterestBlock.GetBigDecInterestRate()
+			totalInterestRate := endInterestBlock.InterestRate
 			finalInterestRate := totalInterestRate.
 				MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 				QuoInt64(numberOfBlocks).
 				QuoInt64(blocksPerYear)
 
-			return osmomath.MaxBigDec(
+			return math.LegacyMaxDec(
 				finalInterestRate.Mul(takeProfitBorrowFactor),
-				k.GetParams(ctx).GetBigDecBorrowInterestRateMin().MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
+				k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
 			)
 		}
 	}
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		// this is handling case of future block
-		return osmomath.ZeroBigDec()
+		return math.LegacyZeroDec()
 	}
-	newInterest := pool.GetBigDecBorrowInterestRate().MulInt64(ctx.BlockTime().Unix() - int64(startTime)).QuoInt64(blocksPerYear)
+	newInterest := pool.BorrowInterestRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).QuoInt64(blocksPerYear)
 	return newInterest
 }
 
@@ -242,7 +241,7 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRateBlock {
 	return fundings
 }
 
-func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uint64, poolId uint64) (long osmomath.BigDec, short osmomath.BigDec) {
+func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uint64, poolId uint64) (long math.LegacyDec, short math.LegacyDec) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.FundingRatePrefix)
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetFundingRateKey(startBlock, poolId)
@@ -261,11 +260,11 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
-		totalFundingLong := endFundingBlock.GetBigDecFundingRateLong().Sub(startFundingBlock.GetBigDecFundingRateLong()).
+		totalFundingLong := endFundingBlock.FundingRateLong.Sub(startFundingBlock.FundingRateLong).
 			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(numberOfBlocks).
 			QuoInt64(blocksPerYear)
-		totalFundingShort := endFundingBlock.GetBigDecFundingRateShort().Sub(startFundingBlock.GetBigDecFundingRateShort()).
+		totalFundingShort := endFundingBlock.FundingRateShort.Sub(startFundingBlock.FundingRateShort).
 			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(numberOfBlocks).
 			QuoInt64(blocksPerYear)
@@ -288,10 +287,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			return endFundingBlock.GetBigDecFundingRateLong().MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+			return endFundingBlock.FundingRateLong.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 					QuoInt64(numberOfBlocks).
 					QuoInt64(blocksPerYear),
-				endFundingBlock.GetBigDecFundingRateShort().MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+				endFundingBlock.FundingRateShort.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 					QuoInt64(numberOfBlocks).
 					QuoInt64(blocksPerYear)
 		}
@@ -302,10 +301,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 	}
 
 	if pool.BorrowInterestRate.IsPositive() {
-		return pool.GetBigDecFundingRate().MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
-			QuoInt64(blocksPerYear), osmomath.ZeroBigDec()
+		return pool.FundingRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+			QuoInt64(blocksPerYear), math.LegacyZeroDec()
 	} else {
-		return osmomath.ZeroBigDec(), pool.GetBigDecFundingRate().MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+		return math.LegacyZeroDec(), pool.FundingRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(blocksPerYear)
 	}
 }
@@ -321,7 +320,7 @@ func (k Keeper) DeleteAllFundingRate(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, pool uint64) (long osmomath.BigDec, short osmomath.BigDec) {
+func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, pool uint64) (long math.LegacyDec, short math.LegacyDec) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.FundingRatePrefix)
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetFundingRateKey(startBlock, pool)
@@ -336,8 +335,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 		endFundingBlock := types.FundingRateBlock{}
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-		totalCustodyLong := endFundingBlock.GetBigDecFundingShareLong().Sub(startFundingBlock.GetBigDecFundingShareLong())
-		totalCustodyShort := endFundingBlock.GetBigDecFundingShareShort().Sub(startFundingBlock.GetBigDecFundingShareShort())
+		totalCustodyLong := endFundingBlock.FundingShareLong.Sub(startFundingBlock.FundingShareLong)
+		totalCustodyShort := endFundingBlock.FundingShareShort.Sub(startFundingBlock.FundingShareShort)
 
 		return totalCustodyLong, totalCustodyShort
 	}
@@ -357,22 +356,11 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 			endFundingBlock := types.FundingRateBlock{}
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			totalCustodyLong := endFundingBlock.GetBigDecFundingShareLong()
-			totalCustodyShort := endFundingBlock.GetBigDecFundingShareShort()
+			totalCustodyLong := endFundingBlock.FundingShareLong
+			totalCustodyShort := endFundingBlock.FundingShareShort
 			return totalCustodyLong, totalCustodyShort
 		}
 	}
 
-	return osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
-}
-
-// Deletes all pool blocks at delBlock
-func (k Keeper) DeleteAllInterestRate(ctx sdk.Context) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestRatePrefix)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
+	return math.LegacyZeroDec(), math.LegacyZeroDec()
 }

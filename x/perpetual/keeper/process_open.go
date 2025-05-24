@@ -101,11 +101,10 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmom
 	// If consolidating or adding collateral, this needs to be calculated again
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		liquidationPrice, err := k.GetLiquidationPrice(ctx, *mtp)
+		stopLossPrice, err = k.GetLiquidationPrice(ctx, *mtp)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
 		}
-		stopLossPrice = liquidationPrice.Dec()
 	}
 	mtp.StopLossPrice = stopLossPrice
 
