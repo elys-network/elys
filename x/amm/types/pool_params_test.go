@@ -2,7 +2,7 @@ package types_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func (suite *TestSuite) TestPoolParamsValidate() {

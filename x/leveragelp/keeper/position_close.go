@@ -5,8 +5,8 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

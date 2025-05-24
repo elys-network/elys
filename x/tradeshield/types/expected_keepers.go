@@ -6,8 +6,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

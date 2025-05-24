@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 // CanCreateModuleAccountAtAddr tells us if we can safely make a module account at

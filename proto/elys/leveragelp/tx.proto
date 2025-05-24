@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.leveragelp;
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v5/x/leveragelp/types";
 
 import "gogoproto/gogo.proto";
 import "elys/leveragelp/params.proto";

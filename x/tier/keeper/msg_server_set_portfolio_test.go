@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/tier/keeper"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	"github.com/elys-network/elys/v5/x/tier/keeper"
+	"github.com/elys-network/elys/v5/x/tier/types"
 )
 
 func (suite *TierKeeperTestSuite) TestMsgSetPortfolio() {

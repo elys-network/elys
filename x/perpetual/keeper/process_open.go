@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

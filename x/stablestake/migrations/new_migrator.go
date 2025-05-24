@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/x/stablestake/keeper"
+	"github.com/elys-network/elys/v5/x/stablestake/keeper"
 )
 
 type Migrator struct {

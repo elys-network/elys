@@ -11,10 +11,10 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v5/x/parameter/keeper"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v5/x/tier/keeper"
 )
 
 type (

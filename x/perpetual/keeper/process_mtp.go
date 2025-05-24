@@ -6,8 +6,8 @@ import (
 
 	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool *ammtypes.Pool, closer string) (err error) {

@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v5/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 func SimulateMsgUpdateGenesisInflation(

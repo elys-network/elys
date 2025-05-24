@@ -4,8 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

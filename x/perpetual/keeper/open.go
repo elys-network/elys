@@ -8,9 +8,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {

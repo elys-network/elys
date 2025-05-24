@@ -1,11 +1,12 @@
 package types_test
 
 import (
-	"cosmossdk.io/math"
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/stablestake/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"cosmossdk.io/math"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDebt(t *testing.T) {

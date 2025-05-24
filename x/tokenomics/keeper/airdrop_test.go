@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
 )
 
