@@ -69,8 +69,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			app.AssetprofileKeeper.FixEntries(ctx)
-
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
