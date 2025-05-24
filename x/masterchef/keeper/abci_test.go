@@ -8,14 +8,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
-	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
-	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
+	tokenomicskeeper "github.com/elys-network/elys/v5/x/tokenomics/keeper"
+	tokenomicstypes "github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestABCI_EndBlocker() {

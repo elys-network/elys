@@ -1,14 +1,15 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
 	"testing"
 
-	"github.com/elys-network/elys/testutil/sample"
+	sdkmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
+
+	"github.com/elys-network/elys/v5/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 

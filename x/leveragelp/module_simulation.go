@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	leveragelpsimulation "github.com/elys-network/elys/x/leveragelp/simulation"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	leveragelpsimulation "github.com/elys-network/elys/v5/x/leveragelp/simulation"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 // avoid unused import issue

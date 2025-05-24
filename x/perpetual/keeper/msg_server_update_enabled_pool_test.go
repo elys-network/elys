@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"slices"
+
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"slices"
+	"github.com/elys-network/elys/v5/x/perpetual/keeper"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestMsgUpdateEnabledPools() {

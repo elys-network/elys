@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 	"github.com/spf13/cobra"
 )
 

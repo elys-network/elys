@@ -1,19 +1,20 @@
 package keeper_test
 
 import (
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"testing"
+
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v5/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )

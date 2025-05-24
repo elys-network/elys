@@ -2,8 +2,8 @@ package tokenomics
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v5/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

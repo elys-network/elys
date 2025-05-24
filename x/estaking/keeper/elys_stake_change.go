@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v5/x/estaking/types"
 )
 
 func (k Keeper) SetElysStakeChange(ctx sdk.Context, addr sdk.AccAddress) {

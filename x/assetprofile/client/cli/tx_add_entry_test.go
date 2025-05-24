@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/elys-network/elys/testutil/network"
-	"github.com/elys-network/elys/x/assetprofile/client/cli"
+	"github.com/elys-network/elys/v5/testutil/network"
+	"github.com/elys-network/elys/v5/x/assetprofile/client/cli"
 	"github.com/stretchr/testify/require"
 )
 

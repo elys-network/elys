@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/parameter/keeper"
-	"github.com/elys-network/elys/x/parameter/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/parameter/keeper"
+	"github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

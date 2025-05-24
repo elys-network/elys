@@ -1,8 +1,9 @@
 package utils_test
 
 import (
-	"github.com/elys-network/elys/utils"
 	"testing"
+
+	"github.com/elys-network/elys/v5/utils"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
