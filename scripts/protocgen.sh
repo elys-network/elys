@@ -26,7 +26,7 @@ done
 cd ..
 
 # move proto files to the right places
-cp -r github.com/elys-network/elys/* ./
+cp -r github.com/elys-network/elys/v5/* ./
 rm -rf github.com
 
 go mod tidy
