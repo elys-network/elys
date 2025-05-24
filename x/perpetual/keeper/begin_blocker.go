@@ -16,11 +16,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			ctx.Logger().Error(err.Error())
 			continue
 		}
-		pool.BorrowInterestRate = rate.Dec()
+		pool.BorrowInterestRate = rate
 		pool.LastHeightBorrowInterestRateComputed = currentHeight
 
 		k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
-			InterestRate: rate.Dec(),
+			InterestRate: rate,
 			BlockHeight:  ctx.BlockHeight(),
 			BlockTime:    ctx.BlockTime().Unix(),
 		})
