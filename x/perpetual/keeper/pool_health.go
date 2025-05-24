@@ -39,6 +39,10 @@ func (k Keeper) CalculateLiabilitiesRatioByPosition(pool *types.Pool, ammPool am
 	H := math.LegacyOneDec()
 	for _, asset := range *poolAssets {
 
+		if asset.Liabilities.IsZero() {
+			continue
+		}
+
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
 			return math.LegacyZeroDec()
