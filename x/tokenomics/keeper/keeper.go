@@ -1,14 +1,15 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	commitmentkeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 type (

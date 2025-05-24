@@ -8,9 +8,9 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/amm/keeper"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {

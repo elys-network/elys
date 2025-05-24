@@ -14,9 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/elys-network/elys/app/keepers"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v5/app/keepers"
+	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
+	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
 	"github.com/spf13/cast"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -58,11 +58,11 @@ import (
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	"github.com/elys-network/elys/app/ante"
+	"github.com/elys-network/elys/v5/app/ante"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	"github.com/elys-network/elys/docs"
+	"github.com/elys-network/elys/v5/docs"
 )
 
 const (

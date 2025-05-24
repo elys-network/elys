@@ -14,7 +14,7 @@ import "elys/amm/denom_liquidity.proto";
 import "elys/amm/swap_route.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/amm/types";
+option go_package = "github.com/elys-network/elys/v5/x/amm/types";
 
 // Query defines the gRPC querier service.
 service Query {

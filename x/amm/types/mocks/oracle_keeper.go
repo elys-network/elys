@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
 	mock "github.com/stretchr/testify/mock"
 
 	osmomath "github.com/osmosis-labs/osmosis/osmomath"

@@ -4,11 +4,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {

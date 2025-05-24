@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 func (m Migrator) V6Migration(ctx sdk.Context) error {

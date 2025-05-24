@@ -4,7 +4,7 @@ package mocks
 
 import (
 	math "cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 
 	mock "github.com/stretchr/testify/mock"
 

@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/commitment/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+	paramtypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 func (k msgServer) Unstake(goCtx context.Context, msg *types.MsgUnstake) (*types.MsgUnstakeResponse, error) {

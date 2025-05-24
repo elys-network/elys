@@ -3,7 +3,7 @@ package types
 import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
+	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
 )
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.

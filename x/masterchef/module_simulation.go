@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	masterchefsimulation "github.com/elys-network/elys/x/masterchef/simulation"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	masterchefsimulation "github.com/elys-network/elys/v5/x/masterchef/simulation"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 // avoid unused import issue
