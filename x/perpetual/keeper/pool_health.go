@@ -20,11 +20,11 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
-	minimumThreshold := k.GetPoolOpenThreshold(ctx)
-	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(minimumThreshold) {
+	maxLiabilitiesThreshold := k.GetPoolMaxLiabilitiesThreshold(ctx)
+	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
 	}
-	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(minimumThreshold) {
+	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)
