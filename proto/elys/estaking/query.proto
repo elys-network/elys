@@ -25,6 +25,13 @@ service Query {
   rpc Invariant(QueryInvariantRequest) returns (QueryInvariantResponse) {
     option (google.api.http).get = "/elys-network/elys/estaking/invariant";
   }
+  // EdenBBurnAmount queries the amount of EdenB that will be burned when
+  // unstaking
+  rpc EdenBBurnAmount(QueryEdenBBurnAmountRequest)
+      returns (QueryEdenBBurnAmountResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/estaking/edenb-burn-amount";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -65,6 +72,29 @@ message QueryInvariantResponse {
     (gogoproto.nullable) = false
   ];
   string bonded_validator_tokens_sum = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+enum TokenType {
+  TOKEN_TYPE_ELYS = 0;
+  TOKEN_TYPE_EDEN = 1;
+}
+
+message QueryEdenBBurnAmountRequest {
+  string address = 1;
+  TokenType token_type = 2;
+  string amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryEdenBBurnAmountResponse {
+  string burn_edenb_amount = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
