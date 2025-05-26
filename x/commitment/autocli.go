@@ -64,6 +64,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query reward program",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
 				},
+				{
+					RpcMethod: "TotalRewardProgramClaimed",
+					Use:       "total-reward-program-claimed",
+					Short:     "Query total reward program claimed",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

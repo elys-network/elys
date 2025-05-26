@@ -74,6 +74,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/commitment/reward_program/{address}";
   }
+
+  rpc TotalRewardProgramClaimed(QueryTotalRewardProgramClaimedRequest)
+      returns (QueryTotalRewardProgramClaimedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/total_reward_program_claimed";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -236,4 +242,14 @@ message QueryRewardProgramResponse {
     (gogoproto.nullable) = false
   ];
   bool claimed = 2;
+}
+
+message QueryTotalRewardProgramClaimedRequest {}
+
+message QueryTotalRewardProgramClaimedResponse {
+  string total_eden_claimed = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

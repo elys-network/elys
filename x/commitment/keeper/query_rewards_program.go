@@ -26,3 +26,15 @@ func (k Keeper) RewardProgram(goCtx context.Context, req *types.QueryRewardProgr
 		Claimed: k.GetRewardProgramClaimed(ctx, address).Claimed,
 	}, nil
 }
+
+func (k Keeper) TotalRewardProgramClaimed(goCtx context.Context, req *types.QueryTotalRewardProgramClaimedRequest) (*types.QueryTotalRewardProgramClaimedResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	total := k.GetTotalRewardProgramClaimed(ctx)
+	return &types.QueryTotalRewardProgramClaimedResponse{
+		TotalEdenClaimed: total.TotalEdenClaimed,
+	}, nil
+}
