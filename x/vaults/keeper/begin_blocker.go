@@ -59,10 +59,10 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				k.Logger().Error("error getting vault value", "error", err)
 				continue
 			}
-			diff := currentValue.Dec().Sub(vault.LastVaultUsdValue)
-			vault.LastVaultUsdValue = currentValue.Dec()
-			if diff.IsPositive() {
-				shares := diff.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
+			profit := currentValue.Dec().Sub(vault.SumOfDepositsUsdValue).Add(vault.WithdrawalUsdValue)
+			if profit.IsPositive() {
+				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
+				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
 
 				var protocolCoins sdk.Coins
 				coins := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
@@ -73,6 +73,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 					protocolCoins = protocolCoins.Add(sdk.NewCoin(coin.Denom, protocolFeeShare.TruncateInt()))
 					coin.Amount = coin.Amount.Sub(protocolFeeShare.TruncateInt())
 				}
+				// unwind and send coins to protocol revenue address and manager address
 				// send coins to protocol revenue address and manager address
 				err := k.bk.SendCoins(ctx, types.NewVaultAddress(vault.Id), sdk.MustAccAddressFromBech32(vault.Manager), coins)
 				if err != nil {

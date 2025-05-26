@@ -370,8 +370,7 @@ type MsgAddVault struct {
 	ManagementFee    cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=management_fee,json=managementFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"management_fee"`
 	PerformanceFee   cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=performance_fee,json=performanceFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"performance_fee"`
 	ProtocolFeeShare cosmossdk_io_math.LegacyDec `protobuf:"bytes,10,opt,name=protocol_fee_share,json=protocolFeeShare,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"protocol_fee_share"`
-	WithdrawStrategy []*Action                   `protobuf:"bytes,11,rep,name=withdraw_strategy,json=withdrawStrategy,proto3" json:"withdraw_strategy,omitempty"`
-	LockupPeriod     uint64                      `protobuf:"varint,12,opt,name=lockup_period,json=lockupPeriod,proto3" json:"lockup_period,omitempty"`
+	LockupPeriod     uint64                      `protobuf:"varint,11,opt,name=lockup_period,json=lockupPeriod,proto3" json:"lockup_period,omitempty"`
 }
 
 func (m *MsgAddVault) Reset()         { *m = MsgAddVault{} }
@@ -447,13 +446,6 @@ func (m *MsgAddVault) GetManager() string {
 		return m.Manager
 	}
 	return ""
-}
-
-func (m *MsgAddVault) GetWithdrawStrategy() []*Action {
-	if m != nil {
-		return m.WithdrawStrategy
-	}
-	return nil
 }
 
 func (m *MsgAddVault) GetLockupPeriod() uint64 {
@@ -841,6 +833,418 @@ func (m *MsgPerformActionResponse) GetVaultId() uint64 {
 	return 0
 }
 
+type MsgUpdateVaultCoins struct {
+	Creator      string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId      uint64   `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	AllowedCoins []string `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
+	RewardCoins  []string `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
+}
+
+func (m *MsgUpdateVaultCoins) Reset()         { *m = MsgUpdateVaultCoins{} }
+func (m *MsgUpdateVaultCoins) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultCoins) ProtoMessage()    {}
+func (*MsgUpdateVaultCoins) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{11}
+}
+func (m *MsgUpdateVaultCoins) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultCoins) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultCoins.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultCoins) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultCoins.Merge(m, src)
+}
+func (m *MsgUpdateVaultCoins) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultCoins) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultCoins.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultCoins proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultCoins) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateVaultCoins) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+func (m *MsgUpdateVaultCoins) GetAllowedCoins() []string {
+	if m != nil {
+		return m.AllowedCoins
+	}
+	return nil
+}
+
+func (m *MsgUpdateVaultCoins) GetRewardCoins() []string {
+	if m != nil {
+		return m.RewardCoins
+	}
+	return nil
+}
+
+type MsgUpdateVaultCoinsResponse struct {
+	VaultId uint64 `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+}
+
+func (m *MsgUpdateVaultCoinsResponse) Reset()         { *m = MsgUpdateVaultCoinsResponse{} }
+func (m *MsgUpdateVaultCoinsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultCoinsResponse) ProtoMessage()    {}
+func (*MsgUpdateVaultCoinsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{12}
+}
+func (m *MsgUpdateVaultCoinsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultCoinsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultCoinsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultCoinsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultCoinsResponse.Merge(m, src)
+}
+func (m *MsgUpdateVaultCoinsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultCoinsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultCoinsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultCoinsResponse proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultCoinsResponse) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+type MsgUpdateVaultFees struct {
+	Creator          string                      `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId          uint64                      `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	ManagementFee    cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=management_fee,json=managementFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"management_fee"`
+	PerformanceFee   cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=performance_fee,json=performanceFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"performance_fee"`
+	ProtocolFeeShare cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=protocol_fee_share,json=protocolFeeShare,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"protocol_fee_share"`
+}
+
+func (m *MsgUpdateVaultFees) Reset()         { *m = MsgUpdateVaultFees{} }
+func (m *MsgUpdateVaultFees) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultFees) ProtoMessage()    {}
+func (*MsgUpdateVaultFees) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{13}
+}
+func (m *MsgUpdateVaultFees) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultFees) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultFees.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultFees) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultFees.Merge(m, src)
+}
+func (m *MsgUpdateVaultFees) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultFees) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultFees.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultFees proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultFees) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateVaultFees) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+type MsgUpdateVaultFeesResponse struct {
+	VaultId uint64 `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+}
+
+func (m *MsgUpdateVaultFeesResponse) Reset()         { *m = MsgUpdateVaultFeesResponse{} }
+func (m *MsgUpdateVaultFeesResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultFeesResponse) ProtoMessage()    {}
+func (*MsgUpdateVaultFeesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{14}
+}
+func (m *MsgUpdateVaultFeesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultFeesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultFeesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultFeesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultFeesResponse.Merge(m, src)
+}
+func (m *MsgUpdateVaultFeesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultFeesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultFeesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultFeesResponse proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultFeesResponse) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+type MsgUpdateVaultLockupPeriod struct {
+	Creator      string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId      uint64 `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	LockupPeriod uint64 `protobuf:"varint,3,opt,name=lockup_period,json=lockupPeriod,proto3" json:"lockup_period,omitempty"`
+}
+
+func (m *MsgUpdateVaultLockupPeriod) Reset()         { *m = MsgUpdateVaultLockupPeriod{} }
+func (m *MsgUpdateVaultLockupPeriod) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultLockupPeriod) ProtoMessage()    {}
+func (*MsgUpdateVaultLockupPeriod) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{15}
+}
+func (m *MsgUpdateVaultLockupPeriod) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultLockupPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultLockupPeriod.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultLockupPeriod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultLockupPeriod.Merge(m, src)
+}
+func (m *MsgUpdateVaultLockupPeriod) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultLockupPeriod) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultLockupPeriod.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultLockupPeriod proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultLockupPeriod) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateVaultLockupPeriod) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+func (m *MsgUpdateVaultLockupPeriod) GetLockupPeriod() uint64 {
+	if m != nil {
+		return m.LockupPeriod
+	}
+	return 0
+}
+
+type MsgUpdateVaultLockupPeriodResponse struct {
+	VaultId uint64 `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+}
+
+func (m *MsgUpdateVaultLockupPeriodResponse) Reset()         { *m = MsgUpdateVaultLockupPeriodResponse{} }
+func (m *MsgUpdateVaultLockupPeriodResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultLockupPeriodResponse) ProtoMessage()    {}
+func (*MsgUpdateVaultLockupPeriodResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{16}
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultLockupPeriodResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultLockupPeriodResponse.Merge(m, src)
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultLockupPeriodResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultLockupPeriodResponse proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultLockupPeriodResponse) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+type MsgUpdateVaultMaxAmountUsd struct {
+	Creator      string                      `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId      uint64                      `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	MaxAmountUsd cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=max_amount_usd,json=maxAmountUsd,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_amount_usd"`
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) Reset()         { *m = MsgUpdateVaultMaxAmountUsd{} }
+func (m *MsgUpdateVaultMaxAmountUsd) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultMaxAmountUsd) ProtoMessage()    {}
+func (*MsgUpdateVaultMaxAmountUsd) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{17}
+}
+func (m *MsgUpdateVaultMaxAmountUsd) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultMaxAmountUsd) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultMaxAmountUsd.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultMaxAmountUsd) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultMaxAmountUsd.Merge(m, src)
+}
+func (m *MsgUpdateVaultMaxAmountUsd) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultMaxAmountUsd) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultMaxAmountUsd.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultMaxAmountUsd proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultMaxAmountUsd) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
+type MsgUpdateVaultMaxAmountUsdResponse struct {
+	VaultId uint64 `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+}
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) Reset()         { *m = MsgUpdateVaultMaxAmountUsdResponse{} }
+func (m *MsgUpdateVaultMaxAmountUsdResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVaultMaxAmountUsdResponse) ProtoMessage()    {}
+func (*MsgUpdateVaultMaxAmountUsdResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_271129f3f43ca028, []int{18}
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVaultMaxAmountUsdResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVaultMaxAmountUsdResponse.Merge(m, src)
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVaultMaxAmountUsdResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVaultMaxAmountUsdResponse proto.InternalMessageInfo
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) GetVaultId() uint64 {
+	if m != nil {
+		return m.VaultId
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "elys.vaults.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.vaults.MsgUpdateParamsResponse")
@@ -853,98 +1257,115 @@ func init() {
 	proto.RegisterType((*MsgPerformAction)(nil), "elys.vaults.MsgPerformAction")
 	proto.RegisterType((*Action)(nil), "elys.vaults.Action")
 	proto.RegisterType((*MsgPerformActionResponse)(nil), "elys.vaults.MsgPerformActionResponse")
+	proto.RegisterType((*MsgUpdateVaultCoins)(nil), "elys.vaults.MsgUpdateVaultCoins")
+	proto.RegisterType((*MsgUpdateVaultCoinsResponse)(nil), "elys.vaults.MsgUpdateVaultCoinsResponse")
+	proto.RegisterType((*MsgUpdateVaultFees)(nil), "elys.vaults.MsgUpdateVaultFees")
+	proto.RegisterType((*MsgUpdateVaultFeesResponse)(nil), "elys.vaults.MsgUpdateVaultFeesResponse")
+	proto.RegisterType((*MsgUpdateVaultLockupPeriod)(nil), "elys.vaults.MsgUpdateVaultLockupPeriod")
+	proto.RegisterType((*MsgUpdateVaultLockupPeriodResponse)(nil), "elys.vaults.MsgUpdateVaultLockupPeriodResponse")
+	proto.RegisterType((*MsgUpdateVaultMaxAmountUsd)(nil), "elys.vaults.MsgUpdateVaultMaxAmountUsd")
+	proto.RegisterType((*MsgUpdateVaultMaxAmountUsdResponse)(nil), "elys.vaults.MsgUpdateVaultMaxAmountUsdResponse")
 }
 
 func init() { proto.RegisterFile("elys/vaults/tx.proto", fileDescriptor_271129f3f43ca028) }
 
 var fileDescriptor_271129f3f43ca028 = []byte{
-	// 1372 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x57, 0xcd, 0x6f, 0x13, 0x47,
-	0x14, 0xf7, 0x92, 0xc4, 0x89, 0xc7, 0x76, 0x42, 0x86, 0x40, 0x36, 0xa6, 0x75, 0x52, 0x03, 0x55,
-	0x1a, 0x14, 0x9b, 0xa4, 0x05, 0xaa, 0x1c, 0xaa, 0xc6, 0x09, 0xd4, 0x54, 0xb5, 0x14, 0x6d, 0x1a,
-	0xa8, 0xb8, 0x6c, 0xc7, 0xbb, 0xc3, 0x7a, 0xb1, 0x77, 0x67, 0xb5, 0x33, 0x8e, 0xe3, 0x5b, 0x55,
-	0xa9, 0x97, 0xaa, 0x87, 0x5e, 0xfa, 0x3f, 0x54, 0x55, 0x0f, 0x1c, 0x38, 0xf5, 0xd0, 0x33, 0xb7,
-	0x22, 0x4e, 0x55, 0x0f, 0xb4, 0x82, 0x03, 0xff, 0x46, 0x35, 0x1f, 0xfb, 0x61, 0xc7, 0x84, 0x28,
-	0x17, 0xbc, 0xf3, 0xde, 0xef, 0xfd, 0xde, 0xc7, 0xcc, 0x7b, 0xbc, 0x80, 0x05, 0xdc, 0x1d, 0xd0,
-	0xda, 0x21, 0xea, 0x75, 0x19, 0xad, 0xb1, 0xa3, 0x6a, 0x10, 0x12, 0x46, 0x60, 0x9e, 0x4b, 0xab,
-	0x52, 0x5a, 0x9a, 0x47, 0x9e, 0xeb, 0x93, 0x9a, 0xf8, 0x57, 0xea, 0x4b, 0x8b, 0x16, 0xa1, 0x1e,
-	0xa1, 0x35, 0x8f, 0x3a, 0xb5, 0xc3, 0x0d, 0xfe, 0xa3, 0x14, 0x4b, 0x52, 0x61, 0x8a, 0x53, 0x4d,
-	0x1e, 0x94, 0x6a, 0xc1, 0x21, 0x0e, 0x91, 0x72, 0xfe, 0xa5, 0xa4, 0x7a, 0xda, 0x7f, 0x80, 0x42,
-	0xe4, 0x45, 0xf8, 0xb2, 0xf2, 0xd1, 0x42, 0x14, 0xd7, 0x0e, 0x37, 0x5a, 0x98, 0xa1, 0x8d, 0x9a,
-	0x45, 0x5c, 0x5f, 0xe9, 0xe7, 0x85, 0x25, 0xf2, 0xbc, 0x38, 0x6c, 0x45, 0x66, 0x11, 0xcf, 0x73,
-	0x99, 0x87, 0x7d, 0x36, 0xaa, 0xf1, 0x10, 0x65, 0x38, 0xb4, 0xda, 0xf8, 0x51, 0xa2, 0x59, 0x12,
-	0x1a, 0xca, 0x50, 0xab, 0x8b, 0x29, 0x43, 0x1d, 0x1c, 0xab, 0x2a, 0xbf, 0x6b, 0x60, 0xae, 0x49,
-	0x9d, 0x83, 0xc0, 0x46, 0x0c, 0xef, 0x89, 0xd8, 0xe0, 0x2d, 0x90, 0x43, 0x3d, 0xd6, 0x26, 0xa1,
-	0xcb, 0x06, 0xba, 0xb6, 0xa2, 0xad, 0xe6, 0xea, 0xfa, 0x8b, 0xa7, 0xeb, 0x0b, 0x2a, 0xd5, 0x6d,
-	0xdb, 0x0e, 0x31, 0xa5, 0xfb, 0x2c, 0x74, 0x7d, 0xc7, 0x48, 0xa0, 0xf0, 0x16, 0xc8, 0xca, 0xec,
-	0xf4, 0x73, 0x2b, 0xda, 0x6a, 0x7e, 0xf3, 0x42, 0x35, 0x55, 0xe2, 0xaa, 0x24, 0xaf, 0xe7, 0x9e,
-	0xbd, 0x5c, 0xce, 0xfc, 0xfa, 0xe6, 0xc9, 0x9a, 0x66, 0x28, 0xf4, 0xd6, 0x47, 0xdf, 0xbf, 0x79,
-	0xb2, 0x96, 0xf0, 0xfc, 0xf8, 0xe6, 0xc9, 0xda, 0x25, 0x55, 0xad, 0x91, 0xd0, 0x2a, 0x4b, 0x60,
-	0x71, 0x44, 0x64, 0x60, 0x1a, 0x10, 0x9f, 0xe2, 0xca, 0x9f, 0x1a, 0x00, 0x4d, 0xea, 0xec, 0xe2,
-	0x80, 0x50, 0x97, 0xf1, 0x24, 0x6c, 0xf9, 0x49, 0xc2, 0x77, 0x27, 0x11, 0x43, 0xe1, 0x12, 0x98,
-	0x11, 0xbe, 0x4d, 0xd7, 0x16, 0x69, 0x4c, 0x1a, 0xd3, 0xe2, 0x7c, 0xcf, 0x86, 0xb7, 0x41, 0x16,
-	0x79, 0xa4, 0xe7, 0x33, 0x7d, 0x42, 0xe4, 0xb7, 0x54, 0x55, 0x64, 0xfc, 0xfa, 0xaa, 0xea, 0xfa,
-	0xaa, 0x3b, 0xc4, 0xf5, 0xeb, 0x93, 0x3c, 0x4b, 0x43, 0xc1, 0xb7, 0xae, 0x8a, 0x04, 0x63, 0x1f,
-	0x3c, 0xc1, 0xf9, 0x24, 0x41, 0x15, 0x71, 0x85, 0x01, 0x98, 0x9c, 0xa2, 0xb4, 0x86, 0xe2, 0xd1,
-	0x86, 0xe3, 0xd9, 0x01, 0x59, 0xda, 0x46, 0x21, 0x96, 0xf5, 0xce, 0xd5, 0xaf, 0x73, 0xa7, 0xff,
-	0xbc, 0x5c, 0xbe, 0x28, 0xc3, 0xa2, 0x76, 0xa7, 0xea, 0x92, 0x9a, 0x87, 0x58, 0xbb, 0x7a, 0xcf,
-	0x67, 0x2f, 0x9e, 0xae, 0x03, 0x15, 0xef, 0x3d, 0x9f, 0x19, 0xca, 0xb4, 0xf2, 0x97, 0x06, 0xf2,
-	0x4d, 0xea, 0x3c, 0x70, 0x59, 0xdb, 0x0e, 0x51, 0x1f, 0x7e, 0x0a, 0x40, 0x5f, 0x7d, 0xe3, 0x77,
-	0x17, 0x2e, 0x85, 0x3d, 0xa9, 0x72, 0x49, 0xa4, 0x13, 0x67, 0x8e, 0x74, 0xeb, 0x43, 0x5e, 0xc5,
-	0x94, 0x43, 0x5e, 0x46, 0x98, 0x94, 0x31, 0xca, 0xa0, 0xf2, 0x8b, 0x06, 0x2e, 0xa4, 0xce, 0xa7,
-	0xa9, 0xa4, 0x15, 0xdf, 0xec, 0xb9, 0x95, 0x89, 0x93, 0x6f, 0xf6, 0x06, 0x0f, 0xfd, 0xb7, 0x7f,
-	0x97, 0x57, 0x1d, 0x97, 0xb5, 0x7b, 0xad, 0xaa, 0x45, 0x3c, 0x35, 0x03, 0xd4, 0xcf, 0x3a, 0xb5,
-	0x3b, 0x35, 0x36, 0x08, 0x30, 0x15, 0x06, 0x34, 0x7a, 0x05, 0x95, 0x1f, 0xb2, 0xa2, 0xd2, 0xdb,
-	0xb6, 0x7d, 0x9f, 0xbb, 0x85, 0x9b, 0x60, 0xda, 0x0a, 0x31, 0x3a, 0xcd, 0xfb, 0x8c, 0x80, 0xf0,
-	0x0a, 0x28, 0xaa, 0x67, 0x64, 0xda, 0xd8, 0x27, 0x9e, 0xbc, 0x79, 0xa3, 0xa0, 0x84, 0xbb, 0x5c,
-	0x06, 0x1f, 0x80, 0x59, 0x0f, 0x1d, 0x99, 0xd2, 0xad, 0xd9, 0xa3, 0xb6, 0xaa, 0xfa, 0x86, 0xaa,
-	0xfa, 0xe5, 0xe3, 0x55, 0xff, 0x0a, 0x3b, 0xc8, 0x1a, 0xec, 0x62, 0x2b, 0x55, 0xfb, 0x5d, 0x6c,
-	0x19, 0x05, 0x0f, 0x1d, 0x6d, 0x0b, 0x9e, 0x03, 0x6a, 0x73, 0xef, 0xa8, 0xdb, 0x25, 0x7d, 0x6c,
-	0x9b, 0x7c, 0x48, 0x51, 0x7d, 0x72, 0x65, 0x82, 0x7b, 0x57, 0x42, 0x91, 0x2e, 0xfc, 0x00, 0x14,
-	0x42, 0xdc, 0x47, 0x61, 0x84, 0x99, 0x12, 0x98, 0xbc, 0x94, 0x49, 0xc8, 0x35, 0x30, 0xdb, 0xc2,
-	0xbe, 0xd5, 0xf6, 0x50, 0xd8, 0x11, 0x28, 0x3d, 0x2b, 0xd2, 0x28, 0xc6, 0x52, 0x8e, 0xe3, 0x05,
-	0xf2, 0x90, 0x8f, 0x1c, 0x1c, 0xea, 0xd3, 0xef, 0x2a, 0x90, 0x02, 0xc2, 0x6f, 0x78, 0xee, 0xfc,
-	0x93, 0xcf, 0x46, 0xf3, 0x11, 0xc6, 0xfa, 0xcc, 0x59, 0x73, 0x2f, 0x26, 0x44, 0x77, 0x31, 0x86,
-	0x0f, 0xc1, 0x5c, 0x80, 0xc3, 0x47, 0x24, 0xf4, 0x90, 0x6f, 0x61, 0x41, 0x9d, 0x3b, 0x2b, 0xf5,
-	0x6c, 0x8a, 0x89, 0x73, 0x9b, 0x00, 0x8a, 0x71, 0x6c, 0x91, 0x2e, 0x27, 0x36, 0xc5, 0x8b, 0xd7,
-	0xc1, 0x59, 0xe9, 0xcf, 0x47, 0x64, 0x77, 0x31, 0xde, 0xe7, 0x54, 0xf0, 0x73, 0x30, 0x1f, 0x35,
-	0x8e, 0x49, 0x59, 0x88, 0x18, 0x76, 0x06, 0x7a, 0x5e, 0xbc, 0xf5, 0xe1, 0x29, 0xbd, 0x6d, 0x31,
-	0x97, 0xf8, 0xc6, 0xf9, 0x08, 0xbd, 0xaf, 0xc0, 0xfc, 0xee, 0xbb, 0xc4, 0xea, 0xf4, 0x02, 0x33,
-	0xc0, 0xa1, 0x4b, 0x6c, 0xbd, 0x20, 0x5a, 0xa8, 0x20, 0x85, 0x7b, 0x42, 0xb6, 0x75, 0x85, 0xb7,
-	0x68, 0xf4, 0x58, 0x47, 0xfa, 0x33, 0x7a, 0xf7, 0x95, 0x1b, 0xa2, 0x3d, 0xa3, 0xe3, 0x29, 0xda,
-	0xb3, 0xf2, 0x87, 0x06, 0xce, 0x37, 0xa9, 0xb3, 0x27, 0x8b, 0x26, 0x43, 0x3c, 0x53, 0xfb, 0x9c,
-	0x30, 0xa2, 0xae, 0x83, 0x2c, 0x12, 0xc4, 0x6a, 0xb8, 0x8f, 0x2d, 0x8b, 0x82, 0x6c, 0xad, 0x89,
-	0x81, 0xae, 0x2e, 0x51, 0x4e, 0xa2, 0xc5, 0x24, 0xd3, 0xa1, 0x38, 0x2b, 0xcf, 0xb2, 0x20, 0xab,
-	0x42, 0xfe, 0x04, 0xe4, 0x1e, 0x13, 0xd7, 0x37, 0x03, 0x42, 0xba, 0xca, 0xcd, 0x45, 0xe9, 0x06,
-	0x79, 0x5e, 0xb5, 0x49, 0x9d, 0x2f, 0x89, 0xeb, 0xef, 0x11, 0xd2, 0x6d, 0x64, 0x8c, 0x99, 0xc7,
-	0xea, 0x9b, 0x5b, 0xe1, 0x23, 0x97, 0x49, 0xab, 0xc9, 0x31, 0x56, 0x77, 0x8e, 0x5c, 0x16, 0x59,
-	0x61, 0xf5, 0x0d, 0x3f, 0x03, 0x45, 0xda, 0x47, 0x81, 0xd9, 0x1a, 0xa8, 0x49, 0x31, 0x25, 0x2c,
-	0xf5, 0x21, 0xcb, 0xfd, 0x3e, 0x0a, 0xea, 0x03, 0x31, 0x35, 0x1a, 0x19, 0x23, 0x4f, 0x93, 0x23,
-	0xfc, 0x16, 0x5c, 0x92, 0x4b, 0x86, 0x69, 0x75, 0x91, 0xeb, 0x61, 0xdb, 0x94, 0x1d, 0x4c, 0x45,
-	0xaf, 0xe6, 0x37, 0x57, 0x25, 0x51, 0xb2, 0x88, 0x70, 0xbe, 0x1d, 0x71, 0xda, 0x91, 0x06, 0x86,
-	0xc4, 0x37, 0x32, 0xc6, 0x82, 0x35, 0x46, 0x0e, 0x9b, 0x60, 0xae, 0xe7, 0x2b, 0x1f, 0x8c, 0x74,
-	0xb0, 0x4f, 0x45, 0x9b, 0xe7, 0x37, 0x2b, 0xe3, 0xa8, 0x0f, 0x14, 0xf4, 0x6b, 0x81, 0x6c, 0x64,
-	0x8c, 0xd9, 0xde, 0x90, 0x04, 0x56, 0xc1, 0xe4, 0x21, 0xa6, 0x4c, 0xf4, 0x7b, 0x9c, 0xe7, 0x30,
-	0xc7, 0x7d, 0x4c, 0x59, 0x23, 0x63, 0x08, 0x1c, 0xdc, 0x06, 0x79, 0x8b, 0xf7, 0x5f, 0xd7, 0x14,
-	0x66, 0x39, 0x61, 0x56, 0x1e, 0x9b, 0x95, 0x80, 0x29, 0x63, 0x60, 0xc5, 0x27, 0xf8, 0x05, 0x28,
-	0x8a, 0xe2, 0x08, 0x06, 0xd7, 0x77, 0x44, 0xc7, 0xe6, 0x37, 0x57, 0xc6, 0x92, 0x70, 0xe0, 0x7d,
-	0x89, 0x6b, 0x64, 0x8c, 0x82, 0x95, 0x3a, 0xc3, 0x0d, 0x30, 0x25, 0xf6, 0x32, 0x3d, 0xaf, 0x16,
-	0x8b, 0x31, 0x04, 0xfb, 0x1c, 0xd0, 0xc8, 0x18, 0x12, 0x09, 0x6f, 0x83, 0xe9, 0x9e, 0x2f, 0x8d,
-	0x0a, 0xc2, 0xe8, 0xf2, 0xf8, 0xaa, 0x51, 0x65, 0x16, 0xa1, 0x61, 0x0d, 0x4c, 0xb6, 0x88, 0x6f,
-	0xeb, 0xc5, 0xb4, 0xab, 0xd4, 0x6e, 0xc8, 0xcd, 0xea, 0xc4, 0xb7, 0x79, 0xa1, 0x38, 0x10, 0xde,
-	0x04, 0xd9, 0x9e, 0x2f, 0x4c, 0x66, 0xd3, 0x8e, 0x46, 0x4c, 0x0e, 0x04, 0xa4, 0x91, 0x31, 0x14,
-	0x38, 0x29, 0x4e, 0xf4, 0x6e, 0xe6, 0xd2, 0xc5, 0x49, 0xd6, 0xd4, 0xb8, 0x38, 0xc9, 0x7b, 0x91,
-	0xc5, 0x51, 0xe7, 0xfa, 0x4c, 0xd4, 0x99, 0x95, 0x9b, 0x40, 0x1f, 0x6d, 0xaf, 0x53, 0x8c, 0x8f,
-	0xcd, 0x9f, 0x26, 0xc0, 0x44, 0x93, 0x3a, 0xd0, 0x00, 0x85, 0xa1, 0x3d, 0xf7, 0xbd, 0xa1, 0x16,
-	0x1f, 0xd9, 0x2b, 0x4b, 0x57, 0x4f, 0xd2, 0xc6, 0x6e, 0x77, 0xc0, 0x74, 0xb4, 0x71, 0x2e, 0x8e,
-	0x1a, 0x28, 0x45, 0x69, 0xf9, 0x2d, 0x8a, 0x98, 0xe4, 0x2e, 0x98, 0x89, 0xf7, 0x2f, 0x7d, 0x14,
-	0x1c, 0x69, 0x4a, 0x2b, 0x6f, 0xd3, 0xa4, 0x79, 0xe2, 0xed, 0xe2, 0x18, 0x4f, 0xa4, 0x39, 0xce,
-	0x73, 0x6c, 0x14, 0x1f, 0x80, 0xe2, 0xf0, 0xac, 0x7d, 0x7f, 0xd4, 0x64, 0x48, 0x5d, 0xba, 0x76,
-	0xa2, 0x3a, 0xa2, 0x2d, 0x4d, 0x7d, 0xc7, 0xd7, 0xfe, 0xfa, 0x9d, 0x67, 0xaf, 0xca, 0xda, 0xf3,
-	0x57, 0x65, 0xed, 0xbf, 0x57, 0x65, 0xed, 0xe7, 0xd7, 0xe5, 0xcc, 0xf3, 0xd7, 0xe5, 0xcc, 0xdf,
-	0xaf, 0xcb, 0x99, 0x87, 0xd7, 0x53, 0x3b, 0x15, 0x67, 0x5c, 0xf7, 0x31, 0xeb, 0x93, 0xb0, 0x23,
-	0x0e, 0xb5, 0xa3, 0xf8, 0x4f, 0x38, 0xbe, 0x5c, 0xb5, 0xb2, 0xe2, 0x3f, 0xb9, 0x8f, 0xff, 0x0f,
-	0x00, 0x00, 0xff, 0xff, 0x91, 0x93, 0x01, 0x61, 0xde, 0x0d, 0x00, 0x00,
+	// 1510 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x58, 0x4d, 0x4f, 0x1b, 0xc7,
+	0x1b, 0xf7, 0xc6, 0xc6, 0xc0, 0x98, 0x97, 0x64, 0x43, 0xc2, 0xe2, 0xfc, 0xff, 0x86, 0x6c, 0x92,
+	0x8a, 0x82, 0xb0, 0x03, 0x6d, 0x5e, 0xc4, 0xa1, 0x15, 0x86, 0x50, 0xa7, 0x8a, 0x25, 0xb4, 0x94,
+	0xa4, 0xca, 0x65, 0x3b, 0xde, 0x9d, 0x2c, 0x1b, 0xbc, 0x3b, 0xd6, 0xce, 0x98, 0x97, 0x5b, 0xd5,
+	0x63, 0xd5, 0x43, 0x2f, 0xfd, 0x0a, 0x55, 0x55, 0xf5, 0xc0, 0x21, 0xa7, 0x1e, 0x7a, 0x69, 0x0f,
+	0xb9, 0x35, 0xca, 0xa9, 0xed, 0x21, 0xad, 0x92, 0x03, 0x5f, 0xa1, 0xc7, 0x6a, 0x5e, 0xf6, 0xc5,
+	0x6b, 0x87, 0x58, 0x08, 0x2e, 0x78, 0xe7, 0x79, 0xf9, 0x3d, 0xf3, 0xfc, 0x66, 0x9e, 0x99, 0x67,
+	0x00, 0x13, 0xa8, 0x79, 0x40, 0x2a, 0xbb, 0xb0, 0xdd, 0xa4, 0xa4, 0x42, 0xf7, 0xcb, 0xad, 0x00,
+	0x53, 0xac, 0x16, 0x98, 0xb4, 0x2c, 0xa4, 0xc5, 0x0b, 0xd0, 0x73, 0x7d, 0x5c, 0xe1, 0x7f, 0x85,
+	0xbe, 0x38, 0x69, 0x61, 0xe2, 0x61, 0x52, 0xf1, 0x88, 0x53, 0xd9, 0x5d, 0x64, 0x3f, 0x52, 0x31,
+	0x25, 0x14, 0x26, 0x1f, 0x55, 0xc4, 0x40, 0xaa, 0x26, 0x1c, 0xec, 0x60, 0x21, 0x67, 0x5f, 0x52,
+	0xaa, 0x25, 0xe3, 0xb7, 0x60, 0x00, 0xbd, 0xd0, 0xbe, 0x24, 0x63, 0x34, 0x20, 0x41, 0x95, 0xdd,
+	0xc5, 0x06, 0xa2, 0x70, 0xb1, 0x62, 0x61, 0xd7, 0x97, 0xfa, 0x0b, 0xdc, 0x13, 0x7a, 0x5e, 0x34,
+	0x6d, 0x09, 0x66, 0x61, 0xcf, 0x73, 0xa9, 0x87, 0x7c, 0x9a, 0xd6, 0x78, 0x90, 0x50, 0x14, 0x58,
+	0xdb, 0xe8, 0x49, 0xac, 0x99, 0xe2, 0x1a, 0x42, 0x61, 0xa3, 0x89, 0x08, 0x85, 0x3b, 0x28, 0x52,
+	0xe9, 0x3f, 0x29, 0x60, 0xbc, 0x4e, 0x9c, 0xad, 0x96, 0x0d, 0x29, 0xda, 0xe0, 0x73, 0x53, 0x6f,
+	0x83, 0x61, 0xd8, 0xa6, 0xdb, 0x38, 0x70, 0xe9, 0x81, 0xa6, 0xcc, 0x28, 0xb3, 0xc3, 0x55, 0xed,
+	0xe5, 0xb3, 0x85, 0x09, 0x99, 0xea, 0x8a, 0x6d, 0x07, 0x88, 0x90, 0x4d, 0x1a, 0xb8, 0xbe, 0x63,
+	0xc4, 0xa6, 0xea, 0x6d, 0x90, 0x17, 0xd9, 0x69, 0xe7, 0x66, 0x94, 0xd9, 0xc2, 0xd2, 0xc5, 0x72,
+	0x82, 0xe2, 0xb2, 0x00, 0xaf, 0x0e, 0x3f, 0x7f, 0x35, 0x9d, 0xf9, 0xe1, 0xe8, 0x70, 0x4e, 0x31,
+	0xa4, 0xf5, 0xf2, 0xfb, 0x5f, 0x1d, 0x1d, 0xce, 0xc5, 0x38, 0x5f, 0x1f, 0x1d, 0xce, 0x5d, 0x96,
+	0x6c, 0xa5, 0xa6, 0xa6, 0x4f, 0x81, 0xc9, 0x94, 0xc8, 0x40, 0xa4, 0x85, 0x7d, 0x82, 0xf4, 0x5f,
+	0x14, 0x00, 0xea, 0xc4, 0x59, 0x43, 0x2d, 0x4c, 0x5c, 0xca, 0x92, 0xb0, 0xc5, 0x27, 0x0e, 0xde,
+	0x9d, 0x44, 0x64, 0xaa, 0x4e, 0x81, 0x21, 0x1e, 0xdb, 0x74, 0x6d, 0x9e, 0x46, 0xce, 0x18, 0xe4,
+	0xe3, 0xfb, 0xb6, 0x7a, 0x07, 0xe4, 0xa1, 0x87, 0xdb, 0x3e, 0xd5, 0xb2, 0x3c, 0xbf, 0xa9, 0xb2,
+	0x04, 0x63, 0xcb, 0x57, 0x96, 0xcb, 0x57, 0x5e, 0xc5, 0xae, 0x5f, 0xcd, 0xb1, 0x2c, 0x0d, 0x69,
+	0xbe, 0x7c, 0x9d, 0x27, 0x18, 0xc5, 0x60, 0x09, 0x5e, 0x88, 0x13, 0x94, 0x33, 0xd6, 0x29, 0x50,
+	0xe3, 0x51, 0x98, 0x56, 0xc7, 0x7c, 0x94, 0xce, 0xf9, 0xac, 0x82, 0x3c, 0xd9, 0x86, 0x01, 0x12,
+	0x7c, 0x0f, 0x57, 0xe7, 0x59, 0xd0, 0xbf, 0x5e, 0x4d, 0x5f, 0x12, 0xd3, 0x22, 0xf6, 0x4e, 0xd9,
+	0xc5, 0x15, 0x0f, 0xd2, 0xed, 0xf2, 0x7d, 0x9f, 0xbe, 0x7c, 0xb6, 0x00, 0xe4, 0x7c, 0xef, 0xfb,
+	0xd4, 0x90, 0xae, 0xfa, 0xef, 0x0a, 0x28, 0xd4, 0x89, 0xf3, 0xc8, 0xa5, 0xdb, 0x76, 0x00, 0xf7,
+	0xd4, 0xbb, 0x00, 0xec, 0xc9, 0x6f, 0xf4, 0x6e, 0xe2, 0x12, 0xb6, 0xc7, 0x31, 0x17, 0xcf, 0x34,
+	0x7b, 0xe2, 0x99, 0x2e, 0xbf, 0xc7, 0x58, 0x4c, 0x04, 0x64, 0x34, 0xaa, 0x31, 0x8d, 0x61, 0x06,
+	0xfa, 0x77, 0x0a, 0xb8, 0x98, 0x18, 0xf7, 0xc3, 0xa4, 0x15, 0xad, 0xec, 0xb9, 0x99, 0xec, 0xf1,
+	0x2b, 0x7b, 0x93, 0x4d, 0xfd, 0xc7, 0xbf, 0xa7, 0x67, 0x1d, 0x97, 0x6e, 0xb7, 0x1b, 0x65, 0x0b,
+	0x7b, 0xf2, 0x0c, 0x90, 0x3f, 0x0b, 0xc4, 0xde, 0xa9, 0xd0, 0x83, 0x16, 0x22, 0xdc, 0x81, 0x84,
+	0xbb, 0x40, 0xff, 0x75, 0x80, 0x33, 0xbd, 0x62, 0xdb, 0x0f, 0x59, 0x58, 0x75, 0x09, 0x0c, 0x5a,
+	0x01, 0x82, 0xfd, 0xec, 0xcf, 0xd0, 0x50, 0xbd, 0x06, 0x46, 0xe5, 0x36, 0x32, 0x6d, 0xe4, 0x63,
+	0x4f, 0xac, 0xbc, 0x31, 0x22, 0x85, 0x6b, 0x4c, 0xa6, 0x3e, 0x02, 0x63, 0x1e, 0xdc, 0x37, 0x45,
+	0x58, 0xb3, 0x4d, 0x6c, 0xc9, 0xfa, 0xa2, 0x64, 0xfd, 0x4a, 0x37, 0xeb, 0x0f, 0x90, 0x03, 0xad,
+	0x83, 0x35, 0x64, 0x25, 0xb8, 0x5f, 0x43, 0x96, 0x31, 0xe2, 0xc1, 0xfd, 0x15, 0x8e, 0xb3, 0x45,
+	0x6c, 0x16, 0x1d, 0x36, 0x9b, 0x78, 0x0f, 0xd9, 0x26, 0x3b, 0xa4, 0x88, 0x96, 0x9b, 0xc9, 0xb2,
+	0xe8, 0x52, 0xc8, 0xd3, 0x55, 0xaf, 0x82, 0x91, 0x00, 0xed, 0xc1, 0x20, 0xb4, 0x19, 0xe0, 0x36,
+	0x05, 0x21, 0x13, 0x26, 0x37, 0xc0, 0x58, 0x03, 0xf9, 0xd6, 0xb6, 0x07, 0x83, 0x1d, 0x6e, 0xa5,
+	0xe5, 0x79, 0x1a, 0xa3, 0x91, 0x94, 0xd9, 0x31, 0x82, 0x3c, 0xe8, 0x43, 0x07, 0x05, 0xda, 0xe0,
+	0xbb, 0x08, 0x92, 0x86, 0xea, 0xe7, 0x2c, 0x77, 0xf6, 0xc9, 0xce, 0x46, 0xf3, 0x09, 0x42, 0xda,
+	0xd0, 0x49, 0x73, 0x1f, 0x8d, 0x81, 0xd6, 0x11, 0x52, 0x1f, 0x83, 0xf1, 0x16, 0x0a, 0x9e, 0xe0,
+	0xc0, 0x83, 0xbe, 0x85, 0x38, 0xf4, 0xf0, 0x49, 0xa1, 0xc7, 0x12, 0x48, 0x0c, 0xdb, 0x04, 0x2a,
+	0x3f, 0x8e, 0x2d, 0xdc, 0x64, 0xc0, 0x26, 0xdf, 0xf1, 0x1a, 0x38, 0x29, 0xfc, 0xf9, 0x10, 0x6c,
+	0x1d, 0xa1, 0x4d, 0x06, 0xc5, 0x56, 0xae, 0x89, 0xad, 0x9d, 0x76, 0xcb, 0x6c, 0xa1, 0xc0, 0xc5,
+	0xb6, 0x56, 0xe0, 0x05, 0x30, 0x22, 0x84, 0x1b, 0x5c, 0xb6, 0x7c, 0x8d, 0x15, 0x58, 0xb8, 0xd5,
+	0x52, 0xd5, 0x15, 0xee, 0x5a, 0xfd, 0x26, 0x2f, 0xae, 0x70, 0xd8, 0x47, 0x71, 0xe9, 0x3f, 0x2b,
+	0xe0, 0x7c, 0x9d, 0x38, 0x1b, 0x22, 0xe5, 0x15, 0x8b, 0xba, 0xd8, 0x3f, 0xd1, 0xe6, 0x3f, 0xe6,
+	0x80, 0x99, 0x07, 0x79, 0xc8, 0x81, 0xe5, 0xd1, 0xdc, 0x79, 0xf5, 0x88, 0x98, 0x86, 0x34, 0x59,
+	0x9e, 0xe3, 0xc7, 0xb1, 0x5c, 0x02, 0x71, 0x8e, 0x4c, 0xc6, 0x99, 0x76, 0xcc, 0x53, 0x7f, 0x9e,
+	0x07, 0x79, 0x39, 0xe5, 0x0f, 0xc1, 0xf0, 0x53, 0xec, 0xfa, 0x66, 0x0b, 0xe3, 0xa6, 0x0c, 0x73,
+	0x49, 0x84, 0x81, 0x9e, 0x57, 0xae, 0x13, 0xe7, 0x53, 0xec, 0xfa, 0x1b, 0x18, 0x37, 0x6b, 0x19,
+	0x63, 0xe8, 0xa9, 0xfc, 0x66, 0x5e, 0x68, 0xdf, 0xa5, 0xc2, 0x2b, 0xd7, 0xc3, 0xeb, 0xde, 0xbe,
+	0x4b, 0x43, 0x2f, 0x24, 0xbf, 0xd5, 0x8f, 0xc0, 0x28, 0xd9, 0x83, 0x2d, 0xb3, 0x71, 0x20, 0xeb,
+	0x7c, 0x80, 0x7b, 0x6a, 0x1d, 0x9e, 0x9b, 0x7b, 0xb0, 0x55, 0x3d, 0xe0, 0x35, 0x5f, 0xcb, 0x18,
+	0x05, 0x12, 0x0f, 0xd5, 0x2f, 0xc0, 0x65, 0xd1, 0x22, 0x98, 0x56, 0x13, 0xba, 0x1e, 0xb2, 0x4d,
+	0x51, 0x7f, 0x84, 0x57, 0x5a, 0x61, 0x69, 0x56, 0x00, 0xc5, 0x6d, 0x04, 0xc3, 0x5b, 0xe5, 0xa3,
+	0x55, 0xe1, 0x60, 0x08, 0xfb, 0x5a, 0xc6, 0x98, 0xb0, 0x7a, 0xc8, 0xd5, 0x3a, 0x18, 0x6f, 0xfb,
+	0x32, 0x06, 0xc5, 0x3b, 0xc8, 0x27, 0xbc, 0x48, 0x0b, 0x4b, 0x7a, 0x2f, 0xe8, 0x2d, 0x69, 0xfa,
+	0x19, 0xb7, 0xac, 0x65, 0x8c, 0xb1, 0x76, 0x87, 0x44, 0x2d, 0x83, 0xdc, 0x2e, 0x22, 0x94, 0x57,
+	0x6b, 0x94, 0x67, 0x27, 0xc6, 0x43, 0x44, 0x68, 0x2d, 0x63, 0x70, 0x3b, 0x75, 0x05, 0x14, 0x2c,
+	0x56, 0x3d, 0x4d, 0x93, 0xbb, 0x0d, 0x73, 0xb7, 0x52, 0xcf, 0xac, 0xb8, 0x99, 0x74, 0x06, 0x56,
+	0x34, 0x52, 0x3f, 0x01, 0xa3, 0x9c, 0x1c, 0x8e, 0xe0, 0xfa, 0x0e, 0xaf, 0xb7, 0xc2, 0xd2, 0x4c,
+	0x4f, 0x10, 0x66, 0xf8, 0x50, 0xd8, 0xd5, 0x32, 0xc6, 0x88, 0x95, 0x18, 0xab, 0x8b, 0x60, 0x80,
+	0x77, 0x55, 0xbc, 0xa8, 0xd8, 0xe5, 0xd1, 0x03, 0x60, 0x93, 0x19, 0xd4, 0x32, 0x86, 0xb0, 0x54,
+	0xef, 0x80, 0xc1, 0xb6, 0x2f, 0x9c, 0x46, 0xb8, 0xd3, 0x95, 0xde, 0xac, 0x11, 0xe9, 0x16, 0x5a,
+	0xab, 0x15, 0x90, 0x6b, 0x60, 0xdf, 0xd6, 0x46, 0x93, 0xa1, 0x12, 0x9d, 0x1d, 0x73, 0xab, 0x62,
+	0xdf, 0x66, 0x44, 0x31, 0x43, 0xf5, 0x16, 0xc8, 0xb7, 0x7d, 0xee, 0x32, 0x96, 0x0c, 0x94, 0x72,
+	0xd9, 0xe2, 0x26, 0xb5, 0x8c, 0x21, 0x8d, 0x63, 0x72, 0xc2, 0x7d, 0x33, 0x9e, 0x24, 0x27, 0x6e,
+	0x32, 0x23, 0x72, 0xe2, 0xfd, 0x22, 0xc8, 0x91, 0xe3, 0xea, 0x50, 0x58, 0x99, 0xfa, 0x2d, 0xa0,
+	0xa5, 0xcb, 0xab, 0x9f, 0xe3, 0xe3, 0x4f, 0x71, 0x9d, 0x8b, 0x9e, 0x8f, 0x1f, 0x3a, 0xe2, 0x12,
+	0x39, 0xe5, 0x13, 0xa4, 0xeb, 0x6e, 0xcb, 0xf6, 0x71, 0xb7, 0xe5, 0xba, 0xee, 0xb6, 0xe5, 0xf9,
+	0xf4, 0x21, 0x5a, 0x4c, 0xb7, 0xb2, 0x71, 0x0e, 0xfa, 0x5d, 0x70, 0xa5, 0x87, 0xb8, 0x1f, 0x56,
+	0xbe, 0xcf, 0xf2, 0x6e, 0x31, 0xe1, 0xba, 0x8e, 0xd0, 0xa9, 0x93, 0xd2, 0x7d, 0x9b, 0x66, 0xcf,
+	0xee, 0x36, 0xcd, 0x9d, 0xed, 0x6d, 0x3a, 0x70, 0x6a, 0xb7, 0xa9, 0xb8, 0x40, 0x92, 0x6b, 0x3c,
+	0xd5, 0x73, 0x8d, 0xd9, 0x8a, 0xe8, 0x77, 0x40, 0xb1, 0x5b, 0xda, 0xcf, 0x0a, 0xff, 0xa6, 0xa4,
+	0x3d, 0x1f, 0x24, 0x2e, 0xeb, 0x33, 0xd8, 0xfe, 0x9d, 0x0d, 0x42, 0xb6, 0x47, 0x83, 0xb0, 0x94,
+	0xce, 0xfb, 0x6a, 0xcf, 0xbc, 0x93, 0xf3, 0xd4, 0x3f, 0x06, 0xfa, 0xdb, 0xb5, 0xfd, 0xf0, 0xf0,
+	0x6f, 0x17, 0x0f, 0xf5, 0x64, 0x4f, 0x7a, 0xca, 0x3c, 0x9c, 0x55, 0xef, 0xdc, 0x2f, 0x77, 0xc9,
+	0xdc, 0xba, 0xb9, 0x4b, 0x6a, 0xfb, 0xe0, 0x6e, 0xe9, 0x9b, 0x2c, 0xc8, 0xd6, 0x89, 0xa3, 0x1a,
+	0x60, 0xa4, 0xe3, 0x85, 0xff, 0xbf, 0x8e, 0xf6, 0x28, 0xf5, 0xa2, 0x2e, 0x5e, 0x3f, 0x4e, 0x1b,
+	0x85, 0x5d, 0x05, 0x83, 0xe1, 0x5b, 0x7b, 0x32, 0xed, 0x20, 0x15, 0xc5, 0xe9, 0xb7, 0x28, 0x22,
+	0x90, 0x75, 0x30, 0x14, 0xbd, 0x3c, 0xb5, 0xb4, 0x71, 0xa8, 0x29, 0xce, 0xbc, 0x4d, 0x93, 0xc4,
+	0x89, 0xde, 0x55, 0x5d, 0x38, 0xa1, 0xa6, 0x1b, 0xa7, 0xab, 0x8d, 0xdd, 0x02, 0xa3, 0x9d, 0x7d,
+	0xea, 0xff, 0xd3, 0x2e, 0x1d, 0xea, 0xe2, 0x8d, 0x63, 0xd5, 0x21, 0x6c, 0x71, 0xe0, 0xcb, 0xa3,
+	0xc3, 0x39, 0xa5, 0x7a, 0xef, 0xf9, 0xeb, 0x92, 0xf2, 0xe2, 0x75, 0x49, 0xf9, 0xe7, 0x75, 0x49,
+	0xf9, 0xf6, 0x4d, 0x29, 0xf3, 0xe2, 0x4d, 0x29, 0xf3, 0xc7, 0x9b, 0x52, 0xe6, 0xf1, 0x7c, 0xe2,
+	0x35, 0xc9, 0x10, 0x17, 0x7c, 0x44, 0xf7, 0x70, 0xb0, 0xc3, 0x07, 0x95, 0xfd, 0xe8, 0x9f, 0x57,
+	0xec, 0x59, 0xd9, 0xc8, 0xf3, 0x03, 0xe9, 0x83, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x68, 0x39,
+	0x9e, 0x61, 0xd8, 0x12, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1439,21 +1860,7 @@ func (m *MsgAddVault) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.LockupPeriod != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.LockupPeriod))
 		i--
-		dAtA[i] = 0x60
-	}
-	if len(m.WithdrawStrategy) > 0 {
-		for iNdEx := len(m.WithdrawStrategy) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.WithdrawStrategy[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintTx(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x5a
-		}
+		dAtA[i] = 0x58
 	}
 	{
 		size := m.ProtocolFeeShare.Size()
@@ -1952,6 +2359,321 @@ func (m *MsgPerformActionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdateVaultCoins) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultCoins) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultCoins) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RewardCoins) > 0 {
+		for iNdEx := len(m.RewardCoins) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.RewardCoins[iNdEx])
+			copy(dAtA[i:], m.RewardCoins[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.RewardCoins[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.AllowedCoins) > 0 {
+		for iNdEx := len(m.AllowedCoins) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.AllowedCoins[iNdEx])
+			copy(dAtA[i:], m.AllowedCoins[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.AllowedCoins[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultCoinsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultCoinsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultCoinsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultFees) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultFees) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultFees) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.ProtocolFeeShare.Size()
+		i -= size
+		if _, err := m.ProtocolFeeShare.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.PerformanceFee.Size()
+		i -= size
+		if _, err := m.PerformanceFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size := m.ManagementFee.Size()
+		i -= size
+		if _, err := m.ManagementFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultFeesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultFeesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultFeesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultLockupPeriod) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultLockupPeriod) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultLockupPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.LockupPeriod != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.LockupPeriod))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultLockupPeriodResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultLockupPeriodResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultLockupPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.MaxAmountUsd.Size()
+		i -= size
+		if _, err := m.MaxAmountUsd.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -2097,12 +2819,6 @@ func (m *MsgAddVault) Size() (n int) {
 	n += 1 + l + sovTx(uint64(l))
 	l = m.ProtocolFeeShare.Size()
 	n += 1 + l + sovTx(uint64(l))
-	if len(m.WithdrawStrategy) > 0 {
-		for _, e := range m.WithdrawStrategy {
-			l = e.Size()
-			n += 1 + l + sovTx(uint64(l))
-		}
-	}
 	if m.LockupPeriod != 0 {
 		n += 1 + sovTx(uint64(m.LockupPeriod))
 	}
@@ -2310,6 +3026,141 @@ func (m *Action_ClaimRewards) Size() (n int) {
 	return n
 }
 func (m *MsgPerformActionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultCoins) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	if len(m.AllowedCoins) > 0 {
+		for _, s := range m.AllowedCoins {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if len(m.RewardCoins) > 0 {
+		for _, s := range m.RewardCoins {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultCoinsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultFees) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	l = m.ManagementFee.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.PerformanceFee.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.ProtocolFeeShare.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateVaultFeesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultLockupPeriod) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	if m.LockupPeriod != 0 {
+		n += 1 + sovTx(uint64(m.LockupPeriod))
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultLockupPeriodResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	return n
+}
+
+func (m *MsgUpdateVaultMaxAmountUsd) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.VaultId != 0 {
+		n += 1 + sovTx(uint64(m.VaultId))
+	}
+	l = m.MaxAmountUsd.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateVaultMaxAmountUsdResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3325,40 +4176,6 @@ func (m *MsgAddVault) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawStrategy", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.WithdrawStrategy = append(m.WithdrawStrategy, &Action{})
-			if err := m.WithdrawStrategy[len(m.WithdrawStrategy)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LockupPeriod", wireType)
 			}
@@ -4136,6 +4953,905 @@ func (m *MsgPerformActionResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgPerformActionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultCoins) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultCoins: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultCoins: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AllowedCoins", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AllowedCoins = append(m.AllowedCoins, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardCoins", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RewardCoins = append(m.RewardCoins, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultCoinsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultCoinsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultCoinsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultFees) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultFees: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultFees: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ManagementFee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ManagementFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerformanceFee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.PerformanceFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProtocolFeeShare", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ProtocolFeeShare.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultFeesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultFeesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultFeesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultLockupPeriod) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultLockupPeriod: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultLockupPeriod: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LockupPeriod", wireType)
+			}
+			m.LockupPeriod = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LockupPeriod |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultLockupPeriodResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultLockupPeriodResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultLockupPeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultMaxAmountUsd) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultMaxAmountUsd: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultMaxAmountUsd: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
+			}
+			m.VaultId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VaultId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxAmountUsd", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxAmountUsd.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVaultMaxAmountUsdResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVaultMaxAmountUsdResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVaultMaxAmountUsdResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

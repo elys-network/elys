@@ -141,8 +141,7 @@ message MsgAddVault {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated Action withdraw_strategy = 11;
-  uint64 lockup_period = 12; // in seconds
+  uint64 lockup_period = 11; // in seconds
 }
 
 // MsgAddVaultResponse defines the response structure for adding vault
@@ -185,3 +184,66 @@ message Action {
 }
 
 message MsgPerformActionResponse { uint64 vault_id = 1; }
+
+message MsgUpdateVaultCoins {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgUpdateVaultCoins";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 vault_id = 2;
+  repeated string allowed_coins = 3;
+  repeated string reward_coins = 4;
+}
+
+message MsgUpdateVaultCoinsResponse { uint64 vault_id = 1; }
+
+message MsgUpdateVaultFees {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgUpdateVaultFees";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 vault_id = 2;
+  string management_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string performance_fee = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string protocol_fee_share = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdateVaultFeesResponse { uint64 vault_id = 1; }
+
+message MsgUpdateVaultLockupPeriod {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgUpdateVaultLockupPeriod";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 vault_id = 2;
+  uint64 lockup_period = 3;
+}
+
+message MsgUpdateVaultLockupPeriodResponse { uint64 vault_id = 1; }
+
+message MsgUpdateVaultMaxAmountUsd {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgUpdateVaultMaxAmountUsd";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 vault_id = 2;
+  string max_amount_usd = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdateVaultMaxAmountUsdResponse { uint64 vault_id = 1; }
