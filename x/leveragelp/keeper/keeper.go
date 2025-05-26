@@ -16,8 +16,8 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 type (

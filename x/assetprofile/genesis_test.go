@@ -3,10 +3,10 @@ package assetprofile_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/assetprofile"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/assetprofile"
+	"github.com/elys-network/elys/v5/x/assetprofile/types"
 	"github.com/stretchr/testify/require"
 )
 

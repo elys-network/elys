@@ -1,13 +1,14 @@
 package keeper_test
 
 import (
+	"slices"
+
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	"slices"
+	simapp "github.com/elys-network/elys/v5/app"
+	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerUpdateEnabledPools() {

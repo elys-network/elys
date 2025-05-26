@@ -60,7 +60,7 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/version.Version=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
-          -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
+          -X github.com/elys-network/elys/v5/app.NextVersion=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
           -w -s \
           -linkmode=external \

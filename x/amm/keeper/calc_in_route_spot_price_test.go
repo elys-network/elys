@@ -5,9 +5,9 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/x/amm/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

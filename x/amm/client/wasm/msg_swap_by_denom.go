@@ -6,8 +6,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 )
 
 func (m *Messenger) msgSwapByDenom(ctx sdk.Context, contractAddr sdk.AccAddress, msg *ammtypes.MsgSwapByDenom) ([]sdk.Event, [][]byte, error) {

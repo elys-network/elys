@@ -1,7 +1,7 @@
 syntax = "proto3";
 package elys.accountedpool;
 
-option go_package = "github.com/elys-network/elys/x/accountedpool/types";
+option go_package = "github.com/elys-network/elys/v5/x/accountedpool/types";
 import "elys/amm/pool_asset.proto";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";

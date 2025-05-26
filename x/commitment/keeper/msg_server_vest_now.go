@@ -6,8 +6,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // VestNow provides functionality to get the token immediately but lower amount than original

@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	"github.com/elys-network/elys/x/tier/types"
+	stablestakekeeper "github.com/elys-network/elys/v5/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	"github.com/elys-network/elys/v5/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

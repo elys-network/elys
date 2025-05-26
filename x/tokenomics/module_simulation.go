@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	tokenomicssimulation "github.com/elys-network/elys/x/tokenomics/simulation"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v5/testutil/sample"
+	tokenomicssimulation "github.com/elys-network/elys/v5/x/tokenomics/simulation"
+	"github.com/elys-network/elys/v5/x/tokenomics/types"
 )
 
 // avoid unused import issue

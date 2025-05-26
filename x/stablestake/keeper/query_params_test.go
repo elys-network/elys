@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

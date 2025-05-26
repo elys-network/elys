@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP) (*types.MTP, error) {

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 type msgServer struct {

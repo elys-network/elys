@@ -1,14 +1,15 @@
 package keeper_test
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v5/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestMsgUpdateParams() {

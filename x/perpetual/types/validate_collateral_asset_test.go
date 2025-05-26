@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	paramtypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
 )
 

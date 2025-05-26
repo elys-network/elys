@@ -3,10 +3,10 @@ package perpetual_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/perpetual"
-	"github.com/elys-network/elys/x/perpetual/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/testutil/nullify"
+	"github.com/elys-network/elys/v5/x/perpetual"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 

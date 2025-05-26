@@ -4,7 +4,7 @@ package elys.burner;
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/elys-network/elys/x/burner/types";
+option go_package = "github.com/elys-network/elys/v5/x/burner/types";
 
 message History {
   // renaming the tags because its not being used till now anywhere, mainnet or

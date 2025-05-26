@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 )
 
 // JoinPool routes `JoinPoolNoSwap` where we do an abstract calculation on needed lp liquidity coins to get the designated

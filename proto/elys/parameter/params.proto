@@ -4,7 +4,7 @@ package elys.parameter;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/parameter/types";
+option go_package = "github.com/elys-network/elys/v5/x/parameter/types";
 
 message LegacyParams {
   string min_commission_rate = 1 [

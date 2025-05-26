@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
 )
 
 // GetParams get all parameters as types.Params
