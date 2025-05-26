@@ -26,16 +26,16 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 	}
 
 	if k.GetRewardProgramClaimed(ctx, sender).Claimed {
-		return nil, types.ErrAirdropAlreadyClaimed
+		return nil, types.ErrRewardProgramAlreadyClaimed
 	}
 
 	currentHeight := uint64(ctx.BlockHeight())
-	if currentHeight < params.StartAirdropClaimHeight {
-		return nil, types.ErrAirdropNotStarted
+	if currentHeight < params.StartRewardProgramClaimHeight {
+		return nil, types.ErrRewardProgramNotStarted
 	}
 
-	if currentHeight > params.EndAirdropClaimHeight {
-		return nil, types.ErrAirdropEnded
+	if currentHeight > params.EndRewardProgramClaimHeight {
+		return nil, types.ErrRewardProgramEnded
 	}
 
 	// Add eden to commitment
