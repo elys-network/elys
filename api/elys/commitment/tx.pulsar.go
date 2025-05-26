@@ -12117,13 +12117,15 @@ func (x *fastReflection_MsgClaimKolResponse) ProtoMethods() *protoiface.Methods 
 }
 
 var (
-	md_MsgUpdateAirdropParams                            protoreflect.MessageDescriptor
-	fd_MsgUpdateAirdropParams_authority                  protoreflect.FieldDescriptor
-	fd_MsgUpdateAirdropParams_enable_claim               protoreflect.FieldDescriptor
-	fd_MsgUpdateAirdropParams_start_airdrop_claim_height protoreflect.FieldDescriptor
-	fd_MsgUpdateAirdropParams_end_airdrop_claim_height   protoreflect.FieldDescriptor
-	fd_MsgUpdateAirdropParams_start_kol_claim_height     protoreflect.FieldDescriptor
-	fd_MsgUpdateAirdropParams_end_kol_claim_height       protoreflect.FieldDescriptor
+	md_MsgUpdateAirdropParams                                   protoreflect.MessageDescriptor
+	fd_MsgUpdateAirdropParams_authority                         protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_enable_claim                      protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_start_airdrop_claim_height        protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_end_airdrop_claim_height          protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_start_kol_claim_height            protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_end_kol_claim_height              protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_start_reward_program_claim_height protoreflect.FieldDescriptor
+	fd_MsgUpdateAirdropParams_end_reward_program_claim_height   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -12135,6 +12137,8 @@ func init() {
 	fd_MsgUpdateAirdropParams_end_airdrop_claim_height = md_MsgUpdateAirdropParams.Fields().ByName("end_airdrop_claim_height")
 	fd_MsgUpdateAirdropParams_start_kol_claim_height = md_MsgUpdateAirdropParams.Fields().ByName("start_kol_claim_height")
 	fd_MsgUpdateAirdropParams_end_kol_claim_height = md_MsgUpdateAirdropParams.Fields().ByName("end_kol_claim_height")
+	fd_MsgUpdateAirdropParams_start_reward_program_claim_height = md_MsgUpdateAirdropParams.Fields().ByName("start_reward_program_claim_height")
+	fd_MsgUpdateAirdropParams_end_reward_program_claim_height = md_MsgUpdateAirdropParams.Fields().ByName("end_reward_program_claim_height")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgUpdateAirdropParams)(nil)
@@ -12238,6 +12242,18 @@ func (x *fastReflection_MsgUpdateAirdropParams) Range(f func(protoreflect.FieldD
 			return
 		}
 	}
+	if x.StartRewardProgramClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartRewardProgramClaimHeight)
+		if !f(fd_MsgUpdateAirdropParams_start_reward_program_claim_height, value) {
+			return
+		}
+	}
+	if x.EndRewardProgramClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndRewardProgramClaimHeight)
+		if !f(fd_MsgUpdateAirdropParams_end_reward_program_claim_height, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -12265,6 +12281,10 @@ func (x *fastReflection_MsgUpdateAirdropParams) Has(fd protoreflect.FieldDescrip
 		return x.StartKolClaimHeight != uint64(0)
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
 		return x.EndKolClaimHeight != uint64(0)
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		return x.StartRewardProgramClaimHeight != uint64(0)
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
+		return x.EndRewardProgramClaimHeight != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.MsgUpdateAirdropParams"))
@@ -12293,6 +12313,10 @@ func (x *fastReflection_MsgUpdateAirdropParams) Clear(fd protoreflect.FieldDescr
 		x.StartKolClaimHeight = uint64(0)
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
 		x.EndKolClaimHeight = uint64(0)
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		x.StartRewardProgramClaimHeight = uint64(0)
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
+		x.EndRewardProgramClaimHeight = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.MsgUpdateAirdropParams"))
@@ -12327,6 +12351,12 @@ func (x *fastReflection_MsgUpdateAirdropParams) Get(descriptor protoreflect.Fiel
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
 		value := x.EndKolClaimHeight
 		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		value := x.StartRewardProgramClaimHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
+		value := x.EndRewardProgramClaimHeight
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.MsgUpdateAirdropParams"))
@@ -12359,6 +12389,10 @@ func (x *fastReflection_MsgUpdateAirdropParams) Set(fd protoreflect.FieldDescrip
 		x.StartKolClaimHeight = value.Uint()
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
 		x.EndKolClaimHeight = value.Uint()
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		x.StartRewardProgramClaimHeight = value.Uint()
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
+		x.EndRewardProgramClaimHeight = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.MsgUpdateAirdropParams"))
@@ -12391,6 +12425,10 @@ func (x *fastReflection_MsgUpdateAirdropParams) Mutable(fd protoreflect.FieldDes
 		panic(fmt.Errorf("field start_kol_claim_height of message elys.commitment.MsgUpdateAirdropParams is not mutable"))
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
 		panic(fmt.Errorf("field end_kol_claim_height of message elys.commitment.MsgUpdateAirdropParams is not mutable"))
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		panic(fmt.Errorf("field start_reward_program_claim_height of message elys.commitment.MsgUpdateAirdropParams is not mutable"))
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
+		panic(fmt.Errorf("field end_reward_program_claim_height of message elys.commitment.MsgUpdateAirdropParams is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.MsgUpdateAirdropParams"))
@@ -12415,6 +12453,10 @@ func (x *fastReflection_MsgUpdateAirdropParams) NewField(fd protoreflect.FieldDe
 	case "elys.commitment.MsgUpdateAirdropParams.start_kol_claim_height":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.commitment.MsgUpdateAirdropParams.end_kol_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.MsgUpdateAirdropParams.start_reward_program_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.MsgUpdateAirdropParams.end_reward_program_claim_height":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -12504,6 +12546,12 @@ func (x *fastReflection_MsgUpdateAirdropParams) ProtoMethods() *protoiface.Metho
 		if x.EndKolClaimHeight != 0 {
 			n += 1 + runtime.Sov(uint64(x.EndKolClaimHeight))
 		}
+		if x.StartRewardProgramClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartRewardProgramClaimHeight))
+		}
+		if x.EndRewardProgramClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndRewardProgramClaimHeight))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -12532,6 +12580,16 @@ func (x *fastReflection_MsgUpdateAirdropParams) ProtoMethods() *protoiface.Metho
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.EndRewardProgramClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndRewardProgramClaimHeight))
+			i--
+			dAtA[i] = 0x40
+		}
+		if x.StartRewardProgramClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartRewardProgramClaimHeight))
+			i--
+			dAtA[i] = 0x38
 		}
 		if x.EndKolClaimHeight != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndKolClaimHeight))
@@ -12743,6 +12801,44 @@ func (x *fastReflection_MsgUpdateAirdropParams) ProtoMethods() *protoiface.Metho
 					b := dAtA[iNdEx]
 					iNdEx++
 					x.EndKolClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartRewardProgramClaimHeight", wireType)
+				}
+				x.StartRewardProgramClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartRewardProgramClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndRewardProgramClaimHeight", wireType)
+				}
+				x.EndRewardProgramClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndRewardProgramClaimHeight |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -15057,12 +15153,14 @@ type MsgUpdateAirdropParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Authority               string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	EnableClaim             bool   `protobuf:"varint,2,opt,name=enable_claim,json=enableClaim,proto3" json:"enable_claim,omitempty"`
-	StartAirdropClaimHeight uint64 `protobuf:"varint,3,opt,name=start_airdrop_claim_height,json=startAirdropClaimHeight,proto3" json:"start_airdrop_claim_height,omitempty"`
-	EndAirdropClaimHeight   uint64 `protobuf:"varint,4,opt,name=end_airdrop_claim_height,json=endAirdropClaimHeight,proto3" json:"end_airdrop_claim_height,omitempty"`
-	StartKolClaimHeight     uint64 `protobuf:"varint,5,opt,name=start_kol_claim_height,json=startKolClaimHeight,proto3" json:"start_kol_claim_height,omitempty"`
-	EndKolClaimHeight       uint64 `protobuf:"varint,6,opt,name=end_kol_claim_height,json=endKolClaimHeight,proto3" json:"end_kol_claim_height,omitempty"`
+	Authority                     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	EnableClaim                   bool   `protobuf:"varint,2,opt,name=enable_claim,json=enableClaim,proto3" json:"enable_claim,omitempty"`
+	StartAirdropClaimHeight       uint64 `protobuf:"varint,3,opt,name=start_airdrop_claim_height,json=startAirdropClaimHeight,proto3" json:"start_airdrop_claim_height,omitempty"`
+	EndAirdropClaimHeight         uint64 `protobuf:"varint,4,opt,name=end_airdrop_claim_height,json=endAirdropClaimHeight,proto3" json:"end_airdrop_claim_height,omitempty"`
+	StartKolClaimHeight           uint64 `protobuf:"varint,5,opt,name=start_kol_claim_height,json=startKolClaimHeight,proto3" json:"start_kol_claim_height,omitempty"`
+	EndKolClaimHeight             uint64 `protobuf:"varint,6,opt,name=end_kol_claim_height,json=endKolClaimHeight,proto3" json:"end_kol_claim_height,omitempty"`
+	StartRewardProgramClaimHeight uint64 `protobuf:"varint,7,opt,name=start_reward_program_claim_height,json=startRewardProgramClaimHeight,proto3" json:"start_reward_program_claim_height,omitempty"`
+	EndRewardProgramClaimHeight   uint64 `protobuf:"varint,8,opt,name=end_reward_program_claim_height,json=endRewardProgramClaimHeight,proto3" json:"end_reward_program_claim_height,omitempty"`
 }
 
 func (x *MsgUpdateAirdropParams) Reset() {
@@ -15123,6 +15221,20 @@ func (x *MsgUpdateAirdropParams) GetStartKolClaimHeight() uint64 {
 func (x *MsgUpdateAirdropParams) GetEndKolClaimHeight() uint64 {
 	if x != nil {
 		return x.EndKolClaimHeight
+	}
+	return 0
+}
+
+func (x *MsgUpdateAirdropParams) GetStartRewardProgramClaimHeight() uint64 {
+	if x != nil {
+		return x.StartRewardProgramClaimHeight
+	}
+	return 0
+}
+
+func (x *MsgUpdateAirdropParams) GetEndRewardProgramClaimHeight() uint64 {
+	if x != nil {
+		return x.EndRewardProgramClaimHeight
 	}
 	return 0
 }
@@ -15448,7 +15560,7 @@ var file_elys_commitment_tx_proto_rawDesc = []byte{
 	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
 	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d,
 	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x10, 0x76, 0x65, 0x73,
-	0x74, 0x65, 0x64, 0x45, 0x6c, 0x79, 0x73, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x85, 0x03,
+	0x74, 0x65, 0x64, 0x45, 0x6c, 0x79, 0x73, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x95, 0x04,
 	0x0a, 0x16, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x69, 0x72, 0x64, 0x72,
 	0x6f, 0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68,
 	0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
@@ -15469,7 +15581,16 @@ var file_elys_commitment_tx_proto_rawDesc = []byte{
 	0x4b, 0x6f, 0x6c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x2f,
 	0x0a, 0x14, 0x65, 0x6e, 0x64, 0x5f, 0x6b, 0x6f, 0x6c, 0x5f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f,
 	0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x11, 0x65, 0x6e,
-	0x64, 0x4b, 0x6f, 0x6c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x3a,
+	0x64, 0x4b, 0x6f, 0x6c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12,
+	0x48, 0x0a, 0x21, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f,
+	0x70, 0x72, 0x6f, 0x67, 0x72, 0x61, 0x6d, 0x5f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x68, 0x65,
+	0x69, 0x67, 0x68, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x1d, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x61, 0x6d, 0x43, 0x6c,
+	0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x44, 0x0a, 0x1f, 0x65, 0x6e, 0x64,
+	0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x61, 0x6d, 0x5f,
+	0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x08, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x1b, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x50, 0x72, 0x6f,
+	0x67, 0x72, 0x61, 0x6d, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x3a,
 	0x34, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a,
 	0xe7, 0xb0, 0x2a, 0x21, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x4d,
 	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x69, 0x72, 0x64, 0x72, 0x6f, 0x70, 0x50,

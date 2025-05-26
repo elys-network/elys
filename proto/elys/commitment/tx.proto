@@ -263,6 +263,8 @@ message MsgUpdateAirdropParams {
   uint64 end_airdrop_claim_height = 4;
   uint64 start_kol_claim_height = 5;
   uint64 end_kol_claim_height = 6;
+  uint64 start_reward_program_claim_height = 7;
+  uint64 end_reward_program_claim_height = 8;
 }
 
 message MsgUpdateAirdropParamsResponse {}

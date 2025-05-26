@@ -3,11 +3,14 @@ package keeper
 import (
 	"context"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/v5/x/commitment/types"
 	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
+
+var maxEdenAmountToClaim = sdkmath.NewInt(1000000000000)
 
 func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaimRewardProgram) (*types.MsgClaimRewardProgramResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -38,6 +41,10 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 		return nil, types.ErrRewardProgramEnded
 	}
 
+	total := k.GetTotalRewardProgramClaimed(ctx)
+	total.TotalEdenClaimed = total.TotalEdenClaimed.Add(edenAmount)
+	k.SetTotalRewardProgramClaimed(ctx, total)
+
 	// Add eden to commitment
 	err := k.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, edenAmount)))
 	if err != nil {
@@ -49,6 +56,11 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 	}
 
 	k.SetRewardProgramClaimed(ctx, sender)
+
+	// This will never be triggered
+	if total.TotalEdenClaimed.GT(maxEdenAmountToClaim) {
+		return nil, types.ErrMaxEdenAmountReached
+	}
 
 	return &types.MsgClaimRewardProgramResponse{
 		EdenAmount: edenAmount,

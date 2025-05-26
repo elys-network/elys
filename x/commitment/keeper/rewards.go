@@ -83,3 +83,23 @@ func (k Keeper) GetAllRewardProgramClaimed(ctx sdk.Context) (list []*types.Airdr
 
 	return
 }
+
+func (k Keeper) GetTotalRewardProgramClaimed(ctx sdk.Context) (val types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.TotalRewardProgramClaimedKeyPrefix)
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.TotalEdenClaimed = math.ZeroInt()
+		val.TotalElysClaimed = math.ZeroInt()
+	}
+	return
+}
+
+func (k Keeper) SetTotalRewardProgramClaimed(ctx sdk.Context, totalClaimed types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	b := k.cdc.MustMarshal(&totalClaimed)
+	store.Set(types.TotalRewardProgramClaimedKeyPrefix, b)
+}
