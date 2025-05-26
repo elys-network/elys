@@ -28,21 +28,21 @@ service Query {
   }
 
   rpc SubAccounts(SubAccountsRequest) returns (SubAccountsResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/params";
+    option (google.api.http).get = "/elys-network/elys/clob/sub-accounts";
   }
 
   rpc MarketOrders(MarketOrdersRequest) returns (MarketOrdersResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/all-markets";
+    option (google.api.http).get = "/elys-network/elys/clob/market-orders";
   }
 
   rpc OwnerPerpetuals(OwnerPerpetualsRequest)
       returns (OwnerPerpetualsResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/all-markets";
+    option (google.api.http).get = "/elys-network/elys/clob/owner-perpetuals";
   }
 
   rpc PerpetualOrder(PerpetualOrderRequest)
       returns (PerpetualOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/perpetual-order/{market_id}/{order_type}/{price}/{block_height}";
+    option (google.api.http).get = "/elys-network/elys/clob/perpetual-order";
   }
 
   rpc AllPerpetualOrder(AllPerpetualOrderRequest)
@@ -150,7 +150,9 @@ message PerpetualOrderResponse {
   PerpetualOrder order = 1 [ (gogoproto.nullable) = false ];
 }
 
-message AllPerpetualOrderRequest {}
+message AllPerpetualOrderRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 message AllPerpetualOrderResponse {
   repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
@@ -168,7 +170,9 @@ message CurrentTwapPriceResponse {
   ];
 }
 
-message AllTwapPricesRequest {}
+message AllTwapPricesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 message AllTwapPricesResponse {
   repeated TwapPrice twap_prices = 1 [ (gogoproto.nullable) = false ];
@@ -228,7 +232,9 @@ message PerpetualADLResponse {
   PerpetualADL adl = 1 [ (gogoproto.nullable) = false ];
 }
 
-message AllPerpetualADLRequest {}
+message AllPerpetualADLRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 message AllPerpetualADLResponse {
   repeated PerpetualADL adl_list = 1 [ (gogoproto.nullable) = false ];
