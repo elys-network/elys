@@ -29,6 +29,16 @@ type MsgClient interface {
 	AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
 	PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error)
+	// UpdateVaultCoins defines a method for updating the coins of a vault.
+	UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error)
+	// UpdateVaultFees defines a method for updating the fees of a vault.
+	UpdateVaultFees(ctx context.Context, in *MsgUpdateVaultFees, opts ...grpc.CallOption) (*MsgUpdateVaultFeesResponse, error)
+	// UpdateVaultLockupPeriod defines a method for updating the lockup period of
+	// a vault.
+	UpdateVaultLockupPeriod(ctx context.Context, in *MsgUpdateVaultLockupPeriod, opts ...grpc.CallOption) (*MsgUpdateVaultLockupPeriodResponse, error)
+	// UpdateVaultMaxAmountUsd defines a method for updating the max amount of a
+	// vault.
+	UpdateVaultMaxAmountUsd(ctx context.Context, in *MsgUpdateVaultMaxAmountUsd, opts ...grpc.CallOption) (*MsgUpdateVaultMaxAmountUsdResponse, error)
 }
 
 type msgClient struct {
@@ -84,6 +94,42 @@ func (c *msgClient) PerformAction(ctx context.Context, in *MsgPerformAction, opt
 	return out, nil
 }
 
+func (c *msgClient) UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error) {
+	out := new(MsgUpdateVaultCoinsResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultCoins", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateVaultFees(ctx context.Context, in *MsgUpdateVaultFees, opts ...grpc.CallOption) (*MsgUpdateVaultFeesResponse, error) {
+	out := new(MsgUpdateVaultFeesResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultFees", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateVaultLockupPeriod(ctx context.Context, in *MsgUpdateVaultLockupPeriod, opts ...grpc.CallOption) (*MsgUpdateVaultLockupPeriodResponse, error) {
+	out := new(MsgUpdateVaultLockupPeriodResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultLockupPeriod", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateVaultMaxAmountUsd(ctx context.Context, in *MsgUpdateVaultMaxAmountUsd, opts ...grpc.CallOption) (*MsgUpdateVaultMaxAmountUsdResponse, error) {
+	out := new(MsgUpdateVaultMaxAmountUsdResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultMaxAmountUsd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -99,6 +145,16 @@ type MsgServer interface {
 	AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
 	PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error)
+	// UpdateVaultCoins defines a method for updating the coins of a vault.
+	UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error)
+	// UpdateVaultFees defines a method for updating the fees of a vault.
+	UpdateVaultFees(context.Context, *MsgUpdateVaultFees) (*MsgUpdateVaultFeesResponse, error)
+	// UpdateVaultLockupPeriod defines a method for updating the lockup period of
+	// a vault.
+	UpdateVaultLockupPeriod(context.Context, *MsgUpdateVaultLockupPeriod) (*MsgUpdateVaultLockupPeriodResponse, error)
+	// UpdateVaultMaxAmountUsd defines a method for updating the max amount of a
+	// vault.
+	UpdateVaultMaxAmountUsd(context.Context, *MsgUpdateVaultMaxAmountUsd) (*MsgUpdateVaultMaxAmountUsdResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -120,6 +176,18 @@ func (UnimplementedMsgServer) AddVault(context.Context, *MsgAddVault) (*MsgAddVa
 }
 func (UnimplementedMsgServer) PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PerformAction not implemented")
+}
+func (UnimplementedMsgServer) UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultCoins not implemented")
+}
+func (UnimplementedMsgServer) UpdateVaultFees(context.Context, *MsgUpdateVaultFees) (*MsgUpdateVaultFeesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultFees not implemented")
+}
+func (UnimplementedMsgServer) UpdateVaultLockupPeriod(context.Context, *MsgUpdateVaultLockupPeriod) (*MsgUpdateVaultLockupPeriodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultLockupPeriod not implemented")
+}
+func (UnimplementedMsgServer) UpdateVaultMaxAmountUsd(context.Context, *MsgUpdateVaultMaxAmountUsd) (*MsgUpdateVaultMaxAmountUsdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultMaxAmountUsd not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -224,6 +292,78 @@ func _Msg_PerformAction_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateVaultCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVaultCoins)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVaultCoins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/UpdateVaultCoins",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVaultCoins(ctx, req.(*MsgUpdateVaultCoins))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateVaultFees_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVaultFees)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVaultFees(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/UpdateVaultFees",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVaultFees(ctx, req.(*MsgUpdateVaultFees))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateVaultLockupPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVaultLockupPeriod)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVaultLockupPeriod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/UpdateVaultLockupPeriod",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVaultLockupPeriod(ctx, req.(*MsgUpdateVaultLockupPeriod))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateVaultMaxAmountUsd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVaultMaxAmountUsd)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVaultMaxAmountUsd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/UpdateVaultMaxAmountUsd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVaultMaxAmountUsd(ctx, req.(*MsgUpdateVaultMaxAmountUsd))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +390,22 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PerformAction",
 			Handler:    _Msg_PerformAction_Handler,
+		},
+		{
+			MethodName: "UpdateVaultCoins",
+			Handler:    _Msg_UpdateVaultCoins_Handler,
+		},
+		{
+			MethodName: "UpdateVaultFees",
+			Handler:    _Msg_UpdateVaultFees_Handler,
+		},
+		{
+			MethodName: "UpdateVaultLockupPeriod",
+			Handler:    _Msg_UpdateVaultLockupPeriod_Handler,
+		},
+		{
+			MethodName: "UpdateVaultMaxAmountUsd",
+			Handler:    _Msg_UpdateVaultMaxAmountUsd_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

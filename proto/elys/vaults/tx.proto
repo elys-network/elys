@@ -30,6 +30,19 @@ service Msg {
   rpc AddVault(MsgAddVault) returns (MsgAddVaultResponse);
   // PerformAction defines a method for performing an action on a vault.
   rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
+  // UpdateVaultCoins defines a method for updating the coins of a vault.
+  rpc UpdateVaultCoins(MsgUpdateVaultCoins)
+      returns (MsgUpdateVaultCoinsResponse);
+  // UpdateVaultFees defines a method for updating the fees of a vault.
+  rpc UpdateVaultFees(MsgUpdateVaultFees) returns (MsgUpdateVaultFeesResponse);
+  // UpdateVaultLockupPeriod defines a method for updating the lockup period of
+  // a vault.
+  rpc UpdateVaultLockupPeriod(MsgUpdateVaultLockupPeriod)
+      returns (MsgUpdateVaultLockupPeriodResponse);
+  // UpdateVaultMaxAmountUsd defines a method for updating the max amount of a
+  // vault.
+  rpc UpdateVaultMaxAmountUsd(MsgUpdateVaultMaxAmountUsd)
+      returns (MsgUpdateVaultMaxAmountUsdResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
