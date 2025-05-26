@@ -58,6 +58,9 @@ service Msg {
   rpc ClaimAirdrop(MsgClaimAirdrop) returns (MsgClaimAirdropResponse);
 
   rpc ClaimKol(MsgClaimKol) returns (MsgClaimKolResponse);
+
+  rpc ClaimRewardProgram(MsgClaimRewardProgram)
+      returns (MsgClaimRewardProgramResponse);
 }
 
 message MsgCommitClaimedRewards {
@@ -263,3 +266,17 @@ message MsgUpdateAirdropParams {
 }
 
 message MsgUpdateAirdropParamsResponse {}
+
+message MsgClaimRewardProgram {
+  option (cosmos.msg.v1.signer) = "claim_address";
+  option (amino.name) = "commitment/MsgClaimRewardProgram";
+  string claim_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgClaimRewardProgramResponse {
+  string eden_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

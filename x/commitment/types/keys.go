@@ -16,16 +16,19 @@ const (
 const MaxPageLimit = 10000
 
 var (
-	CommitmentsKeyPrefix    = []byte{0x01}
-	ParamsKey               = []byte{0x02}
-	AtomStakersKeyPrefix    = []byte{0x03}
-	NFTHoldersKeyPrefix     = []byte{0x04}
-	CadetsKeyPrefix         = []byte{0x05}
-	GovernorKeyPrefix       = []byte{0x06}
-	AirdropClaimedKeyPrefix = []byte{0x07}
-	TotalClaimedKeyPrefix   = []byte{0x08}
-	KolKeyPrefix            = []byte{0x09}
-	TotalSupplyKeyPrefix    = []byte{0x10}
+	CommitmentsKeyPrefix          = []byte{0x01}
+	ParamsKey                     = []byte{0x02}
+	AtomStakersKeyPrefix          = []byte{0x03}
+	NFTHoldersKeyPrefix           = []byte{0x04}
+	CadetsKeyPrefix               = []byte{0x05}
+	GovernorKeyPrefix             = []byte{0x06}
+	AirdropClaimedKeyPrefix       = []byte{0x07}
+	TotalClaimedKeyPrefix         = []byte{0x08}
+	KolKeyPrefix                  = []byte{0x09}
+	TotalSupplyKeyPrefix          = []byte{0x10}
+	MajorKeyPrefix                = []byte{0x11}
+	RewardProgramKeyPrefix        = []byte{0x12}
+	RewardProgramClaimedKeyPrefix = []byte{0x13}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {
@@ -54,4 +57,16 @@ func GetAirdropClaimedKey(addr sdk.AccAddress) []byte {
 
 func GetkolKey(addr sdk.AccAddress) []byte {
 	return append(KolKeyPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetMajorKey(addr sdk.AccAddress) []byte {
+	return append(MajorKeyPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetRewardProgramKey(addr sdk.AccAddress) []byte {
+	return append(RewardProgramKeyPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetRewardProgramClaimedKey(addr sdk.AccAddress) []byte {
+	return append(RewardProgramClaimedKeyPrefix, address.MustLengthPrefix(addr)...)
 }

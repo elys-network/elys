@@ -1,0 +1,85 @@
+package keeper
+
+import (
+	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
+)
+
+func (k Keeper) GetRewardProgram(ctx sdk.Context, address sdk.AccAddress) (val types.RewardProgram) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.GetRewardProgramKey(address))
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.Address = address.String()
+		val.Amount = math.ZeroInt()
+	}
+	return
+}
+
+func (k Keeper) SetRewardProgram(ctx sdk.Context, val types.RewardProgram) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetRewardProgramKey(sdk.MustAccAddressFromBech32(val.Address))
+	b := k.cdc.MustMarshal(&val)
+	store.Set(key, b)
+}
+
+func (k Keeper) GetAllRewardPrograms(ctx sdk.Context) (list []*types.RewardProgram) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.RewardProgramKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.RewardProgram
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
+
+func (k Keeper) GetRewardProgramClaimed(ctx sdk.Context, address sdk.AccAddress) (val types.AirdropClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.GetRewardProgramClaimedKey(address))
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.Claimed = false
+		val.Address = address.String()
+	}
+	return
+}
+
+func (k Keeper) SetRewardProgramClaimed(ctx sdk.Context, address sdk.AccAddress) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetRewardProgramClaimedKey(address)
+	val := types.AirdropClaimed{
+		Address: address.String(),
+		Claimed: true,
+	}
+	b := k.cdc.MustMarshal(&val)
+	store.Set(key, b)
+}
+
+func (k Keeper) GetAllRewardProgramClaimed(ctx sdk.Context) (list []*types.AirdropClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.RewardProgramClaimedKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.AirdropClaimed
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
