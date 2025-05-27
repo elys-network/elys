@@ -15,7 +15,8 @@ import (
 func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
 	p := Pool{
 		AmmPoolId:                            ammPool.PoolId,
-		Health:                               math.LegacyOneDec(),
+		BaseAssetLiabilitiesRatio:            math.LegacyZeroDec(),
+		QuoteAssetLiabilitiesRatio:           math.LegacyZeroDec(),
 		BorrowInterestRate:                   math.LegacyZeroDec(),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},
@@ -211,4 +212,22 @@ func (p PoolAsset) GetBigDecLiabilities() osmomath.BigDec {
 
 func (pool Pool) GetInsuranceAccount() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurance_fund/%d", pool.AmmPoolId))
+}
+
+func (perpetualPool Pool) GetPerpetualPoolBalancesByPosition(denom string, position Position) (math.Int, math.Int, math.Int, math.Int) {
+	poolAsset := perpetualPool.GetPoolAsset(position, denom)
+	return poolAsset.Liabilities, poolAsset.Custody, poolAsset.TakeProfitCustody, poolAsset.TakeProfitLiabilities
+}
+
+// Get Perpetual Pool Balance
+func (perpetualPool Pool) GetPerpetualPoolBalances(denom string) (math.Int, math.Int, math.Int, math.Int) {
+	liabilitiesLong, custodyLong, longTakeProfitCustody, longTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_LONG)
+	liabilitiesShort, custodyShort, shortTakeProfitCustody, shortTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_SHORT)
+
+	totalLiabilities := liabilitiesLong.Add(liabilitiesShort)
+	totalCustody := custodyLong.Add(custodyShort)
+	totalTakeProfitCustody := longTakeProfitCustody.Add(shortTakeProfitCustody)
+	totalTakeProfitLiabilities := longTakeProfitLiabilities.Add(shortTakeProfitLiabilities)
+
+	return totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities
 }

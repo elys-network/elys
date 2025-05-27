@@ -11,7 +11,6 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -43,22 +42,25 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if tradingAssetPrice.IsZero() {
 		return nil, errors.New("trading asset price is zero while opening perpetual")
 	}
-	ratio := osmomath.BigDecFromDec(msg.TakeProfitPrice).Quo(tradingAssetPrice)
-	if msg.Position == types.Position_LONG {
-		if ratio.LT(params.GetBigDecMinimumLongTakeProfitPriceRatio()) || ratio.GT(params.GetBigDecMaximumLongTakeProfitPriceRatio()) {
-			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
+	// if msg.TakeProfitPrice is not positive, then it has to be 0 because of validate basic
+	if msg.TakeProfitPrice.IsPositive() {
+		ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
+		if msg.Position == types.Position_LONG {
+			if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
+				return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
+			}
+			if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.GTE(tradingAssetPrice) {
+				return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
+			}
+			// no need to override msg.TakeProfitPrice as the above ratio checks it
 		}
-		if !msg.StopLossPrice.IsZero() && osmomath.BigDecFromDec(msg.StopLossPrice).GTE(tradingAssetPrice) {
-			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
-		}
-		// no need to override msg.TakeProfitPrice as the above ratio check it
-	}
-	if msg.Position == types.Position_SHORT {
-		if ratio.GT(params.GetBigDecMaximumShortTakeProfitPriceRatio()) {
-			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
-		}
-		if !msg.StopLossPrice.IsZero() && osmomath.BigDecFromDec(msg.StopLossPrice).LTE(tradingAssetPrice) {
-			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
+		if msg.Position == types.Position_SHORT {
+			if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
+				return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
+			}
+			if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.LTE(tradingAssetPrice) {
+				return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
+			}
 		}
 	}
 

@@ -82,12 +82,12 @@ func (k Keeper) GetBigDecHealthGainFactor(ctx sdk.Context) osmomath.BigDec {
 	return osmomath.BigDecFromDec(k.GetParams(ctx).HealthGainFactor)
 }
 
-func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.GetParams(ctx).PoolOpenThreshold
+func (k Keeper) GetPoolMaxLiabilitiesThreshold(ctx sdk.Context) sdkmath.LegacyDec {
+	return k.GetParams(ctx).PoolMaxLiabilitiesThreshold
 }
 
 func (k Keeper) GetBigDecPoolOpenThreshold(ctx sdk.Context) osmomath.BigDec {
-	return osmomath.BigDecFromDec(k.GetParams(ctx).PoolOpenThreshold)
+	return osmomath.BigDecFromDec(k.GetPoolMaxLiabilitiesThreshold(ctx))
 }
 
 func (k Keeper) GetBorrowInterestPaymentFundPercentage(ctx sdk.Context) sdkmath.LegacyDec {

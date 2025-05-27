@@ -1,12 +1,10 @@
 package keeper
 
 import (
-	"errors"
-	"fmt"
-
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -177,7 +175,10 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	if err != nil {
 		return nil, err
 	}
-	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	tradingAssetPrice, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
@@ -206,10 +207,10 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
-		TradingAssetPrice: tradingAssetPrice.Dec(),
+		TradingAssetPrice: tradingAssetPrice,
 		Pnl:               sdk.Coin{baseCurrency, pnl},
-		LiquidationPrice:  liquidationPrice.Dec(),
-		EffectiveLeverage: effectiveLeverage.Dec(),
+		LiquidationPrice:  liquidationPrice,
+		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
 			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
 			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
@@ -296,27 +297,27 @@ func (k Keeper) DeleteAllToPay(ctx sdk.Context) error {
 }
 
 func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
-	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral ( in USD)
+
+	if useTakeProfitPrice && !mtp.TakeProfitPrice.IsPositive() {
+		return math.ZeroInt(), nil
+	}
+
+	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral (in USD)
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	var tradingAssetPrice, tradingAssetPriceDenomRatio osmomath.BigDec
+	var tradingAssetPriceDenomRatio osmomath.BigDec
 	var err error
 	if useTakeProfitPrice {
-		tradingAssetPrice = mtp.GetBigDecTakeProfitPrice()
-		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
+		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
 		if err != nil {
 			return math.Int{}, err
 		}
 	} else {
-		tradingAssetPrice, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+		_, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 		if err != nil {
 			return math.Int{}, err
 		}
-	}
-
-	if tradingAssetPrice.IsZero() {
-		return math.Int{}, errors.New("trading asset price is zero")
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency
@@ -356,7 +357,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) osmomath.BigDec {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
 	liquidationPrice := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
@@ -373,14 +374,19 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) osmomath.Big
 		}
 	}
 
-	return liquidationPrice
+	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPrice, mtp.TradingAsset)
+	if err != nil {
+		return math.LegacyZeroDec(), err
+	}
+
+	return liquidationPrice.Dec(), nil
 }
 
 func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
-	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
 		return math.ZeroInt(), nil
 	}
-	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.GetBigDecTakeProfitPrice())
+	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
 	}

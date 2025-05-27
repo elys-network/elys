@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/utils"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -50,27 +49,10 @@ func (k Keeper) GetAndSetOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
 		openPrice = osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral)).Quo(mtp.GetBigDecLiabilities())
 	}
 
-	// right now units of open price is in base units, ex: uusdc per uatom, uusdc per wei, uusdc per satoshi
-	// we need to convert to usd per atom, usd per eth, usd per btc
-	baseCurrencyDenom := mtp.LiabilitiesAsset
-	if mtp.IsShort() {
-		baseCurrencyDenom = mtp.CollateralAsset
-	}
-	baseCurrencyDenomPrice, err := k.GetDenomPrice(ctx, baseCurrencyDenom)
+	openPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, openPrice, mtp.TradingAsset)
 	if err != nil {
 		return err
 	}
-
-	// Now the units are usd per uatom, usd per wei, usd per sat
-	openPrice = openPrice.Mul(baseCurrencyDenomPrice) // Now the units are usd per uatom, usd per wei, usd per sat
-
-	decimal, err := k.GetDenomDecimal(ctx, mtp.TradingAsset)
-	if err != nil {
-		return err
-	}
-
-	// Multiply by 10^decimal of taring asset
-	openPrice = openPrice.MulInt64(utils.Pow10Int64(decimal))
 
 	mtp.OpenPrice = openPrice.Dec()
 	return nil

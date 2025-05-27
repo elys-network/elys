@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -68,9 +69,9 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		maxCloseAmount = mtp.Liabilities
 	}
 
-	closingRatio := osmomath.OneBigDec()
+	closingRatio := sdkmath.LegacyOneDec()
 	if req.CloseAmount.IsPositive() && req.CloseAmount.LT(maxCloseAmount) {
-		closingRatio = osmomath.BigDecFromSDKInt(req.CloseAmount).Quo(osmomath.BigDecFromSDKInt(maxCloseAmount))
+		closingRatio = req.CloseAmount.ToLegacyDec().Quo(maxCloseAmount.ToLegacyDec())
 	}
 
 	repayAmount, payingLiabilities, slippage, weightBreakingFee, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
@@ -85,19 +86,22 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	}
 
 	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
-	mtp.Custody = mtp.GetBigDecCustody().Mul(osmomath.OneBigDec().Sub(closingRatio)).Dec().TruncateInt()
-	mtp.Collateral = mtp.GetBigDecCollateral().Mul(osmomath.OneBigDec().Sub(closingRatio)).Dec().TruncateInt()
+	mtp.Custody = mtp.Custody.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(closingRatio)).TruncateInt()
+	mtp.Collateral = mtp.Collateral.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 
-	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
-	executionPrice := osmomath.ZeroBigDec()
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
+	}
+	executionPrice := sdkmath.LegacyZeroDec()
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// executionPrice = payingLiabilities / repayAmount
-		executionPrice = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount))
+		executionPrice = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount)).Dec()
 	}
 	if mtp.Position == types.Position_SHORT {
 		// executionPrice = repayAmount / payingLiabilities
-		executionPrice = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities))
+		executionPrice = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities)).Dec()
 	}
 
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
@@ -114,10 +118,10 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		Liabilities:                   sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		Custody:                       sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Collateral:                    sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral),
-		PriceImpact:                   priceImpact.Dec(),
-		LiquidationPrice:              liquidationPrice.Dec(),
+		PriceImpact:                   priceImpact,
+		LiquidationPrice:              liquidationPrice,
 		MaxCloseAmount:                maxCloseAmount,
-		ClosingPrice:                  executionPrice.Dec(),
+		ClosingPrice:                  executionPrice,
 		BorrowInterestUnpaidLiability: sdk.NewCoin(mtp.LiabilitiesAsset, unpaidInterestLiability),
 		ReturningAmount:               sdk.NewCoin(mtp.CustodyAsset, returnAmount),
 		PayingLiabilities:             sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities),

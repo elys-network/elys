@@ -38,7 +38,7 @@ message Params {
     (gogoproto.nullable) = false
   ];
   int64 max_open_positions = 7;
-  string pool_open_threshold = 8 [
+  string pool_max_liabilities_threshold = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
