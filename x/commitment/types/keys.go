@@ -58,10 +58,6 @@ func GetkolKey(addr sdk.AccAddress) []byte {
 	return append(KolKeyPrefix, address.MustLengthPrefix(addr)...)
 }
 
-func GetMajorKey(addr sdk.AccAddress) []byte {
-	return append(MajorKeyPrefix, address.MustLengthPrefix(addr)...)
-}
-
 func GetRewardProgramKey(addr sdk.AccAddress) []byte {
 	return append(RewardProgramKeyPrefix, address.MustLengthPrefix(addr)...)
 }
