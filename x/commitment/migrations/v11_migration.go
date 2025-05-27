@@ -16,7 +16,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		m.keeper.SetRewardProgram(ctx, rewardProgram)
 	}
 
-	if ctx.ChainID() == "elys-testnet-1" {
+	if ctx.ChainID() == "elysicstestnet-1" || ctx.ChainID() == "elysics-1" {
 		for _, rewardProgram := range RewardProgramTestnet {
 			m.keeper.SetRewardProgram(ctx, rewardProgram)
 		}
