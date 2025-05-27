@@ -38,8 +38,8 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, status.Error(codes.InvalidArgument, "leverage must be greater than one")
 	}
 
-	// TODO use accounted pool balance
-	tradingAssetLiquidity, err := ammPool.GetAmmPoolBalance(req.TradingAsset)
+	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, req.PoolId)
+	tradingAssetLiquidity, err := snapshot.GetAmmPoolBalance(req.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -81,11 +81,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 	}
 
-	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
-		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
-	}
-	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(assetPriceAtOpen) {
-		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
+	if req.TakeProfitPrice.IsPositive() {
+		if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
+			return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
+		}
+		if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(assetPriceAtOpen) {
+			return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
+		}
 	}
 
 	// retrieve denom in decimals
@@ -193,9 +195,12 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
-	estimatedPnLAmount, err := k.GetEstimatedPnL(ctx, *mtp, baseCurrency, true)
-	if err != nil {
-		return nil, err
+	estimatedPnLAmount := math.ZeroInt()
+	if req.TakeProfitPrice.IsPositive() {
+		estimatedPnLAmount, err = k.GetEstimatedPnL(ctx, *mtp, baseCurrency, true)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, req.PoolId, mtp.TakeProfitBorrowFactor)

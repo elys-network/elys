@@ -4,7 +4,6 @@ import (
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"errors"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -298,28 +297,27 @@ func (k Keeper) DeleteAllToPay(ctx sdk.Context) error {
 }
 
 func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
-	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral ( in USD)
+
+	if useTakeProfitPrice && !mtp.TakeProfitPrice.IsPositive() {
+		return math.ZeroInt(), nil
+	}
+
+	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral (in USD)
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	var tradingAssetPrice math.LegacyDec
 	var tradingAssetPriceDenomRatio osmomath.BigDec
 	var err error
 	if useTakeProfitPrice {
-		tradingAssetPrice = mtp.TakeProfitPrice
-		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
+		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
 		if err != nil {
 			return math.Int{}, err
 		}
 	} else {
-		tradingAssetPrice, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+		_, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 		if err != nil {
 			return math.Int{}, err
 		}
-	}
-
-	if tradingAssetPrice.IsZero() {
-		return math.Int{}, errors.New("trading asset price is zero")
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency

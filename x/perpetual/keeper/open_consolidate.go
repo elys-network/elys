@@ -48,7 +48,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	// overwrite take profit price instead of taking average of both take profit prices
-	if !msg.TakeProfitPrice.IsNil() {
+	if msg.TakeProfitPrice.IsPositive() {
 		existingMtp.TakeProfitPrice = msg.TakeProfitPrice
 	}
 
