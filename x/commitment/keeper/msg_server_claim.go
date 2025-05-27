@@ -63,6 +63,16 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 		return nil, types.ErrMaxEdenAmountReached
 	}
 
+	// Emit event for reward program claim
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeClaimRewardProgram,
+			sdk.NewAttribute(types.AttributeKeyClaimAddress, msg.ClaimAddress),
+			sdk.NewAttribute(types.AttributeKeyEdenAmount, edenAmount.String()),
+			sdk.NewAttribute(types.AttributeKeyTotalEdenClaimed, total.TotalEdenClaimed.String()),
+		),
+	)
+
 	return &types.MsgClaimRewardProgramResponse{
 		EdenAmount: edenAmount,
 	}, nil
