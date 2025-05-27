@@ -129,6 +129,10 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		Symbol:  poolShareDisplayDenom,
 	})
 
+	err = pool.Validate()
+	if err != nil {
+		return err
+	}
 	k.SetPool(ctx, *pool)
 
 	if k.hooks != nil {
