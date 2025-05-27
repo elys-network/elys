@@ -60,6 +60,10 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, newPoolParams t
 		}
 	}
 	pool.PoolParams = newPoolParams
+	err := pool.Validate()
+	if err != nil {
+		return 0, types.PoolParams{}, err
+	}
 	k.SetPool(ctx, pool)
 	return pool.PoolId, pool.PoolParams, nil
 }

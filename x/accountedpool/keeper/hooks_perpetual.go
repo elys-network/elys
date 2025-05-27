@@ -28,9 +28,7 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 		if EnableTakeProfitCustodyLiabilities {
 			accountedPoolAmt = accountedPoolAmt.Add(totalTakeProfitCustody).Sub(totalTakeProfitLiabilities)
 		}
-		if !totalLiabilities.IsZero() {
 
-		}
 		//netTotalCustody = netTotalCustody.Add(sdk.NewCoin(asset.Denom, totalCustody))
 		//netTotalLiabilities = netTotalLiabilities.Add(sdk.NewCoin(asset.Denom, totalLiabilities))
 		//netTotalTakeProfitCustody = netTotalTakeProfitCustody.Add(sdk.NewCoin(asset.Denom, totalTakeProfitCustody))
