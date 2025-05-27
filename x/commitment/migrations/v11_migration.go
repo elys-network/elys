@@ -6,9 +6,10 @@ import (
 
 func (m Migrator) V11Migration(ctx sdk.Context) error {
 	params := m.keeper.GetParams(ctx)
-	// TODO: Set to actual height
-	params.StartRewardProgramClaimHeight = 1000000
-	params.EndRewardProgramClaimHeight = 1000000
+	// May 29th 7pm UTC approx based 3.8s block time
+	params.StartRewardProgramClaimHeight = 3_908_564
+	// After 31 days of the start height
+	params.EndRewardProgramClaimHeight = 4_613_406
 	m.keeper.SetParams(ctx, params)
 
 	for _, rewardProgram := range RewardProgram {
