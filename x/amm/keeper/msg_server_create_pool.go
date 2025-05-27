@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -22,9 +21,9 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	// Pay pool creation fee
 	params := k.GetParams(ctx)
 
-	if !params.IsCreatorAllowed(msg.Sender) {
-		return nil, errors.New("sender is not allowed to create pool")
-	}
+	// if !params.IsCreatorAllowed(msg.Sender) {
+	// 	return nil, errors.New("sender is not allowed to create pool")
+	// }
 
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
@@ -37,6 +36,13 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	}
 	if !baseAssetExists {
 		return nil, errorsmod.Wrapf(types.ErrOnlyBaseAssetsPoolAllowed, "one of the asset must be from %s", strings.Join(params.BaseAssets, ", "))
+	}
+
+	if !params.IsCreatorAllowed(msg.Sender) {
+		poolExistForSameAssets := k.Keeper.CheckExistingPoolWithSameAssets(ctx, msg.PoolAssets)
+		if poolExistForSameAssets {
+			return nil, types.ErrPoolExistsWithSameAssets
+		}
 	}
 
 	feeAssetExists := k.CheckBaseAssetExist(ctx, msg.PoolParams.FeeDenom)
