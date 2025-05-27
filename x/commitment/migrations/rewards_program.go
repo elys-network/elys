@@ -18222,11 +18222,6 @@ var RewardProgram = []types.RewardProgram{
 		Claimed: false,
 	},
 	{
-		Address: "elys14hmzeg0jsm7sty59vxqvcpm7wpuc3q0pz490x0_DELETED",
-		Amount:  math.NewInt(400000),
-		Claimed: false,
-	},
-	{
 		Address: "elys19dl6gws9t0w2qrme9k2n48v8mpargdrsf0228r",
 		Amount:  math.NewInt(400000),
 		Claimed: false,
