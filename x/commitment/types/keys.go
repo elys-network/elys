@@ -26,9 +26,8 @@ var (
 	TotalClaimedKeyPrefix              = []byte{0x08}
 	KolKeyPrefix                       = []byte{0x09}
 	TotalSupplyKeyPrefix               = []byte{0x10}
-	MajorKeyPrefix                     = []byte{0x11}
-	RewardProgramKeyPrefix             = []byte{0x12}
-	TotalRewardProgramClaimedKeyPrefix = []byte{0x13}
+	RewardProgramKeyPrefix             = []byte{0x11}
+	TotalRewardProgramClaimedKeyPrefix = []byte{0x12}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {
