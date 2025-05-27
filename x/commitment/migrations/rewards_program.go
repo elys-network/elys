@@ -2732,7 +2732,7 @@ var RewardProgram = []types.RewardProgram{
 		Claimed: false,
 	},
 	{
-		Address: "stars1tppd4j6l6fwtm5nyhqhnkpzuf94zv9rpvdyh56",
+		Address: "elys1tppd4j6l6fwtm5nyhqhnkpzuf94zv9rp7a3n7x",
 		Amount:  math.NewInt(375000000),
 		Claimed: false,
 	},
