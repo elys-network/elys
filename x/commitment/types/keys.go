@@ -28,8 +28,7 @@ var (
 	TotalSupplyKeyPrefix               = []byte{0x10}
 	MajorKeyPrefix                     = []byte{0x11}
 	RewardProgramKeyPrefix             = []byte{0x12}
-	RewardProgramClaimedKeyPrefix      = []byte{0x13}
-	TotalRewardProgramClaimedKeyPrefix = []byte{0x14}
+	TotalRewardProgramClaimedKeyPrefix = []byte{0x13}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {
@@ -66,8 +65,4 @@ func GetMajorKey(addr sdk.AccAddress) []byte {
 
 func GetRewardProgramKey(addr sdk.AccAddress) []byte {
 	return append(RewardProgramKeyPrefix, address.MustLengthPrefix(addr)...)
-}
-
-func GetRewardProgramClaimedKey(addr sdk.AccAddress) []byte {
-	return append(RewardProgramClaimedKeyPrefix, address.MustLengthPrefix(addr)...)
 }

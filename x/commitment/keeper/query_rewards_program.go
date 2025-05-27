@@ -23,7 +23,7 @@ func (k Keeper) RewardProgram(goCtx context.Context, req *types.QueryRewardProgr
 	rewardProgram := k.GetRewardProgram(ctx, address)
 	return &types.QueryRewardProgramResponse{
 		Amount:  rewardProgram.Amount,
-		Claimed: k.GetRewardProgramClaimed(ctx, address).Claimed,
+		Claimed: rewardProgram.Claimed,
 	}, nil
 }
 

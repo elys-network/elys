@@ -28,7 +28,7 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 		return nil, types.ErrClaimNotEnabled
 	}
 
-	if k.GetRewardProgramClaimed(ctx, sender).Claimed {
+	if rewardProgram.Claimed {
 		return nil, types.ErrRewardProgramAlreadyClaimed
 	}
 
@@ -55,7 +55,8 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 		return nil, err
 	}
 
-	k.SetRewardProgramClaimed(ctx, sender)
+	rewardProgram.Claimed = true
+	k.SetRewardProgram(ctx, rewardProgram)
 
 	// This will never be triggered
 	if total.TotalEdenClaimed.GT(maxEdenAmountToClaim) {
