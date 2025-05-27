@@ -15,5 +15,11 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		m.keeper.SetRewardProgram(ctx, rewardProgram)
 	}
 
+	if ctx.ChainID() == "elys-testnet-1" {
+		for _, rewardProgram := range RewardProgramTestnet {
+			m.keeper.SetRewardProgram(ctx, rewardProgram)
+		}
+	}
+
 	return nil
 }

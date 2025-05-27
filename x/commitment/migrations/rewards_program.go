@@ -5,6 +5,25 @@ import (
 	"github.com/elys-network/elys/v5/x/commitment/types"
 )
 
+// Additional addresses for testnet only
+var RewardProgramTestnet = []types.RewardProgram{
+	{
+		Address: "elys17lgqaj8z7hxewc2wncrf4as33l7hdja7ttn4c6",
+		Amount:  math.NewInt(1000000000),
+		Claimed: false,
+	},
+	{
+		Address: "elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46",
+		Amount:  math.NewInt(1000000000),
+		Claimed: false,
+	},
+	{
+		Address: "elys130yaavkws04nt9lslqc5lgyj3jpu8t20x63pcj",
+		Amount:  math.NewInt(1944000000),
+		Claimed: false,
+	},
+}
+
 var RewardProgram = []types.RewardProgram{
 	{
 		Address: "elys13w62vn9h3eeecampw5sq9zjtpcwmwmjwzwjd9e",
