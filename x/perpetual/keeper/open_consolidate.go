@@ -45,9 +45,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	if !newMtp.Liabilities.IsZero() {
 		consolidatedOpenPrice := (existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecOpenPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecOpenPrice()))).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
 		existingMtp.OpenPrice = consolidatedOpenPrice.Dec()
+	}
 
-		consolidatedTakeProfitPrice := existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecTakeProfitPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecTakeProfitPrice())).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
-		existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice.Dec()
+	// overwrite take profit price instead of taking average of both take profit prices
+	if msg.TakeProfitPrice.IsPositive() {
+		existingMtp.TakeProfitPrice = msg.TakeProfitPrice
 	}
 
 	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
@@ -69,7 +71,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp).Dec()
+		liquidationPrice, err := k.GetLiquidationPrice(ctx, *existingMtp)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
+		}
+		stopLossPrice = liquidationPrice
 	}
 	existingMtp.StopLossPrice = stopLossPrice
 

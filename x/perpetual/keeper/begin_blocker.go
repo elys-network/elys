@@ -1,9 +1,9 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -16,11 +16,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			ctx.Logger().Error(err.Error())
 			continue
 		}
-		pool.BorrowInterestRate = rate.Dec()
+		pool.BorrowInterestRate = rate
 		pool.LastHeightBorrowInterestRateComputed = currentHeight
 
 		k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
-			InterestRate: rate.Dec(),
+			InterestRate: rate,
 			BlockHeight:  ctx.BlockHeight(),
 			BlockTime:    ctx.BlockTime().Unix(),
 		})
@@ -32,41 +32,41 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 		fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
-		pool.FundingRate = fundingRateLong.Dec()
+		pool.FundingRate = fundingRateLong
 		if fundingRateLong.IsZero() {
-			pool.FundingRate = fundingRateShort.Dec().Neg()
+			pool.FundingRate = fundingRateShort.Neg()
 		}
 
 		totalLongOpenInterest := pool.GetTotalLongOpenInterest()
 		totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 		blocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-		fundingAmountLong := osmomath.BigDecFromSDKInt(types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong)).QuoInt64(blocksPerYear)
-		fundingAmountShort := osmomath.BigDecFromSDKInt(types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort)).QuoInt64(blocksPerYear)
+		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().QuoInt64(blocksPerYear)
+		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().QuoInt64(blocksPerYear)
 
-		fundingShareLong := osmomath.ZeroBigDec()
+		fundingShareLong := math.LegacyZeroDec()
 		if totalShortOpenInterest.IsPositive() {
-			fundingShareLong = fundingAmountLong.Quo(osmomath.BigDecFromSDKInt(totalShortOpenInterest))
+			fundingShareLong = fundingAmountLong.Quo(totalShortOpenInterest.ToLegacyDec())
 		}
 
-		fundingShareShort := osmomath.ZeroBigDec()
+		fundingShareShort := math.LegacyZeroDec()
 		if totalLongOpenInterest.IsPositive() {
-			fundingShareShort = fundingAmountShort.Quo(osmomath.BigDecFromSDKInt(totalLongOpenInterest))
+			fundingShareShort = fundingAmountShort.Quo(totalLongOpenInterest.ToLegacyDec())
 		}
 
 		k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
 			BlockHeight:       ctx.BlockHeight(),
 			BlockTime:         ctx.BlockTime().Unix(),
-			FundingRateLong:   fundingRateLong.Dec(),
-			FundingRateShort:  fundingRateShort.Dec(),
-			FundingShareShort: fundingShareShort.Dec(),
-			FundingShareLong:  fundingShareLong.Dec(),
+			FundingRateLong:   fundingRateLong,
+			FundingRateShort:  fundingRateShort,
+			FundingShareShort: fundingShareShort,
+			FundingShareLong:  fundingShareLong,
 		})
 		k.SetPool(ctx, pool)
 	}
 }
 
-func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (osmomath.BigDec, osmomath.BigDec) {
+func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (math.LegacyDec, math.LegacyDec) {
 	// Custody amount for long is trading asset -
 	// Liability amount for short is trading asset
 	// popular_rate = fixed_rate * abs(Custody-Liability) / (Custody+Liability)
@@ -74,19 +74,19 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (osmomath.B
 	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 	if totalLongOpenInterest.IsZero() || totalShortOpenInterest.IsZero() {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
-	fixedRate := k.GetParams(ctx).GetBigDecFixedFundingRate()
+	fixedRate := k.GetParams(ctx).FixedFundingRate
 	if totalLongOpenInterest.GT(totalShortOpenInterest) {
 		// long is popular
 		// long pays short
-		netLongRatio := osmomath.BigDecFromSDKInt(totalLongOpenInterest.Sub(totalShortOpenInterest)).Quo(osmomath.BigDecFromSDKInt(totalLongOpenInterest.Add(totalShortOpenInterest)))
-		return netLongRatio.Mul(fixedRate), osmomath.ZeroBigDec()
+		netLongRatio := (totalLongOpenInterest.Sub(totalShortOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
+		return netLongRatio.Mul(fixedRate), math.LegacyZeroDec()
 	} else {
 		// short is popular
 		// short pays long
-		netShortRatio := osmomath.BigDecFromSDKInt(totalShortOpenInterest.Sub(totalLongOpenInterest)).Quo(osmomath.BigDecFromSDKInt(totalLongOpenInterest.Add(totalShortOpenInterest)))
-		return osmomath.ZeroBigDec(), netShortRatio.Mul(fixedRate)
+		netShortRatio := (totalShortOpenInterest.Sub(totalLongOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
+		return math.LegacyZeroDec(), netShortRatio.Mul(fixedRate)
 	}
 }

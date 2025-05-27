@@ -13,31 +13,31 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 	longCollectedShare, shortCollectedShare := k.GetFundingDistributionValue(ctx, mtp.LastFundingCalcBlock, pool.AmmPoolId)
 	amountDistributed := sdkmath.ZeroInt()
 	if mtp.Position == types.Position_LONG {
-		fundingFeeAmount := mtp.GetBigDecCustody().Mul(shortCollectedShare)
+		fundingFeeAmount := shortCollectedShare.MulInt(mtp.Custody).TruncateInt()
 		if fundingFeeAmount.IsZero() {
 			return amountDistributed, nil
 		}
 
-		amountDistributed = fundingFeeAmount.Dec().TruncateInt()
+		amountDistributed = fundingFeeAmount
 		// update mtp custody
-		mtp.Custody = mtp.Custody.Add(fundingFeeAmount.Dec().TruncateInt())
+		mtp.Custody = mtp.Custody.Add(fundingFeeAmount)
 
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(mtp.CustodyAsset, fundingFeeAmount.Dec().TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.CustodyAsset, fundingFeeAmount, false)
 		if err != nil {
 			return sdkmath.ZeroInt(), err
 		}
 
 		// update pool custody balance
-		err = pool.UpdateCustody(mtp.CustodyAsset, fundingFeeAmount.Dec().TruncateInt(), true, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, fundingFeeAmount, true, mtp.Position)
 		if err != nil {
 			return sdkmath.ZeroInt(), err
 		}
 
 		// add payment to total funding fee paid in custody asset
-		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Dec().TruncateInt())
+		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount)
 	} else {
-		fundingFeeAmount := mtp.GetBigDecLiabilities().Mul(longCollectedShare).Dec().TruncateInt()
+		fundingFeeAmount := longCollectedShare.MulInt(mtp.Liabilities).TruncateInt()
 
 		// adding case for fundingFeeAmount being smaller tha 10^-18
 		if fundingFeeAmount.IsZero() {
