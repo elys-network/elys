@@ -8,7 +8,6 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
@@ -48,14 +47,14 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	}
 
 	params := k.GetParams(ctx)
-	ratio := osmomath.BigDecFromDec(msg.Price).Quo(tradingAssetPrice)
+	ratio := msg.Price.Quo(tradingAssetPrice)
 	if mtp.Position == types.Position_LONG {
-		if ratio.LT(params.GetBigDecMinimumLongTakeProfitPriceRatio()) || ratio.GT(params.GetBigDecMaximumLongTakeProfitPriceRatio()) {
+		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
-		if ratio.GT(params.GetBigDecMaximumShortTakeProfitPriceRatio()) {
+		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}

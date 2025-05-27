@@ -115,8 +115,8 @@ func (suite *PerpetualKeeperTestSuite) TestComputeFundingRate() {
 			pool.PoolAssetsLong[0].Collateral = tc.Collateral
 			pool.PoolAssetsShort[0].Liabilities = tc.Liabilities
 			longRate, shortRate := suite.app.PerpetualKeeper.ComputeFundingRate(suite.ctx, pool)
-			suite.Require().Equal(tc.expectLongRate, longRate.Dec())
-			suite.Require().Equal(tc.expectShortRate, shortRate.Dec())
+			suite.Require().Equal(tc.expectLongRate, longRate)
+			suite.Require().Equal(tc.expectShortRate, shortRate)
 		})
 	}
 }

@@ -19,9 +19,9 @@ func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.In
 	}
 
 	// This already gives a floor tested value for interest rate
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.GetBigDecTakeProfitBorrowFactor())
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPayment := osmomath.BigDecFromSDKInt(totalLiability).Mul(borrowInterestRate).Dec().TruncateInt()
+	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
 	return borrowInterestPayment
 }
 
