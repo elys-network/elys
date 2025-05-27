@@ -40,6 +40,8 @@ message Params {
   bool enable_claim = 7;
   uint64 start_kol_claim_height = 8;
   uint64 end_kol_claim_height = 9;
+  uint64 start_reward_program_claim_height = 10;
+  uint64 end_reward_program_claim_height = 11;
 }
 
 message VestingInfo {

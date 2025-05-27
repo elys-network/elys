@@ -23,6 +23,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUnstake{}, "commitment/MsgUnstake")
 	legacy.RegisterAminoMsg(cdc, &MsgClaimAirdrop{}, "commitment/MsgClaimAirdrop")
 	legacy.RegisterAminoMsg(cdc, &MsgClaimKol{}, "commitment/MsgClaimKol")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewardProgram{}, "commitment/MsgClaimRewardProgram")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -42,6 +43,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUnstake{},
 		&MsgClaimAirdrop{},
 		&MsgClaimKol{},
+		&MsgClaimRewardProgram{},
 	)
 	// this line is used by starport scaffolding # 3
 

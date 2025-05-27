@@ -71,3 +71,13 @@ message KolList {
   bool claimed = 3;
   bool refunded = 4;
 }
+
+message RewardProgram {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool claimed = 3;
+}
