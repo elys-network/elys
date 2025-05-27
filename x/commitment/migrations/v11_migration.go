@@ -10,6 +10,10 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 	params.StartRewardProgramClaimHeight = 1000000
 	params.EndRewardProgramClaimHeight = 1000000
 	m.keeper.SetParams(ctx, params)
-	// TODO: Add rewards program to list
+
+	for _, rewardProgram := range RewardProgram {
+		m.keeper.SetRewardProgram(ctx, rewardProgram)
+	}
+
 	return nil
 }
