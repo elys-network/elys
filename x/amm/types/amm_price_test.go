@@ -67,7 +67,7 @@ func TestGetTokenARate(t *testing.T) {
 			"unknownToken",
 			"tokenB",
 			osmomath.ZeroBigDec(),
-			"token price not set: unknownToken",
+			"token price not set or zero for token: unknownToken",
 		},
 		{
 			"token price not set for tokenB",
@@ -81,7 +81,7 @@ func TestGetTokenARate(t *testing.T) {
 			"tokenA",
 			"unknownToken",
 			osmomath.ZeroBigDec(),
-			"token price not set: unknownToken",
+			"token price not set or zero for token: unknownToken",
 		},
 		{
 			"Success with oracle pricing",
