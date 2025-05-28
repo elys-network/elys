@@ -3,8 +3,9 @@ package types
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
+	"github.com/elys-network/elys/v5/utils"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -18,7 +19,7 @@ func (p *Pool) GetTokenARate(
 	if !p.PoolParams.UseOracle {
 		Aasset, Basset, err := p.parsePoolAssetsByDenoms(tokenA, tokenB)
 		if err != nil {
-			return osmomath.ZeroBigDec(), err
+			return osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "failed to parse pool assets for tokens %s and %s", tokenA, tokenB)
 		}
 		return CalculateTokenARate(
 			osmomath.BigDecFromSDKInt(Aasset.Token.Amount), osmomath.BigDecFromSDKInt(Aasset.Weight),
@@ -28,11 +29,11 @@ func (p *Pool) GetTokenARate(
 
 	priceA := oracleKeeper.GetDenomPrice(ctx, tokenA)
 	if priceA.IsZero() {
-		return osmomath.ZeroBigDec(), fmt.Errorf("token price not set: %s", tokenA)
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token price not set or zero for token: %s", tokenA)
 	}
 	priceB := oracleKeeper.GetDenomPrice(ctx, tokenB)
 	if priceB.IsZero() {
-		return osmomath.ZeroBigDec(), fmt.Errorf("token price not set: %s", tokenB)
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token price not set or zero for token: %s", tokenB)
 	}
 
 	return priceA.Quo(priceB), nil

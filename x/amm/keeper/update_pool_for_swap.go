@@ -3,7 +3,7 @@ package keeper
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -149,7 +149,7 @@ func (k Keeper) UpdatePoolForSwap(
 			}
 
 			// Track amount in pool
-			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
+			var weightRecoveryFeeAmountForPool sdkmath.Int
 			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
 			if givenOut {
 				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
@@ -195,7 +195,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// convert the fees into USD
 	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
-	slippageAmountInUSD := osmomath.ZeroBigDec()
+	var slippageAmountInUSD osmomath.BigDec
 	if givenOut {
 		slippageAmountInUSD = k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
 	} else {

@@ -7,13 +7,7 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
-	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -72,8 +66,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			app.AssetprofileKeeper.FixEntries(ctx)
-
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
@@ -83,25 +75,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			//		return nil, err
 			//	}
 			//}
-
-			// 250USDC from protocol account to masterchef
-			params := app.MasterchefKeeper.GetParams(ctx)
-			protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-			if err != nil {
-				return vm, errorsmod.Wrapf(err, "invalid protocol revenue address")
-			}
-
-			// Create 250 USDC coin
-			// get usdc denom
-			usdcDenom, _ := app.AssetprofileKeeper.GetUsdcDenom(ctx)
-			usdcAmount := sdk.NewCoin(usdcDenom, sdkmath.NewInt(250000000)) // 250 USDC with 6 decimals
-
-			// Send coins from protocol revenue address to masterchef module
-			err = app.BankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.NewCoins(usdcAmount))
-			if err != nil {
-				// log error
-				app.Logger().Error("failed to send USDC to masterchef", "error", err)
-			}
 
 			return vm, vmErr
 		},
@@ -122,9 +95,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			//Added:   []string{},
+			//Added: []string{ibchookstypes.StoreKey, packetforwardtypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
-			Deleted: []string{"itransferhook"},
+			//Deleted: []string{ibcfeetypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

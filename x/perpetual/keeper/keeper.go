@@ -11,10 +11,10 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v5/x/parameter/keeper"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v5/x/tier/keeper"
 )
 
 type (
@@ -215,65 +215,66 @@ func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receive
 	return nil
 }
 
-func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (osmomath.BigDec, error) {
+func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (math.LegacyDec, error) {
 	poolAssets := pool.GetPoolAssets(position)
-	targetBorrowInterestRate := osmomath.OneBigDec()
+	targetBorrowInterestRate := math.LegacyOneDec()
 	for _, asset := range *poolAssets {
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
-			return osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), err
 		}
 
-		balance := osmomath.BigDecFromSDKInt(ammBalance.Sub(asset.Custody))
-		liabilities := asset.GetBigDecLiabilities()
+		balance := ammBalance.Sub(asset.Custody)
+		liabilities := asset.Liabilities
 
 		// Ensure balance is not zero to avoid division by zero
 		if balance.IsZero() {
-			return osmomath.ZeroBigDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 		if balance.Add(liabilities).IsZero() {
-			return osmomath.ZeroBigDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 
-		mul := balance.Add(liabilities).Quo(balance)
+		mul := balance.Add(liabilities).ToLegacyDec().Quo(balance.ToLegacyDec())
 		targetBorrowInterestRate = targetBorrowInterestRate.Mul(mul)
 	}
 	return targetBorrowInterestRate, nil
 }
 
-func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (osmomath.BigDec, error) {
+func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (math.LegacyDec, error) {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+	params := k.GetParams(ctx)
 	if !found {
-		return osmomath.ZeroBigDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
+		return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
 	}
 
-	borrowInterestRateMax := k.GetBigDecBorrowInterestRateMax(ctx)
-	borrowInterestRateMin := k.GetBigDecBorrowInterestRateMin(ctx)
-	borrowInterestRateIncrease := k.GetBigDecBorrowInterestRateIncrease(ctx)
-	borrowInterestRateDecrease := k.GetBigDecBorrowInterestRateDecrease(ctx)
-	healthGainFactor := k.GetBigDecHealthGainFactor(ctx)
+	borrowInterestRateMax := params.BorrowInterestRateMax
+	borrowInterestRateMin := params.BorrowInterestRateMin
+	borrowInterestRateIncrease := params.BorrowInterestRateIncrease
+	borrowInterestRateDecrease := params.BorrowInterestRateDecrease
+	healthGainFactor := params.HealthGainFactor
 
-	prevBorrowInterestRate := pool.GetBigDecBorrowInterestRate()
+	prevBorrowInterestRate := pool.BorrowInterestRate
 
 	targetBorrowInterestRate := healthGainFactor
 	targetBorrowInterestRateLong, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_LONG)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRateShort, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_SHORT)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
 
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate
-	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(osmomath.NewBigDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
+	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
 		borrowInterestRate = targetBorrowInterestRate
 	} else if borrowInterestRateChange.GT(borrowInterestRateIncrease) {
 		borrowInterestRate = prevBorrowInterestRate.Add(borrowInterestRateIncrease)
-	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(osmomath.NewBigDec(-1))) {
+	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) {
 		borrowInterestRate = prevBorrowInterestRate.Sub(borrowInterestRateDecrease)
 	}
 

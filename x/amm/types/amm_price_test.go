@@ -5,13 +5,13 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/amm/types/mocks"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/types/mocks"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 func TestGetTokenARate(t *testing.T) {
@@ -67,7 +67,7 @@ func TestGetTokenARate(t *testing.T) {
 			"unknownToken",
 			"tokenB",
 			osmomath.ZeroBigDec(),
-			"token price not set: unknownToken",
+			"token price not set or zero for token: unknownToken",
 		},
 		{
 			"token price not set for tokenB",
@@ -81,7 +81,7 @@ func TestGetTokenARate(t *testing.T) {
 			"tokenA",
 			"unknownToken",
 			osmomath.ZeroBigDec(),
-			"token price not set: unknownToken",
+			"token price not set or zero for token: unknownToken",
 		},
 		{
 			"Success with oracle pricing",

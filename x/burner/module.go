@@ -17,9 +17,9 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/burner/client/cli"
-	"github.com/elys-network/elys/x/burner/keeper"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v5/x/burner/client/cli"
+	"github.com/elys-network/elys/v5/x/burner/keeper"
+	"github.com/elys-network/elys/v5/x/burner/types"
 )
 
 var (

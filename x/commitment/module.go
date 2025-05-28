@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/commitment/client/cli"
-	"github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/commitment/migrations"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/commitment/client/cli"
+	"github.com/elys-network/elys/v5/x/commitment/keeper"
+	"github.com/elys-network/elys/v5/x/commitment/migrations"
+	"github.com/elys-network/elys/v5/x/commitment/types"
 )
 
 var (
@@ -123,7 +123,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 	m := migrations.NewMigrator(am.keeper)
-	err := cfg.RegisterMigration(types.ModuleName, 9, m.V10Migration)
+	err := cfg.RegisterMigration(types.ModuleName, 10, m.V11Migration)
 	if err != nil {
 		panic(err)
 	}
@@ -150,7 +150,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion is a sequence number for state-breaking change of the module. It should be incremented on each consensus-breaking change introduced by the module. To avoid wrong/empty versions, the initial version should be set to 1
-func (AppModule) ConsensusVersion() uint64 { return 10 }
+func (AppModule) ConsensusVersion() uint64 { return 11 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
 func (am AppModule) BeginBlock(_ context.Context) error {

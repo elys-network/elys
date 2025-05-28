@@ -32,7 +32,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	"github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/v5/app"
 	"github.com/stretchr/testify/require"
 )
 

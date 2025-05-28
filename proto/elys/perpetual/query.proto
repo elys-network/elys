@@ -11,7 +11,7 @@ import "elys/perpetual/pool.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v5/x/perpetual/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -316,55 +316,60 @@ message QueryOpenEstimationResponse {
 
 message PoolResponse {
   uint64 amm_pool_id = 1;
-  string health = 2 [
+  string base_asset_liabilities_ratio = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string borrow_interest_rate = 3 [
+  string quote_asset_liabilities_ratio = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets_long = 4 [ (gogoproto.nullable) = false ];
-  repeated PoolAsset pool_assets_short = 5 [ (gogoproto.nullable) = false ];
-  int64 last_height_borrow_interest_rate_computed = 6;
+  string borrow_interest_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAsset pool_assets_long = 5 [ (gogoproto.nullable) = false ];
+  repeated PoolAsset pool_assets_short = 6 [ (gogoproto.nullable) = false ];
+  int64 last_height_borrow_interest_rate_computed = 7;
   // funding rate, if positive longs pay shorts, if negative shorts pay longs
-  string funding_rate = 7 [
+  string funding_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string net_open_interest = 8 [
+  string net_open_interest = 9 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // Rate at which long pays/receive from short
   // if negative longs pay, if positive long receives
-  string long_rate = 9 [
+  string long_rate = 10 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string short_rate = 10 [
+  string short_rate = 11 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin total_liabilities = 11
+  cosmos.base.v1beta1.Coin total_liabilities = 12
       [ (gogoproto.nullable) = false ];
-  string total_long_open_interest = 12 [
+  string total_long_open_interest = 13 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string total_short_open_interest = 13 [
+  string total_short_open_interest = 14 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string leverage_max = 14 [
+  string leverage_max = 15 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

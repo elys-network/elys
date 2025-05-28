@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v5/x/burner/types"
 )
 
 // ShouldBurnTokens checks if tokens should be burned for the given epoch

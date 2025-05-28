@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v5/x/burner/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

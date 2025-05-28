@@ -6,10 +6,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/amm/utils"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/amm/utils"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
@@ -129,6 +129,10 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		Symbol:  poolShareDisplayDenom,
 	})
 
+	err = pool.Validate()
+	if err != nil {
+		return err
+	}
 	k.SetPool(ctx, *pool)
 
 	if k.hooks != nil {
