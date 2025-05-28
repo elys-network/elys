@@ -14,10 +14,6 @@ import (
 func (k msgServer) AddEntry(goCtx context.Context, msg *types.MsgAddEntry) (*types.MsgAddEntryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if msg.Creator != k.authority {
-		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "Not allowed to add entry")
-	}
-
 	// Check if the entry already exists
 	_, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if isFound {

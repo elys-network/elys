@@ -5,16 +5,11 @@ import (
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/v5/x/oracle/types"
 )
 
 func (k msgServer) CreateAssetInfo(goCtx context.Context, msg *types.MsgCreateAssetInfo) (*types.MsgCreateAssetInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	if msg.Creator != k.authority {
-		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "Not allowed to add asset info")
-	}
 
 	_, found := k.GetAssetInfo(ctx, msg.Denom)
 
