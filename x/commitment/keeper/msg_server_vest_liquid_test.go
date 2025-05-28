@@ -102,7 +102,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.Equal(t, edenCoin.Amount, sdkmath.ZeroInt())
 
 	_, err = msgServer.VestLiquid(ctx, vestMsg)
-	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())
+	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v, sender: %s", edenToken, creator.String())).Error())
 }
 
 // TestKeeper_VestLiquid tests the VestLiquid function with invalid denom
