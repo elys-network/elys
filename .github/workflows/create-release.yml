@@ -3,7 +3,7 @@ name: Create release
 on:
   push:
     branches:
-      - avkr003/vote
+      - avkr003/clob
 
 permissions:
   contents: write
