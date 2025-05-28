@@ -2,8 +2,8 @@ name: Create release
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - avkr003/vote
 
 permissions:
   contents: write
