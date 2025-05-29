@@ -9,12 +9,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

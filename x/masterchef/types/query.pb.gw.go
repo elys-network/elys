@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	types_1 "github.com/elys-network/elys/v5/x/commitment/types"
+	types_1 "github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"

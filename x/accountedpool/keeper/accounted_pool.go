@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/accountedpool/types"
+	"github.com/elys-network/elys/v6/x/accountedpool/types"
 )
 
 // SetAccountedPool set a specific accountedPool in the store from its index

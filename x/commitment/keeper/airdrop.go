@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 )
 
 const MaxElysAmount = 3_218_460_000_000

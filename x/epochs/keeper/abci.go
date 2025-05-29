@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v5/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 // BeginBlocker of epochs module

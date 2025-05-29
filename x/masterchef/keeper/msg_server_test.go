@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestMsgUpdateParams() {

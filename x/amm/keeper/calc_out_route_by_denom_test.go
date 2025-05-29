@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	simapp "github.com/elys-network/elys/v5/app"
+	simapp "github.com/elys-network/elys/v6/app"
 	"github.com/stretchr/testify/require"
 )
 

@@ -2,7 +2,7 @@ package types_test
 
 import (
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

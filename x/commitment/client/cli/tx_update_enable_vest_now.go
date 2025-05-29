@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/elys-network/elys/v5/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/spf13/cobra"
 )
 

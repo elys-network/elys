@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
-	"github.com/elys-network/elys/v5/x/tokenomics/keeper"
-	"github.com/elys-network/elys/v5/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
