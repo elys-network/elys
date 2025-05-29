@@ -153,7 +153,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			// Let's assume it's okay if it's not in store before, `Exchange` handles it.
 			// But `GetPerpetual` *within* MarketLiquidation (after partial fill) needs it. So it should be set initially.
 			if !tc.perpetualToLiquidate.Quantity.IsZero() { // Only set if it's a defined position
-				tc.perpetualToLiquidate = suite.SetPerpetualStateWithEntryFR(tc.perpetualToLiquidate) // Ensure it's in store
+				tc.perpetualToLiquidate = suite.SetPerpetualStateWithEntryFR(tc.perpetualToLiquidate, false) // Ensure it's in store
 			}
 
 			// Clear ADL flag for this perpetual before the test
@@ -407,7 +407,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			currentPerpetual := tc.perpetualToLiquidateSetup()
 
 			currentPerpetual.Owner = liquidatingSubAccount.Owner
-			currentPerpetual = suite.SetPerpetualStateWithEntryFR(currentPerpetual)
+			currentPerpetual = suite.SetPerpetualStateWithEntryFR(currentPerpetual, false)
 
 			if tc.orderBookSetup != nil {
 				tc.orderBookSetup()

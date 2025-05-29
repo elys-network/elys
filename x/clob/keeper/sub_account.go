@@ -72,3 +72,11 @@ func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount
 	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
 }
+
+//func (k Keeper) WithdrawableBalance(ctx sdk.Context, subAccount types.SubAccount) error {
+//	if subAccount.IsIsolated() {
+//		// No need to check for current positions as the margin amount has already been transferred to the market account
+//		// Need to check for the open orders and the trading fees and margin amount for that
+//		k.GetPerpetualOrder()
+//	}
+//}

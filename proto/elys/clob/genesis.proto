@@ -22,8 +22,9 @@ message GenesisState {
   repeated PerpetualOwner perpetual_owners = 5 [ (gogoproto.nullable) = false ];
   // Based on market id, it will have order book for all assets
   repeated PerpetualOrder order_books = 6;
-  repeated TwapPrice twap_prices = 7;
-  repeated PerpetualCounter perpetual_counters = 8;
-  repeated FundingRate funding_rates = 9;
-  repeated PerpetualADL perpetualADLs = 10;
+  repeated PerpetualOrderOwner order_owners = 7;
+  repeated TwapPrice twap_prices = 8;
+  repeated PerpetualCounter perpetual_counters = 9;
+  repeated FundingRate funding_rates = 10;
+  repeated PerpetualADL perpetualADLs = 11;
 }

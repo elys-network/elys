@@ -31,7 +31,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	// Buyer Changes
 	var buyerPerpetual types.Perpetual
 
-	buyerPerpetualOwner, buyerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.BuyerSubAccount.GetOwnerAccAddress(), trade.MarketId)
+	buyerPerpetualOwner, buyerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.BuyerSubAccount.GetOwnerAccAddress(), trade.BuyerSubAccount.Id)
 	if buyerAlreadyOwn {
 		buyerPerpetual, err = k.GetPerpetual(ctx, trade.MarketId, buyerPerpetualOwner.PerpetualId)
 		if err != nil {
@@ -54,16 +54,17 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 
 	if buyerPerpetual.IsZero() {
 		k.DeletePerpetual(ctx, buyerPerpetual)
-		k.DeletePerpetualOwner(ctx, buyerPerpetual.GetOwnerAccAddress(), trade.MarketId)
+		k.DeletePerpetualOwner(ctx, buyerPerpetual.GetOwnerAccAddress(), trade.BuyerSubAccount.Id)
 	} else {
 		buyerPerpetual.EntryFundingRate = currentFundingRate.Rate
 		k.SetPerpetual(ctx, buyerPerpetual)
 
 		if !buyerAlreadyOwn {
 			buyerPerpetualOwner = types.PerpetualOwner{
-				Owner:       buyerPerpetual.Owner,
-				MarketId:    trade.MarketId,
-				PerpetualId: buyerPerpetual.Id,
+				Owner:        buyerPerpetual.Owner,
+				SubAccountId: trade.BuyerSubAccount.Id,
+				MarketId:     trade.MarketId,
+				PerpetualId:  buyerPerpetual.Id,
 			}
 			k.SetPerpetualOwner(ctx, buyerPerpetualOwner)
 		}
@@ -72,7 +73,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	// Seller Changes
 	var sellerPerpetual types.Perpetual
 
-	sellerPerpetualOwner, sellerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.SellerSubAccount.GetOwnerAccAddress(), trade.MarketId)
+	sellerPerpetualOwner, sellerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.SellerSubAccount.GetOwnerAccAddress(), trade.SellerSubAccount.Id)
 	if sellerAlreadyOwn {
 		sellerPerpetual, err = k.GetPerpetual(ctx, trade.MarketId, sellerPerpetualOwner.PerpetualId)
 		if err != nil {
@@ -94,16 +95,17 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	}
 	if sellerPerpetual.IsZero() {
 		k.DeletePerpetual(ctx, sellerPerpetual)
-		k.DeletePerpetualOwner(ctx, sellerPerpetual.GetOwnerAccAddress(), trade.MarketId)
+		k.DeletePerpetualOwner(ctx, sellerPerpetual.GetOwnerAccAddress(), trade.SellerSubAccount.Id)
 	} else {
 		sellerPerpetual.EntryFundingRate = currentFundingRate.Rate
 		k.SetPerpetual(ctx, sellerPerpetual)
 
 		if !sellerAlreadyOwn {
 			sellerPerpetualOwner = types.PerpetualOwner{
-				Owner:       sellerPerpetual.Owner,
-				MarketId:    trade.MarketId,
-				PerpetualId: sellerPerpetual.Id,
+				Owner:        sellerPerpetual.Owner,
+				SubAccountId: trade.SellerSubAccount.Id,
+				MarketId:     trade.MarketId,
+				PerpetualId:  sellerPerpetual.Id,
 			}
 			k.SetPerpetualOwner(ctx, sellerPerpetualOwner)
 		}
