@@ -93,7 +93,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,pebbledb
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm' 
+      - -extldflags '-Wl,-z,muldefs -static -lm'
     tags:
       - netgo
       - ledger
@@ -170,7 +170,7 @@ release:
   github:
     owner: elys-network
     name: elys
-  replace_existing_draft: true
+  replace_existing_draft: false
   header: |
     ## Description
 
