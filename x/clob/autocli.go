@@ -40,6 +40,63 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query all owner perpetuals",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner"}},
 				},
+				{
+					RpcMethod:      "PerpetualOrder",
+					Use:            "perpetual_order [market_id] [order_type] [price] [block_height]",
+					Short:          "Query perpetual order",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}, {ProtoField: "order_type"}, {ProtoField: "price"}, {ProtoField: "block_height"}},
+				},
+				{
+					RpcMethod: "AllPerpetualOrder",
+					Use:       "all_perpetual_order",
+					Short:     "Query All perpetual orders",
+				},
+				{
+					RpcMethod:      "CurrentTwapPrice",
+					Use:            "current_twap_price [market_id]",
+					Short:          "Query current twap price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}},
+				},
+				{
+					RpcMethod: "AllTwapPrices",
+					Use:       "all_twap_price",
+					Short:     "Query All twap price",
+				},
+				{
+					RpcMethod:      "LastAverageTradePrice",
+					Use:            "last_average_trade_price [market_id]",
+					Short:          "Query last average trade price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}},
+				},
+				{
+					RpcMethod:      "HighestBuyPrice",
+					Use:            "highest_buy_price [market_id]",
+					Short:          "Query highest buy price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}},
+				},
+				{
+					RpcMethod:      "LowestSellPrice",
+					Use:            "lowest_sell_price [market_id]",
+					Short:          "Query lowest sell price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}},
+				},
+				{
+					RpcMethod:      "MidPrice",
+					Use:            "mid_price [market_id]",
+					Short:          "Query mid price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}},
+				},
+				{
+					RpcMethod:      "PerpetualADL",
+					Use:            "perpetual_adl [market_id] [id]",
+					Short:          "Query perpetual ADL",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}, {ProtoField: "id"}},
+				},
+				{
+					RpcMethod: "AllPerpetualADL",
+					Use:       "all_perpetual_adl",
+					Short:     "Query All perpetual ADL",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
