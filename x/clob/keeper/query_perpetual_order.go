@@ -14,10 +14,10 @@ import (
 
 func (k Keeper) PerpetualOrder(goCtx context.Context, req *types.PerpetualOrderRequest) (*types.PerpetualOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	perpetualOrder, err := k.GetPerpetualOrder(ctx, req.MarketId, req.OrderType, req.Price, req.BlockHeight)
+	perpetualOrder, found := k.GetPerpetualOrder(ctx, req.MarketId, req.OrderType, req.Price, req.BlockHeight)
 
-	if err != nil {
-		return nil, err
+	if !found {
+		return nil, types.ErrPerpetualOrderNotFound
 	}
 
 	return &types.PerpetualOrderResponse{Order: perpetualOrder}, nil
