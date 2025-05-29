@@ -82,7 +82,7 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 
 	// Commit LP token
 	lockUntil := uint64(ctx.BlockTime().Second()) + vault.LockupPeriod
-	err = k.commitement.CommitLiquidTokens(ctx, depositer, shareDenom, shareAmount, lockUntil)
+	err = k.commitment.CommitLiquidTokens(ctx, depositer, shareDenom, shareAmount, lockUntil)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec,
 	}
 	vaultAddress := types.NewVaultAddress(vaultId)
 	totalValue := osmomath.ZeroBigDec()
-	commitments := k.commitement.GetCommitments(ctx, vaultAddress)
+	commitments := k.commitment.GetCommitments(ctx, vaultAddress)
 	// TODO: Handle zero values for denom, we should issue shares if price is not available
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance

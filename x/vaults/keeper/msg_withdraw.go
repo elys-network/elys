@@ -18,7 +18,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	shareCoin := sdk.NewCoin(shareDenom, req.Shares)
 	shareCoins := sdk.NewCoins(shareCoin)
 
-	err := k.commitement.UncommitTokens(ctx, creator, shareDenom, req.Shares, false)
+	err := k.commitment.UncommitTokens(ctx, creator, shareDenom, req.Shares, false)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	if !found {
 		return nil, types.ErrVaultNotFound
 	}
-	commitments := k.commitement.GetCommitments(ctx, creator)
+	commitments := k.commitment.GetCommitments(ctx, creator)
 
 	for _, commitment := range commitments.CommittedTokens {
 		amount := commitment.Amount.ToLegacyDec().Mul(shareRatio).RoundInt()

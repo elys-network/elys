@@ -76,7 +76,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
 	totalValue := osmomath.ZeroBigDec()
-	commitments := k.commitement.GetCommitments(ctx, user)
+	commitments := k.commitment.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
@@ -99,9 +99,9 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) osmomath
 
 func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
 	totalCommit := osmomath.ZeroBigDec()
-	commitments := k.commitement.GetCommitments(ctx, user)
+	commitments := k.commitment.GetCommitments(ctx, user)
 	totalVested := osmomath.ZeroBigDec()
-	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
+	vestingResp, vestErr := k.commitment.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
 		totalVested = osmomath.BigDecFromSDKInt(vestingResp.Total)
 	}

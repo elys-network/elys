@@ -24,7 +24,7 @@ type (
 		bk                 types.BankKeeper
 		tierKeeper         *tierkeeper.Keeper
 		amm                types.AmmKeeper
-		commitement        types.CommitmentKeeper
+		commitment         types.CommitmentKeeper
 		accountKeeper      types.AccountKeeper
 		pk                 types.ParameterKeeper
 		masterchef         types.MasterchefKeeper
@@ -39,7 +39,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	tierKeeper *tierkeeper.Keeper,
 	amm types.AmmKeeper,
-	commitement types.CommitmentKeeper,
+	commitment types.CommitmentKeeper,
 	accountKeeper types.AccountKeeper,
 	pk types.ParameterKeeper,
 	masterchef types.MasterchefKeeper,
@@ -56,7 +56,7 @@ func NewKeeper(
 		bk:                 bk,
 		tierKeeper:         tierKeeper,
 		amm:                amm,
-		commitement:        commitement,
+		commitment:         commitment,
 		accountKeeper:      accountKeeper,
 		pk:                 pk,
 		masterchef:         masterchef,

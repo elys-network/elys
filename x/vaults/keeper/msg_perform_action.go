@@ -45,7 +45,7 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
 	case *types.Action_CommitClaimedRewards:
-		_, err := k.commitement.CommitClaimedRewards(ctx, perform_action.CommitClaimedRewards)
+		_, err := k.commitment.CommitClaimedRewards(ctx, perform_action.CommitClaimedRewards)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
@@ -54,22 +54,22 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: unsupported denom")
 		}
 
-		err := k.commitement.UncommitTokens(ctx, vaultAddress, perform_action.UncommitTokens.Denom, perform_action.UncommitTokens.Amount, false)
+		err := k.commitment.UncommitTokens(ctx, vaultAddress, perform_action.UncommitTokens.Denom, perform_action.UncommitTokens.Amount, false)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
 	case *types.Action_Vest:
-		err := k.commitement.ProcessTokenVesting(ctx, perform_action.Vest.Denom, perform_action.Vest.Amount, vaultAddress)
+		err := k.commitment.ProcessTokenVesting(ctx, perform_action.Vest.Denom, perform_action.Vest.Amount, vaultAddress)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
 	case *types.Action_CancelVest:
-		_, err := k.commitement.CancelVest(ctx, perform_action.CancelVest)
+		_, err := k.commitment.CancelVest(ctx, perform_action.CancelVest)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
 	case *types.Action_ClaimVesting:
-		_, err := k.commitement.ClaimVesting(ctx, perform_action.ClaimVesting)
+		_, err := k.commitment.ClaimVesting(ctx, perform_action.ClaimVesting)
 		if err != nil {
 			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 		}
