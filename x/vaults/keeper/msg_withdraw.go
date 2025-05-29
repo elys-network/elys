@@ -8,8 +8,11 @@ import (
 )
 
 func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(req.Withdrawer)
+
+	k.DeductPerformanceFee(ctx)
 
 	shareDenom := types.GetShareDenomForVault(req.VaultId)
 	shareCoin := sdk.NewCoin(shareDenom, req.Shares)

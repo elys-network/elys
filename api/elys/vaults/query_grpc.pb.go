@@ -20,6 +20,12 @@ const _ = grpc.SupportPackageIsVersion7
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Vault queries a vault by its ID.
+	Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error)
+	// Vaults queries all vaults.
+	Vaults(ctx context.Context, in *QueryVaultsRequest, opts ...grpc.CallOption) (*QueryVaultsResponse, error)
+	// VaultValue queries the USD value of a vault.
+	VaultValue(ctx context.Context, in *QueryVaultValue, opts ...grpc.CallOption) (*QueryVaultValueResponse, error)
 }
 
 type queryClient struct {
@@ -39,12 +45,45 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error) {
+	out := new(QueryVaultResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Query/Vault", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Vaults(ctx context.Context, in *QueryVaultsRequest, opts ...grpc.CallOption) (*QueryVaultsResponse, error) {
+	out := new(QueryVaultsResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Query/Vaults", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) VaultValue(ctx context.Context, in *QueryVaultValue, opts ...grpc.CallOption) (*QueryVaultValueResponse, error) {
+	out := new(QueryVaultValueResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Query/VaultValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Vault queries a vault by its ID.
+	Vault(context.Context, *QueryVaultRequest) (*QueryVaultResponse, error)
+	// Vaults queries all vaults.
+	Vaults(context.Context, *QueryVaultsRequest) (*QueryVaultsResponse, error)
+	// VaultValue queries the USD value of a vault.
+	VaultValue(context.Context, *QueryVaultValue) (*QueryVaultValueResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -54,6 +93,15 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Vault(context.Context, *QueryVaultRequest) (*QueryVaultResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Vault not implemented")
+}
+func (UnimplementedQueryServer) Vaults(context.Context, *QueryVaultsRequest) (*QueryVaultsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Vaults not implemented")
+}
+func (UnimplementedQueryServer) VaultValue(context.Context, *QueryVaultValue) (*QueryVaultValueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VaultValue not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -86,6 +134,60 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Vault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVaultRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Vault(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Query/Vault",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Vault(ctx, req.(*QueryVaultRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Vaults_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVaultsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Vaults(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Query/Vaults",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Vaults(ctx, req.(*QueryVaultsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_VaultValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVaultValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VaultValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Query/VaultValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VaultValue(ctx, req.(*QueryVaultValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +198,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Vault",
+			Handler:    _Query_Vault_Handler,
+		},
+		{
+			MethodName: "Vaults",
+			Handler:    _Query_Vaults_Handler,
+		},
+		{
+			MethodName: "VaultValue",
+			Handler:    _Query_VaultValue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5,6 +5,8 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "elys/vaults/params.proto";
+import "elys/vaults/vault.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/v5/x/vaults/types";
 
@@ -13,6 +15,21 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/vaults/params";
+  }
+
+  // Vault queries a vault by its ID.
+  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/vault/{vault_id}";
+  }
+
+  // Vaults queries all vaults.
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/vaults";
+  }
+
+  // VaultValue queries the USD value of a vault.
+  rpc VaultValue(QueryVaultValue) returns (QueryVaultValueResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/vault_value/{vault_id}";
   }
 }
 
@@ -24,4 +41,31 @@ message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryVaultRequest {
+  uint64 vault_id = 1;
+}
+
+message QueryVaultResponse {
+  Vault vault = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryVaultsRequest {
+}
+
+message QueryVaultsResponse {
+  repeated Vault vaults = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryVaultValue {
+  uint64 vault_id = 1;
+}
+
+message QueryVaultValueResponse {
+  string usd_value = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
