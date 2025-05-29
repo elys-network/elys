@@ -148,6 +148,56 @@ func (k Keeper) AllowedAction(ctx sdk.Context, action interface{}, vaultAddress 
 			return false
 		}
 		return true
+	case *types.Action_ClaimRewards:
+		if perform_action.ClaimRewards == nil {
+			return false
+		}
+		return true
+	case *types.Action_CommitClaimedRewards:
+		// Verify commit claimed rewards fields
+		if perform_action.CommitClaimedRewards == nil {
+			return false
+		}
+		if perform_action.CommitClaimedRewards.Denom == "" {
+			return false
+		}
+		return true
+	case *types.Action_UncommitTokens:
+		// Verify uncommit tokens fields
+		if perform_action.UncommitTokens == nil {
+			return false
+		}
+		if perform_action.UncommitTokens.Amount.IsNil() || perform_action.UncommitTokens.Amount.IsZero() {
+			return false
+		}
+		if perform_action.UncommitTokens.Denom == "" {
+			return false
+		}
+		return true
+	case *types.Action_Vest:
+		// Verify vest fields
+		if perform_action.Vest == nil {
+			return false
+		}
+		if perform_action.Vest.Amount.IsNil() || perform_action.Vest.Amount.IsZero() {
+			return false
+		}
+		if perform_action.Vest.Denom == "" {
+			return false
+		}
+		return true
+	case *types.Action_CancelVest:
+		// Verify cancel vest fields
+		if perform_action.CancelVest == nil {
+			return false
+		}
+		return true
+	case *types.Action_ClaimVesting:
+		// Verify claim vesting fields
+		if perform_action.ClaimVesting == nil {
+			return false
+		}
+		return true
 	}
 	return false
 }

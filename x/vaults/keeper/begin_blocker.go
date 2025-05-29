@@ -8,6 +8,7 @@ import (
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// Traverse all vaults and deduct management fee from all coins and send it to the vault's manager and protocol revenue address
+	// TODO: Add committed tokens
 	vaults := k.GetAllVaults(ctx)
 	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
 	protocolAddress := k.masterchef.GetParams(ctx).ProtocolRevenueAddress
@@ -64,6 +65,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
 				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
 
+				// TODO: Add committed tokens
 				var protocolCoins sdk.Coins
 				coins := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
 				for _, coin := range coins {

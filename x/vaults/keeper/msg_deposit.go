@@ -22,6 +22,8 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 		return &types.MsgDepositResponse{}, types.ErrVaultNotFound
 	}
 
+	k.DeductPerformanceFee(ctx)
+
 	depositer := sdk.MustAccAddressFromBech32(req.Depositor)
 	redemptionRate := k.CalculateRedemptionRateForVault(ctx, vault.Id)
 	vaultAddress := types.NewVaultAddress(vault.Id)
