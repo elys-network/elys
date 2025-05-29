@@ -14,4 +14,5 @@ var (
 	ErrPerpetualOrderNotFound    = errorsmod.Register(ModuleName, 5, "perpetual order not found")
 	ErrFundingRateNotFound       = errorsmod.Register(ModuleName, 6, "funding rate not found")
 	ErrInsufficientInsuranceFund = errorsmod.Register(ModuleName, 7, "insufficient insurance fund")
+	ErrPerpetualADLNotFound      = errorsmod.Register(ModuleName, 8, "perpetual ADL not found")
 )
