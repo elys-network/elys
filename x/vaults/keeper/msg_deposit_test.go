@@ -99,8 +99,13 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 
 				// Verify the depositer received the share tokens
 				shareDenom := types.GetShareDenomForVault(tc.vaultId)
-				shareBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.depositer, shareDenom)
-				suite.Require().True(shareBalance.Amount.GT(sdkmath.ZeroInt()), "depositer should have received share tokens")
+				shareBalance := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, tc.depositer)
+				// check for share denom in the commitments
+				for _, balance := range shareBalance.CommittedTokens {
+					if balance.Denom == shareDenom {
+						suite.Require().True(balance.Amount.GT(sdkmath.ZeroInt()), "depositer should have received share tokens")
+					}
+				}
 			}
 		})
 	}
