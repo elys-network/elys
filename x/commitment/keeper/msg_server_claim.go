@@ -88,7 +88,7 @@ func (k Keeper) BurnAirdropWallet(ctx sdk.Context) error {
 	}
 
 	// transfer to module account
-	err = k.SendCoinsFromAccountToModule(ctx, airdropWalletAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(990250400000))))
+	err = k.SendCoinsFromAccountToModule(ctx, airdropWalletAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(990250400000))))
 	if err != nil {
 		return err
 	}
