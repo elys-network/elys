@@ -6,11 +6,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v5/x/commitment/types"
+	mastercheftypes "github.com/elys-network/elys/v5/x/masterchef/types"
+	parametertypes "github.com/elys-network/elys/v5/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

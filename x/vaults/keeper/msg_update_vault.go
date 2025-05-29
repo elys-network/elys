@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func (k msgServer) UpdateVaultCoins(goCtx context.Context, req *types.MsgUpdateVaultCoins) (*types.MsgUpdateVaultCoinsResponse, error) {

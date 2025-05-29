@@ -7,11 +7,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	tiertypes "github.com/elys-network/elys/x/tier/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	tiertypes "github.com/elys-network/elys/v5/x/tier/types"
 
-	"github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types.MsgDepositResponse, error) {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-    keepertest "github.com/elys-network/elys/testutil/keeper"
-    "github.com/elys-network/elys/x/vaults/types"
+	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func TestGetParams(t *testing.T) {

@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {

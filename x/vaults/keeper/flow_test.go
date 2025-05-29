@@ -5,9 +5,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/vaults/keeper"
-	vaulttypes "github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/vaults/keeper"
+	vaulttypes "github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func (suite *KeeperTestSuite) TestVaultFlow() {

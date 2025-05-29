@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
-	"github.com/elys-network/elys/x/vaults/types"
+	tierkeeper "github.com/elys-network/elys/v5/x/tier/keeper"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 type (

@@ -6,9 +6,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 
-	"github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAction) (*types.MsgPerformActionResponse, error) {
