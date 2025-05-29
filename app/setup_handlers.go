@@ -13,6 +13,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	vaulttypes "github.com/elys-network/elys/x/vaults/types"
 
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -122,7 +123,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			//Added:   []string{},
+			Added: []string{vaulttypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
 			Deleted: []string{"itransferhook"},
 		}
