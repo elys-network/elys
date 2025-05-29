@@ -81,7 +81,7 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 func (k Keeper) BurnAirdropWallet(ctx sdk.Context) error {
 	// Burn 990,250,400,000 uelys from airdrop wallet
 	// we have allocated this amount in rewards program
-	airdropWallet := "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
+	airdropWallet := "elys1uqznyaahdmp3ay8zex5cwf729ggdhc45dtys4f"
 	airdropWalletAddress, err := sdk.AccAddressFromBech32(airdropWallet)
 	if err != nil {
 		return err
