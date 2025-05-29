@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v5/x/perpetual/types";
 
 message PoolAsset {
   string liabilities = 1 [
@@ -60,33 +60,43 @@ message LegacyPool {
   ];
   repeated cosmos.base.v1beta1.Coin fees_collected = 8
       [ (gogoproto.nullable) = false ];
+  string leverage_max = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Pool {
   uint64 amm_pool_id = 1;
-  string health = 2 [
+  string base_asset_liabilities_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string quote_asset_liabilities_ratio = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  string borrow_interest_rate = 3 [
+  string borrow_interest_rate = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets_long = 4 [ (gogoproto.nullable) = false ];
-  repeated PoolAsset pool_assets_short = 5 [ (gogoproto.nullable) = false ];
-  int64 last_height_borrow_interest_rate_computed = 6;
+  repeated PoolAsset pool_assets_long = 5 [ (gogoproto.nullable) = false ];
+  repeated PoolAsset pool_assets_short = 6 [ (gogoproto.nullable) = false ];
+  int64 last_height_borrow_interest_rate_computed = 7;
   // funding rate, if positive longs pay shorts, if negative shorts pay longs
-  string funding_rate = 7 [
+  string funding_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin fees_collected = 8
+  repeated cosmos.base.v1beta1.Coin fees_collected = 9
       [ (gogoproto.nullable) = false ];
-  string leverage_max = 9 [
+  string leverage_max = 10 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

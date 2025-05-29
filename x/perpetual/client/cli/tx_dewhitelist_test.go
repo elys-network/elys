@@ -8,8 +8,8 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/perpetual/client/cli"
+	simapp "github.com/elys-network/elys/v5/app"
+	"github.com/elys-network/elys/v5/x/perpetual/client/cli"
 )
 
 func TestGovDeWhitelist(t *testing.T) {

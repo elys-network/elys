@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.leveragelp;
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v5/x/leveragelp/types";
 
 import "gogoproto/gogo.proto";
 import "elys/leveragelp/params.proto";
@@ -188,6 +188,8 @@ message MsgUpdateEnabledPools {
   // overwritten).
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated uint64 enabled_pools = 2;
+  repeated uint64 add_pools = 3;
+  repeated uint64 remove_pools = 4;
 }
 
 message MsgUpdateEnabledPoolsResponse {}

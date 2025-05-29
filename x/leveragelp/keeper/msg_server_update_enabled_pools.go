@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
+	"slices"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
 )
 
 // Update enabled pools through gov proposal
@@ -19,7 +20,17 @@ func (k msgServer) UpdateEnabledPools(goCtx context.Context, msg *types.MsgUpdat
 
 	// store params
 	params := k.GetParams(ctx)
-	params.EnabledPools = msg.EnabledPools
+	for _, add := range msg.AddPools {
+		if !slices.Contains(params.EnabledPools, add) {
+			params.EnabledPools = append(params.EnabledPools, add)
+		}
+	}
+
+	params.EnabledPools = slices.DeleteFunc(params.EnabledPools, func(element uint64) bool {
+		return slices.Contains(msg.RemovePools, element)
+	})
+
+	slices.Sort(params.EnabledPools)
 	if err := k.SetParams(ctx, &params); err != nil {
 		return nil, err
 	}

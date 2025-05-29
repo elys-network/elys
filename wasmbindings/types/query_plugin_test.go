@@ -11,15 +11,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/wasmbindings/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v5/wasmbindings/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 	proto "github.com/golang/protobuf/proto" //nolint:staticcheck // we're intentionally using this deprecated package to be compatible with cosmos protos
 
 	// "github.com/osmosis-labs/osmosis/math"
 	// "github.com/osmosis-labs/osmosis/v17/app/apptesting"
 	// "github.com/osmosis-labs/osmosis/v17/x/gamm/pool-models/balancer"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v5/app"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -6,11 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v5/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestOpenLong() {

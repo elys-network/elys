@@ -3,13 +3,12 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio osmomath.BigDec, baseCurrency string) error {
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio math.LegacyDec, baseCurrency string) error {
 	if returnAmount.IsPositive() {
 		returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount))
 		err := k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
@@ -20,17 +19,17 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
 
-	closingCustodyAmount := mtp.GetBigDecCustody().Mul(closingRatio).Dec().TruncateInt()
+	closingCustodyAmount := closingRatio.MulInt(mtp.Custody).TruncateInt()
 	mtp.Custody = mtp.Custody.Sub(closingCustodyAmount)
 
-	reducingCollateralAmt := closingRatio.Mul(mtp.GetBigDecCollateral()).Dec().TruncateInt()
+	reducingCollateralAmt := closingRatio.MulInt(mtp.Collateral).TruncateInt()
 	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
 
 	oldTakeProfitCustody := mtp.TakeProfitCustody
-	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(mtp.GetBigDecTakeProfitCustody().Mul(closingRatio).Dec().TruncateInt())
+	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(closingRatio.MulInt(mtp.TakeProfitCustody).TruncateInt())
 
 	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
-	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(mtp.GetBigDecTakeProfitLiabilities().Mul(closingRatio).Dec().TruncateInt())
+	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(closingRatio.MulInt(mtp.TakeProfitLiabilities).TruncateInt())
 
 	err := pool.UpdateCustody(mtp.CustodyAsset, closingCustodyAmount, false, mtp.Position)
 	if err != nil {

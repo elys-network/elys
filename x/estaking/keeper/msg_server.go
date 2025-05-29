@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v5/x/estaking/types"
 )
 
 type msgServer struct {

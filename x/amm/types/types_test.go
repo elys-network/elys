@@ -11,9 +11,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	simapp "github.com/elys-network/elys/app"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 const (

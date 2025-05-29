@@ -4,10 +4,10 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	externalsauth "github.com/elys-network/elys/wasmbindings/externals/auth"
-	"github.com/elys-network/elys/wasmbindings/types"
-	ammclientwasm "github.com/elys-network/elys/x/amm/client/wasm"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
+	externalsauth "github.com/elys-network/elys/v5/wasmbindings/externals/auth"
+	"github.com/elys-network/elys/v5/wasmbindings/types"
+	ammclientwasm "github.com/elys-network/elys/v5/x/amm/client/wasm"
+	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
 )
 
 func RegisterCustomPlugins(

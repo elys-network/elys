@@ -10,8 +10,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
 )
 
 // ModuleQuerier is an interface that all module queriers should implement.

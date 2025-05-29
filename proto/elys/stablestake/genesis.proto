@@ -7,7 +7,7 @@ import "elys/stablestake/debt.proto";
 import "elys/stablestake/types.proto";
 import "elys/stablestake/pool.proto";
 
-option go_package = "github.com/elys-network/elys/x/stablestake/types";
+option go_package = "github.com/elys-network/elys/v5/x/stablestake/types";
 
 // GenesisState defines the stablestake module's genesis state.
 message GenesisState {

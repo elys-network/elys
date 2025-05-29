@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	typessdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/tier/types"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

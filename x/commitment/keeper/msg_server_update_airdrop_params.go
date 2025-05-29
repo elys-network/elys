@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v5/x/commitment/types"
 )
 
 func (k msgServer) UpdateAirdropParams(goCtx context.Context, msg *types.MsgUpdateAirdropParams) (*types.MsgUpdateAirdropParamsResponse, error) {
@@ -22,6 +22,8 @@ func (k msgServer) UpdateAirdropParams(goCtx context.Context, msg *types.MsgUpda
 	params.EndAirdropClaimHeight = msg.EndAirdropClaimHeight
 	params.StartKolClaimHeight = msg.StartKolClaimHeight
 	params.EndKolClaimHeight = msg.EndKolClaimHeight
+	params.StartRewardProgramClaimHeight = msg.StartRewardProgramClaimHeight
+	params.EndRewardProgramClaimHeight = msg.EndRewardProgramClaimHeight
 	k.SetParams(ctx, params)
 
 	return &types.MsgUpdateAirdropParamsResponse{}, nil

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 

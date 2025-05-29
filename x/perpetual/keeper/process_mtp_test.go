@@ -9,14 +9,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v5/app"
+	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -469,8 +469,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		1,
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
-		tradingAssetPrice.Dec().MulInt64(10),
-		tradingAssetPrice.Dec().QuoInt64(2),
+		tradingAssetPrice.MulInt64(10),
+		tradingAssetPrice.QuoInt64(2),
 	)
 	params := app.PerpetualKeeper.GetParams(ctx)
 	params.WhitelistingEnabled = true
@@ -482,7 +482,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     tradingAssetPrice.Dec().QuoInt64(4),
+		Price:     tradingAssetPrice.QuoInt64(4),
 		Source:    "elys",
 		Provider:  authtypes.NewModuleAddress("provider").String(),
 		Timestamp: uint64(ctx.BlockTime().Unix() + 6),

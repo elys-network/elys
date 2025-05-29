@@ -5,7 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 var _ sdk.Msg = &MsgCancelVest{}

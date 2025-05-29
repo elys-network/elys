@@ -1,11 +1,12 @@
 package types_test
 
 import (
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"testing"
 	"time"
 
-	"github.com/elys-network/elys/x/stablestake/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	"github.com/elys-network/elys/v5/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 )
 

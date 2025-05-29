@@ -30,7 +30,7 @@ func NewParams() Params {
 		MaximumShortTakeProfitPriceRatio:       math.LegacyMustNewDecFromStr("0.98"),
 		MinimumLongTakeProfitPriceRatio:        math.LegacyMustNewDecFromStr("1.02"),
 		PerpetualSwapFee:                       math.LegacyMustNewDecFromStr("0.001"), // 0.1%
-		PoolOpenThreshold:                      math.LegacyMustNewDecFromStr("0.65"),
+		PoolMaxLiabilitiesThreshold:            math.LegacyMustNewDecFromStr("0.65"),
 		SafetyFactor:                           math.LegacyMustNewDecFromStr("1.025000000000000000"),
 		WeightBreakingFeeFactor:                math.LegacyMustNewDecFromStr("0.5"),
 		WhitelistingEnabled:                    false,
@@ -109,7 +109,7 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.PerpetualSwapFee, "PerpetualSwapFee"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.PoolOpenThreshold, "PoolOpenThreshold"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.PoolMaxLiabilitiesThreshold, "PoolMaxLiabilitiesThreshold"); err != nil {
 		return err
 	}
 	if err := CheckLegacyDecNilAndNegative(p.SafetyFactor, "SafetyFactor"); err != nil {

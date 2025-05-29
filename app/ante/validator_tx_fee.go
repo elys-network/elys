@@ -8,8 +8,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/v5/x/parameter/types"
 )
 
 // CheckTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per

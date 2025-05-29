@@ -5,11 +5,10 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice osmomath.BigDec) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec) {
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("owner", mtp.Address),

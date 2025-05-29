@@ -8707,10 +8707,104 @@ func (x *_MsgUpdateEnabledPools_2_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_MsgUpdateEnabledPools_3_list)(nil)
+
+type _MsgUpdateEnabledPools_3_list struct {
+	list *[]uint64
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgUpdateEnabledPools at list field AddPools as it is not of Message kind"))
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_MsgUpdateEnabledPools_3_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_MsgUpdateEnabledPools_4_list)(nil)
+
+type _MsgUpdateEnabledPools_4_list struct {
+	list *[]uint64
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgUpdateEnabledPools at list field RemovePools as it is not of Message kind"))
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_MsgUpdateEnabledPools_4_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_MsgUpdateEnabledPools               protoreflect.MessageDescriptor
 	fd_MsgUpdateEnabledPools_authority     protoreflect.FieldDescriptor
 	fd_MsgUpdateEnabledPools_enabled_pools protoreflect.FieldDescriptor
+	fd_MsgUpdateEnabledPools_add_pools     protoreflect.FieldDescriptor
+	fd_MsgUpdateEnabledPools_remove_pools  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -8718,6 +8812,8 @@ func init() {
 	md_MsgUpdateEnabledPools = File_elys_perpetual_tx_proto.Messages().ByName("MsgUpdateEnabledPools")
 	fd_MsgUpdateEnabledPools_authority = md_MsgUpdateEnabledPools.Fields().ByName("authority")
 	fd_MsgUpdateEnabledPools_enabled_pools = md_MsgUpdateEnabledPools.Fields().ByName("enabled_pools")
+	fd_MsgUpdateEnabledPools_add_pools = md_MsgUpdateEnabledPools.Fields().ByName("add_pools")
+	fd_MsgUpdateEnabledPools_remove_pools = md_MsgUpdateEnabledPools.Fields().ByName("remove_pools")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgUpdateEnabledPools)(nil)
@@ -8797,6 +8893,18 @@ func (x *fastReflection_MsgUpdateEnabledPools) Range(f func(protoreflect.FieldDe
 			return
 		}
 	}
+	if len(x.AddPools) != 0 {
+		value := protoreflect.ValueOfList(&_MsgUpdateEnabledPools_3_list{list: &x.AddPools})
+		if !f(fd_MsgUpdateEnabledPools_add_pools, value) {
+			return
+		}
+	}
+	if len(x.RemovePools) != 0 {
+		value := protoreflect.ValueOfList(&_MsgUpdateEnabledPools_4_list{list: &x.RemovePools})
+		if !f(fd_MsgUpdateEnabledPools_remove_pools, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -8816,6 +8924,10 @@ func (x *fastReflection_MsgUpdateEnabledPools) Has(fd protoreflect.FieldDescript
 		return x.Authority != ""
 	case "elys.perpetual.MsgUpdateEnabledPools.enabled_pools":
 		return len(x.EnabledPools) != 0
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		return len(x.AddPools) != 0
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		return len(x.RemovePools) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.MsgUpdateEnabledPools"))
@@ -8836,6 +8948,10 @@ func (x *fastReflection_MsgUpdateEnabledPools) Clear(fd protoreflect.FieldDescri
 		x.Authority = ""
 	case "elys.perpetual.MsgUpdateEnabledPools.enabled_pools":
 		x.EnabledPools = nil
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		x.AddPools = nil
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		x.RemovePools = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.MsgUpdateEnabledPools"))
@@ -8860,6 +8976,18 @@ func (x *fastReflection_MsgUpdateEnabledPools) Get(descriptor protoreflect.Field
 			return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_2_list{})
 		}
 		listValue := &_MsgUpdateEnabledPools_2_list{list: &x.EnabledPools}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		if len(x.AddPools) == 0 {
+			return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_3_list{})
+		}
+		listValue := &_MsgUpdateEnabledPools_3_list{list: &x.AddPools}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		if len(x.RemovePools) == 0 {
+			return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_4_list{})
+		}
+		listValue := &_MsgUpdateEnabledPools_4_list{list: &x.RemovePools}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -8887,6 +9015,14 @@ func (x *fastReflection_MsgUpdateEnabledPools) Set(fd protoreflect.FieldDescript
 		lv := value.List()
 		clv := lv.(*_MsgUpdateEnabledPools_2_list)
 		x.EnabledPools = *clv.list
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		lv := value.List()
+		clv := lv.(*_MsgUpdateEnabledPools_3_list)
+		x.AddPools = *clv.list
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		lv := value.List()
+		clv := lv.(*_MsgUpdateEnabledPools_4_list)
+		x.RemovePools = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.MsgUpdateEnabledPools"))
@@ -8913,6 +9049,18 @@ func (x *fastReflection_MsgUpdateEnabledPools) Mutable(fd protoreflect.FieldDesc
 		}
 		value := &_MsgUpdateEnabledPools_2_list{list: &x.EnabledPools}
 		return protoreflect.ValueOfList(value)
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		if x.AddPools == nil {
+			x.AddPools = []uint64{}
+		}
+		value := &_MsgUpdateEnabledPools_3_list{list: &x.AddPools}
+		return protoreflect.ValueOfList(value)
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		if x.RemovePools == nil {
+			x.RemovePools = []uint64{}
+		}
+		value := &_MsgUpdateEnabledPools_4_list{list: &x.RemovePools}
+		return protoreflect.ValueOfList(value)
 	case "elys.perpetual.MsgUpdateEnabledPools.authority":
 		panic(fmt.Errorf("field authority of message elys.perpetual.MsgUpdateEnabledPools is not mutable"))
 	default:
@@ -8933,6 +9081,12 @@ func (x *fastReflection_MsgUpdateEnabledPools) NewField(fd protoreflect.FieldDes
 	case "elys.perpetual.MsgUpdateEnabledPools.enabled_pools":
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_2_list{list: &list})
+	case "elys.perpetual.MsgUpdateEnabledPools.add_pools":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_3_list{list: &list})
+	case "elys.perpetual.MsgUpdateEnabledPools.remove_pools":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_4_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.MsgUpdateEnabledPools"))
@@ -9013,6 +9167,20 @@ func (x *fastReflection_MsgUpdateEnabledPools) ProtoMethods() *protoiface.Method
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
 		}
+		if len(x.AddPools) > 0 {
+			l = 0
+			for _, e := range x.AddPools {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if len(x.RemovePools) > 0 {
+			l = 0
+			for _, e := range x.RemovePools {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 1 + runtime.Sov(uint64(l)) + l
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -9042,14 +9210,14 @@ func (x *fastReflection_MsgUpdateEnabledPools) ProtoMethods() *protoiface.Method
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.EnabledPools) > 0 {
+		if len(x.RemovePools) > 0 {
 			var pksize2 int
-			for _, num := range x.EnabledPools {
+			for _, num := range x.RemovePools {
 				pksize2 += runtime.Sov(uint64(num))
 			}
 			i -= pksize2
 			j1 := i
-			for _, num := range x.EnabledPools {
+			for _, num := range x.RemovePools {
 				for num >= 1<<7 {
 					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
 					num >>= 7
@@ -9059,6 +9227,46 @@ func (x *fastReflection_MsgUpdateEnabledPools) ProtoMethods() *protoiface.Method
 				j1++
 			}
 			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.AddPools) > 0 {
+			var pksize4 int
+			for _, num := range x.AddPools {
+				pksize4 += runtime.Sov(uint64(num))
+			}
+			i -= pksize4
+			j3 := i
+			for _, num := range x.AddPools {
+				for num >= 1<<7 {
+					dAtA[j3] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j3++
+				}
+				dAtA[j3] = uint8(num)
+				j3++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize4))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.EnabledPools) > 0 {
+			var pksize6 int
+			for _, num := range x.EnabledPools {
+				pksize6 += runtime.Sov(uint64(num))
+			}
+			i -= pksize6
+			j5 := i
+			for _, num := range x.EnabledPools {
+				for num >= 1<<7 {
+					dAtA[j5] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j5++
+				}
+				dAtA[j5] = uint8(num)
+				j5++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize6))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -9225,6 +9433,158 @@ func (x *fastReflection_MsgUpdateEnabledPools) ProtoMethods() *protoiface.Method
 					}
 				} else {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnabledPools", wireType)
+				}
+			case 3:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.AddPools = append(x.AddPools, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.AddPools) == 0 {
+						x.AddPools = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.AddPools = append(x.AddPools, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AddPools", wireType)
+				}
+			case 4:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.RemovePools = append(x.RemovePools, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.RemovePools) == 0 {
+						x.RemovePools = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.RemovePools = append(x.RemovePools, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RemovePools", wireType)
 				}
 			default:
 				iNdEx = preIndex
@@ -10387,6 +10747,8 @@ type MsgUpdateEnabledPools struct {
 	// overwritten).
 	Authority    string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	EnabledPools []uint64 `protobuf:"varint,2,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
+	AddPools     []uint64 `protobuf:"varint,3,rep,packed,name=add_pools,json=addPools,proto3" json:"add_pools,omitempty"`
+	RemovePools  []uint64 `protobuf:"varint,4,rep,packed,name=remove_pools,json=removePools,proto3" json:"remove_pools,omitempty"`
 }
 
 func (x *MsgUpdateEnabledPools) Reset() {
@@ -10419,6 +10781,20 @@ func (x *MsgUpdateEnabledPools) GetAuthority() string {
 func (x *MsgUpdateEnabledPools) GetEnabledPools() []uint64 {
 	if x != nil {
 		return x.EnabledPools
+	}
+	return nil
+}
+
+func (x *MsgUpdateEnabledPools) GetAddPools() []uint64 {
+	if x != nil {
+		return x.AddPools
+	}
+	return nil
+}
+
+func (x *MsgUpdateEnabledPools) GetRemovePools() []uint64 {
+	if x != nil {
+		return x.RemovePools
 	}
 	return nil
 }
@@ -10628,7 +11004,7 @@ var file_elys_perpetual_tx_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x4d, 0x61, 0x78, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x46, 0x6f,
 	0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x22, 0x25, 0x0a, 0x23, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
 	0x74, 0x65, 0x4d, 0x61, 0x78, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x46, 0x6f, 0x72,
-	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xa8, 0x01, 0x0a,
+	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xe8, 0x01, 0x0a,
 	0x15, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65,
 	0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
 	0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
@@ -10636,6 +11012,10 @@ var file_elys_perpetual_tx_proto_rawDesc = []byte{
 	0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x23,
 	0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18,
 	0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f,
+	0x6f, 0x6c, 0x73, 0x12, 0x1b, 0x0a, 0x09, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x73,
+	0x18, 0x03, 0x20, 0x03, 0x28, 0x04, 0x52, 0x08, 0x61, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73,
+	0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x73,
+	0x18, 0x04, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0b, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f,
 	0x6f, 0x6c, 0x73, 0x3a, 0x32, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
 	0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x1f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
 	0x6c, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c,
@@ -10701,18 +11081,18 @@ var file_elys_perpetual_tx_proto_rawDesc = []byte{
 	0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70,
 	0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73,
 	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42,
-	0xa7, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0xaa, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
 	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
+	0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
 	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e,
-	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73,
-	0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a,
-	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x76, 0x35, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c,
+	0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a,
+	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

@@ -1,12 +1,12 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	"github.com/elys-network/elys/v5/x/perpetual/types"
 )
 
-func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long osmomath.BigDec, short osmomath.BigDec) {
+func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long math.LegacyDec, short math.LegacyDec) {
 	fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
 	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
@@ -15,17 +15,17 @@ func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long o
 	if fundingRateLong.IsZero() {
 		// short will pay
 		// long will receive
-		unpopular_rate := osmomath.ZeroBigDec()
+		unpopular_rate := math.LegacyZeroDec()
 		if !totalLongOpenInterest.IsZero() {
-			unpopular_rate = fundingRateShort.Mul(osmomath.BigDecFromSDKInt(totalShortOpenInterest)).Quo(osmomath.BigDecFromSDKInt(totalLongOpenInterest))
+			unpopular_rate = fundingRateShort.Mul(totalShortOpenInterest.ToLegacyDec()).Quo(totalLongOpenInterest.ToLegacyDec())
 		}
 		return unpopular_rate.Neg(), fundingRateShort
 	} else {
 		// long will pay
 		// short will receive
-		unpopular_rate := osmomath.ZeroBigDec()
+		unpopular_rate := math.LegacyZeroDec()
 		if !totalShortOpenInterest.IsZero() {
-			unpopular_rate = fundingRateLong.Mul(osmomath.BigDecFromSDKInt(totalLongOpenInterest)).Quo(osmomath.BigDecFromSDKInt(totalShortOpenInterest))
+			unpopular_rate = fundingRateLong.Mul(totalLongOpenInterest.ToLegacyDec()).Quo(totalShortOpenInterest.ToLegacyDec())
 		}
 		return fundingRateLong, unpopular_rate.Neg()
 	}

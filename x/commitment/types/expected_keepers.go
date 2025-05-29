@@ -2,8 +2,9 @@ package types
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
