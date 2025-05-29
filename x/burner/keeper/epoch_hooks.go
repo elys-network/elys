@@ -16,7 +16,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 
 	if err := k.BurnTokensForAllDenoms(ctx); err != nil {
 		k.Logger(ctx).Error("Error burning tokens", "error", err)
-		panic(err)
+		return err
 	}
 	return nil
 }
