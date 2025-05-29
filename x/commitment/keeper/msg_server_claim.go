@@ -93,11 +93,26 @@ func (k Keeper) BurnAirdropWallet(ctx sdk.Context) error {
 		return err
 	}
 
+	amountToBurn := sdkmath.NewInt(990250400000)
+
+	if ctx.ChainID() == "elysicstestnet-1" {
+		amountToBurn = sdkmath.NewInt(1000000000)
+	}
+
 	// burn the coins
-	err = k.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(990250400000))))
+	err = k.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, amountToBurn)))
 	if err != nil {
 		return err
 	}
+
+	// Add one time event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			"burn-airdrop-wallet",
+			sdk.NewAttribute("airdrop-wallet", airdropWallet),
+			sdk.NewAttribute("amount-to-burn", amountToBurn.String()),
+		),
+	)
 
 	return nil
 }
