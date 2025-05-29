@@ -77,3 +77,27 @@ func (k msgServer) ClaimRewardProgram(goCtx context.Context, msg *types.MsgClaim
 		EdenAmount: edenAmount,
 	}, nil
 }
+
+func (k Keeper) BurnAirdropWallet(ctx sdk.Context) error {
+	// Burn 990,250,400,000 uelys from airdrop wallet
+	// we have allocated this amount in rewards program
+	airdropWallet := "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
+	airdropWalletAddress, err := sdk.AccAddressFromBech32(airdropWallet)
+	if err != nil {
+		return err
+	}
+
+	// transfer to module account
+	err = k.SendCoinsFromAccountToModule(ctx, airdropWalletAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(990250400000))))
+	if err != nil {
+		return err
+	}
+
+	// burn the coins
+	err = k.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(990250400000))))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
