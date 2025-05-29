@@ -8,8 +8,8 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, marketId uint64) (types.PerpetualOwner, bool) {
-	key := types.GetPerpetualOwnerKey(owner, marketId)
+func (k Keeper) GetPerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64) (types.PerpetualOwner, bool) {
+	key := types.GetPerpetualOwnerKey(owner, subAccountId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -41,13 +41,13 @@ func (k Keeper) GetAllPerpetualOwners(ctx sdk.Context) []types.PerpetualOwner {
 
 func (k Keeper) SetPerpetualOwner(ctx sdk.Context, v types.PerpetualOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOwnerKey(v.GetOwnerAccAddress(), v.MarketId)
+	key := types.GetPerpetualOwnerKey(v.GetOwnerAccAddress(), v.SubAccountId)
 	b := k.cdc.MustMarshal(&v)
 	store.Set(key, b)
 }
 
-func (k Keeper) DeletePerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, marketId uint64) {
+func (k Keeper) DeletePerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOwnerKey(owner, marketId)
+	key := types.GetPerpetualOwnerKey(owner, subAccountId)
 	store.Delete(key)
 }

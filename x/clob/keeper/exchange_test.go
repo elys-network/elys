@@ -72,7 +72,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty15, p100, calcMargin(qty15, p100), math.LegacyZeroDec()) // Seller +15 @ 100 (M=150)
-				suite.SetPerpetualStateWithEntryFR(sellerPerp)
+				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty15
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller +10 @ 100 (M=100)
-				suite.SetPerpetualStateWithEntryFR(sellerPerp)
+				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -120,7 +120,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller +10 @ 100 (M=100)
-				suite.SetPerpetualStateWithEntryFR(sellerPerp)
+				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -144,7 +144,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10.Neg(), p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller -10 @ 100 (M=100)
-				suite.SetPerpetualStateWithEntryFR(sellerPerp)
+				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -170,7 +170,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Buyer +10 @ 100 (M=100)
-				suite.SetPerpetualStateWithEntryFR(buyerPerp)
+				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -194,7 +194,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty15.Neg(), p100, calcMargin(qty15, p100), math.LegacyZeroDec()) // Buyer -15 @ 100 (M=150)
-				suite.SetPerpetualStateWithEntryFR(buyerPerp)
+				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				market.TotalOpen = qty15
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -225,8 +225,8 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Buyer +10 @ 100 (M=100)
 				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty5, p100, calcMargin(qty5, p100), math.LegacyZeroDec()) // Seller +5 @ 100 (M=50)
-				suite.SetPerpetualStateWithEntryFR(buyerPerp)
-				suite.SetPerpetualStateWithEntryFR(sellerPerp)
+				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
+				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty15
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
@@ -303,7 +303,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetFundingRate(suite.ctx, currentFundingRate)
 
 				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec())
-				suite.SetPerpetualStateWithEntryFR(buyerPerp)
+				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				perpState, found := suite.GetPerpetualState(buyerAcc.GetOwnerAccAddress(), MarketId)
 				suite.Require().True(found, "Perpetual state not found")
 				// Setup funding rate difference to cause payout FROM market
@@ -384,7 +384,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalBuyerPerp.EntryFundingRate), "Buyer EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalBuyerPerp.EntryFundingRate)
 					}
 				} else {
-					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, buyerAcc.GetOwnerAccAddress(), MarketId)
+					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, buyerAcc.GetOwnerAccAddress(), buyerAcc.Id)
 					suite.Require().False(ownerFound, "Buyer owner mapping should be deleted but was found")
 				}
 
@@ -399,7 +399,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalSellerPerp.EntryFundingRate), "Seller EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalSellerPerp.EntryFundingRate)
 					}
 				} else {
-					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, sellerAcc.GetOwnerAccAddress(), MarketId)
+					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, sellerAcc.GetOwnerAccAddress(), sellerAcc.Id)
 					suite.Require().False(ownerFound, "Seller owner mapping should be deleted but was found")
 				}
 

@@ -21,20 +21,32 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, err
 	}
 
-	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), market.Id)
+	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), market.Id)
 	if err != nil {
 		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
 	}
 
 	order := types.PerpetualOrder{
-		MarketId:    market.Id,
-		OrderType:   msg.OrderType,
-		Price:       msg.Price,
-		BlockHeight: uint64(ctx.BlockHeight()),
-		Owner:       msg.Creator,
-		Amount:      msg.BaseQuantity,
+		MarketId:     market.Id,
+		OrderType:    msg.OrderType,
+		Price:        msg.Price,
+		BlockHeight:  uint64(ctx.BlockHeight()),
+		Owner:        msg.Creator,
+		SubAccountId: subAccount.Id,
+		Amount:       msg.BaseQuantity,
 	}
+
+	_, found := k.GetPerpetualOrder(ctx, order.MarketId, order.OrderType, order.Price, order.BlockHeight)
+	if found {
+		return nil, errors.New("order already exists")
+	}
+
 	k.SetPerpetualOrder(ctx, order)
+	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
+		Owner:        msg.Creator,
+		SubAccountId: subAccount.Id,
+		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.BlockHeight),
+	})
 	return &types.MsgPlaceLimitOrderResponse{}, nil
 }
 

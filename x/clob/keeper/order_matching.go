@@ -18,7 +18,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	fullyFilled := true
 	buyOrderIterator := k.GetBuyOrderIterator(ctx, marketId)
 
-	var keysToDelete [][]byte
+	var keysToDelete []types.PerpetualOrderOwner
 
 	for ; buyOrderIterator.Valid() && fullyFilled; buyOrderIterator.Next() {
 		var buyOrder types.PerpetualOrder
@@ -28,8 +28,12 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 			return err
 		}
 		if fullyFilled {
-			// iterator.Key() gives key bytes without prefix
-			keysToDelete = append(keysToDelete, types.GetPerpetualOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.BlockHeight))
+			toDelete := types.PerpetualOrderOwner{
+				Owner:        buyOrder.Owner,
+				SubAccountId: buyOrder.SubAccountId,
+				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.BlockHeight),
+			}
+			keysToDelete = append(keysToDelete, toDelete)
 		}
 	}
 
@@ -38,7 +42,12 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 		return err
 	}
 	for _, key := range keysToDelete {
-		k.DeleteOrder(ctx, key)
+		k.DeleteOrder(ctx, key.OrderKey)
+		k.DeleteOrderOwner(ctx, types.PerpetualOrderOwner{
+			Owner:        key.Owner,
+			SubAccountId: key.SubAccountId,
+			OrderKey:     key.OrderKey,
+		})
 	}
 
 	return nil
@@ -61,7 +70,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 		return false, err
 	}
 
-	var keysToDelete [][]byte
+	var keysToDelete []types.PerpetualOrderOwner
 
 	stop := false
 
@@ -104,8 +113,12 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			buyOrder.Filled = buyOrder.Filled.Add(tradeQuantity)
 
 			if sellOrderFilled {
-				// iterator.Key() gives key bytes without prefix
-				keysToDelete = append(keysToDelete, types.GetPerpetualOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.BlockHeight))
+				toDelete := types.PerpetualOrderOwner{
+					Owner:        sellOrder.Owner,
+					SubAccountId: sellOrder.SubAccountId,
+					OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.BlockHeight),
+				}
+				keysToDelete = append(keysToDelete, toDelete)
 			} else {
 				k.SetPerpetualOrder(ctx, sellOrder)
 			}
@@ -142,7 +155,12 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 		return false, err
 	}
 	for _, key := range keysToDelete {
-		k.DeleteOrder(ctx, key)
+		k.DeleteOrder(ctx, key.OrderKey)
+		k.DeleteOrderOwner(ctx, types.PerpetualOrderOwner{
+			Owner:        key.Owner,
+			SubAccountId: key.SubAccountId,
+			OrderKey:     key.OrderKey,
+		})
 	}
 
 	if !buyOrderFilled {

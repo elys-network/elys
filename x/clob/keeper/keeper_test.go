@@ -344,7 +344,7 @@ func (suite *KeeperTestSuite) SetupExchangeTest() (market types.PerpetualMarket,
 }
 
 // SetPerpetualStateWithEntryFR sets perpetual and owner mapping, applying current funding rate
-func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual) types.Perpetual {
+func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual, isCross bool) types.Perpetual {
 	// Ensure EntryFundingRate matches current rate for test simplicity
 	currentFundingRate := suite.app.ClobKeeper.GetFundingRate(suite.ctx, p.MarketId)
 	p.EntryFundingRate = currentFundingRate.Rate
@@ -353,8 +353,12 @@ func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual) ty
 		p.Id = suite.app.ClobKeeper.GetAndUpdatePerpetualCounter(suite.ctx, p.MarketId)
 	}
 	suite.app.ClobKeeper.SetPerpetual(suite.ctx, p)
+	subAccountId := p.MarketId
+	if isCross {
+		subAccountId = types.CrossMarginSubAccountId
+	}
 	suite.app.ClobKeeper.SetPerpetualOwner(suite.ctx, types.PerpetualOwner{
-		Owner: p.Owner, MarketId: p.MarketId, PerpetualId: p.Id,
+		Owner: p.Owner, SubAccountId: subAccountId, MarketId: p.MarketId, PerpetualId: p.Id,
 	})
 	return p // Return potentially updated perpetual (with ID)
 }

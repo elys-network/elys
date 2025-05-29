@@ -25,6 +25,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, v := range genState.OrderBooks {
 		k.SetPerpetualOrder(ctx, *v)
 	}
+	for _, v := range genState.OrderOwners {
+		k.SetOrderOwner(ctx, *v)
+	}
 	for _, v := range genState.TwapPrices {
 		k.SetTwapPricesStruct(ctx, *v)
 	}
@@ -46,9 +49,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.SubAccounts = k.GetAllSubAccount(ctx)
 	genesis.PerpetualMarkets = k.GetAllPerpetualMarket(ctx)
-	//genesis.PerpetualOwners = k.GetAllMarketPositionCounter(ctx)
-	//subAccountCounter := k.GetSubAccountCounter(ctx)
-	//genesis.SubAccountCounter = &subAccountCounter
+	genesis.PerpetualOwners = k.GetAllPerpetualOwners(ctx)
 
 	return genesis
 }

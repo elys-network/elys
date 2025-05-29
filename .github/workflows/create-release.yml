@@ -2,8 +2,8 @@ name: Create release
 
 on:
   push:
-    branches:
-      - avkr003/clob
+    tags:
+      - v*
 
 permissions:
   contents: write

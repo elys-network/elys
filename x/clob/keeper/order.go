@@ -9,18 +9,18 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOrder(ctx sdk.Context, marketId uint64, orderType types.OrderType, price math.LegacyDec, blockHeight uint64) (types.PerpetualOrder, error) {
+func (k Keeper) GetPerpetualOrder(ctx sdk.Context, marketId uint64, orderType types.OrderType, price math.LegacyDec, blockHeight uint64) (types.PerpetualOrder, bool) {
 	key := types.GetPerpetualOrderKey(marketId, orderType, price, blockHeight)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
 	if b == nil {
-		return types.PerpetualOrder{}, types.ErrPerpetualOrderNotFound
+		return types.PerpetualOrder{}, false
 	}
 
 	var val types.PerpetualOrder
 	k.cdc.MustUnmarshal(b, &val)
-	return val, nil
+	return val, true
 }
 
 func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
@@ -47,8 +47,9 @@ func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) {
 	store.Set(key, b)
 }
 
-func (k Keeper) DeleteOrder(ctx sdk.Context, key []byte) {
+func (k Keeper) DeleteOrder(ctx sdk.Context, orderKey types.OrderKey) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.Price, orderKey.BlockHeight)
 	store.Delete(key)
 }
 
