@@ -1,0 +1,24 @@
+{
+    "title": "Whitelist address for uploading and instantiating WASM contracts",
+    "summary": "This proposal modifies wasm parameters to allow a whitelisted address to upload and instantiate contracts alongside governance-based proposals.",
+    "messages": [
+        {
+            "@type": "/cosmwasm.wasm.v1.MsgUpdateParams",
+            "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "params": {
+                "code_upload_access": {
+                    "permission": "AnyOfAddresses",
+                    "addresses": [
+                        "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+                        "elys1wstfr2fx8h9tdxhs4wv4t8sjxdgrw6f9dpdpdf",
+                        "elys1lufea2epqan4rs9tqv8zya3a3xpfzp7ghs6xxl"
+                    ]
+                },
+                "instantiate_default_permission": "AnyOfAddresses"
+            }
+        }
+    ],
+    "metadata": "",
+    "expedited": false,
+    "deposit": "100000000uelys"
+}
