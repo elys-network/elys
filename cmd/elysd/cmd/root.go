@@ -49,7 +49,7 @@ import (
 
 	"github.com/elys-network/elys/v6/app"
 	appparams "github.com/elys-network/elys/v6/app/params"
-	//"github.com/ojo-network/ojo/pricefeeder"
+	"github.com/ojo-network/ojo/pricefeeder"
 )
 
 var tempDir = func() string {
@@ -210,9 +210,8 @@ func initRootCmd(rootCmd *cobra.Command,
 		keys.Commands(),
 	)
 
-	//rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
-	//rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
-	//rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
+	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
+	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, true, "Enable the price feeder")
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
@@ -332,13 +331,11 @@ func (a appCreator) newApp(
 	)
 
 	// load app config into oracle keeper price feeder
-	//appConfig, err := pricefeeder.ReadConfigFromAppOpts(appOpts)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-
-	//app.OracleKeeper.PriceFeeder.AppConfig = appConfig
+	appConfig, err := pricefeeder.ReadConfigFromAppOpts(appOpts)
+	if err != nil {
+		panic(err)
+	}
+	app.OracleKeeper.PriceFeeder.AppConfig = appConfig
 
 	return app
 }
@@ -395,7 +392,7 @@ func initAppConfig() (string, interface{}) {
 
 	type CustomAppConfig struct {
 		serverconfig.Config
-		//PriceFeeder pricefeeder.AppConfig `mapstructure:"pricefeeder"`
+		PriceFeeder pricefeeder.AppConfig `mapstructure:"pricefeeder"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -417,11 +414,11 @@ func initAppConfig() (string, interface{}) {
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		//PriceFeeder: pricefeeder.AppConfig{
-		//	ConfigPath: "",
-		//	LogLevel:   "info",
-		//},
+		PriceFeeder: pricefeeder.AppConfig{
+			Enable:   true,
+			LogLevel: "info",
+		},
 	}
-	customAppTemplate := serverconfig.DefaultConfigTemplate //+ pricefeeder.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate + pricefeeder.DefaultConfigTemplate
 	return customAppTemplate, customAppConfig
 }
