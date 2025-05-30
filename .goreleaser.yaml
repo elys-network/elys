@@ -71,7 +71,7 @@ builds:
         - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.x86_64.a" | sha256sum -c
         - cp /lib/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.a
         #        - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz # musl.cc stopped supporting github actions, added the files to SUT and downloading from there
-        - wget https://github.com/elys-network/post-upgrade-snapshot-generator/raw/refs/heads/main/resources/x86_64-linux-musl-cross.tgz
+        - wget https://github.com/elys-network/resources/raw/refs/heads/main/x86_64-linux-musl-cross.tgz
         - tar xf x86_64-linux-musl-cross.tgz
         - mv x86_64-linux-musl-cross /opt/musl-cross
     goos:
