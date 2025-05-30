@@ -4,7 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 // SetParams set the params

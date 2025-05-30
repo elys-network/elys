@@ -8,33 +8,51 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
 func (suite *AmmKeeperTestSuite) TestLiquidityRatioFromPriceDepth() {
 	depth := osmomath.NewBigDecWithPrec(1, 2) // 1%
-	suite.Require().Equal("0.005012562893380045265520178998793995", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err := keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.005012562893380045265520178998793995", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(2, 2) // 2%
-	suite.Require().Equal("0.010050506338833465838817893053211345", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.010050506338833465838817893053211345", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(5, 2) // 5%
-	suite.Require().Equal("0.025320565519103609316158680010039970", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.025320565519103609316158680010039970", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(10, 2) // 10%
-	suite.Require().Equal("0.051316701949486200400331936670184440", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.051316701949486200400331936670184440", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(30, 2) // 30%
-	suite.Require().Equal("0.163339973465924452021827974214812510", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.163339973465924452021827974214812510", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(50, 2) // 50%
-	suite.Require().Equal("0.292893218813452475599155637895150960", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.292893218813452475599155637895150960", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(70, 2) // 70%
-	suite.Require().Equal("0.452277442494833886543030217199197866", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.452277442494833886543030217199197866", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(90, 2) // 90%
-	suite.Require().Equal("0.683772233983162066800110645556728146", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("0.683772233983162066800110645556728146", ratio.String())
 	depth = osmomath.NewBigDecWithPrec(100, 2) // 100%
-	suite.Require().Equal("1.000000000000000000000000000000000000", keeper.LiquidityRatioFromPriceDepth(depth).String())
+	ratio, err = keeper.LiquidityRatioFromPriceDepth(depth)
+	suite.Require().NoError(err)
+	suite.Require().Equal("1.000000000000000000000000000000000000", ratio.String())
 }
 
 func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {

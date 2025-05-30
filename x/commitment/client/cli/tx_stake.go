@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/spf13/cobra"
 )
 

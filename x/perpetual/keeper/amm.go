@@ -6,10 +6,18 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
+
+func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error) {
+	ammPool, found := k.amm.GetPool(ctx, poolId)
+	if !found {
+		return ammPool, errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
+	}
+	return ammPool, nil
+}
 
 func getWeightBreakingFee(weightBalanceBonus osmomath.BigDec) osmomath.BigDec {
 	// when weightBalanceBonus is 0, then breaking fee is also 0

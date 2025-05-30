@@ -1,11 +1,12 @@
 package types_test
 
 import (
+	"testing"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestParamsValidation(t *testing.T) {

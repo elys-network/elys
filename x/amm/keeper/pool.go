@@ -1,22 +1,19 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // SetPool set a specific pool in the store from its index
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
-	err := pool.Validate()
-	if err != nil {
-		panic(err)
-	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	key := types.PoolKey(pool.PoolId)

@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
@@ -32,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -165,7 +165,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				suite.Require().NoError(err)
 
 				openPositionMsg.Leverage = math.LegacyNewDec(3)
-				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("0.5")
+				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("1.5")
 
 				return openPositionMsg
 			},
@@ -174,11 +174,11 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				Collateral:      math.NewInt(800),
 				Liabilities:     math.NewInt(653),
 				Custody:         math.NewInt(4000),
-				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.692857142857142857"),
+				TakeProfitPrice: math.LegacyMustNewDecFromStr("1.5"),
 			},
 		},
 		{
-			"Sucess: add collateral for the existing position",
+			"Success: add collateral for the existing position",
 			func() *types.MsgOpen {
 				suite.ResetSuite()
 

@@ -47,8 +47,8 @@ import (
 
 	// this line is used by starport scaffolding # root/moduleImport
 
-	"github.com/elys-network/elys/app"
-	appparams "github.com/elys-network/elys/app/params"
+	"github.com/elys-network/elys/v6/app"
+	appparams "github.com/elys-network/elys/v6/app/params"
 	"github.com/ojo-network/ojo/pricefeeder"
 )
 

@@ -2,8 +2,8 @@ package assetprofile
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/assetprofile/keeper"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

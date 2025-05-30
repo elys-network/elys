@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/sample"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
@@ -140,7 +140,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -189,7 +189,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
@@ -240,7 +240,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
@@ -249,7 +249,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
-					Price:     tradingAssetPrice.MulInt64(4).Dec(),
+					Price:     tradingAssetPrice.MulInt64(4),
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})

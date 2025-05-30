@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
@@ -80,7 +80,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
-				suite.Require().Equal(tc.result, effectiveLeverage.Dec())
+				suite.Require().Equal(tc.result, effectiveLeverage)
 				suite.Require().NoError(err)
 			}
 		})

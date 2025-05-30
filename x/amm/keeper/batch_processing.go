@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 func (k Keeper) SetLastSwapRequestIndex(ctx sdk.Context, index uint64) {

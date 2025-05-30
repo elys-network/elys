@@ -4,7 +4,7 @@ package elys.leveragelp;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v6/x/leveragelp/types";
 
 message Pool {
   uint64 amm_pool_id = 1;

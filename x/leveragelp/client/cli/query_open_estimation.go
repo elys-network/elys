@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/spf13/cobra"
 )
 

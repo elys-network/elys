@@ -7,7 +7,7 @@
 | Chain Info           | [See network details here](https://github.com/elys-network/networks)     |
 | Denomination         | uelys                                                                    |
 | Decimals             | 6 (1 elys= 1000000uelys)                                                 |
-| Version              | v3.0.0 |
+| Version              | v6.0.0                                                                   |
 | MainNet RPC Endpoint | https://rpc.elys.network:443                                             |
 | MainNet API Endpoint | https://api.elys.network:443                                             |
 | MainNet Explorer     | https://explorer.elys.network ; https://elysscan.io                      |
@@ -55,7 +55,7 @@ This guide provides instructions on how to spin up a new localnet using the Elys
    Use the command below to start the localnet:
 
    ```bash
-   elysd start --pricefeeder.enable --pricefeeder.config_path="./price-feeder.toml" --pricefeeder.log_level="debug"
+   elysd start
    ```
 
 ## Installation

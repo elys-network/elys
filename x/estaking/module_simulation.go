@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	estakingsimulation "github.com/elys-network/elys/x/estaking/simulation"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	estakingsimulation "github.com/elys-network/elys/v6/x/estaking/simulation"
+	"github.com/elys-network/elys/v6/x/estaking/types"
 )
 
 // avoid unused import issue

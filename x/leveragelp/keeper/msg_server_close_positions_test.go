@@ -2,10 +2,10 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestCloseositions() {

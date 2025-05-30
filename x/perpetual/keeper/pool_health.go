@@ -1,14 +1,16 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -18,9 +20,12 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
-	minimumThreshold := k.GetPoolOpenThreshold(ctx)
-	if !pool.Health.IsNil() && pool.Health.LTE(minimumThreshold) {
-		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) health too low to open new positions", poolId)
+	maxLiabilitiesThreshold := k.GetPoolMaxLiabilitiesThreshold(ctx)
+	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
+	}
+	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)
 	if err != nil {
@@ -29,43 +34,40 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 	return nil
 }
 
-func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) osmomath.BigDec {
+func (k Keeper) CalculateLiabilitiesRatioByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) math.LegacyDec {
 	poolAssets := pool.GetPoolAssets(position)
-	H := osmomath.NewBigDec(1)
+	H := math.LegacyZeroDec()
 	for _, asset := range *poolAssets {
+
+		if asset.Liabilities.IsZero() {
+			continue
+		}
 
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
-			return osmomath.ZeroBigDec()
+			return math.LegacyZeroDec()
 		}
 
-		balance := osmomath.BigDecFromSDKInt(ammBalance)
-		liabilities := asset.GetBigDecLiabilities()
+		balance := ammBalance.ToLegacyDec()
+		liabilities := asset.Liabilities.ToLegacyDec()
 
 		if balance.Add(liabilities).IsZero() {
-			return osmomath.ZeroBigDec()
+			return math.LegacyZeroDec()
 		}
-
-		mul := balance.Quo(balance.Add(liabilities))
-		H = H.Mul(mul)
+		H = liabilities.Quo(balance.Add(liabilities))
 	}
-	return H
-}
-
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) osmomath.BigDec {
-	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-	if !found {
-		return osmomath.ZeroBigDec()
-	}
-
-	H := k.CalculatePoolHealthByPosition(pool, ammPool, types.Position_LONG)
-	H = H.Mul(k.CalculatePoolHealthByPosition(pool, ammPool, types.Position_SHORT))
-
 	return H
 }
 
 func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
-	pool.Health = k.CalculatePoolHealth(ctx, pool).Dec()
+	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+	if !found {
+		return errors.New("amm pool not found while calculating pool health")
+	}
+
+	pool.BaseAssetLiabilitiesRatio = k.CalculateLiabilitiesRatioByPosition(pool, ammPool, types.Position_LONG)
+	pool.QuoteAssetLiabilitiesRatio = k.CalculateLiabilitiesRatioByPosition(pool, ammPool, types.Position_SHORT)
+
 	k.SetPool(ctx, *pool)
 
 	return nil

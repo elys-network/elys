@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	simapp "github.com/elys-network/elys/app"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 

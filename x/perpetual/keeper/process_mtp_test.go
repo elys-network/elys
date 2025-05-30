@@ -9,13 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
@@ -145,7 +145,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	// Set params
 	params = mk.GetParams(ctx)
-	params.BorrowInterestPaymentFundAddress = addr[2].String()
+	params.LegacyBorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	err = mk.SetParams(ctx, &params)
 	suite.Require().NoError(err)
@@ -468,8 +468,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		1,
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
-		tradingAssetPrice.Dec().MulInt64(10),
-		tradingAssetPrice.Dec().QuoInt64(2),
+		tradingAssetPrice.MulInt64(10),
+		tradingAssetPrice.QuoInt64(2),
 	)
 	params := app.PerpetualKeeper.GetParams(ctx)
 	params.WhitelistingEnabled = true
@@ -481,7 +481,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     tradingAssetPrice.Dec().QuoInt64(4),
+		Price:     tradingAssetPrice.QuoInt64(4),
 		Provider:  authtypes.NewModuleAddress("provider").String(),
 		Timestamp: uint64(ctx.BlockTime().Unix() + 6),
 	})

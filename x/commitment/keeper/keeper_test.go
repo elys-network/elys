@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -147,7 +147,7 @@ func TestKeeper_AddEdenEdenBOnModule(t *testing.T) {
 	)
 }
 
-// TestKeeper_SubEdenEdenBOnModule tests the SubEdenEdenBOnModule function with insufficient claimed tokens error
+// TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens tests the SubEdenEdenBOnModule function with insufficient claimed tokens error
 func TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 
@@ -304,7 +304,7 @@ func TestKeeper_BurnCoins(t *testing.T) {
 	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
 }
 
-// TestKeeper_BurnCoins tests the BurnCoins function with empty amount
+// TestKeeper_BurnCoins_EmptyAmount tests the BurnCoins function with empty amount
 func TestKeeper_BurnCoins_EmptyAmount(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 

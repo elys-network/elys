@@ -2,9 +2,10 @@ package types
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 

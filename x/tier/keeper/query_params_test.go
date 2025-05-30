@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/tier/types"
+	testkeeper "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

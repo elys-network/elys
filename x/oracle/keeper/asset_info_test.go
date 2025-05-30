@@ -2,7 +2,7 @@ package keeper_test
 
 /*
 import (
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 func (suite *KeeperTestSuite) TestAssetInfoSetGetDelete() {

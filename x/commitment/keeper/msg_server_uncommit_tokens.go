@@ -7,19 +7,19 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount math.Int, isLiquidation bool) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s, address: %s", denom, addr.String())
 	}
 
 	if !assetProfile.WithdrawEnabled {
-		return errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s, address: %s", denom, addr.String())
 	}
 
 	// Get the Commitments for the creator

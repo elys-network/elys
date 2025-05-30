@@ -2,15 +2,14 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	suite.ResetSuite()
 	params := types.DefaultParams()
-	params.PoolOpenThreshold = sdkmath.LegacyOneDec()
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 	addr := suite.AddAccounts(10, nil)
@@ -31,11 +30,20 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 		},
 		// "Pool health is nil" case is not possible because Getter function always give 0 value of health
 		{
-			"Pool health is low",
-			"pool (1) health too low to open new positions",
+			"Pool health is low LONG",
+			"pool (1) base asset liabilities ratio (0.950000000000000000) too high for the operation",
 			func() {
 				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"))
-				pool.Health = sdkmath.LegacyMustNewDecFromStr("0.5")
+				pool.BaseAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+		},
+		{
+			"Pool health is low SHORT",
+			"pool (1) quote asset liabilities ratio (0.950000000000000000) too high for the operation",
+			func() {
+				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"))
+				pool.QuoteAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
 		},

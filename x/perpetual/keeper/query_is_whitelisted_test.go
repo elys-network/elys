@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestQueryIsWhitelisted_InvalidRequest() {

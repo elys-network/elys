@@ -8,9 +8,9 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 func TestGenesisInflationMsgServerUpdate(t *testing.T) {

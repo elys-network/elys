@@ -5,9 +5,9 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (types.MTP, types.Pool, ammtypes.Pool, sdk.AccAddress) {
@@ -24,7 +24,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		PoolId:          ammPool.PoolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
-		TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
@@ -35,7 +35,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		PoolId:          ammPool.PoolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
-		TakeProfitPrice: tradingAssetPrice.QuoInt64(4).Dec(),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 

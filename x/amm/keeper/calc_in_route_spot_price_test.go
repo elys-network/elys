@@ -5,8 +5,9 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -17,6 +18,20 @@ func (suite *AmmKeeperTestSuite) TestCalcInRouteSpotPrice() {
 
 	suite.SetupTest()
 	suite.SetupStableCoinPrices()
+
+	// Set up oracle asset info
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.Elys,
+		Decimal: 6,
+	})
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.BaseCurrency,
+		Decimal: 6,
+	})
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   "uusda",
+		Decimal: 6,
+	})
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

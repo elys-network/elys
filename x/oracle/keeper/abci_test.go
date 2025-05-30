@@ -2,10 +2,11 @@ package keeper_test
 
 /*
 import (
-	sdkmath "cosmossdk.io/math"
 	"time"
 
-	"github.com/elys-network/elys/x/oracle/types"
+	sdkmath "cosmossdk.io/math"
+
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 // This test ensures old price data is automatically removed

@@ -19,9 +19,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/elys-network/elys/x/epochs/keeper"
-	"github.com/elys-network/elys/x/epochs/migrations"
-	"github.com/elys-network/elys/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/epochs/keeper"
+	"github.com/elys-network/elys/v6/x/epochs/migrations"
+	"github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 var (

@@ -5,10 +5,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

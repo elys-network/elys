@@ -12,7 +12,7 @@ import "elys/oracle/price_feeder.proto";
 import "cosmos_proto/cosmos.proto";
 // this line is used by starport scaffolding # 1
 
-option go_package = "github.com/elys-network/elys/x/oracle/types";
+option go_package = "github.com/elys-network/elys/v6/x/oracle/types";
 
 // Query defines the gRPC querier service.
 service Query {}

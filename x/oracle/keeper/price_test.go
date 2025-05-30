@@ -2,13 +2,14 @@ package keeper_test
 
 /*
 import (
-	sdkmath "cosmossdk.io/math"
 	"strconv"
 
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/oracle/keeper"
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/oracle/keeper"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {

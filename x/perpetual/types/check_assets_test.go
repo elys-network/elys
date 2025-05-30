@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
 
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func TestCheckLongAssets_InvalidAssets(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/elys-network/elys/x/assetprofile/keeper"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 )
 
 func SimulateMsgAddEntry(

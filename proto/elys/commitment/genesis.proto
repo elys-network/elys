@@ -6,7 +6,7 @@ import "elys/commitment/params.proto";
 import "elys/commitment/commitments.proto";
 import "elys/commitment/airdrop.proto";
 
-option go_package = "github.com/elys-network/elys/x/commitment/types";
+option go_package = "github.com/elys-network/elys/v6/x/commitment/types";
 
 // GenesisState defines the commitment module's genesis state.
 message GenesisState {

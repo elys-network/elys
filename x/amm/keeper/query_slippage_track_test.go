@@ -2,8 +2,8 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

@@ -7,10 +7,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryEstimation() {

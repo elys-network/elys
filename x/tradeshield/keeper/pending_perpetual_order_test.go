@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []types.PerpetualOrder {
@@ -142,7 +142,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 
 	err = suite.app.TradeshieldKeeper.ExecuteLimitCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
-	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000000000000000000000)")
+	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000)")
 
 	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
 	suite.Require().True(found)
@@ -208,7 +208,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 
 	err = suite.app.TradeshieldKeeper.ExecuteMarketCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
-	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000000000000000000000)")
+	suite.Require().Contains(err.Error(), "invalid closing ratio (0.000000000000000000)")
 
 	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
 	suite.Require().True(found)

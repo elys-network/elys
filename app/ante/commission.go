@@ -10,7 +10,9 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	parameterkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 type MinCommissionDecorator struct {
@@ -167,6 +169,20 @@ func (min MinCommissionDecorator) AnteHandle(
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
 					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdkmath.LegacyNewDec(100)), maxVotingPower.Mul(sdkmath.LegacyNewDec(100)))
+			}
+		case *commitmenttypes.MsgStake:
+			if msg.Asset == ptypes.Elys {
+				val, err := min.getValidator(ctx, msg.ValidatorAddress)
+				if err != nil {
+					return err
+				}
+
+				projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, msg.Amount.ToLegacyDec())
+				if projectedVotingPower.GT(maxVotingPower) {
+					return errorsmod.Wrapf(
+						sdkerrors.ErrInvalidRequest,
+						"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdkmath.LegacyNewDec(100)), maxVotingPower.Mul(sdkmath.LegacyNewDec(100)))
+				}
 			}
 		}
 

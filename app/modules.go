@@ -42,12 +42,14 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
 	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v8/modules/core"
@@ -55,38 +57,38 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccvgov "github.com/cosmos/interchain-security/v6/x/ccv/democracy/governance"
-	accountedpoolmodule "github.com/elys-network/elys/x/accountedpool"
-	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
-	ammmodule "github.com/elys-network/elys/x/amm"
-	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
-	assetprofilemodule "github.com/elys-network/elys/x/assetprofile"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
-	burnermodule "github.com/elys-network/elys/x/burner"
-	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
-	commitmentmodule "github.com/elys-network/elys/x/commitment"
-	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
-	epochsmodule "github.com/elys-network/elys/x/epochs"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	estakingmodule "github.com/elys-network/elys/x/estaking"
-	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
-	exstaking "github.com/elys-network/elys/x/estaking/modules/staking"
-	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
-	leveragelpmodule "github.com/elys-network/elys/x/leveragelp"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	masterchefmodule "github.com/elys-network/elys/x/masterchef"
-	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	parametermodule "github.com/elys-network/elys/x/parameter"
-	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualmodule "github.com/elys-network/elys/x/perpetual"
-	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/stablestake"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	tiermodule "github.com/elys-network/elys/x/tier"
-	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
-	tokenomicsmodule "github.com/elys-network/elys/x/tokenomics"
-	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
-	tradeshieldmodule "github.com/elys-network/elys/x/tradeshield"
-	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+	accountedpoolmodule "github.com/elys-network/elys/v6/x/accountedpool"
+	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
+	ammmodule "github.com/elys-network/elys/v6/x/amm"
+	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofilemodule "github.com/elys-network/elys/v6/x/assetprofile"
+	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	burnermodule "github.com/elys-network/elys/v6/x/burner"
+	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	commitmentmodule "github.com/elys-network/elys/v6/x/commitment"
+	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
+	epochsmodule "github.com/elys-network/elys/v6/x/epochs"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	estakingmodule "github.com/elys-network/elys/v6/x/estaking"
+	exdistr "github.com/elys-network/elys/v6/x/estaking/modules/distribution"
+	exstaking "github.com/elys-network/elys/v6/x/estaking/modules/staking"
+	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
+	leveragelpmodule "github.com/elys-network/elys/v6/x/leveragelp"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	masterchefmodule "github.com/elys-network/elys/v6/x/masterchef"
+	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	parametermodule "github.com/elys-network/elys/v6/x/parameter"
+	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualmodule "github.com/elys-network/elys/v6/x/perpetual"
+	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/stablestake"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tiermodule "github.com/elys-network/elys/v6/x/tier"
+	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
+	tokenomicsmodule "github.com/elys-network/elys/v6/x/tokenomics"
+	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	tradeshieldmodule "github.com/elys-network/elys/v6/x/tradeshield"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 	oraclemodule "github.com/ojo-network/ojo/x/oracle"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
@@ -96,12 +98,12 @@ var maccPerms = map[string][]string{
 	authtypes.FeeCollectorName:                    nil,
 	distrtypes.ModuleName:                         nil,
 	icatypes.ModuleName:                           nil,
+	ibchookstypes.ModuleName:                      nil,
 	stakingtypes.BondedPoolName:                   {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName:                {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:                           {authtypes.Burner},
 	oracletypes.ModuleName:                        {authtypes.Minter},
 	ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
-	ibcfeetypes.ModuleName:                        nil,
 	ccvconsumertypes.ConsumerRedistributeName:     {authtypes.Burner},
 	ccvconsumertypes.ConsumerToSendToProviderName: nil,
 
@@ -150,10 +152,11 @@ func appModules(
 		ibc.NewAppModule(app.IBCKeeper),
 		ibctm.NewAppModule(),
 		params.NewAppModule(app.ParamsKeeper),
-		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		transfer.NewAppModule(*app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		app.ConsumerModule, // Not defining it here directly because ConsumerModule needed for IBC router
+		ibchooks.NewAppModule(app.AccountKeeper),
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmTypes.ModuleName)),
 		epochsmodule.NewAppModule(appCodec, *app.EpochsKeeper),
 		assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper),
@@ -210,9 +213,10 @@ func simulationModules(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		ibc.NewAppModule(app.IBCKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		transfer.NewAppModule(*app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		app.ConsumerModule, // Not defining it here directly because ConsumerModule needed for IBC router
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		epochsmodule.NewAppModule(appCodec, *app.EpochsKeeper),
 		assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper),
 		oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper),
@@ -261,7 +265,6 @@ func orderBeginBlockers() []string {
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -284,6 +287,8 @@ func orderBeginBlockers() []string {
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 	}
 }
 
@@ -306,7 +311,6 @@ func orderEndBlockers() []string {
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		capabilitytypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -335,10 +339,12 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		wasmTypes.ModuleName,
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 
 		// Must be called after estaking and masterchef
 		ccvconsumertypes.ModuleName,
-		wasmTypes.ModuleName,
 	}
 }
 
@@ -364,10 +370,9 @@ func orderInitBlockers() []string {
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
-		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -389,9 +394,13 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		// wasm after ibc transfer
+		wasmTypes.ModuleName,
+		// ibc_hooks after auth keeper
+		ibchookstypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		// crisis needs to be last so that the genesis state is consistent
 		// when it checks invariants
 		crisistypes.ModuleName,
-		wasmTypes.ModuleName,
 	}
 }

@@ -8,8 +8,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {

@@ -4,17 +4,17 @@ import (
 	"time"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {

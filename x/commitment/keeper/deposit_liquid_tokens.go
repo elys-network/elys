@@ -1,25 +1,23 @@
 package keeper
 
 import (
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 )
 
 // accounting the liquid token as a claimed token in commitment module.
 func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount math.Int, sender sdk.AccAddress) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s, sender: %s", denom, sender.String())
 	}
 
 	if !assetProfile.CommitEnabled {
-		return errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s, sender: %s", denom, sender.String())
 	}
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
@@ -27,7 +25,7 @@ func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount
 	// send the deposited coins to the module
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, depositCoins)
 	if err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
+		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, "unable to send deposit tokens: %v, sender: %s", depositCoins, sender.String())
 	}
 
 	// Increase claimed amount

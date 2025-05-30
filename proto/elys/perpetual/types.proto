@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.perpetual;
 
-option go_package = "github.com/elys-network/elys/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
