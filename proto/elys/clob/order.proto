@@ -37,6 +37,7 @@ message PerpetualOrder {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 counter = 9;
 }
 
 message OrderKey {

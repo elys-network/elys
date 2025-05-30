@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation bool) (bool, error) {
+func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation, isBuyerTaker bool) (bool, error) {
 	if msg.OrderType != types.OrderType_ORDER_TYPE_MARKET_BUY {
 		return false, errors.New("order is not a buy order")
 	}
@@ -77,6 +77,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 			Quantity:            tradeQuantity,
 			IsBuyerLiquidation:  isLiquidation,
 			IsSellerLiquidation: false,
+			IsBuyerTaker:        isBuyerTaker,
 		})
 		if err != nil {
 			return false, err
@@ -102,7 +103,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 
 }
 
-func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation bool) (bool, error) {
+func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation, isBuyerTaker bool) (bool, error) {
 	if msg.OrderType != types.OrderType_ORDER_TYPE_MARKET_SELL {
 		return false, errors.New("order is not a sell order")
 	}
@@ -171,6 +172,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			Quantity:            tradeQuantity,
 			IsBuyerLiquidation:  false,
 			IsSellerLiquidation: isLiquidation,
+			IsBuyerTaker:        isBuyerTaker,
 		})
 		if err != nil {
 			return false, err

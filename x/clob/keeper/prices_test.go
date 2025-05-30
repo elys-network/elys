@@ -446,13 +446,13 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		}{
 			{
 				name:        "Error: Zero Quantity Trade",
-				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyZeroDec(), false, false}, // Zero Qty
-				setupFunc:   func() { setupTest() },                                                               // Basic setup
+				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyZeroDec(), false, false, true}, // Zero Qty
+				setupFunc:   func() { setupTest() },                                                                     // Basic setup
 				expectedErr: "trade quantity cannot be negative or zero",
 			},
 			{
 				name:        "Error: Negative Quantity Trade",
-				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyNewDec(-10), false, false}, // Negative Qty
+				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyNewDec(-10), false, false, true}, // Negative Qty
 				setupFunc:   func() { setupTest() },
 				expectedErr: "trade quantity cannot be negative or zero",
 			},

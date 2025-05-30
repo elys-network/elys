@@ -14,6 +14,7 @@ type Trade struct {
 	Quantity            math.LegacyDec
 	IsBuyerLiquidation  bool
 	IsSellerLiquidation bool
+	IsBuyerTaker        bool
 }
 
 func (t Trade) Validate() error {

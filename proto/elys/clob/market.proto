@@ -81,7 +81,7 @@ message PerpetualMarket {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 counter = 15;
+  uint64 order_counter = 15;
   string max_abs_funding_rate = 16 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

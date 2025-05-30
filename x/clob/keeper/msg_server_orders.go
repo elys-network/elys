@@ -26,6 +26,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
 	}
 
+	counter := market.OrderCounter + 1
 	order := types.PerpetualOrder{
 		MarketId:     market.Id,
 		OrderType:    msg.OrderType,
@@ -34,6 +35,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
 		Amount:       msg.BaseQuantity,
+		Counter:      counter,
 	}
 
 	_, found := k.GetPerpetualOrder(ctx, order.MarketId, order.OrderType, order.Price, order.BlockHeight)
@@ -47,6 +49,8 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		SubAccountId: subAccount.Id,
 		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.BlockHeight),
 	})
+	market.OrderCounter = counter
+	k.SetPerpetualMarket(ctx, market)
 	return &types.MsgPlaceLimitOrderResponse{}, nil
 }
 
@@ -70,9 +74,9 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 	fullyFilled := false
 	switch msg.OrderType {
 	case types.OrderType_ORDER_TYPE_MARKET_BUY:
-		fullyFilled, err = k.ExecuteMarketBuyOrder(ctx, market, *msg, false)
+		fullyFilled, err = k.ExecuteMarketBuyOrder(ctx, market, *msg, false, true)
 	case types.OrderType_ORDER_TYPE_MARKET_SELL:
-		fullyFilled, err = k.ExecuteMarketSellOrder(ctx, market, *msg, false)
+		fullyFilled, err = k.ExecuteMarketSellOrder(ctx, market, *msg, false, false)
 	default:
 		return nil, errorsmod.Wrapf(err, "unknown order type: %s", msg.OrderType)
 	}

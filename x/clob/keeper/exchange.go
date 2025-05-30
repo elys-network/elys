@@ -111,6 +111,10 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		}
 	}
 
+	err = k.CollectTradingFees(ctx, market, trade)
+	if err != nil {
+		return err
+	}
 	// Market Changes
 	market.UpdateTotalOpenInterest(buyerPositionBefore, sellerPositionBefore, trade.Quantity)
 	k.SetPerpetualMarket(ctx, market)

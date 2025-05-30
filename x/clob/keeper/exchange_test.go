@@ -276,7 +276,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
 			trade: func(b, s types.SubAccount) types.Trade {
-				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec(), false, false}
+				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec(), false, false, true}
 			},
 			expected: ExpectedState{Err: "trade quantity must be greater than zero"}, // Use specific error
 		},

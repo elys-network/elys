@@ -40,49 +40,52 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/clob/owner-perpetuals";
   }
 
-  rpc PerpetualOrder(PerpetualOrderRequest)
-      returns (PerpetualOrderResponse) {
+  rpc PerpetualOrder(PerpetualOrderRequest) returns (PerpetualOrderResponse) {
     option (google.api.http).get = "/elys-network/elys/clob/perpetual-order";
   }
 
   rpc AllPerpetualOrder(AllPerpetualOrderRequest)
       returns (AllPerpetualOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/all-perpetual-order";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/all-perpetual-order";
   }
 
   rpc CurrentTwapPrice(CurrentTwapPriceRequest)
       returns (CurrentTwapPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/current-twap-price/{market_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/current-twap-price/{market_id}";
   }
 
-  rpc AllTwapPrices(AllTwapPricesRequest)
-      returns (AllTwapPricesResponse) {
+  rpc AllTwapPrices(AllTwapPricesRequest) returns (AllTwapPricesResponse) {
     option (google.api.http).get = "/elys-network/elys/clob/all-twap-prices";
   }
 
   rpc LastAverageTradePrice(LastAverageTradePriceRequest)
       returns (LastAverageTradePriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/last-avg-trade-price/{market_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/last-avg-trade-price/{market_id}";
   }
 
   rpc HighestBuyPrice(HighestBuyPriceRequest)
       returns (HighestBuyPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/highest-buy-price/{market_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/highest-buy-price/{market_id}";
   }
 
   rpc LowestSellPrice(LowestSellPriceRequest)
       returns (LowestSellPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/lowest-sell-price/{market_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/lowest-sell-price/{market_id}";
   }
 
-  rpc MidPrice(MidPriceRequest)
-      returns (MidPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/mid-price/{market_id}";
+  rpc MidPrice(MidPriceRequest) returns (MidPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/mid-price/{market_id}";
   }
 
-  rpc PerpetualADL(PerpetualADLRequest)
-      returns (PerpetualADLResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/perpetual-adl/{market_id}/{id}";
+  rpc PerpetualADL(PerpetualADLRequest) returns (PerpetualADLResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/perpetual-adl/{market_id}/{id}";
   }
 
   rpc AllPerpetualADL(AllPerpetualADLRequest)
@@ -159,9 +162,7 @@ message AllPerpetualOrderResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message CurrentTwapPriceRequest {
-  uint64 market_id = 1;
-}
+message CurrentTwapPriceRequest { uint64 market_id = 1; }
 
 message CurrentTwapPriceResponse {
   string price = 1 [
@@ -179,9 +180,7 @@ message AllTwapPricesResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message LastAverageTradePriceRequest {
-  uint64 market_id = 1;
-}
+message LastAverageTradePriceRequest { uint64 market_id = 1; }
 
 message LastAverageTradePriceResponse {
   string price = 1 [
@@ -190,9 +189,7 @@ message LastAverageTradePriceResponse {
   ];
 }
 
-message HighestBuyPriceRequest {
-  uint64 market_id = 1;
-}
+message HighestBuyPriceRequest { uint64 market_id = 1; }
 
 message HighestBuyPriceResponse {
   string price = 1 [
@@ -201,9 +198,7 @@ message HighestBuyPriceResponse {
   ];
 }
 
-message LowestSellPriceRequest {
-  uint64 market_id = 1;
-}
+message LowestSellPriceRequest { uint64 market_id = 1; }
 
 message LowestSellPriceResponse {
   string price = 1 [
@@ -212,9 +207,7 @@ message LowestSellPriceResponse {
   ];
 }
 
-message MidPriceRequest {
-  uint64 market_id = 1;
-}
+message MidPriceRequest { uint64 market_id = 1; }
 
 message MidPriceResponse {
   string price = 1 [

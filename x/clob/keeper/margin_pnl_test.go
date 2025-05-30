@@ -252,7 +252,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		{
 			name:           "Error: invalid trade quantity",
 			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
-			trade:          types.Trade{buyerAcc, sellerAcc, MarketId, math.LegacyNewDec(5), math.LegacyNewDec(-10), false, false},
+			trade:          types.Trade{buyerAcc, sellerAcc, MarketId, math.LegacyNewDec(5), math.LegacyNewDec(-10), false, false, true},
 			isBuyer:        true,
 			expectedErr:    true,
 			expectedErrMsg: "trade quantity must be greater than zero", // Contains the error message from fmt.Errorf

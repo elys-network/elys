@@ -103,9 +103,9 @@ func (k Keeper) MarketLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 	cacheCtx, write := ctx.CacheContext()
 	if perpetual.IsShort() {
 		msg.OrderType = types.OrderType_ORDER_TYPE_MARKET_BUY
-		orderFilled, err = k.ExecuteMarketBuyOrder(cacheCtx, market, msg, true)
+		orderFilled, err = k.ExecuteMarketBuyOrder(cacheCtx, market, msg, true, false)
 	} else {
-		orderFilled, err = k.ExecuteMarketSellOrder(cacheCtx, market, msg, true)
+		orderFilled, err = k.ExecuteMarketSellOrder(cacheCtx, market, msg, true, false)
 	}
 	if err != nil {
 		if errors.Is(err, types.ErrInsufficientInsuranceFund) {
