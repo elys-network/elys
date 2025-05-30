@@ -16,6 +16,10 @@ import (
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.CancelVest(ctx, msg)
+}
+
+func (k Keeper) CancelVest(ctx sdk.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	if msg.Denom != ptypes.Eden {
 		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
@@ -27,7 +31,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	// claim pending rewards
 	claimVestingMsg := types.MsgClaimVesting{Sender: msg.Creator}
-	_, err := k.Keeper.ClaimVesting(ctx, &claimVestingMsg)
+	_, err := k.ClaimVesting(ctx, &claimVestingMsg)
 	if err != nil {
 		return nil, err
 	}

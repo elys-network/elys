@@ -91,6 +91,7 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v5/x/tokenomics/types"
 	tradeshieldmodule "github.com/elys-network/elys/v5/x/tradeshield"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v5/x/tradeshield/types"
+	vaultsmoduletypes "github.com/elys-network/elys/v5/x/vaults/types"
 )
 
 // module account permissions
@@ -115,6 +116,7 @@ var maccPerms = map[string][]string{
 	stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	wasmTypes.ModuleName:             {authtypes.Burner},
+	vaultsmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
 func appModules(
