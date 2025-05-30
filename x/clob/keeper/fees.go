@@ -24,7 +24,7 @@ func (k Keeper) CollectTradingFees(ctx sdk.Context, market types.PerpetualMarket
 
 	if buyerFeeRate.IsPositive() {
 		buyerFees := tradeValue.Mul(buyerFeeRate).RoundInt()
-		err := k.SendFromSubAccount(ctx, trade.BuyerSubAccount, market.GetAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, buyerFees)))
+		err := k.SendFromSubAccount(ctx, trade.BuyerSubAccount, market.GetInsuranceAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, buyerFees)))
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ func (k Keeper) CollectTradingFees(ctx sdk.Context, market types.PerpetualMarket
 
 	if sellerFeeRate.IsPositive() {
 		sellerFees := tradeValue.Mul(sellerFeeRate).RoundInt()
-		err := k.SendFromSubAccount(ctx, trade.SellerSubAccount, market.GetAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, sellerFees)))
+		err := k.SendFromSubAccount(ctx, trade.SellerSubAccount, market.GetInsuranceAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, sellerFees)))
 		if err != nil {
 			return err
 		}
