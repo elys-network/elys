@@ -108,10 +108,6 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 }
 
 func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec, error) {
-	vault, found := k.GetVault(ctx, vaultId)
-	if !found {
-		return osmomath.ZeroBigDec(), types.ErrVaultNotFound
-	}
 	vaultAddress := types.NewVaultAddress(vaultId)
 	totalValue := osmomath.ZeroBigDec()
 	commitments := k.commitment.GetCommitments(ctx, vaultAddress)
@@ -132,18 +128,12 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec,
 			totalValue = totalValue.Add(amount.Mul(osmomath.BigDecFromDec(info.LpTokenPrice)).Quo(osmomath.BigDecFromSDKInt(ammtypes.OneShare)))
 		}
 	}
-	for _, coin := range vault.AllowedCoins {
-		if !strings.HasPrefix(coin, "amm/pool") {
-			balance := k.bk.GetBalance(ctx, vaultAddress, coin)
-			totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, coin, balance.Amount))
-		}
+	// Get all balances of vault
+	balances := k.bk.GetAllBalances(ctx, vaultAddress)
+	for _, balance := range balances {
+		totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
 	}
-	for _, coin := range vault.RewardCoins {
-		if !strings.HasPrefix(coin, "amm/pool") {
-			balance := k.bk.GetBalance(ctx, vaultAddress, coin)
-			totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, coin, balance.Amount))
-		}
-	}
+
 	return totalValue, nil
 }
 

@@ -31,6 +31,11 @@ service Query {
   rpc VaultValue(QueryVaultValue) returns (QueryVaultValueResponse) {
     option (google.api.http).get = "/elys-network/elys/vaults/vault_value/{vault_id}";
   }
+
+  // VaultPositions queries the positions of a vault.
+  rpc VaultPositions(QueryVaultPositionsRequest) returns (QueryVaultPositionsResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/vault_positions/{vault_id}";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -68,4 +73,26 @@ message QueryVaultValueResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message PositionToken {
+  string token_denom = 1;
+  string token_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string token_usd_value = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryVaultPositionsRequest {
+  uint64 vault_id = 1;
+}
+
+message QueryVaultPositionsResponse {
+  repeated PositionToken positions = 1 [ (gogoproto.nullable) = false ];
 }

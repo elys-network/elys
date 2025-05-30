@@ -9,7 +9,7 @@ import (
 	// this line is used by starport scaffolding # 1
 )
 
-func RegisterCodec(cdc *codec.LegacyAmino) {
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "vaults/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgAddVault{}, "vaults/MsgAddVault")
 	legacy.RegisterAminoMsg(cdc, &MsgDeposit{}, "vaults/MsgDeposit")
