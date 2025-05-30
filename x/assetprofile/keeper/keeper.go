@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
-	"github.com/elys-network/elys/v5/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 )
 
 type (

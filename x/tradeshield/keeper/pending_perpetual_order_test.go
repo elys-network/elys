@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/testutil/nullify"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []types.PerpetualOrder {

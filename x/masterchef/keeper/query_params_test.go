@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v5/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestParamsQuery() {

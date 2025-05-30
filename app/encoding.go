@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	"github.com/elys-network/elys/v5/app/params"
+	"github.com/elys-network/elys/v6/app/params"
 )
 
 // makeEncodingConfig creates an EncodingConfig for an amino based test configuration.

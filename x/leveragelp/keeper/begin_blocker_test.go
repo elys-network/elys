@@ -6,9 +6,9 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v5/app"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestBeginBlocker() {

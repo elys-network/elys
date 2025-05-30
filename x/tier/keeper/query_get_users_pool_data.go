@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
-	"github.com/elys-network/elys/v5/x/tier/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

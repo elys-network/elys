@@ -6,7 +6,7 @@ import (
 	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 	mock "github.com/stretchr/testify/mock"
 
-	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 
 	query "github.com/cosmos/cosmos-sdk/types/query"
 

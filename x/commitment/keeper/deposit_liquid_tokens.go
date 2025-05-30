@@ -5,8 +5,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	"github.com/elys-network/elys/v5/x/commitment/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 )
 
 // accounting the liquid token as a claimed token in commitment module.

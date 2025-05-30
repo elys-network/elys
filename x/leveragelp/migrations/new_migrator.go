@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
 )
 
 type Migrator struct {

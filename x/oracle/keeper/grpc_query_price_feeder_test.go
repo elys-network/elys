@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/elys-network/elys/v5/testutil/nullify"
-	"github.com/elys-network/elys/v5/x/oracle/types"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {

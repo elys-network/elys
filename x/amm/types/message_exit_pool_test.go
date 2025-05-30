@@ -7,8 +7,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v5/testutil/sample"
-	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 

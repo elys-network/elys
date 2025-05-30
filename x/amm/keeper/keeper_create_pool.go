@@ -6,10 +6,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/amm/utils"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/utils"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
