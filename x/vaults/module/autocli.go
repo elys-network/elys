@@ -17,6 +17,30 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
+				{
+					RpcMethod:      "Vault",
+					Use:            "vault <vault-id>",
+					Short:          "Shows the vault details",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
+				},
+				{
+					RpcMethod: "Vaults",
+					Use:       "vaults",
+					Short:     "Shows all vaults",
+				},
+				{
+					RpcMethod:      "VaultValue",
+					Use:            "vault-value <vault-id>",
+					Short:          "Shows the value of the vault",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
+				},
+				{
+					RpcMethod:      "VaultPositions",
+					Use:            "vault-positions <vault-id>",
+					Short:          "Shows the positions of the vault",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
