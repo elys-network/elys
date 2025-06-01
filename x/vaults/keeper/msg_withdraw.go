@@ -50,7 +50,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		toSendCoins = toSendCoins.Add(sdk.NewCoin(coin, amount))
 	}
 
-	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, toSendCoins)
+	err = k.bk.SendCoins(ctx, vaultAddress, creator, toSendCoins)
 	if err != nil {
 		return nil, err
 	}
