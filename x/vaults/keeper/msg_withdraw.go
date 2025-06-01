@@ -36,6 +36,11 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	}
 
 	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
+
+	if totalShares.IsZero() {
+		return nil, types.ErrNoShares
+	}
+
 	shareRatio := req.Shares.ToLegacyDec().Quo(totalShares.ToLegacyDec())
 
 	vaultAddress := types.NewVaultAddress(req.VaultId)

@@ -19,6 +19,9 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	vaultId := k.GetNextVaultId(ctx)
+	vaultAddress := types.NewVaultAddress(vaultId)
+	vaultName := types.GetVaultIdModuleName(vaultId)
+
 	vault := types.Vault{
 		Id:                    vaultId,
 		DepositDenom:          req.DepositDenom,
@@ -33,12 +36,10 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 		LockupPeriod:          req.LockupPeriod,
 		WithdrawalUsdValue:    math.LegacyZeroDec(),
 		SumOfDepositsUsdValue: math.LegacyZeroDec(),
+		Address:               vaultAddress.String(),
 	}
-
 	k.SetVault(ctx, vault)
 
-	vaultAddress := types.NewVaultAddress(vault.Id)
-	vaultName := types.GetVaultIdModuleName(vault.Id)
 	if err := types.CreateModuleAccount(ctx, k.accountKeeper, vaultAddress, vaultName); err != nil {
 		return &types.MsgAddVaultResponse{}, fmt.Errorf("creating vault module account for id %d: %w", vault.Id, err)
 	}

@@ -48,4 +48,7 @@ message Vault {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string address = 14 [
+    (cosmos_proto.scalar) = "cosmos.AddressString"
+  ];
 }
