@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/vaults/types"
 )
@@ -28,6 +30,11 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		return nil, err
 	}
 
+	err = k.bk.BurnCoins(ctx, types.ModuleName, shareCoins)
+	if err != nil {
+		return nil, err
+	}
+
 	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
 	shareRatio := req.Shares.ToLegacyDec().Quo(totalShares.ToLegacyDec())
 
@@ -37,7 +44,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	if !found {
 		return nil, types.ErrVaultNotFound
 	}
-	commitments := k.commitment.GetCommitments(ctx, creator)
+	commitments := k.commitment.GetCommitments(ctx, vaultAddress)
 
 	for _, commitment := range commitments.CommittedTokens {
 		amount := commitment.Amount.ToLegacyDec().Mul(shareRatio).RoundInt()
@@ -50,12 +57,27 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		toSendCoins = toSendCoins.Add(sdk.NewCoin(coin, amount))
 	}
 
-	err = k.bk.SendCoins(ctx, vaultAddress, creator, toSendCoins)
-	if err != nil {
-		return nil, err
+	for _, coin := range toSendCoins {
+		// FOR AMM LP
+		if strings.HasPrefix(coin.Denom, "amm/pool/") {
+			poolId, err := GetPoolIdFromShareDenom(coin.Denom)
+			if err != nil {
+				return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+			}
+			vaultAddress := types.NewVaultAddress(poolId)
+
+			// exit pool
+			shareCoins, _, _, _, _, err = k.amm.ExitPool(ctx, vaultAddress, poolId, coin.Amount, sdk.Coins{}, coin.Denom, false, true)
+			if err != nil {
+				return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+			}
+
+			toSendCoins = toSendCoins.Sub(coin)
+			toSendCoins = toSendCoins.Add(shareCoins...)
+		}
 	}
 
-	err = k.bk.BurnCoins(ctx, types.ModuleName, shareCoins)
+	err = k.bk.SendCoins(ctx, vaultAddress, creator, toSendCoins)
 	if err != nil {
 		return nil, err
 	}

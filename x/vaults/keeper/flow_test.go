@@ -39,7 +39,7 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		DepositDenom:  "uusdc",
 		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom"},
+		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
 		RewardCoins:   []string{"uelys"},
 		BenchmarkCoin: "uatom",
 		Manager:       manager.String(),
@@ -105,4 +105,22 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 	// Verify vault's balance decreased after joining pool
 	balance = suite.app.BankKeeper.GetBalance(suite.ctx, vaultAddress, "uusdc")
 	suite.Require().True(balance.Amount.LT(sdkmath.NewInt(100000)), "vault balance should have decreased after joining pool")
+
+	beforeWithdraw := suite.app.BankKeeper.GetAllBalances(suite.ctx, depositor)
+
+	// Withdraw half shares
+	exitVaultMsg := vaulttypes.MsgWithdraw{
+		Withdrawer: depositor.String(),
+		VaultId:    1,
+		Shares:     sdkmath.NewInt(50000),
+	}
+
+	_, err = msgServer.Withdraw(suite.ctx, &exitVaultMsg)
+	suite.Require().NoError(err)
+
+	// Check balances
+	afterWithdraw := suite.app.BankKeeper.GetAllBalances(suite.ctx, depositor)
+	addedCoins := afterWithdraw.Sub(beforeWithdraw...)
+	// TODO: verify numbers as per pool shares
+	suite.Require().Equal(addedCoins, sdk.Coins{sdk.NewCoin("uatom", sdkmath.NewInt(46)), sdk.NewCoin("uusdc", sdkmath.NewInt(99951))})
 }
