@@ -14,6 +14,11 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(req.Withdrawer)
 
+	_, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, types.ErrVaultNotFound
+	}
+
 	k.DeductPerformanceFee(ctx)
 
 	shareDenom := types.GetShareDenomForVault(req.VaultId)
@@ -30,12 +35,12 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		return nil, err
 	}
 
+	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
+
 	err = k.bk.BurnCoins(ctx, types.ModuleName, shareCoins)
 	if err != nil {
 		return nil, err
 	}
-
-	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
 
 	if totalShares.IsZero() {
 		return nil, types.ErrNoShares
@@ -89,5 +94,3 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 
 	return &types.MsgWithdrawResponse{}, nil
 }
-
-// TODO: Add withdraw fee for amount received
