@@ -25,12 +25,10 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 
 	// if the order is market buy, execute it immediately
 	if msg.OrderType == types.SpotOrderType_MARKETBUY {
-		res, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
+		_, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
 		if err != nil {
 			return nil, err
 		}
-
-		ctx.EventManager().EmitEvent(types.NewExecuteMarketBuySpotOrderEvt(pendingSpotOrder, res))
 
 		return &types.MsgCreateSpotOrderResponse{
 			OrderId: pendingSpotOrder.OrderId,
