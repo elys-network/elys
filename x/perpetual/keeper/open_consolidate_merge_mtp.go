@@ -29,9 +29,7 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP,
 	}
 
 	// Destroy new MTP
-	if err := k.DestroyMTP(ctx, newMtp.GetAccountAddress(), newMtp.Id); err != nil {
-		return nil, err
-	}
+	k.DestroyMTP(ctx, *newMtp)
 
 	return existingMtp, nil
 }

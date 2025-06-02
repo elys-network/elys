@@ -13,12 +13,6 @@ func (k Keeper) UpdateOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
 	if err != nil {
 		return err
 	}
-
-	err = k.SetMTP(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 

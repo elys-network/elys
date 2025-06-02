@@ -24,8 +24,7 @@ type QueryClient interface {
 	GetPositions(ctx context.Context, in *PositionsRequest, opts ...grpc.CallOption) (*PositionsResponse, error)
 	// Queries a list of mtp positions by pool.
 	GetPositionsByPool(ctx context.Context, in *PositionsByPoolRequest, opts ...grpc.CallOption) (*PositionsByPoolResponse, error)
-	// Retuns the total number of open and lifetime mtps.
-	GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	PerpetualCounter(ctx context.Context, in *PerpetualCounterRequest, opts ...grpc.CallOption) (*PerpetualCounterResponse, error)
 	// Queries a list of mtp positions for a given address.
 	GetPositionsForAddress(ctx context.Context, in *PositionsForAddressRequest, opts ...grpc.CallOption) (*PositionsForAddressResponse, error)
 	// Queries a list of whitelisted addresses.
@@ -79,9 +78,9 @@ func (c *queryClient) GetPositionsByPool(ctx context.Context, in *PositionsByPoo
 	return out, nil
 }
 
-func (c *queryClient) GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/GetStatus", in, out, opts...)
+func (c *queryClient) PerpetualCounter(ctx context.Context, in *PerpetualCounterRequest, opts ...grpc.CallOption) (*PerpetualCounterResponse, error) {
+	out := new(PerpetualCounterResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/PerpetualCounter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -170,8 +169,7 @@ type QueryServer interface {
 	GetPositions(context.Context, *PositionsRequest) (*PositionsResponse, error)
 	// Queries a list of mtp positions by pool.
 	GetPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error)
-	// Retuns the total number of open and lifetime mtps.
-	GetStatus(context.Context, *StatusRequest) (*StatusResponse, error)
+	PerpetualCounter(context.Context, *PerpetualCounterRequest) (*PerpetualCounterResponse, error)
 	// Queries a list of mtp positions for a given address.
 	GetPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error)
 	// Queries a list of whitelisted addresses.
@@ -204,8 +202,8 @@ func (UnimplementedQueryServer) GetPositions(context.Context, *PositionsRequest)
 func (UnimplementedQueryServer) GetPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPositionsByPool not implemented")
 }
-func (UnimplementedQueryServer) GetStatus(context.Context, *StatusRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStatus not implemented")
+func (UnimplementedQueryServer) PerpetualCounter(context.Context, *PerpetualCounterRequest) (*PerpetualCounterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerpetualCounter not implemented")
 }
 func (UnimplementedQueryServer) GetPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPositionsForAddress not implemented")
@@ -298,20 +296,20 @@ func _Query_GetPositionsByPool_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatusRequest)
+func _Query_PerpetualCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PerpetualCounterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetStatus(ctx, in)
+		return srv.(QueryServer).PerpetualCounter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.perpetual.Query/GetStatus",
+		FullMethod: "/elys.perpetual.Query/PerpetualCounter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetStatus(ctx, req.(*StatusRequest))
+		return srv.(QueryServer).PerpetualCounter(ctx, req.(*PerpetualCounterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -480,8 +478,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_GetPositionsByPool_Handler,
 		},
 		{
-			MethodName: "GetStatus",
-			Handler:    _Query_GetStatus_Handler,
+			MethodName: "PerpetualCounter",
+			Handler:    _Query_PerpetualCounter_Handler,
 		},
 		{
 			MethodName: "GetPositionsForAddress",

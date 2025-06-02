@@ -58,10 +58,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	// This is for accounting purposes, mtp.Custody gets reduced by borrowInterestPaymentCustody and funding fee. so msg.Amount is greater than mtp.Custody here. So if it's negative it should be closed
 	if mtp.Custody.IsZero() || mtp.Custody.IsNegative() {
-		err = k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
-		if err != nil {
-			return err
-		}
+		k.DestroyMTP(ctx, *mtp)
 	} else {
 		// update mtp health
 		mtpHealth, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)

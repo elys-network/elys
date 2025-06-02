@@ -66,23 +66,3 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 
 	return list
 }
-
-func (k Keeper) V6_MigrateWhitelistedAddress(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.WhitelistPrefix)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		address := (string)(iterator.Value())
-		accAddress := sdk.MustAccAddressFromBech32(address)
-		k.removeLegacyWhitelistAddress(ctx, address)
-		k.WhitelistAddress(ctx, accAddress)
-	}
-
-	return
-}
-
-func (k Keeper) removeLegacyWhitelistAddress(ctx sdk.Context, address string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.GetLegacyWhitelistKey(address))
-}
