@@ -43,6 +43,11 @@ func (k Keeper) VaultValue(goCtx context.Context, req *types.QueryVaultValue) (*
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	_, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, status.Error(codes.NotFound, "vault not found")
+	}
+
 	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
 	if err != nil {
 		return nil, err

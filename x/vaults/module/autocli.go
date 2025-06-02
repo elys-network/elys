@@ -40,7 +40,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Shows the positions of the vault",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
 				},
-
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

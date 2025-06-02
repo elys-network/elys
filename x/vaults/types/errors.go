@@ -13,4 +13,5 @@ var (
 	ErrVaultNotFound      = sdkerrors.Register(ModuleName, 1102, "vault not found")
 	ErrInvalidAction      = sdkerrors.Register(ModuleName, 1103, "invalid action")
 	ErrInsufficientShares = sdkerrors.Register(ModuleName, 1104, "insufficient shares")
+	ErrNoShares           = sdkerrors.Register(ModuleName, 1105, "no shares")
 )

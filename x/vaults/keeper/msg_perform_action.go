@@ -77,6 +77,10 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 
 	// get coins after action
 	coinsAfter := k.bk.GetAllBalances(ctx, vaultAddress)
+	allCommitments := k.commitment.GetCommitments(ctx, vaultAddress)
+	for _, commitment := range allCommitments.CommittedTokens {
+		coinsAfter = coinsAfter.Add(sdk.NewCoin(commitment.Denom, commitment.Amount))
+	}
 
 	// check if coins after action are only allowed coins
 	for _, coin := range coinsAfter {
