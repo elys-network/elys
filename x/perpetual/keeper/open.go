@@ -112,9 +112,19 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// calc and update open price
-	err = k.UpdateOpenPrice(ctx, mtp)
-	if err != nil {
-		return nil, err
+	if msg.Leverage.GT(math.LegacyZeroDec()) {
+		err = k.UpdateOpenPrice(ctx, mtp)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		mtp.OpenPrice = math.LegacyZeroDec()
+		// We need to set mtp here because in OpenConsolidateMergeMtp it gets destroyed
+		// and if not found it throws error
+		err = k.SetMTP(ctx, mtp)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if existingMtp != nil {
