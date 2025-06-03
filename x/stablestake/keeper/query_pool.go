@@ -35,7 +35,7 @@ func (k Keeper) MaxBondableAmount(goCtx context.Context, req *types.MaxBondableA
 
 	pool, found := k.GetPool(ctx, req.PoolId)
 	if !found {
-		return nil, status.Errorf(codes.NotFound, "pool %s not found", req.PoolId)
+		return nil, status.Errorf(codes.NotFound, "pool %d not found", req.PoolId)
 	}
 	maxAmount := k.GetMaxBondableAmount(ctx, pool.DepositDenom)
 	return &types.MaxBondableAmountResponse{Amount: maxAmount}, nil
