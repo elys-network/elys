@@ -31,9 +31,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amm_pool_id"}},
 				},
 				{
-					RpcMethod: "GetStatus",
-					Use:       "get-status",
-					Short:     "Query get-status",
+					RpcMethod: "PerpetualCounter",
+					Use:       "counter [id]",
+					Short:     "Query total open positions for a pool",
 				},
 				{
 					RpcMethod:      "GetPositionsForAddress",

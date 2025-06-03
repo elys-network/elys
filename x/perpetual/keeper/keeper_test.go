@@ -354,13 +354,15 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                     math.LegacyNewDec(0),
 			Position:                      types.Position_LONG,
 			Id:                            0,
+			AmmPoolId:                     1,
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
 	}
 
-	mtpCount := perpetual.GetMTPCount(ctx)
-	require.Equal(t, mtpCount, (uint64)(2))
+	mtpCount := perpetual.GetPerpetualCounter(ctx, 1)
+	require.Equal(t, mtpCount.Counter, (uint64)(2))
+	require.Equal(t, mtpCount.TotalOpen, (uint64)(2))
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
