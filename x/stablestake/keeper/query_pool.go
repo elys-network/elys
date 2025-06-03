@@ -26,3 +26,17 @@ func (k Keeper) AllAmmPools(goCtx context.Context, req *types.QueryAllAmmPoolsRe
 
 	return &types.QueryAllAmmPoolsResponse{AmmPools: k.GetAllAmmPools(ctx)}, nil
 }
+
+func (k Keeper) MaxBondableAmount(goCtx context.Context, req *types.MaxBondableAmountRequest) (*types.MaxBondableAmountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	pool, found := k.GetPool(ctx, req.PoolId)
+	if !found {
+		return nil, status.Errorf(codes.NotFound, "pool %s not found", req.PoolId)
+	}
+	maxAmount := k.GetMaxBondableAmount(ctx, pool.DepositDenom)
+	return &types.MaxBondableAmountResponse{Amount: maxAmount}, nil
+}
