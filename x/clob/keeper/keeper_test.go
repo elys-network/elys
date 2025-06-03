@@ -350,7 +350,7 @@ func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual, is
 	p.EntryFundingRate = currentFundingRate.Rate
 	// Assign ID if not set (useful for setup)
 	if p.Id == 0 {
-		p.Id = suite.app.ClobKeeper.GetAndUpdatePerpetualCounter(suite.ctx, p.MarketId)
+		p.Id = suite.app.ClobKeeper.GetAndIncrementPerpetualCounter(suite.ctx, p.MarketId)
 	}
 	suite.app.ClobKeeper.SetPerpetual(suite.ctx, p)
 	subAccountId := p.MarketId
@@ -365,7 +365,8 @@ func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual, is
 
 // GetPerpetualState gets perpetual via owner mapping
 func (suite *KeeperTestSuite) GetPerpetualState(ownerAddr sdk.AccAddress, marketId uint64) (types.Perpetual, bool) {
-	ownerMapping, found := suite.app.ClobKeeper.GetPerpetualOwner(suite.ctx, ownerAddr, marketId)
+	subAccount := types.SubAccount{Owner: ownerAddr.String(), Id: marketId, TradeNounce: 0}
+	ownerMapping, found := suite.app.ClobKeeper.CheckAndGetPerpetualOwner(suite.ctx, subAccount, marketId)
 	if !found {
 		return types.Perpetual{}, false
 	}

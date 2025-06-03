@@ -39,9 +39,13 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 			fmt.Println(list)
 		}
 
-		err := k.ExecuteMarket(ctx, market.Id)
+		cacheCtx, writeCache := ctx.CacheContext()
+
+		err := k.ExecuteMarket(cacheCtx, market.Id)
 		if err != nil {
-			return err
+			ctx.Logger().Error(err.Error())
+		} else {
+			writeCache()
 		}
 	}
 	return nil

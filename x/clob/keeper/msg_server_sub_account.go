@@ -2,28 +2,22 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
+// Deposit We always deposit to the cross margin account
+// Then for isolated we move balance from margin account to isolated account but before that we check if
+// cross margin account has enough balance to cover its own positions and open orders (initial margin + trading fees)
 func (k Keeper) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.MsgDepositResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if msg.SubAccountId != types.CrossMarginSubAccountId {
-		_, err := k.GetPerpetualMarket(ctx, msg.SubAccountId)
-		if err != nil {
-			return nil, fmt.Errorf("market (id: %d) not found for depositing in isolated sub account", msg.SubAccountId)
-		}
-	}
-
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-	subAccount, err := k.GetSubAccount(ctx, sender, msg.SubAccountId)
+	subAccount, err := k.GetSubAccount(ctx, sender, types.CrossMarginSubAccountId)
 	if err != nil {
 		subAccount = types.SubAccount{
 			Owner:       msg.Sender,
-			Id:          msg.SubAccountId,
+			Id:          types.CrossMarginSubAccountId,
 			TradeNounce: 0,
 		}
 		k.SetSubAccount(ctx, subAccount)

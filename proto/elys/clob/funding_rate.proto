@@ -1,0 +1,17 @@
+syntax = "proto3";
+package elys.clob;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+message FundingRate {
+  uint64 market_id = 1;
+  uint64 block = 2;
+  string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

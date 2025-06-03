@@ -21,7 +21,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	}
 
 	sellIterator := k.GetSellOrderIterator(ctx, market.Id)
-	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, market.Id)
+	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, msg.SubAccountId)
 	if err != nil {
 		return false, err
 	}
@@ -56,7 +56,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        sellOrder.Owner,
 				SubAccountId: sellOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.BlockHeight),
+				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.Counter),
 			}
 			sellOrdersToDelete = append(sellOrdersToDelete, toDelete)
 		} else {
@@ -65,7 +65,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		fmt.Println("SELL ORDER EXECUTED: ")
 		fmt.Println(sellOrder)
 
-		sellerSubAccount, err := k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), market.Id)
+		sellerSubAccount, err := k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
 		if err != nil {
 			return false, err
 		}
@@ -91,12 +91,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		return false, err
 	}
 	for _, key := range sellOrdersToDelete {
-		k.DeleteOrder(ctx, key.OrderKey)
-		k.DeleteOrderOwner(ctx, types.PerpetualOrderOwner{
-			Owner:        key.Owner,
-			SubAccountId: key.SubAccountId,
-			OrderKey:     key.OrderKey,
-		})
+		k.DeleteOrder(ctx, key)
 	}
 
 	return buyOrderFilled, nil
@@ -116,7 +111,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	}
 
 	buyIterator := k.GetBuyOrderIterator(ctx, market.Id)
-	sellerSubAccount, err = k.GetSubAccount(ctx, seller, market.Id)
+	sellerSubAccount, err = k.GetSubAccount(ctx, seller, msg.SubAccountId)
 	if err != nil {
 		return false, err
 	}
@@ -151,7 +146,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.BlockHeight),
+				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.Counter),
 			}
 			buyOrdersToDelete = append(buyOrdersToDelete, toDelete)
 		} else {
@@ -160,7 +155,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		fmt.Println("BUY ORDER EXECUTED: ")
 		fmt.Println(buyOrder)
 
-		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), market.Id)
+		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), buyOrder.SubAccountId)
 		if err != nil {
 			return false, err
 		}
@@ -186,12 +181,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		return false, err
 	}
 	for _, key := range buyOrdersToDelete {
-		k.DeleteOrder(ctx, key.OrderKey)
-		k.DeleteOrderOwner(ctx, types.PerpetualOrderOwner{
-			Owner:        key.Owner,
-			SubAccountId: key.SubAccountId,
-			OrderKey:     key.OrderKey,
-		})
+		k.DeleteOrder(ctx, key)
 	}
 
 	return sellOrderFilled, nil

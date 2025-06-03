@@ -12,17 +12,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) PerpetualADL(goCtx context.Context, req *types.PerpetualADLRequest) (*types.PerpetualADLResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	perpetualADL, found := k.GetPerpetualADL(ctx, req.MarketId, req.Id)
-	if !found {
-		return nil, types.ErrPerpetualADLNotFound
-	}
-
-	return &types.PerpetualADLResponse{Adl: perpetualADL}, nil
-}
-
 func (k Keeper) AllPerpetualADL(goCtx context.Context, req *types.AllPerpetualADLRequest) (*types.AllPerpetualADLResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualADLPrefix)

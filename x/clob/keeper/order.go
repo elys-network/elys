@@ -42,15 +42,17 @@ func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
 
 func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.Price, v.BlockHeight)
+	key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.Price, v.Counter)
 	b := k.cdc.MustMarshal(&v)
 	store.Set(key, b)
 }
 
-func (k Keeper) DeleteOrder(ctx sdk.Context, orderKey types.OrderKey) {
+func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.Price, orderKey.BlockHeight)
+	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderKey.MarketId, perpetualOrderOwner.OrderKey.OrderType, perpetualOrderOwner.OrderKey.Price, perpetualOrderOwner.OrderKey.Counter)
 	store.Delete(key)
+
+	k.DeleteOrderOwner(ctx, perpetualOrderOwner)
 }
 
 func (k Keeper) GetOrderBookWithSide(ctx sdk.Context, marketId uint64, long bool, count uint64) []types.PerpetualOrder {

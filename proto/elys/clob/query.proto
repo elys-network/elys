@@ -27,86 +27,42 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/clob/all-markets";
   }
 
-  rpc SubAccounts(SubAccountsRequest) returns (SubAccountsResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/sub-accounts";
-  }
-
-  rpc MarketOrders(MarketOrdersRequest) returns (MarketOrdersResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/market-orders";
-  }
-
-  rpc OwnerPerpetuals(OwnerPerpetualsRequest)
-      returns (OwnerPerpetualsResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/owner-perpetuals";
-  }
-
-  rpc PerpetualOrder(PerpetualOrderRequest) returns (PerpetualOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/perpetual-order";
-  }
-
-  rpc AllPerpetualOrder(AllPerpetualOrderRequest)
-      returns (AllPerpetualOrderResponse) {
+  rpc Market(MarketRequest) returns (MarketResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/clob/all-perpetual-order";
+        "/elys-network/elys/clob/market-info/{market_id}";
   }
 
-  rpc CurrentTwapPrice(CurrentTwapPriceRequest)
-      returns (CurrentTwapPriceResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/current-twap-price/{market_id}";
-  }
-
-  rpc AllTwapPrices(AllTwapPricesRequest) returns (AllTwapPricesResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/all-twap-prices";
-  }
-
-  rpc LastAverageTradePrice(LastAverageTradePriceRequest)
-      returns (LastAverageTradePriceResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/last-avg-trade-price/{market_id}";
-  }
-
-  rpc HighestBuyPrice(HighestBuyPriceRequest)
-      returns (HighestBuyPriceResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/highest-buy-price/{market_id}";
-  }
-
-  rpc LowestSellPrice(LowestSellPriceRequest)
-      returns (LowestSellPriceResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/lowest-sell-price/{market_id}";
-  }
-
-  rpc MidPrice(MidPriceRequest) returns (MidPriceResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/mid-price/{market_id}";
-  }
-
-  rpc PerpetualADL(PerpetualADLRequest) returns (PerpetualADLResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/clob/perpetual-adl/{market_id}/{id}";
+  rpc OrderBook(OrderBookRequest) returns (OrderBookResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/order-book";
   }
 
   rpc AllPerpetualADL(AllPerpetualADLRequest)
       returns (AllPerpetualADLResponse) {
     option (google.api.http).get = "/elys-network/elys/clob/all-perpetual-adl";
   }
+
+  rpc SubAccounts(SubAccountsRequest) returns (SubAccountsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/sub-accounts/{address}";
+  }
+
+  rpc OwnerPerpetuals(OwnerPerpetualsRequest)
+      returns (OwnerPerpetualsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/owner-perpetuals/{address}/{sub_account_id}";
+  }
+
+  rpc OwnerPerpetualOrder(OwnerPerpetualOrdersRequest)
+      returns (OwnerPerpetualOrdersResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/owner-perpetual-order/{address}/"
+        "{sub_account_id}";
+  }
 }
 
 message ParamsRequest {}
 
 message ParamsResponse { Params params = 1 [ (gogoproto.nullable) = false ]; }
-
-message AllMarketsRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message AllMarketsResponse {
-  repeated PerpetualMarket perpetual_markets = 1
-      [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
 
 message SubAccountsRequest {
   string address = 1;
@@ -118,20 +74,10 @@ message SubAccountsResponse {
   repeated SubAccount subAccounts = 2 [ (gogoproto.nullable) = false ];
 }
 
-message MarketOrdersRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  uint64 market_id = 2;
-  bool is_buy = 3;
-}
-
-message MarketOrdersResponse {
-  repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
 message OwnerPerpetualsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  string owner = 2;
+  string address = 2;
+  uint64 sub_account_id = 3;
 }
 
 message OwnerPerpetualsResponse {
@@ -139,90 +85,61 @@ message OwnerPerpetualsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message PerpetualOrderRequest {
-  uint64 market_id = 1;
-  OrderType order_type = 2;
-  string price = 3 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 block_height = 4;
-}
-
-message PerpetualOrderResponse {
-  PerpetualOrder order = 1 [ (gogoproto.nullable) = false ];
-}
-
-message AllPerpetualOrderRequest {
+message OwnerPerpetualOrdersRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string address = 2;
+  uint64 sub_account_id = 3;
 }
 
-message AllPerpetualOrderResponse {
+message OwnerPerpetualOrdersResponse {
   repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message CurrentTwapPriceRequest { uint64 market_id = 1; }
-
-message CurrentTwapPriceResponse {
-  string price = 1 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message AllTwapPricesRequest {
+message OrderBookRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  uint64 market_id = 2;
+  bool is_buy = 3;
 }
 
-message AllTwapPricesResponse {
-  repeated TwapPrice twap_prices = 1 [ (gogoproto.nullable) = false ];
+message OrderBookResponse {
+  repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message LastAverageTradePriceRequest { uint64 market_id = 1; }
+message MarketRequest { uint64 market_id = 1; }
 
-message LastAverageTradePriceResponse {
-  string price = 1 [
+message MarketResponse {
+  PerpetualMarket market = 1 [ (gogoproto.nullable) = false ];
+  string current_twap_price = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string last_average_trade_price = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string highest_buy_price = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string lowest_sell_price = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string mid_price = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
 
-message HighestBuyPriceRequest { uint64 market_id = 1; }
-
-message HighestBuyPriceResponse {
-  string price = 1 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+message AllMarketsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message LowestSellPriceRequest { uint64 market_id = 1; }
-
-message LowestSellPriceResponse {
-  string price = 1 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message MidPriceRequest { uint64 market_id = 1; }
-
-message MidPriceResponse {
-  string price = 1 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message PerpetualADLRequest {
-  uint64 market_id = 1;
-  uint64 id = 2;
-}
-
-message PerpetualADLResponse {
-  PerpetualADL adl = 1 [ (gogoproto.nullable) = false ];
+message AllMarketsResponse {
+  repeated MarketResponse markets = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message AllPerpetualADLRequest {

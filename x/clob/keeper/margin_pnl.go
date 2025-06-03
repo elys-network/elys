@@ -18,7 +18,7 @@ import (
 // 6. +ve to less +ve (Seller reducing long position)
 // 7. +ve to 0 (Seller closing its long position)
 // 8. +ve to -ve (Seller flipping sides-long to short)
-// 9. Opening of new position
+// 9. Opening of a new position
 // The function updates quantity, margin and entry price. Doesn't set in the KV store.
 // The Funding rate needs to be updated outside before setting in KV.
 func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarket, oldPerpetual types.Perpetual, isLiquidation bool, trade types.Trade, isBuyer bool) (updatedPerpetual types.Perpetual, err error) {
@@ -52,12 +52,13 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 			return
 		}
 
-		id := k.GetAndUpdatePerpetualCounter(ctx, trade.MarketId)
+		id := k.GetAndIncrementPerpetualCounter(ctx, market.Id)
 		updatedPerpetual = types.Perpetual{
 			Id:           id,
 			MarketId:     trade.MarketId,
 			EntryPrice:   trade.Price,
 			Owner:        subAccount.Owner,
+			SubAccountId: subAccount.Id,
 			Quantity:     quantity,
 			MarginAmount: requiredInitialMargin,
 		}

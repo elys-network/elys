@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) MarketOrders(goCtx context.Context, req *types.MarketOrdersRequest) (*types.MarketOrdersResponse, error) {
+func (k Keeper) OrderBook(goCtx context.Context, req *types.OrderBookRequest) (*types.OrderBookResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	var list []types.PerpetualOrder
 
@@ -23,5 +23,5 @@ func (k Keeper) MarketOrders(goCtx context.Context, req *types.MarketOrdersReque
 		list = append(list, val)
 	}
 
-	return &types.MarketOrdersResponse{Orders: list}, nil
+	return &types.OrderBookResponse{Orders: list}, nil
 }

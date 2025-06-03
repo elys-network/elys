@@ -81,48 +81,24 @@ message PerpetualMarket {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 order_counter = 15;
-  string max_abs_funding_rate = 16 [
+  string max_abs_funding_rate = 15 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string max_abs_funding_rate_change = 17 [
+  string max_abs_funding_rate_change = 16 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  uint64 twap_prices_window = 18;
+  uint64 twap_prices_window = 17;
 }
 
-message TwapPrice {
+message PerpetualMarketCounter {
   uint64 market_id = 1;
-  uint64 block = 2;
-  string average_trade_price = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string total_volume = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string cumulative_price = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 timestamp = 6;
-}
-
-message FundingRate {
-  uint64 market_id = 1;
-  uint64 block = 2;
-  string rate = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  uint64 order_counter = 2;
+  uint64 perpetual_counter = 3;
+  uint64 total_open_orders = 4;
+  uint64 total_open_position = 5;
 }

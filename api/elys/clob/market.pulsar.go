@@ -30,7 +30,6 @@ var (
 	fd_PerpetualMarket_min_notional                protoreflect.FieldDescriptor
 	fd_PerpetualMarket_admin                       protoreflect.FieldDescriptor
 	fd_PerpetualMarket_total_open                  protoreflect.FieldDescriptor
-	fd_PerpetualMarket_order_counter               protoreflect.FieldDescriptor
 	fd_PerpetualMarket_max_abs_funding_rate        protoreflect.FieldDescriptor
 	fd_PerpetualMarket_max_abs_funding_rate_change protoreflect.FieldDescriptor
 	fd_PerpetualMarket_twap_prices_window          protoreflect.FieldDescriptor
@@ -53,7 +52,6 @@ func init() {
 	fd_PerpetualMarket_min_notional = md_PerpetualMarket.Fields().ByName("min_notional")
 	fd_PerpetualMarket_admin = md_PerpetualMarket.Fields().ByName("admin")
 	fd_PerpetualMarket_total_open = md_PerpetualMarket.Fields().ByName("total_open")
-	fd_PerpetualMarket_order_counter = md_PerpetualMarket.Fields().ByName("order_counter")
 	fd_PerpetualMarket_max_abs_funding_rate = md_PerpetualMarket.Fields().ByName("max_abs_funding_rate")
 	fd_PerpetualMarket_max_abs_funding_rate_change = md_PerpetualMarket.Fields().ByName("max_abs_funding_rate_change")
 	fd_PerpetualMarket_twap_prices_window = md_PerpetualMarket.Fields().ByName("twap_prices_window")
@@ -208,12 +206,6 @@ func (x *fastReflection_PerpetualMarket) Range(f func(protoreflect.FieldDescript
 			return
 		}
 	}
-	if x.OrderCounter != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.OrderCounter)
-		if !f(fd_PerpetualMarket_order_counter, value) {
-			return
-		}
-	}
 	if x.MaxAbsFundingRate != "" {
 		value := protoreflect.ValueOfString(x.MaxAbsFundingRate)
 		if !f(fd_PerpetualMarket_max_abs_funding_rate, value) {
@@ -275,8 +267,6 @@ func (x *fastReflection_PerpetualMarket) Has(fd protoreflect.FieldDescriptor) bo
 		return x.Admin != ""
 	case "elys.clob.PerpetualMarket.total_open":
 		return x.TotalOpen != ""
-	case "elys.clob.PerpetualMarket.order_counter":
-		return x.OrderCounter != uint64(0)
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		return x.MaxAbsFundingRate != ""
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate_change":
@@ -327,8 +317,6 @@ func (x *fastReflection_PerpetualMarket) Clear(fd protoreflect.FieldDescriptor) 
 		x.Admin = ""
 	case "elys.clob.PerpetualMarket.total_open":
 		x.TotalOpen = ""
-	case "elys.clob.PerpetualMarket.order_counter":
-		x.OrderCounter = uint64(0)
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		x.MaxAbsFundingRate = ""
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate_change":
@@ -393,9 +381,6 @@ func (x *fastReflection_PerpetualMarket) Get(descriptor protoreflect.FieldDescri
 	case "elys.clob.PerpetualMarket.total_open":
 		value := x.TotalOpen
 		return protoreflect.ValueOfString(value)
-	case "elys.clob.PerpetualMarket.order_counter":
-		value := x.OrderCounter
-		return protoreflect.ValueOfUint64(value)
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		value := x.MaxAbsFundingRate
 		return protoreflect.ValueOfString(value)
@@ -453,8 +438,6 @@ func (x *fastReflection_PerpetualMarket) Set(fd protoreflect.FieldDescriptor, va
 		x.Admin = value.Interface().(string)
 	case "elys.clob.PerpetualMarket.total_open":
 		x.TotalOpen = value.Interface().(string)
-	case "elys.clob.PerpetualMarket.order_counter":
-		x.OrderCounter = value.Uint()
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		x.MaxAbsFundingRate = value.Interface().(string)
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate_change":
@@ -509,8 +492,6 @@ func (x *fastReflection_PerpetualMarket) Mutable(fd protoreflect.FieldDescriptor
 		panic(fmt.Errorf("field admin of message elys.clob.PerpetualMarket is not mutable"))
 	case "elys.clob.PerpetualMarket.total_open":
 		panic(fmt.Errorf("field total_open of message elys.clob.PerpetualMarket is not mutable"))
-	case "elys.clob.PerpetualMarket.order_counter":
-		panic(fmt.Errorf("field order_counter of message elys.clob.PerpetualMarket is not mutable"))
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		panic(fmt.Errorf("field max_abs_funding_rate of message elys.clob.PerpetualMarket is not mutable"))
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate_change":
@@ -558,8 +539,6 @@ func (x *fastReflection_PerpetualMarket) NewField(fd protoreflect.FieldDescripto
 		return protoreflect.ValueOfString("")
 	case "elys.clob.PerpetualMarket.total_open":
 		return protoreflect.ValueOfString("")
-	case "elys.clob.PerpetualMarket.order_counter":
-		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate":
 		return protoreflect.ValueOfString("")
 	case "elys.clob.PerpetualMarket.max_abs_funding_rate_change":
@@ -689,12 +668,9 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.OrderCounter != 0 {
-			n += 1 + runtime.Sov(uint64(x.OrderCounter))
-		}
 		l = len(x.MaxAbsFundingRate)
 		if l > 0 {
-			n += 2 + l + runtime.Sov(uint64(l))
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.MaxAbsFundingRateChange)
 		if l > 0 {
@@ -737,7 +713,7 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x1
 			i--
-			dAtA[i] = 0x90
+			dAtA[i] = 0x88
 		}
 		if len(x.MaxAbsFundingRateChange) > 0 {
 			i -= len(x.MaxAbsFundingRateChange)
@@ -746,21 +722,14 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x1
 			i--
-			dAtA[i] = 0x8a
+			dAtA[i] = 0x82
 		}
 		if len(x.MaxAbsFundingRate) > 0 {
 			i -= len(x.MaxAbsFundingRate)
 			copy(dAtA[i:], x.MaxAbsFundingRate)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxAbsFundingRate)))
 			i--
-			dAtA[i] = 0x1
-			i--
-			dAtA[i] = 0x82
-		}
-		if x.OrderCounter != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderCounter))
-			i--
-			dAtA[i] = 0x78
+			dAtA[i] = 0x7a
 		}
 		if len(x.TotalOpen) > 0 {
 			i -= len(x.TotalOpen)
@@ -1328,25 +1297,6 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 				x.TotalOpen = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 15:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderCounter", wireType)
-				}
-				x.OrderCounter = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.OrderCounter |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 16:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxAbsFundingRate", wireType)
 				}
@@ -1378,7 +1328,7 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 				}
 				x.MaxAbsFundingRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 17:
+			case 16:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxAbsFundingRateChange", wireType)
 				}
@@ -1410,7 +1360,7 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 				}
 				x.MaxAbsFundingRateChange = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 18:
+			case 17:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TwapPricesWindow", wireType)
 				}
@@ -1465,35 +1415,33 @@ func (x *fastReflection_PerpetualMarket) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_TwapPrice                     protoreflect.MessageDescriptor
-	fd_TwapPrice_market_id           protoreflect.FieldDescriptor
-	fd_TwapPrice_block               protoreflect.FieldDescriptor
-	fd_TwapPrice_average_trade_price protoreflect.FieldDescriptor
-	fd_TwapPrice_total_volume        protoreflect.FieldDescriptor
-	fd_TwapPrice_cumulative_price    protoreflect.FieldDescriptor
-	fd_TwapPrice_timestamp           protoreflect.FieldDescriptor
+	md_PerpetualMarketCounter                     protoreflect.MessageDescriptor
+	fd_PerpetualMarketCounter_market_id           protoreflect.FieldDescriptor
+	fd_PerpetualMarketCounter_order_counter       protoreflect.FieldDescriptor
+	fd_PerpetualMarketCounter_perpetual_counter   protoreflect.FieldDescriptor
+	fd_PerpetualMarketCounter_total_open_orders   protoreflect.FieldDescriptor
+	fd_PerpetualMarketCounter_total_open_position protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_clob_market_proto_init()
-	md_TwapPrice = File_elys_clob_market_proto.Messages().ByName("TwapPrice")
-	fd_TwapPrice_market_id = md_TwapPrice.Fields().ByName("market_id")
-	fd_TwapPrice_block = md_TwapPrice.Fields().ByName("block")
-	fd_TwapPrice_average_trade_price = md_TwapPrice.Fields().ByName("average_trade_price")
-	fd_TwapPrice_total_volume = md_TwapPrice.Fields().ByName("total_volume")
-	fd_TwapPrice_cumulative_price = md_TwapPrice.Fields().ByName("cumulative_price")
-	fd_TwapPrice_timestamp = md_TwapPrice.Fields().ByName("timestamp")
+	md_PerpetualMarketCounter = File_elys_clob_market_proto.Messages().ByName("PerpetualMarketCounter")
+	fd_PerpetualMarketCounter_market_id = md_PerpetualMarketCounter.Fields().ByName("market_id")
+	fd_PerpetualMarketCounter_order_counter = md_PerpetualMarketCounter.Fields().ByName("order_counter")
+	fd_PerpetualMarketCounter_perpetual_counter = md_PerpetualMarketCounter.Fields().ByName("perpetual_counter")
+	fd_PerpetualMarketCounter_total_open_orders = md_PerpetualMarketCounter.Fields().ByName("total_open_orders")
+	fd_PerpetualMarketCounter_total_open_position = md_PerpetualMarketCounter.Fields().ByName("total_open_position")
 }
 
-var _ protoreflect.Message = (*fastReflection_TwapPrice)(nil)
+var _ protoreflect.Message = (*fastReflection_PerpetualMarketCounter)(nil)
 
-type fastReflection_TwapPrice TwapPrice
+type fastReflection_PerpetualMarketCounter PerpetualMarketCounter
 
-func (x *TwapPrice) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_TwapPrice)(x)
+func (x *PerpetualMarketCounter) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualMarketCounter)(x)
 }
 
-func (x *TwapPrice) slowProtoReflect() protoreflect.Message {
+func (x *PerpetualMarketCounter) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_clob_market_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1505,43 +1453,43 @@ func (x *TwapPrice) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TwapPrice_messageType fastReflection_TwapPrice_messageType
-var _ protoreflect.MessageType = fastReflection_TwapPrice_messageType{}
+var _fastReflection_PerpetualMarketCounter_messageType fastReflection_PerpetualMarketCounter_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualMarketCounter_messageType{}
 
-type fastReflection_TwapPrice_messageType struct{}
+type fastReflection_PerpetualMarketCounter_messageType struct{}
 
-func (x fastReflection_TwapPrice_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_TwapPrice)(nil)
+func (x fastReflection_PerpetualMarketCounter_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualMarketCounter)(nil)
 }
-func (x fastReflection_TwapPrice_messageType) New() protoreflect.Message {
-	return new(fastReflection_TwapPrice)
+func (x fastReflection_PerpetualMarketCounter_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualMarketCounter)
 }
-func (x fastReflection_TwapPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_TwapPrice
+func (x fastReflection_PerpetualMarketCounter_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualMarketCounter
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_TwapPrice) Descriptor() protoreflect.MessageDescriptor {
-	return md_TwapPrice
+func (x *fastReflection_PerpetualMarketCounter) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualMarketCounter
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_TwapPrice) Type() protoreflect.MessageType {
-	return _fastReflection_TwapPrice_messageType
+func (x *fastReflection_PerpetualMarketCounter) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualMarketCounter_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_TwapPrice) New() protoreflect.Message {
-	return new(fastReflection_TwapPrice)
+func (x *fastReflection_PerpetualMarketCounter) New() protoreflect.Message {
+	return new(fastReflection_PerpetualMarketCounter)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_TwapPrice) Interface() protoreflect.ProtoMessage {
-	return (*TwapPrice)(x)
+func (x *fastReflection_PerpetualMarketCounter) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualMarketCounter)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1549,40 +1497,34 @@ func (x *fastReflection_TwapPrice) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_TwapPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_PerpetualMarketCounter) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.MarketId != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.MarketId)
-		if !f(fd_TwapPrice_market_id, value) {
+		if !f(fd_PerpetualMarketCounter_market_id, value) {
 			return
 		}
 	}
-	if x.Block != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Block)
-		if !f(fd_TwapPrice_block, value) {
+	if x.OrderCounter != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.OrderCounter)
+		if !f(fd_PerpetualMarketCounter_order_counter, value) {
 			return
 		}
 	}
-	if x.AverageTradePrice != "" {
-		value := protoreflect.ValueOfString(x.AverageTradePrice)
-		if !f(fd_TwapPrice_average_trade_price, value) {
+	if x.PerpetualCounter != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PerpetualCounter)
+		if !f(fd_PerpetualMarketCounter_perpetual_counter, value) {
 			return
 		}
 	}
-	if x.TotalVolume != "" {
-		value := protoreflect.ValueOfString(x.TotalVolume)
-		if !f(fd_TwapPrice_total_volume, value) {
+	if x.TotalOpenOrders != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TotalOpenOrders)
+		if !f(fd_PerpetualMarketCounter_total_open_orders, value) {
 			return
 		}
 	}
-	if x.CumulativePrice != "" {
-		value := protoreflect.ValueOfString(x.CumulativePrice)
-		if !f(fd_TwapPrice_cumulative_price, value) {
-			return
-		}
-	}
-	if x.Timestamp != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Timestamp)
-		if !f(fd_TwapPrice_timestamp, value) {
+	if x.TotalOpenPosition != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TotalOpenPosition)
+		if !f(fd_PerpetualMarketCounter_total_open_position, value) {
 			return
 		}
 	}
@@ -1599,25 +1541,23 @@ func (x *fastReflection_TwapPrice) Range(f func(protoreflect.FieldDescriptor, pr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_TwapPrice) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_PerpetualMarketCounter) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.clob.TwapPrice.market_id":
+	case "elys.clob.PerpetualMarketCounter.market_id":
 		return x.MarketId != uint64(0)
-	case "elys.clob.TwapPrice.block":
-		return x.Block != uint64(0)
-	case "elys.clob.TwapPrice.average_trade_price":
-		return x.AverageTradePrice != ""
-	case "elys.clob.TwapPrice.total_volume":
-		return x.TotalVolume != ""
-	case "elys.clob.TwapPrice.cumulative_price":
-		return x.CumulativePrice != ""
-	case "elys.clob.TwapPrice.timestamp":
-		return x.Timestamp != uint64(0)
+	case "elys.clob.PerpetualMarketCounter.order_counter":
+		return x.OrderCounter != uint64(0)
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		return x.PerpetualCounter != uint64(0)
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		return x.TotalOpenOrders != uint64(0)
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
+		return x.TotalOpenPosition != uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1627,25 +1567,23 @@ func (x *fastReflection_TwapPrice) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_TwapPrice) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_PerpetualMarketCounter) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.clob.TwapPrice.market_id":
+	case "elys.clob.PerpetualMarketCounter.market_id":
 		x.MarketId = uint64(0)
-	case "elys.clob.TwapPrice.block":
-		x.Block = uint64(0)
-	case "elys.clob.TwapPrice.average_trade_price":
-		x.AverageTradePrice = ""
-	case "elys.clob.TwapPrice.total_volume":
-		x.TotalVolume = ""
-	case "elys.clob.TwapPrice.cumulative_price":
-		x.CumulativePrice = ""
-	case "elys.clob.TwapPrice.timestamp":
-		x.Timestamp = uint64(0)
+	case "elys.clob.PerpetualMarketCounter.order_counter":
+		x.OrderCounter = uint64(0)
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		x.PerpetualCounter = uint64(0)
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		x.TotalOpenOrders = uint64(0)
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
+		x.TotalOpenPosition = uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1655,31 +1593,28 @@ func (x *fastReflection_TwapPrice) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_TwapPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualMarketCounter) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.clob.TwapPrice.market_id":
+	case "elys.clob.PerpetualMarketCounter.market_id":
 		value := x.MarketId
 		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.TwapPrice.block":
-		value := x.Block
+	case "elys.clob.PerpetualMarketCounter.order_counter":
+		value := x.OrderCounter
 		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.TwapPrice.average_trade_price":
-		value := x.AverageTradePrice
-		return protoreflect.ValueOfString(value)
-	case "elys.clob.TwapPrice.total_volume":
-		value := x.TotalVolume
-		return protoreflect.ValueOfString(value)
-	case "elys.clob.TwapPrice.cumulative_price":
-		value := x.CumulativePrice
-		return protoreflect.ValueOfString(value)
-	case "elys.clob.TwapPrice.timestamp":
-		value := x.Timestamp
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		value := x.PerpetualCounter
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		value := x.TotalOpenOrders
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
+		value := x.TotalOpenPosition
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1693,25 +1628,23 @@ func (x *fastReflection_TwapPrice) Get(descriptor protoreflect.FieldDescriptor) 
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_TwapPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_PerpetualMarketCounter) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.clob.TwapPrice.market_id":
+	case "elys.clob.PerpetualMarketCounter.market_id":
 		x.MarketId = value.Uint()
-	case "elys.clob.TwapPrice.block":
-		x.Block = value.Uint()
-	case "elys.clob.TwapPrice.average_trade_price":
-		x.AverageTradePrice = value.Interface().(string)
-	case "elys.clob.TwapPrice.total_volume":
-		x.TotalVolume = value.Interface().(string)
-	case "elys.clob.TwapPrice.cumulative_price":
-		x.CumulativePrice = value.Interface().(string)
-	case "elys.clob.TwapPrice.timestamp":
-		x.Timestamp = value.Uint()
+	case "elys.clob.PerpetualMarketCounter.order_counter":
+		x.OrderCounter = value.Uint()
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		x.PerpetualCounter = value.Uint()
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		x.TotalOpenOrders = value.Uint()
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
+		x.TotalOpenPosition = value.Uint()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1725,60 +1658,56 @@ func (x *fastReflection_TwapPrice) Set(fd protoreflect.FieldDescriptor, value pr
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_TwapPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualMarketCounter) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.clob.TwapPrice.market_id":
-		panic(fmt.Errorf("field market_id of message elys.clob.TwapPrice is not mutable"))
-	case "elys.clob.TwapPrice.block":
-		panic(fmt.Errorf("field block of message elys.clob.TwapPrice is not mutable"))
-	case "elys.clob.TwapPrice.average_trade_price":
-		panic(fmt.Errorf("field average_trade_price of message elys.clob.TwapPrice is not mutable"))
-	case "elys.clob.TwapPrice.total_volume":
-		panic(fmt.Errorf("field total_volume of message elys.clob.TwapPrice is not mutable"))
-	case "elys.clob.TwapPrice.cumulative_price":
-		panic(fmt.Errorf("field cumulative_price of message elys.clob.TwapPrice is not mutable"))
-	case "elys.clob.TwapPrice.timestamp":
-		panic(fmt.Errorf("field timestamp of message elys.clob.TwapPrice is not mutable"))
+	case "elys.clob.PerpetualMarketCounter.market_id":
+		panic(fmt.Errorf("field market_id of message elys.clob.PerpetualMarketCounter is not mutable"))
+	case "elys.clob.PerpetualMarketCounter.order_counter":
+		panic(fmt.Errorf("field order_counter of message elys.clob.PerpetualMarketCounter is not mutable"))
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		panic(fmt.Errorf("field perpetual_counter of message elys.clob.PerpetualMarketCounter is not mutable"))
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		panic(fmt.Errorf("field total_open_orders of message elys.clob.PerpetualMarketCounter is not mutable"))
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
+		panic(fmt.Errorf("field total_open_position of message elys.clob.PerpetualMarketCounter is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_TwapPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualMarketCounter) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.clob.TwapPrice.market_id":
+	case "elys.clob.PerpetualMarketCounter.market_id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.TwapPrice.block":
+	case "elys.clob.PerpetualMarketCounter.order_counter":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.TwapPrice.average_trade_price":
-		return protoreflect.ValueOfString("")
-	case "elys.clob.TwapPrice.total_volume":
-		return protoreflect.ValueOfString("")
-	case "elys.clob.TwapPrice.cumulative_price":
-		return protoreflect.ValueOfString("")
-	case "elys.clob.TwapPrice.timestamp":
+	case "elys.clob.PerpetualMarketCounter.perpetual_counter":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.PerpetualMarketCounter.total_open_orders":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.PerpetualMarketCounter.total_open_position":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.TwapPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualMarketCounter"))
 		}
-		panic(fmt.Errorf("message elys.clob.TwapPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.clob.PerpetualMarketCounter does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_TwapPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_PerpetualMarketCounter) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.clob.TwapPrice", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.clob.PerpetualMarketCounter", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1786,7 +1715,7 @@ func (x *fastReflection_TwapPrice) WhichOneof(d protoreflect.OneofDescriptor) pr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_TwapPrice) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_PerpetualMarketCounter) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1797,7 +1726,7 @@ func (x *fastReflection_TwapPrice) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_TwapPrice) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_PerpetualMarketCounter) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1809,7 +1738,7 @@ func (x *fastReflection_TwapPrice) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_TwapPrice) IsValid() bool {
+func (x *fastReflection_PerpetualMarketCounter) IsValid() bool {
 	return x != nil
 }
 
@@ -1819,9 +1748,9 @@ func (x *fastReflection_TwapPrice) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_PerpetualMarketCounter) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*TwapPrice)
+		x := input.Message.Interface().(*PerpetualMarketCounter)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1836,23 +1765,17 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 		if x.MarketId != 0 {
 			n += 1 + runtime.Sov(uint64(x.MarketId))
 		}
-		if x.Block != 0 {
-			n += 1 + runtime.Sov(uint64(x.Block))
+		if x.OrderCounter != 0 {
+			n += 1 + runtime.Sov(uint64(x.OrderCounter))
 		}
-		l = len(x.AverageTradePrice)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if x.PerpetualCounter != 0 {
+			n += 1 + runtime.Sov(uint64(x.PerpetualCounter))
 		}
-		l = len(x.TotalVolume)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if x.TotalOpenOrders != 0 {
+			n += 1 + runtime.Sov(uint64(x.TotalOpenOrders))
 		}
-		l = len(x.CumulativePrice)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.Timestamp != 0 {
-			n += 1 + runtime.Sov(uint64(x.Timestamp))
+		if x.TotalOpenPosition != 0 {
+			n += 1 + runtime.Sov(uint64(x.TotalOpenPosition))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1864,7 +1787,7 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*TwapPrice)
+		x := input.Message.Interface().(*PerpetualMarketCounter)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1883,34 +1806,23 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Timestamp != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Timestamp))
+		if x.TotalOpenPosition != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TotalOpenPosition))
 			i--
-			dAtA[i] = 0x30
+			dAtA[i] = 0x28
 		}
-		if len(x.CumulativePrice) > 0 {
-			i -= len(x.CumulativePrice)
-			copy(dAtA[i:], x.CumulativePrice)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.CumulativePrice)))
+		if x.TotalOpenOrders != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TotalOpenOrders))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x20
 		}
-		if len(x.TotalVolume) > 0 {
-			i -= len(x.TotalVolume)
-			copy(dAtA[i:], x.TotalVolume)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TotalVolume)))
+		if x.PerpetualCounter != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PerpetualCounter))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x18
 		}
-		if len(x.AverageTradePrice) > 0 {
-			i -= len(x.AverageTradePrice)
-			copy(dAtA[i:], x.AverageTradePrice)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AverageTradePrice)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if x.Block != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Block))
+		if x.OrderCounter != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderCounter))
 			i--
 			dAtA[i] = 0x10
 		}
@@ -1930,7 +1842,7 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*TwapPrice)
+		x := input.Message.Interface().(*PerpetualMarketCounter)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1962,10 +1874,10 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: TwapPrice: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualMarketCounter: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: TwapPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualMarketCounter: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1989,9 +1901,9 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 				}
 			case 2:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Block", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderCounter", wireType)
 				}
-				x.Block = 0
+				x.OrderCounter = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2001,16 +1913,16 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Block |= uint64(b&0x7F) << shift
+					x.OrderCounter |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
 			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AverageTradePrice", wireType)
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualCounter", wireType)
 				}
-				var stringLen uint64
+				x.PerpetualCounter = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2020,29 +1932,16 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					x.PerpetualCounter |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.AverageTradePrice = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
 			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalVolume", wireType)
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalOpenOrders", wireType)
 				}
-				var stringLen uint64
+				x.TotalOpenOrders = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2052,61 +1951,16 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					x.TotalOpenOrders |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.TotalVolume = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
 			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CumulativePrice", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.CumulativePrice = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalOpenPosition", wireType)
 				}
-				x.Timestamp = 0
+				x.TotalOpenPosition = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2116,527 +1970,11 @@ func (x *fastReflection_TwapPrice) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Timestamp |= uint64(b&0x7F) << shift
+					x.TotalOpenPosition |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_FundingRate           protoreflect.MessageDescriptor
-	fd_FundingRate_market_id protoreflect.FieldDescriptor
-	fd_FundingRate_block     protoreflect.FieldDescriptor
-	fd_FundingRate_rate      protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_elys_clob_market_proto_init()
-	md_FundingRate = File_elys_clob_market_proto.Messages().ByName("FundingRate")
-	fd_FundingRate_market_id = md_FundingRate.Fields().ByName("market_id")
-	fd_FundingRate_block = md_FundingRate.Fields().ByName("block")
-	fd_FundingRate_rate = md_FundingRate.Fields().ByName("rate")
-}
-
-var _ protoreflect.Message = (*fastReflection_FundingRate)(nil)
-
-type fastReflection_FundingRate FundingRate
-
-func (x *FundingRate) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_FundingRate)(x)
-}
-
-func (x *FundingRate) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_clob_market_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_FundingRate_messageType fastReflection_FundingRate_messageType
-var _ protoreflect.MessageType = fastReflection_FundingRate_messageType{}
-
-type fastReflection_FundingRate_messageType struct{}
-
-func (x fastReflection_FundingRate_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_FundingRate)(nil)
-}
-func (x fastReflection_FundingRate_messageType) New() protoreflect.Message {
-	return new(fastReflection_FundingRate)
-}
-func (x fastReflection_FundingRate_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_FundingRate
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_FundingRate) Descriptor() protoreflect.MessageDescriptor {
-	return md_FundingRate
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_FundingRate) Type() protoreflect.MessageType {
-	return _fastReflection_FundingRate_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_FundingRate) New() protoreflect.Message {
-	return new(fastReflection_FundingRate)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_FundingRate) Interface() protoreflect.ProtoMessage {
-	return (*FundingRate)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_FundingRate) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.MarketId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.MarketId)
-		if !f(fd_FundingRate_market_id, value) {
-			return
-		}
-	}
-	if x.Block != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Block)
-		if !f(fd_FundingRate_block, value) {
-			return
-		}
-	}
-	if x.Rate != "" {
-		value := protoreflect.ValueOfString(x.Rate)
-		if !f(fd_FundingRate_rate, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_FundingRate) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		return x.MarketId != uint64(0)
-	case "elys.clob.FundingRate.block":
-		return x.Block != uint64(0)
-	case "elys.clob.FundingRate.rate":
-		return x.Rate != ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_FundingRate) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		x.MarketId = uint64(0)
-	case "elys.clob.FundingRate.block":
-		x.Block = uint64(0)
-	case "elys.clob.FundingRate.rate":
-		x.Rate = ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_FundingRate) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		value := x.MarketId
-		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.FundingRate.block":
-		value := x.Block
-		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.FundingRate.rate":
-		value := x.Rate
-		return protoreflect.ValueOfString(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_FundingRate) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		x.MarketId = value.Uint()
-	case "elys.clob.FundingRate.block":
-		x.Block = value.Uint()
-	case "elys.clob.FundingRate.rate":
-		x.Rate = value.Interface().(string)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_FundingRate) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		panic(fmt.Errorf("field market_id of message elys.clob.FundingRate is not mutable"))
-	case "elys.clob.FundingRate.block":
-		panic(fmt.Errorf("field block of message elys.clob.FundingRate is not mutable"))
-	case "elys.clob.FundingRate.rate":
-		panic(fmt.Errorf("field rate of message elys.clob.FundingRate is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_FundingRate) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.clob.FundingRate.market_id":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.FundingRate.block":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.FundingRate.rate":
-		return protoreflect.ValueOfString("")
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.FundingRate"))
-		}
-		panic(fmt.Errorf("message elys.clob.FundingRate does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_FundingRate) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.clob.FundingRate", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_FundingRate) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_FundingRate) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_FundingRate) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_FundingRate) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*FundingRate)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.MarketId != 0 {
-			n += 1 + runtime.Sov(uint64(x.MarketId))
-		}
-		if x.Block != 0 {
-			n += 1 + runtime.Sov(uint64(x.Block))
-		}
-		l = len(x.Rate)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*FundingRate)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.Rate) > 0 {
-			i -= len(x.Rate)
-			copy(dAtA[i:], x.Rate)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Rate)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if x.Block != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Block))
-			i--
-			dAtA[i] = 0x10
-		}
-		if x.MarketId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.MarketId))
-			i--
-			dAtA[i] = 0x8
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*FundingRate)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FundingRate: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FundingRate: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MarketId", wireType)
-				}
-				x.MarketId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.MarketId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Block", wireType)
-				}
-				x.Block = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Block |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Rate", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Rate = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -2771,10 +2109,9 @@ type PerpetualMarket struct {
 	// current market admin
 	Admin                   string `protobuf:"bytes,13,opt,name=admin,proto3" json:"admin,omitempty"`
 	TotalOpen               string `protobuf:"bytes,14,opt,name=total_open,json=totalOpen,proto3" json:"total_open,omitempty"`
-	OrderCounter            uint64 `protobuf:"varint,15,opt,name=order_counter,json=orderCounter,proto3" json:"order_counter,omitempty"`
-	MaxAbsFundingRate       string `protobuf:"bytes,16,opt,name=max_abs_funding_rate,json=maxAbsFundingRate,proto3" json:"max_abs_funding_rate,omitempty"`
-	MaxAbsFundingRateChange string `protobuf:"bytes,17,opt,name=max_abs_funding_rate_change,json=maxAbsFundingRateChange,proto3" json:"max_abs_funding_rate_change,omitempty"`
-	TwapPricesWindow        uint64 `protobuf:"varint,18,opt,name=twap_prices_window,json=twapPricesWindow,proto3" json:"twap_prices_window,omitempty"`
+	MaxAbsFundingRate       string `protobuf:"bytes,15,opt,name=max_abs_funding_rate,json=maxAbsFundingRate,proto3" json:"max_abs_funding_rate,omitempty"`
+	MaxAbsFundingRateChange string `protobuf:"bytes,16,opt,name=max_abs_funding_rate_change,json=maxAbsFundingRateChange,proto3" json:"max_abs_funding_rate_change,omitempty"`
+	TwapPricesWindow        uint64 `protobuf:"varint,17,opt,name=twap_prices_window,json=twapPricesWindow,proto3" json:"twap_prices_window,omitempty"`
 }
 
 func (x *PerpetualMarket) Reset() {
@@ -2895,13 +2232,6 @@ func (x *PerpetualMarket) GetTotalOpen() string {
 	return ""
 }
 
-func (x *PerpetualMarket) GetOrderCounter() uint64 {
-	if x != nil {
-		return x.OrderCounter
-	}
-	return 0
-}
-
 func (x *PerpetualMarket) GetMaxAbsFundingRate() string {
 	if x != nil {
 		return x.MaxAbsFundingRate
@@ -2923,21 +2253,20 @@ func (x *PerpetualMarket) GetTwapPricesWindow() uint64 {
 	return 0
 }
 
-type TwapPrice struct {
+type PerpetualMarketCounter struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	MarketId          uint64 `protobuf:"varint,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	Block             uint64 `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	AverageTradePrice string `protobuf:"bytes,3,opt,name=average_trade_price,json=averageTradePrice,proto3" json:"average_trade_price,omitempty"`
-	TotalVolume       string `protobuf:"bytes,4,opt,name=total_volume,json=totalVolume,proto3" json:"total_volume,omitempty"`
-	CumulativePrice   string `protobuf:"bytes,5,opt,name=cumulative_price,json=cumulativePrice,proto3" json:"cumulative_price,omitempty"`
-	Timestamp         uint64 `protobuf:"varint,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	OrderCounter      uint64 `protobuf:"varint,2,opt,name=order_counter,json=orderCounter,proto3" json:"order_counter,omitempty"`
+	PerpetualCounter  uint64 `protobuf:"varint,3,opt,name=perpetual_counter,json=perpetualCounter,proto3" json:"perpetual_counter,omitempty"`
+	TotalOpenOrders   uint64 `protobuf:"varint,4,opt,name=total_open_orders,json=totalOpenOrders,proto3" json:"total_open_orders,omitempty"`
+	TotalOpenPosition uint64 `protobuf:"varint,5,opt,name=total_open_position,json=totalOpenPosition,proto3" json:"total_open_position,omitempty"`
 }
 
-func (x *TwapPrice) Reset() {
-	*x = TwapPrice{}
+func (x *PerpetualMarketCounter) Reset() {
+	*x = PerpetualMarketCounter{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_clob_market_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2945,108 +2274,50 @@ func (x *TwapPrice) Reset() {
 	}
 }
 
-func (x *TwapPrice) String() string {
+func (x *PerpetualMarketCounter) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TwapPrice) ProtoMessage() {}
+func (*PerpetualMarketCounter) ProtoMessage() {}
 
-// Deprecated: Use TwapPrice.ProtoReflect.Descriptor instead.
-func (*TwapPrice) Descriptor() ([]byte, []int) {
+// Deprecated: Use PerpetualMarketCounter.ProtoReflect.Descriptor instead.
+func (*PerpetualMarketCounter) Descriptor() ([]byte, []int) {
 	return file_elys_clob_market_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *TwapPrice) GetMarketId() uint64 {
+func (x *PerpetualMarketCounter) GetMarketId() uint64 {
 	if x != nil {
 		return x.MarketId
 	}
 	return 0
 }
 
-func (x *TwapPrice) GetBlock() uint64 {
+func (x *PerpetualMarketCounter) GetOrderCounter() uint64 {
 	if x != nil {
-		return x.Block
+		return x.OrderCounter
 	}
 	return 0
 }
 
-func (x *TwapPrice) GetAverageTradePrice() string {
+func (x *PerpetualMarketCounter) GetPerpetualCounter() uint64 {
 	if x != nil {
-		return x.AverageTradePrice
-	}
-	return ""
-}
-
-func (x *TwapPrice) GetTotalVolume() string {
-	if x != nil {
-		return x.TotalVolume
-	}
-	return ""
-}
-
-func (x *TwapPrice) GetCumulativePrice() string {
-	if x != nil {
-		return x.CumulativePrice
-	}
-	return ""
-}
-
-func (x *TwapPrice) GetTimestamp() uint64 {
-	if x != nil {
-		return x.Timestamp
+		return x.PerpetualCounter
 	}
 	return 0
 }
 
-type FundingRate struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	MarketId uint64 `protobuf:"varint,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	Block    uint64 `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	Rate     string `protobuf:"bytes,3,opt,name=rate,proto3" json:"rate,omitempty"`
-}
-
-func (x *FundingRate) Reset() {
-	*x = FundingRate{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_clob_market_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FundingRate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FundingRate) ProtoMessage() {}
-
-// Deprecated: Use FundingRate.ProtoReflect.Descriptor instead.
-func (*FundingRate) Descriptor() ([]byte, []int) {
-	return file_elys_clob_market_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *FundingRate) GetMarketId() uint64 {
+func (x *PerpetualMarketCounter) GetTotalOpenOrders() uint64 {
 	if x != nil {
-		return x.MarketId
+		return x.TotalOpenOrders
 	}
 	return 0
 }
 
-func (x *FundingRate) GetBlock() uint64 {
+func (x *PerpetualMarketCounter) GetTotalOpenPosition() uint64 {
 	if x != nil {
-		return x.Block
+		return x.TotalOpenPosition
 	}
 	return 0
-}
-
-func (x *FundingRate) GetRate() string {
-	if x != nil {
-		return x.Rate
-	}
-	return ""
 }
 
 var File_elys_clob_market_proto protoreflect.FileDescriptor
@@ -3057,7 +2328,7 @@ var file_elys_clob_market_proto_rawDesc = []byte{
 	0x6c, 0x6f, 0x62, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67,
 	0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc5, 0x0a, 0x0a, 0x0f, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa0, 0x0a, 0x0a, 0x0f, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
 	0x61, 0x6c, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65,
 	0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61,
@@ -3122,78 +2393,58 @@ var file_elys_clob_market_proto_rawDesc = []byte{
 	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
 	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x12, 0x23,
-	0x0a, 0x0d, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18,
-	0x0f, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e,
-	0x74, 0x65, 0x72, 0x12, 0x62, 0x0a, 0x14, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x62, 0x73, 0x5f, 0x66,
-	0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x10, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x6d, 0x61, 0x78, 0x41, 0x62, 0x73, 0x46, 0x75, 0x6e, 0x64,
-	0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x6f, 0x0a, 0x1b, 0x6d, 0x61, 0x78, 0x5f, 0x61,
-	0x62, 0x73, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f,
-	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x18, 0x11, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x44, 0x65, 0x63, 0x52, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x12, 0x62,
+	0x0a, 0x14, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x62, 0x73, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e,
+	0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
 	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
 	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
 	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x17, 0x6d, 0x61, 0x78, 0x41, 0x62, 0x73, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61,
-	0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x74, 0x77, 0x61, 0x70,
-	0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x5f, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x18, 0x12,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x74, 0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73,
-	0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0xf3, 0x02, 0x0a,
-	0x09, 0x54, 0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61,
-	0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d,
-	0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x12, 0x61, 0x0a,
-	0x13, 0x61, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
-	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
-	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x61,
-	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x12, 0x54, 0x0a, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x5c, 0x0a, 0x10, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61,
-	0x74, 0x69, 0x76, 0x65, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x0f, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x76, 0x65, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
-	0x70, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
-	0x6d, 0x70, 0x22, 0x87, 0x01, 0x0a, 0x0b, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61,
-	0x74, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18,
+	0x11, 0x6d, 0x61, 0x78, 0x41, 0x62, 0x73, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61,
+	0x74, 0x65, 0x12, 0x6f, 0x0a, 0x1b, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x62, 0x73, 0x5f, 0x66, 0x75,
+	0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67,
+	0x65, 0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x17, 0x6d, 0x61, 0x78, 0x41,
+	0x62, 0x73, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61,
+	0x6e, 0x67, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x74, 0x77, 0x61, 0x70, 0x5f, 0x70, 0x72, 0x69, 0x63,
+	0x65, 0x73, 0x5f, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x18, 0x11, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x10, 0x74, 0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x57, 0x69, 0x6e, 0x64, 0x6f,
+	0x77, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0xe3, 0x01, 0x0a, 0x16, 0x50, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74,
+	0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12,
-	0x14, 0x0a, 0x05, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05,
-	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x12, 0x45, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x04, 0x72, 0x61, 0x74, 0x65, 0x2a, 0xa3, 0x01, 0x0a,
-	0x15, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74,
-	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1d, 0x0a, 0x19, 0x4d, 0x41, 0x52, 0x4b, 0x45, 0x54,
-	0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46,
-	0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x14, 0x4d, 0x41, 0x52, 0x4b, 0x45, 0x54, 0x5f,
-	0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x41, 0x43, 0x54, 0x49, 0x56, 0x45, 0x10, 0x01, 0x12,
-	0x18, 0x0a, 0x14, 0x4d, 0x41, 0x52, 0x4b, 0x45, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53,
-	0x5f, 0x50, 0x41, 0x55, 0x53, 0x45, 0x44, 0x10, 0x02, 0x12, 0x1c, 0x0a, 0x18, 0x4d, 0x41, 0x52,
-	0x4b, 0x45, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x44, 0x45, 0x4d, 0x4f, 0x4c,
-	0x49, 0x53, 0x48, 0x45, 0x44, 0x10, 0x03, 0x12, 0x19, 0x0a, 0x15, 0x4d, 0x41, 0x52, 0x4b, 0x45,
-	0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x45, 0x58, 0x50, 0x49, 0x52, 0x45, 0x44,
-	0x10, 0x04, 0x42, 0x8d, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0b, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2,
-	0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f,
-	0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c,
-	0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x23, 0x0a, 0x0d, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x43, 0x6f, 0x75,
+	0x6e, 0x74, 0x65, 0x72, 0x12, 0x2b, 0x0a, 0x11, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x10, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65,
+	0x72, 0x12, 0x2a, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x5f,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0f, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x2e, 0x0a,
+	0x13, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x11, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x2a, 0xa3, 0x01,
+	0x0a, 0x15, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4d, 0x61, 0x72, 0x6b, 0x65,
+	0x74, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1d, 0x0a, 0x19, 0x4d, 0x41, 0x52, 0x4b, 0x45,
+	0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49,
+	0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x14, 0x4d, 0x41, 0x52, 0x4b, 0x45, 0x54,
+	0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x41, 0x43, 0x54, 0x49, 0x56, 0x45, 0x10, 0x01,
+	0x12, 0x18, 0x0a, 0x14, 0x4d, 0x41, 0x52, 0x4b, 0x45, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55,
+	0x53, 0x5f, 0x50, 0x41, 0x55, 0x53, 0x45, 0x44, 0x10, 0x02, 0x12, 0x1c, 0x0a, 0x18, 0x4d, 0x41,
+	0x52, 0x4b, 0x45, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x44, 0x45, 0x4d, 0x4f,
+	0x4c, 0x49, 0x53, 0x48, 0x45, 0x44, 0x10, 0x03, 0x12, 0x19, 0x0a, 0x15, 0x4d, 0x41, 0x52, 0x4b,
+	0x45, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x45, 0x58, 0x50, 0x49, 0x52, 0x45,
+	0x44, 0x10, 0x04, 0x42, 0x8d, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0b, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62,
+	0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c,
+	0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02,
+	0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43,
+	0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3209,12 +2460,11 @@ func file_elys_clob_market_proto_rawDescGZIP() []byte {
 }
 
 var file_elys_clob_market_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_elys_clob_market_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_elys_clob_market_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_elys_clob_market_proto_goTypes = []interface{}{
-	(PerpetualMarketStatus)(0), // 0: elys.clob.PerpetualMarketStatus
-	(*PerpetualMarket)(nil),    // 1: elys.clob.PerpetualMarket
-	(*TwapPrice)(nil),          // 2: elys.clob.TwapPrice
-	(*FundingRate)(nil),        // 3: elys.clob.FundingRate
+	(PerpetualMarketStatus)(0),     // 0: elys.clob.PerpetualMarketStatus
+	(*PerpetualMarket)(nil),        // 1: elys.clob.PerpetualMarket
+	(*PerpetualMarketCounter)(nil), // 2: elys.clob.PerpetualMarketCounter
 }
 var file_elys_clob_market_proto_depIdxs = []int32{
 	0, // 0: elys.clob.PerpetualMarket.status:type_name -> elys.clob.PerpetualMarketStatus
@@ -3244,19 +2494,7 @@ func file_elys_clob_market_proto_init() {
 			}
 		}
 		file_elys_clob_market_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TwapPrice); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_elys_clob_market_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FundingRate); i {
+			switch v := v.(*PerpetualMarketCounter); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3274,7 +2512,7 @@ func file_elys_clob_market_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_clob_market_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

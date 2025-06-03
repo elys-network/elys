@@ -449,7 +449,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 
 			if tc.checkPostLiquidationState != nil {
 				actualLiqOwnerAddr := sdk.MustAccAddressFromBech32(currentPerpetual.Owner)
-				actualLiqSubAccount, errGetSub := suite.app.ClobKeeper.GetSubAccount(suite.ctx, actualLiqOwnerAddr, currentPerpetual.MarketId)
+				actualLiqSubAccount, errGetSub := suite.app.ClobKeeper.GetSubAccount(suite.ctx, actualLiqOwnerAddr, currentPerpetual.SubAccountId)
 
 				// Handle state of actualLiqSubAccount based on whether ForcedLiquidation errored
 				if err == nil { // If ForcedLiquidation itself succeeded (even if ADL was set for partial fill)

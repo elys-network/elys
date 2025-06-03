@@ -23,33 +23,39 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetPerpetualOwner(ctx, v)
 	}
 	for _, v := range genState.OrderBooks {
-		k.SetPerpetualOrder(ctx, *v)
+		k.SetPerpetualOrder(ctx, v)
 	}
 	for _, v := range genState.OrderOwners {
-		k.SetOrderOwner(ctx, *v)
+		k.SetOrderOwner(ctx, v)
 	}
 	for _, v := range genState.TwapPrices {
-		k.SetTwapPricesStruct(ctx, *v)
+		k.SetTwapPricesStruct(ctx, v)
 	}
-	for _, v := range genState.PerpetualCounters {
-		k.SetPerpetualCounter(ctx, *v)
+	for _, v := range genState.PerpetualMarketCounters {
+		k.SetPerpetualMarketCounter(ctx, v)
 	}
 	for _, v := range genState.FundingRates {
-		k.SetFundingRate(ctx, *v)
+		k.SetFundingRate(ctx, v)
 	}
 	for _, v := range genState.PerpetualADLs {
-		k.SetPerpetualADL(ctx, *v)
+		k.SetPerpetualADL(ctx, v)
 	}
 }
 
 // ExportGenesis returns the module's exported genesis
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
+
 	genesis.Params = k.GetParams(ctx)
-
-	genesis.SubAccounts = k.GetAllSubAccount(ctx)
 	genesis.PerpetualMarkets = k.GetAllPerpetualMarket(ctx)
+	genesis.PerpetualMarketCounters = k.GetAllPerpetualMarketCounter(ctx)
+	genesis.SubAccounts = k.GetAllSubAccount(ctx)
+	genesis.Perpetuals = k.GetAllPerpetuals(ctx)
 	genesis.PerpetualOwners = k.GetAllPerpetualOwners(ctx)
-
+	genesis.OrderBooks = k.GetAllPerpetualOrders(ctx)
+	genesis.OrderOwners = k.GetAllOrderOwners(ctx)
+	genesis.FundingRates = k.GetAllFundingRate(ctx)
+	genesis.TwapPrices = k.GetAllTwapPrices(ctx)
+	genesis.PerpetualADLs = k.GetAllPerpetualADLs(ctx)
 	return genesis
 }

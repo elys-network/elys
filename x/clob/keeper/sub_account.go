@@ -8,8 +8,8 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, marketId uint64) (types.SubAccount, error) {
-	key := types.GetSubAccountKey(owner, marketId)
+func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64) (types.SubAccount, error) {
+	key := types.GetSubAccountKey(owner, subAccountId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -64,13 +64,23 @@ func (k Keeper) SetSubAccount(ctx sdk.Context, s types.SubAccount) {
 }
 
 func (k Keeper) SendFromSubAccount(ctx sdk.Context, subAccount types.SubAccount, to sdk.AccAddress, coins sdk.Coins) error {
-	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, subAccount.GetTradingAccountAddress(), to, coins)
 }
 
 func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount types.SubAccount, coins sdk.Coins) error {
-	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
+}
+
+func (k Keeper) SendFromSubAccountToSubAccount(ctx sdk.Context, from types.SubAccount, to types.SubAccount, coins sdk.Coins) error {
+	return k.bankKeeper.SendCoins(ctx, from.GetTradingAccountAddress(), to.GetTradingAccountAddress(), coins)
+}
+
+func (k Keeper) GetSubAccountBalance(ctx sdk.Context, subAccount types.SubAccount) sdk.Coins {
+	return k.bankKeeper.GetAllBalances(ctx, subAccount.GetTradingAccountAddress())
+}
+
+func (k Keeper) GetSubAccountBalanceOf(ctx sdk.Context, subAccount types.SubAccount, denom string) sdk.Coin {
+	return k.bankKeeper.GetBalance(ctx, subAccount.GetTradingAccountAddress(), denom)
 }
 
 //func (k Keeper) WithdrawableBalance(ctx sdk.Context, subAccount types.SubAccount) error {

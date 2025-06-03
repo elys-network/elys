@@ -8,12 +8,12 @@ import (
 	"github.com/elys-network/elys/utils"
 )
 
-func NewOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, height uint64) OrderKey {
+func NewOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64) OrderKey {
 	return OrderKey{
-		MarketId:    marketId,
-		OrderType:   orderType,
-		Price:       price,
-		BlockHeight: height,
+		MarketId:  marketId,
+		OrderType: orderType,
+		Price:     price,
+		Counter:   counter,
 	}
 }
 
@@ -21,29 +21,29 @@ func (o OrderKey) KeyWithoutPrefix() []byte {
 	key := sdk.Uint64ToBigEndian(o.MarketId)
 	key = append(key, []byte("/")...)
 	orderTypeByte := FalseByte
-	heightBytes := sdk.Uint64ToBigEndian(o.BlockHeight)
+	counterBytes := sdk.Uint64ToBigEndian(o.Counter)
 	if IsBuy(o.OrderType) {
 		orderTypeByte = TrueByte
-		heightBytes = sdk.Uint64ToBigEndian(math.MaxUint64 - o.BlockHeight) // Subtracting it so that in buy order book, it's sorted by height as Reverse iterator will be used
+		counterBytes = sdk.Uint64ToBigEndian(math.MaxUint64 - o.Counter) // Subtracting it so that in buy order book, it's sorted by height as Reverse iterator will be used
 	}
 	key = append(key, orderTypeByte)
 	key = append(key, []byte("/")...)
 	paddedPrice := utils.GetPaddedDecString(o.Price)
 	key = append(key, []byte(paddedPrice)...)
 	key = append(key, []byte("/")...)
-	key = append(key, heightBytes...)
+	key = append(key, counterBytes...)
 	return key
 }
 
-func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, height uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec) PerpetualOrder {
+func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec) PerpetualOrder {
 	return PerpetualOrder{
-		MarketId:    marketId,
-		OrderType:   orderType,
-		Price:       price,
-		BlockHeight: height,
-		Owner:       owner.String(),
-		Amount:      amount,
-		Filled:      filled,
+		MarketId:  marketId,
+		OrderType: orderType,
+		Price:     price,
+		Counter:   counter,
+		Owner:     owner.String(),
+		Amount:    amount,
+		Filled:    filled,
 	}
 }
 

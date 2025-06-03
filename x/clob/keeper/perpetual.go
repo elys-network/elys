@@ -51,6 +51,8 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPerpetualKey(p.MarketId, p.Id)
 	store.Delete(key)
+
+	k.DecrementTotalOpenPosition(ctx, p.MarketId)
 }
 
 func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {
@@ -89,7 +91,7 @@ func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAc
 
 // GetEffectiveLeverage PositionValue / EquityValue
 func (k Keeper) GetEffectiveLeverage(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, error) {
-	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.MarketId)
+	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}

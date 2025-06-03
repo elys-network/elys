@@ -23,7 +23,7 @@ import (
 // - OnPositionClose will handle the trader's PNL, margin refund, and use IF if netRefund for trader is negative (after accounting for fee).
 // - MarketLiquidation will flag for ADL if IF is insufficient OR if the order is not fully filled.
 func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket, liquidator sdk.AccAddress) (math.Int, error) {
-	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), market.Id)
+	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("forced_liquidation: failed to get subaccount for owner %s, market %d: %w", perpetual.Owner, market.Id, err)
 	}
@@ -89,7 +89,7 @@ func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 func (k Keeper) MarketLiquidation(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, bool, error) {
 	orderFilled := false
 	closingRatio := math.LegacyOneDec()
-	// There can be case where Market execution fails not due to lack of funds or lack of orders
+	// There can be a case where Market execution fails not due to lack of funds or lack of orders
 	adlTriggered := false
 	var err error
 

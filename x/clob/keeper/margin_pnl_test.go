@@ -49,7 +49,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 1: Increase Short ---
 		{
 			name:                        "Case 1: Seller increases Short position",
-			oldPerpetual:                types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()),
+			oldPerpetual:                types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                       types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(90), buyerAcc, sellerAcc),
 			isBuyer:                     false,
 			expectedUpdatedQuantity:     math.LegacyNewDec(-15),
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 2: Decrease Short ---
 		{
 			name:                      "Case 2: Buyer decreases Short position",
-			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-20), math.LegacyNewDec(100), math.NewInt(200_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-20), math.LegacyNewDec(100), math.NewInt(200_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(90), buyerAcc, sellerAcc),
 			isBuyer:                   true,
 			expectedUpdatedQuantity:   math.LegacyNewDec(-15),
@@ -79,7 +79,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 3: Close Short ---
 		{
 			name:                      "Case 3: Buyer closes Short position",
-			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(10), math.LegacyNewDec(95), buyerAcc, sellerAcc), // Buy 10 @ 95
 			isBuyer:                   true,
 			expectedUpdatedQuantity:   math.LegacyZeroDec(),
@@ -95,7 +95,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 4: Flip Short -> Long ---
 		{
 			name:                      "Case 4: Buyer flips Short to Long",
-			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(15), math.LegacyNewDec(98), buyerAcc, sellerAcc), // Buy 15 @ 98
 			isBuyer:                   true,
 			expectedUpdatedQuantity:   math.LegacyNewDec(5),
@@ -111,8 +111,8 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 5: Increase Long ---
 		{
 			name:                        "Case 5: Buyer increases Long position",
-			oldPerpetual:                types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()), // Q=10, EP=100, M=100
-			trade:                       types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(110), buyerAcc, sellerAcc),                                                    // Buy 5 @ 110
+			oldPerpetual:                types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId), // Q=10, EP=100, M=100
+			trade:                       types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(110), buyerAcc, sellerAcc),                                                              // Buy 5 @ 110
 			isBuyer:                     true,
 			expectedUpdatedQuantity:     math.LegacyNewDec(15),
 			expectedUpdatedEntryPrice:   math.LegacyMustNewDecFromStr("103.333333333333333333"), // Avg EP = (10*100 + 5*110) / 15 = 103.33...
@@ -125,7 +125,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 6: Decrease Long ---
 		{
 			name:                      "Case 6: Seller decreases Long position",
-			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(20), math.LegacyNewDec(100), math.NewInt(200_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(20), math.LegacyNewDec(100), math.NewInt(200_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(110), buyerAcc, sellerAcc),
 			isBuyer:                   false,
 			expectedUpdatedQuantity:   math.LegacyNewDec(15),
@@ -141,7 +141,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 7: Close Long ---
 		{
 			name:                      "Case 7: Seller closes Long position", // This case caused the error
-			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(10), math.LegacyNewDec(105), buyerAcc, sellerAcc), // Sell 10 @ 105
 			isBuyer:                   false,
 			expectedUpdatedQuantity:   math.LegacyZeroDec(),
@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		// --- Case 8: Flip Long -> Short ---
 		{
 			name:                      "Case 8: Seller flips Long to Short",
-			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec()),
+			oldPerpetual:              types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000), math.LegacyZeroDec(), MarketId),
 			trade:                     types.NewTrade(MarketId, math.LegacyNewDec(15), math.LegacyNewDec(102), buyerAcc, sellerAcc), // Sell 15 @ 102
 			isBuyer:                   false,
 			expectedUpdatedQuantity:   math.LegacyNewDec(-5),
@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		},
 		{
 			name:         "Error: Insufficient funds to increase Long margin",
-			oldPerpetual: types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(1), math.LegacyNewDec(10), math.NewInt(1_000_000), math.LegacyZeroDec()), // Start small
+			oldPerpetual: types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(1), math.LegacyNewDec(10), math.NewInt(1_000_000), math.LegacyZeroDec(), MarketId), // Start small
 			// Corrected Quantity: Requires ~110,000,000 margin diff > 100,000,000 initial balance
 			trade:          types.NewTrade(MarketId, math.LegacyNewDec(11_000_000), math.LegacyNewDec(100), buyerAcc, sellerAcc),
 			isBuyer:        true,
@@ -217,15 +217,15 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		},
 		{
 			name:           "Error: Margin check fail on increase Long (new <= old)",
-			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
-			trade:          types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),                                                      // Low trade price
+			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec(), MarketId), // Artificially high old margin
+			trade:          types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),                                                                // Low trade price
 			isBuyer:        true,
 			expectedErr:    true,
 			expectedErrMsg: "newRequiredInitialMargin (105000000) must be greater than oldPerpetual.Margin (1000000000) for buyer when position is increased from positive to more positive", // Contains the error message from fmt.Errorf
 		},
 		{
 			name:           "Error: Margin check fail on decrease Long (old <= new)",
-			oldPerpetual:   types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(20), math.LegacyNewDec(100), math.NewInt(1_000_000), math.LegacyZeroDec()), // Artificially low old margin
+			oldPerpetual:   types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(20), math.LegacyNewDec(100), math.NewInt(1_000_000), math.LegacyZeroDec(), MarketId), // Artificially low old margin
 			trade:          types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(110), buyerAcc, sellerAcc),
 			isBuyer:        false,
 			expectedErr:    true,
@@ -234,8 +234,8 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		{
 			name: "Error Return: Margin check fail on decrease Short (old <= new)",
 			// Setup: Old margin (5) is <= required margin for remaining position (abs(-5)*100*0.1 = 50) -> Should fail
-			oldPerpetual: types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(5_000_000), math.LegacyZeroDec()), // Artificially low old margin
-			trade:        types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(90), buyerAcc, sellerAcc),                                                    // Buy 5 @ 90 -> remaining is -5 Qty
+			oldPerpetual: types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(5_000_000), math.LegacyZeroDec(), MarketId), // Artificially low old margin
+			trade:        types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(90), buyerAcc, sellerAcc),                                                              // Buy 5 @ 90 -> remaining is -5 Qty
 			isBuyer:      true,
 			// Expecting error return
 			expectedErrMsg: "oldPerpetual.Margin (5000000) must be greater than newRequiredInitialMargin (50000000) for buyer when position is reduced from negative to less negative", // Match fmt.Errorf string
@@ -243,15 +243,15 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		{
 			name: "Error Return: Margin check fail on increase Short (new <= old)",
 			// Setup: Required margin for new pos (abs(-15)*70*0.1=105) is <= old margin (1000) -> Should fail
-			oldPerpetual: types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
-			trade:        types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),                                                        // Sell 5 @ 10 -> new avg ep = 70, new qty = -15
+			oldPerpetual: types.NewPerpetual(1, MarketId, sellerAcc.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec(), MarketId), // Artificially high old margin
+			trade:        types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),                                                                  // Sell 5 @ 10 -> new avg ep = 70, new qty = -15
 			isBuyer:      false,
 			// Expecting error return
 			expectedErrMsg: "newRequiredInitialMargin (105000000) must be greater than oldPerpetual.Margin (1000000000) for seller when position is increased from negative to more negative", // Match fmt.Errorf string
 		},
 		{
 			name:           "Error: invalid trade quantity",
-			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
+			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec(), MarketId), // Artificially high old margin
 			trade:          types.Trade{buyerAcc, sellerAcc, MarketId, math.LegacyNewDec(5), math.LegacyNewDec(-10), false, false, true},
 			isBuyer:        true,
 			expectedErr:    true,
@@ -259,7 +259,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 		},
 		{
 			name:           "Error: denom price error",
-			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec()), // Artificially high old margin
+			oldPerpetual:   types.NewPerpetual(1, MarketId, buyerAcc.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(1000_000_000), math.LegacyZeroDec(), MarketId), // Artificially high old margin
 			trade:          types.NewTrade(MarketId, math.LegacyNewDec(5), math.LegacyNewDec(10), buyerAcc, sellerAcc),
 			isBuyer:        true,
 			expectedErr:    true,

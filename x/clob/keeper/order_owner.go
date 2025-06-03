@@ -1,10 +1,9 @@
 package keeper
 
 import (
-	"errors"
-
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
@@ -25,7 +24,27 @@ func (k Keeper) GetOrderOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountI
 }
 
 func (k Keeper) GetAllOrdersForOwner(ctx sdk.Context, owner sdk.AccAddress) []types.PerpetualOrderOwner {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualOrderOwnerPrefix)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetOrderOwnerAddressKey(owner))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	var list []types.PerpetualOrderOwner
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.PerpetualOrderOwner
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return list
+}
+
+func (k Keeper) GetAllOrdersForSubAccount(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64) []types.PerpetualOrderOwner {
+	key := types.GetOrderOwnerAddressKey(owner)
+	key = append(key, sdk.Uint64ToBigEndian(subAccountId)...)
+	key = append(key, []byte("/")...)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

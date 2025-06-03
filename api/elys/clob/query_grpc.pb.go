@@ -20,19 +20,12 @@ const _ = grpc.SupportPackageIsVersion7
 type QueryClient interface {
 	Params(ctx context.Context, in *ParamsRequest, opts ...grpc.CallOption) (*ParamsResponse, error)
 	AllMarkets(ctx context.Context, in *AllMarketsRequest, opts ...grpc.CallOption) (*AllMarketsResponse, error)
-	SubAccounts(ctx context.Context, in *SubAccountsRequest, opts ...grpc.CallOption) (*SubAccountsResponse, error)
-	MarketOrders(ctx context.Context, in *MarketOrdersRequest, opts ...grpc.CallOption) (*MarketOrdersResponse, error)
-	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
-	PerpetualOrder(ctx context.Context, in *PerpetualOrderRequest, opts ...grpc.CallOption) (*PerpetualOrderResponse, error)
-	AllPerpetualOrder(ctx context.Context, in *AllPerpetualOrderRequest, opts ...grpc.CallOption) (*AllPerpetualOrderResponse, error)
-	CurrentTwapPrice(ctx context.Context, in *CurrentTwapPriceRequest, opts ...grpc.CallOption) (*CurrentTwapPriceResponse, error)
-	AllTwapPrices(ctx context.Context, in *AllTwapPricesRequest, opts ...grpc.CallOption) (*AllTwapPricesResponse, error)
-	LastAverageTradePrice(ctx context.Context, in *LastAverageTradePriceRequest, opts ...grpc.CallOption) (*LastAverageTradePriceResponse, error)
-	HighestBuyPrice(ctx context.Context, in *HighestBuyPriceRequest, opts ...grpc.CallOption) (*HighestBuyPriceResponse, error)
-	LowestSellPrice(ctx context.Context, in *LowestSellPriceRequest, opts ...grpc.CallOption) (*LowestSellPriceResponse, error)
-	MidPrice(ctx context.Context, in *MidPriceRequest, opts ...grpc.CallOption) (*MidPriceResponse, error)
-	PerpetualADL(ctx context.Context, in *PerpetualADLRequest, opts ...grpc.CallOption) (*PerpetualADLResponse, error)
+	Market(ctx context.Context, in *MarketRequest, opts ...grpc.CallOption) (*MarketResponse, error)
+	OrderBook(ctx context.Context, in *OrderBookRequest, opts ...grpc.CallOption) (*OrderBookResponse, error)
 	AllPerpetualADL(ctx context.Context, in *AllPerpetualADLRequest, opts ...grpc.CallOption) (*AllPerpetualADLResponse, error)
+	SubAccounts(ctx context.Context, in *SubAccountsRequest, opts ...grpc.CallOption) (*SubAccountsResponse, error)
+	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
+	OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error)
 }
 
 type queryClient struct {
@@ -61,108 +54,18 @@ func (c *queryClient) AllMarkets(ctx context.Context, in *AllMarketsRequest, opt
 	return out, nil
 }
 
-func (c *queryClient) SubAccounts(ctx context.Context, in *SubAccountsRequest, opts ...grpc.CallOption) (*SubAccountsResponse, error) {
-	out := new(SubAccountsResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/SubAccounts", in, out, opts...)
+func (c *queryClient) Market(ctx context.Context, in *MarketRequest, opts ...grpc.CallOption) (*MarketResponse, error) {
+	out := new(MarketResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/Market", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) MarketOrders(ctx context.Context, in *MarketOrdersRequest, opts ...grpc.CallOption) (*MarketOrdersResponse, error) {
-	out := new(MarketOrdersResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/MarketOrders", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error) {
-	out := new(OwnerPerpetualsResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerPerpetuals", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) PerpetualOrder(ctx context.Context, in *PerpetualOrderRequest, opts ...grpc.CallOption) (*PerpetualOrderResponse, error) {
-	out := new(PerpetualOrderResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/PerpetualOrder", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) AllPerpetualOrder(ctx context.Context, in *AllPerpetualOrderRequest, opts ...grpc.CallOption) (*AllPerpetualOrderResponse, error) {
-	out := new(AllPerpetualOrderResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/AllPerpetualOrder", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) CurrentTwapPrice(ctx context.Context, in *CurrentTwapPriceRequest, opts ...grpc.CallOption) (*CurrentTwapPriceResponse, error) {
-	out := new(CurrentTwapPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/CurrentTwapPrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) AllTwapPrices(ctx context.Context, in *AllTwapPricesRequest, opts ...grpc.CallOption) (*AllTwapPricesResponse, error) {
-	out := new(AllTwapPricesResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/AllTwapPrices", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LastAverageTradePrice(ctx context.Context, in *LastAverageTradePriceRequest, opts ...grpc.CallOption) (*LastAverageTradePriceResponse, error) {
-	out := new(LastAverageTradePriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/LastAverageTradePrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) HighestBuyPrice(ctx context.Context, in *HighestBuyPriceRequest, opts ...grpc.CallOption) (*HighestBuyPriceResponse, error) {
-	out := new(HighestBuyPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/HighestBuyPrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LowestSellPrice(ctx context.Context, in *LowestSellPriceRequest, opts ...grpc.CallOption) (*LowestSellPriceResponse, error) {
-	out := new(LowestSellPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/LowestSellPrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) MidPrice(ctx context.Context, in *MidPriceRequest, opts ...grpc.CallOption) (*MidPriceResponse, error) {
-	out := new(MidPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/MidPrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) PerpetualADL(ctx context.Context, in *PerpetualADLRequest, opts ...grpc.CallOption) (*PerpetualADLResponse, error) {
-	out := new(PerpetualADLResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/PerpetualADL", in, out, opts...)
+func (c *queryClient) OrderBook(ctx context.Context, in *OrderBookRequest, opts ...grpc.CallOption) (*OrderBookResponse, error) {
+	out := new(OrderBookResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/OrderBook", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -178,25 +81,45 @@ func (c *queryClient) AllPerpetualADL(ctx context.Context, in *AllPerpetualADLRe
 	return out, nil
 }
 
+func (c *queryClient) SubAccounts(ctx context.Context, in *SubAccountsRequest, opts ...grpc.CallOption) (*SubAccountsResponse, error) {
+	out := new(SubAccountsResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/SubAccounts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error) {
+	out := new(OwnerPerpetualsResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerPerpetuals", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error) {
+	out := new(OwnerPerpetualOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerPerpetualOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	Params(context.Context, *ParamsRequest) (*ParamsResponse, error)
 	AllMarkets(context.Context, *AllMarketsRequest) (*AllMarketsResponse, error)
-	SubAccounts(context.Context, *SubAccountsRequest) (*SubAccountsResponse, error)
-	MarketOrders(context.Context, *MarketOrdersRequest) (*MarketOrdersResponse, error)
-	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
-	PerpetualOrder(context.Context, *PerpetualOrderRequest) (*PerpetualOrderResponse, error)
-	AllPerpetualOrder(context.Context, *AllPerpetualOrderRequest) (*AllPerpetualOrderResponse, error)
-	CurrentTwapPrice(context.Context, *CurrentTwapPriceRequest) (*CurrentTwapPriceResponse, error)
-	AllTwapPrices(context.Context, *AllTwapPricesRequest) (*AllTwapPricesResponse, error)
-	LastAverageTradePrice(context.Context, *LastAverageTradePriceRequest) (*LastAverageTradePriceResponse, error)
-	HighestBuyPrice(context.Context, *HighestBuyPriceRequest) (*HighestBuyPriceResponse, error)
-	LowestSellPrice(context.Context, *LowestSellPriceRequest) (*LowestSellPriceResponse, error)
-	MidPrice(context.Context, *MidPriceRequest) (*MidPriceResponse, error)
-	PerpetualADL(context.Context, *PerpetualADLRequest) (*PerpetualADLResponse, error)
+	Market(context.Context, *MarketRequest) (*MarketResponse, error)
+	OrderBook(context.Context, *OrderBookRequest) (*OrderBookResponse, error)
 	AllPerpetualADL(context.Context, *AllPerpetualADLRequest) (*AllPerpetualADLResponse, error)
+	SubAccounts(context.Context, *SubAccountsRequest) (*SubAccountsResponse, error)
+	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
+	OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -210,44 +133,23 @@ func (UnimplementedQueryServer) Params(context.Context, *ParamsRequest) (*Params
 func (UnimplementedQueryServer) AllMarkets(context.Context, *AllMarketsRequest) (*AllMarketsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllMarkets not implemented")
 }
+func (UnimplementedQueryServer) Market(context.Context, *MarketRequest) (*MarketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Market not implemented")
+}
+func (UnimplementedQueryServer) OrderBook(context.Context, *OrderBookRequest) (*OrderBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderBook not implemented")
+}
+func (UnimplementedQueryServer) AllPerpetualADL(context.Context, *AllPerpetualADLRequest) (*AllPerpetualADLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllPerpetualADL not implemented")
+}
 func (UnimplementedQueryServer) SubAccounts(context.Context, *SubAccountsRequest) (*SubAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubAccounts not implemented")
-}
-func (UnimplementedQueryServer) MarketOrders(context.Context, *MarketOrdersRequest) (*MarketOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MarketOrders not implemented")
 }
 func (UnimplementedQueryServer) OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetuals not implemented")
 }
-func (UnimplementedQueryServer) PerpetualOrder(context.Context, *PerpetualOrderRequest) (*PerpetualOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PerpetualOrder not implemented")
-}
-func (UnimplementedQueryServer) AllPerpetualOrder(context.Context, *AllPerpetualOrderRequest) (*AllPerpetualOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllPerpetualOrder not implemented")
-}
-func (UnimplementedQueryServer) CurrentTwapPrice(context.Context, *CurrentTwapPriceRequest) (*CurrentTwapPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CurrentTwapPrice not implemented")
-}
-func (UnimplementedQueryServer) AllTwapPrices(context.Context, *AllTwapPricesRequest) (*AllTwapPricesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllTwapPrices not implemented")
-}
-func (UnimplementedQueryServer) LastAverageTradePrice(context.Context, *LastAverageTradePriceRequest) (*LastAverageTradePriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LastAverageTradePrice not implemented")
-}
-func (UnimplementedQueryServer) HighestBuyPrice(context.Context, *HighestBuyPriceRequest) (*HighestBuyPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HighestBuyPrice not implemented")
-}
-func (UnimplementedQueryServer) LowestSellPrice(context.Context, *LowestSellPriceRequest) (*LowestSellPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LowestSellPrice not implemented")
-}
-func (UnimplementedQueryServer) MidPrice(context.Context, *MidPriceRequest) (*MidPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MidPrice not implemented")
-}
-func (UnimplementedQueryServer) PerpetualADL(context.Context, *PerpetualADLRequest) (*PerpetualADLResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PerpetualADL not implemented")
-}
-func (UnimplementedQueryServer) AllPerpetualADL(context.Context, *AllPerpetualADLRequest) (*AllPerpetualADLResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllPerpetualADL not implemented")
+func (UnimplementedQueryServer) OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetualOrder not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -298,218 +200,38 @@ func _Query_AllMarkets_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SubAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SubAccountsRequest)
+func _Query_Market_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarketRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SubAccounts(ctx, in)
+		return srv.(QueryServer).Market(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.clob.Query/SubAccounts",
+		FullMethod: "/elys.clob.Query/Market",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SubAccounts(ctx, req.(*SubAccountsRequest))
+		return srv.(QueryServer).Market(ctx, req.(*MarketRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_MarketOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MarketOrdersRequest)
+func _Query_OrderBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderBookRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).MarketOrders(ctx, in)
+		return srv.(QueryServer).OrderBook(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.clob.Query/MarketOrders",
+		FullMethod: "/elys.clob.Query/OrderBook",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).MarketOrders(ctx, req.(*MarketOrdersRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_OwnerPerpetuals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OwnerPerpetualsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).OwnerPerpetuals(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/OwnerPerpetuals",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).OwnerPerpetuals(ctx, req.(*OwnerPerpetualsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_PerpetualOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PerpetualOrderRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).PerpetualOrder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/PerpetualOrder",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PerpetualOrder(ctx, req.(*PerpetualOrderRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_AllPerpetualOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AllPerpetualOrderRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).AllPerpetualOrder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/AllPerpetualOrder",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllPerpetualOrder(ctx, req.(*AllPerpetualOrderRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_CurrentTwapPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CurrentTwapPriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).CurrentTwapPrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/CurrentTwapPrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CurrentTwapPrice(ctx, req.(*CurrentTwapPriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_AllTwapPrices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AllTwapPricesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).AllTwapPrices(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/AllTwapPrices",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllTwapPrices(ctx, req.(*AllTwapPricesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LastAverageTradePrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LastAverageTradePriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LastAverageTradePrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/LastAverageTradePrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LastAverageTradePrice(ctx, req.(*LastAverageTradePriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_HighestBuyPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HighestBuyPriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).HighestBuyPrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/HighestBuyPrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).HighestBuyPrice(ctx, req.(*HighestBuyPriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LowestSellPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LowestSellPriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LowestSellPrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/LowestSellPrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LowestSellPrice(ctx, req.(*LowestSellPriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_MidPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MidPriceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).MidPrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/MidPrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).MidPrice(ctx, req.(*MidPriceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_PerpetualADL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PerpetualADLRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).PerpetualADL(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.clob.Query/PerpetualADL",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PerpetualADL(ctx, req.(*PerpetualADLRequest))
+		return srv.(QueryServer).OrderBook(ctx, req.(*OrderBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -532,6 +254,60 @@ func _Query_AllPerpetualADL_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_SubAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubAccountsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SubAccounts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Query/SubAccounts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SubAccounts(ctx, req.(*SubAccountsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_OwnerPerpetuals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OwnerPerpetualsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OwnerPerpetuals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Query/OwnerPerpetuals",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OwnerPerpetuals(ctx, req.(*OwnerPerpetualsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_OwnerPerpetualOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OwnerPerpetualOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OwnerPerpetualOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Query/OwnerPerpetualOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OwnerPerpetualOrder(ctx, req.(*OwnerPerpetualOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -548,56 +324,28 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_AllMarkets_Handler,
 		},
 		{
-			MethodName: "SubAccounts",
-			Handler:    _Query_SubAccounts_Handler,
+			MethodName: "Market",
+			Handler:    _Query_Market_Handler,
 		},
 		{
-			MethodName: "MarketOrders",
-			Handler:    _Query_MarketOrders_Handler,
+			MethodName: "OrderBook",
+			Handler:    _Query_OrderBook_Handler,
+		},
+		{
+			MethodName: "AllPerpetualADL",
+			Handler:    _Query_AllPerpetualADL_Handler,
+		},
+		{
+			MethodName: "SubAccounts",
+			Handler:    _Query_SubAccounts_Handler,
 		},
 		{
 			MethodName: "OwnerPerpetuals",
 			Handler:    _Query_OwnerPerpetuals_Handler,
 		},
 		{
-			MethodName: "PerpetualOrder",
-			Handler:    _Query_PerpetualOrder_Handler,
-		},
-		{
-			MethodName: "AllPerpetualOrder",
-			Handler:    _Query_AllPerpetualOrder_Handler,
-		},
-		{
-			MethodName: "CurrentTwapPrice",
-			Handler:    _Query_CurrentTwapPrice_Handler,
-		},
-		{
-			MethodName: "AllTwapPrices",
-			Handler:    _Query_AllTwapPrices_Handler,
-		},
-		{
-			MethodName: "LastAverageTradePrice",
-			Handler:    _Query_LastAverageTradePrice_Handler,
-		},
-		{
-			MethodName: "HighestBuyPrice",
-			Handler:    _Query_HighestBuyPrice_Handler,
-		},
-		{
-			MethodName: "LowestSellPrice",
-			Handler:    _Query_LowestSellPrice_Handler,
-		},
-		{
-			MethodName: "MidPrice",
-			Handler:    _Query_MidPrice_Handler,
-		},
-		{
-			MethodName: "PerpetualADL",
-			Handler:    _Query_PerpetualADL_Handler,
-		},
-		{
-			MethodName: "AllPerpetualADL",
-			Handler:    _Query_AllPerpetualADL_Handler,
+			MethodName: "OwnerPerpetualOrder",
+			Handler:    _Query_OwnerPerpetualOrder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -25,8 +25,8 @@ func (suite *KeeperTestSuite) TestSettleFunding() {
 
 	// Define Perpetual Templates
 	margin := math.NewInt(100) // Example margin
-	longPerpBase := types.NewPerpetual(1, MarketId, "owner_placeholder", posQty, math.LegacyNewDec(99), margin, initialEntryRate)
-	shortPerpBase := types.NewPerpetual(2, MarketId, "owner_placeholder", posQty.Neg(), math.LegacyNewDec(101), margin, initialEntryRate)
+	longPerpBase := types.NewPerpetual(1, MarketId, "owner_placeholder", posQty, math.LegacyNewDec(99), margin, initialEntryRate, MarketId)
+	shortPerpBase := types.NewPerpetual(2, MarketId, "owner_placeholder", posQty.Neg(), math.LegacyNewDec(101), margin, initialEntryRate, MarketId)
 
 	testCases := []struct {
 		name                        string

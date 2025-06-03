@@ -46,10 +46,16 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 		MaxAbsFundingRate:       msg.MaxAbsFundingRate,
 		MaxAbsFundingRateChange: msg.MaxAbsFundingRateChange,
 		TwapPricesWindow:        msg.TwapPricesWindow,
-		OrderCounter:            0,
 	}
-
 	k.SetPerpetualMarket(ctx, perpetualMarket)
+
+	k.SetPerpetualMarketCounter(ctx, types.PerpetualMarketCounter{
+		MarketId:          perpetualMarket.Id,
+		OrderCounter:      0,
+		PerpetualCounter:  0,
+		TotalOpenPosition: 0,
+		TotalOpenOrders:   0,
+	})
 
 	return &types.MsgCreatPerpetualMarketResponse{}, nil
 }

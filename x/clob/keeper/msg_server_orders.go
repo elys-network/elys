@@ -26,31 +26,23 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
 	}
 
-	counter := market.OrderCounter + 1
+	counter := k.GetAndIncrementOrderCounter(ctx, market.Id)
 	order := types.PerpetualOrder{
 		MarketId:     market.Id,
 		OrderType:    msg.OrderType,
 		Price:        msg.Price,
-		BlockHeight:  uint64(ctx.BlockHeight()),
+		Counter:      counter,
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
 		Amount:       msg.BaseQuantity,
-		Counter:      counter,
-	}
-
-	_, found := k.GetPerpetualOrder(ctx, order.MarketId, order.OrderType, order.Price, order.BlockHeight)
-	if found {
-		return nil, errors.New("order already exists")
 	}
 
 	k.SetPerpetualOrder(ctx, order)
 	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
-		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.BlockHeight),
+		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.Counter),
 	})
-	market.OrderCounter = counter
-	k.SetPerpetualMarket(ctx, market)
 	return &types.MsgPlaceLimitOrderResponse{}, nil
 }
 
@@ -66,7 +58,7 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		return nil, err
 	}
 
-	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), market.Id)
+	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.SubAccountId)
 	if err != nil {
 		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
 	}

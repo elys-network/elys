@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
+// For isolated positions, sub account id is same as market id
+func (suite *KeeperTestSuite) TestExchange_Isolated() {
 	// Define common values 	// 10%
 	denomFactor := math.NewInt(1000_000)
 
@@ -71,7 +72,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(0), S(+): Buyer Opens Long, Seller Decreases Long",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty15, p100, calcMargin(qty15, p100), math.LegacyZeroDec()) // Seller +15 @ 100 (M=150)
+				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty15, p100, calcMargin(qty15, p100), math.LegacyZeroDec(), MarketId) // Seller +15 @ 100 (M=150)
 				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty15
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -95,7 +96,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(0), S(+): Buyer Opens Long, Seller Closes Long",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller +10 @ 100 (M=100)
+				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId) // Seller +10 @ 100 (M=100)
 				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -119,7 +120,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(0), S(+): Buyer Opens Long, Seller Flips Long->Short",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller +10 @ 100 (M=100)
+				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId) // Seller +10 @ 100 (M=100)
 				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -143,7 +144,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(0), S(-): Buyer Opens Long, Seller Increases Short",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10.Neg(), p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Seller -10 @ 100 (M=100)
+				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty10.Neg(), p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId) // Seller -10 @ 100 (M=100)
 				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -169,7 +170,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(+), S(0): Buyer Increases Long, Seller Opens Short",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Buyer +10 @ 100 (M=100)
+				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId) // Buyer +10 @ 100 (M=100)
 				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				market.TotalOpen = qty10
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -193,7 +194,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "B(-), S(0): Buyer Decreases Short, Seller Opens Short",
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty15.Neg(), p100, calcMargin(qty15, p100), math.LegacyZeroDec()) // Buyer -15 @ 100 (M=150)
+				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty15.Neg(), p100, calcMargin(qty15, p100), math.LegacyZeroDec(), MarketId) // Buyer -15 @ 100 (M=150)
 				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				market.TotalOpen = qty15
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
@@ -223,8 +224,8 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 			name: "Transfer: Buyer Closes Long, Seller Increases Long", // Less common but possible
 			setup: func() (types.SubAccount, types.SubAccount) {
 				market, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
-				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec()) // Buyer +10 @ 100 (M=100)
-				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty5, p100, calcMargin(qty5, p100), math.LegacyZeroDec()) // Seller +5 @ 100 (M=50)
+				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId) // Buyer +10 @ 100 (M=100)
+				sellerPerp := types.NewPerpetual(0, MarketId, sellerAcc.Owner, qty5, p100, calcMargin(qty5, p100), math.LegacyZeroDec(), MarketId) // Seller +5 @ 100 (M=50)
 				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				suite.SetPerpetualStateWithEntryFR(sellerPerp, false)
 				market.TotalOpen = qty15
@@ -302,7 +303,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				currentFundingRate := types.FundingRate{MarketId: MarketId, Rate: math.LegacyZeroDec(), Block: uint64(currentBlockHeight)}
 				suite.app.ClobKeeper.SetFundingRate(suite.ctx, currentFundingRate)
 
-				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec())
+				buyerPerp := types.NewPerpetual(0, MarketId, buyerAcc.Owner, qty10, p100, calcMargin(qty10, p100), math.LegacyZeroDec(), MarketId)
 				suite.SetPerpetualStateWithEntryFR(buyerPerp, false)
 				perpState, found := suite.GetPerpetualState(buyerAcc.GetOwnerAccAddress(), MarketId)
 				suite.Require().True(found, "Perpetual state not found")
@@ -384,7 +385,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalBuyerPerp.EntryFundingRate), "Buyer EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalBuyerPerp.EntryFundingRate)
 					}
 				} else {
-					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, buyerAcc.GetOwnerAccAddress(), buyerAcc.Id)
+					_, ownerFound := suite.app.ClobKeeper.CheckAndGetPerpetualOwner(startCtx, buyerAcc, MarketId)
 					suite.Require().False(ownerFound, "Buyer owner mapping should be deleted but was found")
 				}
 
@@ -399,7 +400,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalSellerPerp.EntryFundingRate), "Seller EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalSellerPerp.EntryFundingRate)
 					}
 				} else {
-					_, ownerFound := suite.app.ClobKeeper.GetPerpetualOwner(startCtx, sellerAcc.GetOwnerAccAddress(), sellerAcc.Id)
+					_, ownerFound := suite.app.ClobKeeper.CheckAndGetPerpetualOwner(startCtx, sellerAcc, MarketId)
 					suite.Require().False(ownerFound, "Seller owner mapping should be deleted but was found")
 				}
 

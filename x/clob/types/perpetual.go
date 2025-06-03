@@ -36,11 +36,12 @@ func (perpetual Perpetual) GetEntryValue() math.LegacyDec {
 	return perpetual.Quantity.Abs().Mul(perpetual.EntryPrice)
 }
 
-func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyDec, marginAmount math.Int, fundingRate math.LegacyDec) Perpetual {
+func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyDec, marginAmount math.Int, fundingRate math.LegacyDec, subAccountId uint64) Perpetual {
 	return Perpetual{
 		Id:               id,
 		MarketId:         marketId,
 		Owner:            owner,
+		SubAccountId:     subAccountId,
 		Quantity:         qty,
 		EntryPrice:       ep,
 		MarginAmount:     marginAmount,

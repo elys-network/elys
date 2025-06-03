@@ -9,6 +9,8 @@ import "elys/clob/order.proto";
 import "elys/clob/perpetual.proto";
 import "elys/clob/subaccount.proto";
 import "elys/clob/adl.proto";
+import "elys/clob/price.proto";
+import "elys/clob/funding_rate.proto";
 
 option go_package = "github.com/elys-network/elys/x/clob/types";
 
@@ -18,13 +20,15 @@ message GenesisState {
   repeated SubAccount sub_accounts = 2 [ (gogoproto.nullable) = false ];
   repeated PerpetualMarket perpetual_markets = 3
       [ (gogoproto.nullable) = false ];
-  repeated Perpetual perpetuals = 4 [ (gogoproto.nullable) = false ];
-  repeated PerpetualOwner perpetual_owners = 5 [ (gogoproto.nullable) = false ];
+  repeated PerpetualMarketCounter perpetual_market_counters = 4
+      [ (gogoproto.nullable) = false ];
+  repeated Perpetual perpetuals = 5 [ (gogoproto.nullable) = false ];
+  repeated PerpetualOwner perpetual_owners = 6 [ (gogoproto.nullable) = false ];
   // Based on market id, it will have order book for all assets
-  repeated PerpetualOrder order_books = 6;
-  repeated PerpetualOrderOwner order_owners = 7;
-  repeated TwapPrice twap_prices = 8;
-  repeated PerpetualCounter perpetual_counters = 9;
-  repeated FundingRate funding_rates = 10;
-  repeated PerpetualADL perpetualADLs = 11;
+  repeated PerpetualOrder order_books = 7 [ (gogoproto.nullable) = false ];
+  repeated PerpetualOrderOwner order_owners = 8
+      [ (gogoproto.nullable) = false ];
+  repeated TwapPrice twap_prices = 9 [ (gogoproto.nullable) = false ];
+  repeated FundingRate funding_rates = 10 [ (gogoproto.nullable) = false ];
+  repeated PerpetualADL perpetualADLs = 11 [ (gogoproto.nullable) = false ];
 }
