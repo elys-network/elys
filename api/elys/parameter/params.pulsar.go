@@ -659,14 +659,16 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Params                              protoreflect.MessageDescriptor
-	fd_Params_min_commission_rate          protoreflect.FieldDescriptor
-	fd_Params_max_voting_power             protoreflect.FieldDescriptor
-	fd_Params_min_self_delegation          protoreflect.FieldDescriptor
-	fd_Params_total_blocks_per_year        protoreflect.FieldDescriptor
-	fd_Params_rewards_data_lifetime        protoreflect.FieldDescriptor
-	fd_Params_taker_fees                   protoreflect.FieldDescriptor
-	fd_Params_taker_fee_collection_address protoreflect.FieldDescriptor
+	md_Params                               protoreflect.MessageDescriptor
+	fd_Params_min_commission_rate           protoreflect.FieldDescriptor
+	fd_Params_max_voting_power              protoreflect.FieldDescriptor
+	fd_Params_min_self_delegation           protoreflect.FieldDescriptor
+	fd_Params_total_blocks_per_year         protoreflect.FieldDescriptor
+	fd_Params_rewards_data_lifetime         protoreflect.FieldDescriptor
+	fd_Params_taker_fees                    protoreflect.FieldDescriptor
+	fd_Params_taker_fee_collection_address  protoreflect.FieldDescriptor
+	fd_Params_enable_taker_fee_swap         protoreflect.FieldDescriptor
+	fd_Params_taker_fee_collection_interval protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -679,6 +681,8 @@ func init() {
 	fd_Params_rewards_data_lifetime = md_Params.Fields().ByName("rewards_data_lifetime")
 	fd_Params_taker_fees = md_Params.Fields().ByName("taker_fees")
 	fd_Params_taker_fee_collection_address = md_Params.Fields().ByName("taker_fee_collection_address")
+	fd_Params_enable_taker_fee_swap = md_Params.Fields().ByName("enable_taker_fee_swap")
+	fd_Params_taker_fee_collection_interval = md_Params.Fields().ByName("taker_fee_collection_interval")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -788,6 +792,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.EnableTakerFeeSwap != false {
+		value := protoreflect.ValueOfBool(x.EnableTakerFeeSwap)
+		if !f(fd_Params_enable_taker_fee_swap, value) {
+			return
+		}
+	}
+	if x.TakerFeeCollectionInterval != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TakerFeeCollectionInterval)
+		if !f(fd_Params_taker_fee_collection_interval, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -817,6 +833,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.TakerFees != ""
 	case "elys.parameter.Params.taker_fee_collection_address":
 		return x.TakerFeeCollectionAddress != ""
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		return x.EnableTakerFeeSwap != false
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		return x.TakerFeeCollectionInterval != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -847,6 +867,10 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.TakerFees = ""
 	case "elys.parameter.Params.taker_fee_collection_address":
 		x.TakerFeeCollectionAddress = ""
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		x.EnableTakerFeeSwap = false
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		x.TakerFeeCollectionInterval = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -884,6 +908,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "elys.parameter.Params.taker_fee_collection_address":
 		value := x.TakerFeeCollectionAddress
 		return protoreflect.ValueOfString(value)
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		value := x.EnableTakerFeeSwap
+		return protoreflect.ValueOfBool(value)
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		value := x.TakerFeeCollectionInterval
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -918,6 +948,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.TakerFees = value.Interface().(string)
 	case "elys.parameter.Params.taker_fee_collection_address":
 		x.TakerFeeCollectionAddress = value.Interface().(string)
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		x.EnableTakerFeeSwap = value.Bool()
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		x.TakerFeeCollectionInterval = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -952,6 +986,10 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field taker_fees of message elys.parameter.Params is not mutable"))
 	case "elys.parameter.Params.taker_fee_collection_address":
 		panic(fmt.Errorf("field taker_fee_collection_address of message elys.parameter.Params is not mutable"))
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		panic(fmt.Errorf("field enable_taker_fee_swap of message elys.parameter.Params is not mutable"))
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		panic(fmt.Errorf("field taker_fee_collection_interval of message elys.parameter.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -979,6 +1017,10 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfString("")
 	case "elys.parameter.Params.taker_fee_collection_address":
 		return protoreflect.ValueOfString("")
+	case "elys.parameter.Params.enable_taker_fee_swap":
+		return protoreflect.ValueOfBool(false)
+	case "elys.parameter.Params.taker_fee_collection_interval":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.parameter.Params"))
@@ -1074,6 +1116,12 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.EnableTakerFeeSwap {
+			n += 2
+		}
+		if x.TakerFeeCollectionInterval != 0 {
+			n += 1 + runtime.Sov(uint64(x.TakerFeeCollectionInterval))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1102,6 +1150,21 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.TakerFeeCollectionInterval != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TakerFeeCollectionInterval))
+			i--
+			dAtA[i] = 0x48
+		}
+		if x.EnableTakerFeeSwap {
+			i--
+			if x.EnableTakerFeeSwap {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x40
 		}
 		if len(x.TakerFeeCollectionAddress) > 0 {
 			i -= len(x.TakerFeeCollectionAddress)
@@ -1395,6 +1458,45 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 				x.TakerFeeCollectionAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnableTakerFeeSwap", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.EnableTakerFeeSwap = bool(v != 0)
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFeeCollectionInterval", wireType)
+				}
+				x.TakerFeeCollectionInterval = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TakerFeeCollectionInterval |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1516,13 +1618,15 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	MinCommissionRate         string `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3" json:"min_commission_rate,omitempty"`
-	MaxVotingPower            string `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3" json:"max_voting_power,omitempty"`
-	MinSelfDelegation         string `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3" json:"min_self_delegation,omitempty"`
-	TotalBlocksPerYear        uint64 `protobuf:"varint,4,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
-	RewardsDataLifetime       uint64 `protobuf:"varint,5,opt,name=rewards_data_lifetime,json=rewardsDataLifetime,proto3" json:"rewards_data_lifetime,omitempty"` // default 1 day = 86400
-	TakerFees                 string `protobuf:"bytes,6,opt,name=taker_fees,json=takerFees,proto3" json:"taker_fees,omitempty"`
-	TakerFeeCollectionAddress string `protobuf:"bytes,7,opt,name=taker_fee_collection_address,json=takerFeeCollectionAddress,proto3" json:"taker_fee_collection_address,omitempty"`
+	MinCommissionRate          string `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3" json:"min_commission_rate,omitempty"`
+	MaxVotingPower             string `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3" json:"max_voting_power,omitempty"`
+	MinSelfDelegation          string `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3" json:"min_self_delegation,omitempty"`
+	TotalBlocksPerYear         uint64 `protobuf:"varint,4,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
+	RewardsDataLifetime        uint64 `protobuf:"varint,5,opt,name=rewards_data_lifetime,json=rewardsDataLifetime,proto3" json:"rewards_data_lifetime,omitempty"` // default 1 day = 86400
+	TakerFees                  string `protobuf:"bytes,6,opt,name=taker_fees,json=takerFees,proto3" json:"taker_fees,omitempty"`
+	TakerFeeCollectionAddress  string `protobuf:"bytes,7,opt,name=taker_fee_collection_address,json=takerFeeCollectionAddress,proto3" json:"taker_fee_collection_address,omitempty"`
+	EnableTakerFeeSwap         bool   `protobuf:"varint,8,opt,name=enable_taker_fee_swap,json=enableTakerFeeSwap,proto3" json:"enable_taker_fee_swap,omitempty"`
+	TakerFeeCollectionInterval uint64 `protobuf:"varint,9,opt,name=taker_fee_collection_interval,json=takerFeeCollectionInterval,proto3" json:"taker_fee_collection_interval,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1594,6 +1698,20 @@ func (x *Params) GetTakerFeeCollectionAddress() string {
 	return ""
 }
 
+func (x *Params) GetEnableTakerFeeSwap() bool {
+	if x != nil {
+		return x.EnableTakerFeeSwap
+	}
+	return false
+}
+
+func (x *Params) GetTakerFeeCollectionInterval() uint64 {
+	if x != nil {
+		return x.TakerFeeCollectionInterval
+	}
+	return 0
+}
+
 var File_elys_parameter_params_proto protoreflect.FileDescriptor
 
 var file_elys_parameter_params_proto_rawDesc = []byte{
@@ -1628,7 +1746,7 @@ var file_elys_parameter_params_proto_rawDesc = []byte{
 	0x32, 0x0a, 0x15, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x5f,
 	0x6c, 0x69, 0x66, 0x65, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x13,
 	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x44, 0x61, 0x74, 0x61, 0x4c, 0x69, 0x66, 0x65, 0x74,
-	0x69, 0x6d, 0x65, 0x22, 0x9f, 0x04, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x61,
+	0x69, 0x6d, 0x65, 0x22, 0x95, 0x05, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x61,
 	0x0a, 0x13, 0x6d, 0x69, 0x6e, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e,
 	0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
 	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
@@ -1662,18 +1780,26 @@ var file_elys_parameter_params_proto_rawDesc = []byte{
 	0x65, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x64, 0x64,
 	0x72, 0x65, 0x73, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x19, 0x74, 0x61, 0x6b, 0x65,
 	0x72, 0x46, 0x65, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0xae, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x42, 0x0b, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0xa2,
-	0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x31, 0x0a, 0x15, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f,
+	0x74, 0x61, 0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x73, 0x77, 0x61, 0x70, 0x18, 0x08,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x12, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65,
+	0x72, 0x46, 0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x12, 0x41, 0x0a, 0x1d, 0x74, 0x61, 0x6b, 0x65,
+	0x72, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x1a, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x42, 0xae, 0x01, 0x0a, 0x12,
+	0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74,
+	0x65, 0x72, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x65, 0x74, 0x65, 0x72, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c,
+	0x79, 0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0xca, 0x02, 0x0e, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0xe2, 0x02, 0x1a,
+	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
