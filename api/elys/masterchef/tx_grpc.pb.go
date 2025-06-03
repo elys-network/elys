@@ -24,7 +24,6 @@ type MsgClient interface {
 	UpdatePoolMultipliers(ctx context.Context, in *MsgUpdatePoolMultipliers, opts ...grpc.CallOption) (*MsgUpdatePoolMultipliersResponse, error)
 	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
 	TogglePoolEdenRewards(ctx context.Context, in *MsgTogglePoolEdenRewards, opts ...grpc.CallOption) (*MsgTogglePoolEdenRewardsResponse, error)
-	SwapTakerFeesAndBurn(ctx context.Context, in *MsgSwapTakerFeesAndBurn, opts ...grpc.CallOption) (*MsgSwapTakerFeesAndBurnResponse, error)
 }
 
 type msgClient struct {
@@ -89,15 +88,6 @@ func (c *msgClient) TogglePoolEdenRewards(ctx context.Context, in *MsgTogglePool
 	return out, nil
 }
 
-func (c *msgClient) SwapTakerFeesAndBurn(ctx context.Context, in *MsgSwapTakerFeesAndBurn, opts ...grpc.CallOption) (*MsgSwapTakerFeesAndBurnResponse, error) {
-	out := new(MsgSwapTakerFeesAndBurnResponse)
-	err := c.cc.Invoke(ctx, "/elys.masterchef.Msg/SwapTakerFeesAndBurn", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -108,7 +98,6 @@ type MsgServer interface {
 	UpdatePoolMultipliers(context.Context, *MsgUpdatePoolMultipliers) (*MsgUpdatePoolMultipliersResponse, error)
 	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
 	TogglePoolEdenRewards(context.Context, *MsgTogglePoolEdenRewards) (*MsgTogglePoolEdenRewardsResponse, error)
-	SwapTakerFeesAndBurn(context.Context, *MsgSwapTakerFeesAndBurn) (*MsgSwapTakerFeesAndBurnResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -133,9 +122,6 @@ func (UnimplementedMsgServer) ClaimRewards(context.Context, *MsgClaimRewards) (*
 }
 func (UnimplementedMsgServer) TogglePoolEdenRewards(context.Context, *MsgTogglePoolEdenRewards) (*MsgTogglePoolEdenRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TogglePoolEdenRewards not implemented")
-}
-func (UnimplementedMsgServer) SwapTakerFeesAndBurn(context.Context, *MsgSwapTakerFeesAndBurn) (*MsgSwapTakerFeesAndBurnResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SwapTakerFeesAndBurn not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -258,24 +244,6 @@ func _Msg_TogglePoolEdenRewards_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_SwapTakerFeesAndBurn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSwapTakerFeesAndBurn)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SwapTakerFeesAndBurn(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.masterchef.Msg/SwapTakerFeesAndBurn",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SwapTakerFeesAndBurn(ctx, req.(*MsgSwapTakerFeesAndBurn))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -306,10 +274,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TogglePoolEdenRewards",
 			Handler:    _Msg_TogglePoolEdenRewards_Handler,
-		},
-		{
-			MethodName: "SwapTakerFeesAndBurn",
-			Handler:    _Msg_SwapTakerFeesAndBurn_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

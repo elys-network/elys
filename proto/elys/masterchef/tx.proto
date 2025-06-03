@@ -23,8 +23,6 @@ service Msg {
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc TogglePoolEdenRewards(MsgTogglePoolEdenRewards)
       returns (MsgTogglePoolEdenRewardsResponse);
-  rpc SwapTakerFeesAndBurn(MsgSwapTakerFeesAndBurn)
-      returns (MsgSwapTakerFeesAndBurnResponse);
 }
 message MsgAddExternalRewardDenom {
   option (cosmos.msg.v1.signer) = "authority";
@@ -103,13 +101,3 @@ message MsgTogglePoolEdenRewards {
 }
 
 message MsgTogglePoolEdenRewardsResponse {}
-
-message MsgSwapTakerFeesAndBurn {}
-
-message MsgSwapTakerFeesAndBurnResponse {
-  string elys_burnt = 1 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-}
