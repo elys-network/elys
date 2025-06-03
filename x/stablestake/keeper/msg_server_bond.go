@@ -17,6 +17,10 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	if !found {
 		return nil, types.ErrPoolNotFound
 	}
+	updatedNetAmount := pool.NetAmount.Add(msg.Amount)
+	if updatedNetAmount.GT(k.GetMaxBondableAmount(ctx, pool.DepositDenom)) {
+		return nil, fmt.Errorf("vault cannot have more than the max bondable amount %s (current %s)", updatedNetAmount.String(), pool.NetAmount.String())
+	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	redemptionRate := k.CalculateRedemptionRateForPool(ctx, pool)
@@ -84,7 +88,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	pool.NetAmount = pool.NetAmount.Add(msg.Amount)
+	pool.NetAmount = updatedNetAmount
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {

@@ -682,6 +682,8 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
+	app.StablestakeKeeper.SetLeverageLpKeeper(app.LeveragelpKeeper)
+
 	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
