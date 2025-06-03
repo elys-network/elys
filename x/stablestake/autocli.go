@@ -58,6 +58,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query interest",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "block_height"}},
 				},
+				{
+					RpcMethod:      "MaxBondableAmount",
+					Use:            "max-bondable [pool-id]",
+					Short:          "Query max bondable amount for a pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
