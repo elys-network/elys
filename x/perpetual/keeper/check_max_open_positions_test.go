@@ -18,21 +18,33 @@ func (suite *PerpetualKeeperTestSuite) TestCheckMaxOpenPositions() {
 			"Open Positions Below Max",
 			"",
 			func() {
-				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 1)
+				suite.app.PerpetualKeeper.SetPerpetualCounter(suite.ctx, types.PerpetualCounter{
+					AmmPoolId: 1,
+					Counter:   1,
+					TotalOpen: 1,
+				})
 			},
 		},
 		{
 			"Open Positions Equal Max",
 			types.ErrMaxOpenPositions.Error(),
 			func() {
-				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 2)
+				suite.app.PerpetualKeeper.SetPerpetualCounter(suite.ctx, types.PerpetualCounter{
+					AmmPoolId: 1,
+					Counter:   2,
+					TotalOpen: 2,
+				})
 			},
 		},
 		{
 			"Open Positions Exceed Max",
 			types.ErrMaxOpenPositions.Error(),
 			func() {
-				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 3)
+				suite.app.PerpetualKeeper.SetPerpetualCounter(suite.ctx, types.PerpetualCounter{
+					AmmPoolId: 1,
+					Counter:   3,
+					TotalOpen: 4,
+				})
 			},
 		},
 	}
@@ -40,7 +52,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckMaxOpenPositions() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			err = suite.app.PerpetualKeeper.CheckMaxOpenPositions(suite.ctx)
+			err = suite.app.PerpetualKeeper.CheckMaxOpenPositions(suite.ctx, 1)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

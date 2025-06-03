@@ -14,8 +14,8 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 	// List of prefixes to clear
 	prefixes := [][]byte{
 		types.MTPPrefix,
-		types.MTPCountPrefix,
-		types.OpenMTPCountPrefix,
+		types.LegacyMTPCountPrefix,
+		types.LegacyOpenMTPCountPrefix,
 		types.WhitelistPrefix,
 	}
 

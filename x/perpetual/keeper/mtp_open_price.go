@@ -8,20 +8,6 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) UpdateOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
-	err := k.GetAndSetOpenPrice(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
-	err = k.SetMTP(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (k Keeper) GetAndSetOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
 	openPrice := osmomath.ZeroBigDec()
 	if mtp.Position == types.Position_LONG {

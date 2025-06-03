@@ -4334,23 +4334,25 @@ func (x *fastReflection_PositionsByPoolResponse) ProtoMethods() *protoiface.Meth
 }
 
 var (
-	md_StatusRequest protoreflect.MessageDescriptor
+	md_PerpetualCounterRequest    protoreflect.MessageDescriptor
+	fd_PerpetualCounterRequest_id protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_perpetual_query_proto_init()
-	md_StatusRequest = File_elys_perpetual_query_proto.Messages().ByName("StatusRequest")
+	md_PerpetualCounterRequest = File_elys_perpetual_query_proto.Messages().ByName("PerpetualCounterRequest")
+	fd_PerpetualCounterRequest_id = md_PerpetualCounterRequest.Fields().ByName("id")
 }
 
-var _ protoreflect.Message = (*fastReflection_StatusRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_PerpetualCounterRequest)(nil)
 
-type fastReflection_StatusRequest StatusRequest
+type fastReflection_PerpetualCounterRequest PerpetualCounterRequest
 
-func (x *StatusRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_StatusRequest)(x)
+func (x *PerpetualCounterRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualCounterRequest)(x)
 }
 
-func (x *StatusRequest) slowProtoReflect() protoreflect.Message {
+func (x *PerpetualCounterRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_perpetual_query_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -4362,43 +4364,43 @@ func (x *StatusRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_StatusRequest_messageType fastReflection_StatusRequest_messageType
-var _ protoreflect.MessageType = fastReflection_StatusRequest_messageType{}
+var _fastReflection_PerpetualCounterRequest_messageType fastReflection_PerpetualCounterRequest_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualCounterRequest_messageType{}
 
-type fastReflection_StatusRequest_messageType struct{}
+type fastReflection_PerpetualCounterRequest_messageType struct{}
 
-func (x fastReflection_StatusRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_StatusRequest)(nil)
+func (x fastReflection_PerpetualCounterRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualCounterRequest)(nil)
 }
-func (x fastReflection_StatusRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_StatusRequest)
+func (x fastReflection_PerpetualCounterRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounterRequest)
 }
-func (x fastReflection_StatusRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_StatusRequest
+func (x fastReflection_PerpetualCounterRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounterRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_StatusRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_StatusRequest
+func (x *fastReflection_PerpetualCounterRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounterRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_StatusRequest) Type() protoreflect.MessageType {
-	return _fastReflection_StatusRequest_messageType
+func (x *fastReflection_PerpetualCounterRequest) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualCounterRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_StatusRequest) New() protoreflect.Message {
-	return new(fastReflection_StatusRequest)
+func (x *fastReflection_PerpetualCounterRequest) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounterRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_StatusRequest) Interface() protoreflect.ProtoMessage {
-	return (*StatusRequest)(x)
+func (x *fastReflection_PerpetualCounterRequest) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualCounterRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -4406,7 +4408,13 @@ func (x *fastReflection_StatusRequest) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_StatusRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_PerpetualCounterRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_PerpetualCounterRequest_id, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -4420,13 +4428,15 @@ func (x *fastReflection_StatusRequest) Range(f func(protoreflect.FieldDescriptor
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_StatusRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_PerpetualCounterRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		return x.Id != uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4436,13 +4446,15 @@ func (x *fastReflection_StatusRequest) Has(fd protoreflect.FieldDescriptor) bool
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_PerpetualCounterRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		x.Id = uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4452,13 +4464,16 @@ func (x *fastReflection_StatusRequest) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_StatusRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		value := x.Id
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -4472,13 +4487,15 @@ func (x *fastReflection_StatusRequest) Get(descriptor protoreflect.FieldDescript
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_PerpetualCounterRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		x.Id = value.Uint()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4492,36 +4509,40 @@ func (x *fastReflection_StatusRequest) Set(fd protoreflect.FieldDescriptor, valu
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		panic(fmt.Errorf("field id of message elys.perpetual.PerpetualCounterRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_StatusRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounterRequest.id":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterRequest"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_StatusRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_PerpetualCounterRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.StatusRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.PerpetualCounterRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -4529,7 +4550,7 @@ func (x *fastReflection_StatusRequest) WhichOneof(d protoreflect.OneofDescriptor
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_StatusRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_PerpetualCounterRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -4540,7 +4561,7 @@ func (x *fastReflection_StatusRequest) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_PerpetualCounterRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -4552,7 +4573,7 @@ func (x *fastReflection_StatusRequest) SetUnknown(fields protoreflect.RawFields)
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_StatusRequest) IsValid() bool {
+func (x *fastReflection_PerpetualCounterRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -4562,9 +4583,9 @@ func (x *fastReflection_StatusRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_PerpetualCounterRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*StatusRequest)
+		x := input.Message.Interface().(*PerpetualCounterRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4576,6 +4597,9 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -4586,7 +4610,7 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*StatusRequest)
+		x := input.Message.Interface().(*PerpetualCounterRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4605,6 +4629,11 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
+			i--
+			dAtA[i] = 0x8
+		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
 		} else {
@@ -4616,7 +4645,7 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*StatusRequest)
+		x := input.Message.Interface().(*PerpetualCounterRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4648,12 +4677,31 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StatusRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounterRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounterRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				}
+				x.Id = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Id |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -4690,27 +4738,25 @@ func (x *fastReflection_StatusRequest) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_StatusResponse                    protoreflect.MessageDescriptor
-	fd_StatusResponse_open_mtp_count     protoreflect.FieldDescriptor
-	fd_StatusResponse_lifetime_mtp_count protoreflect.FieldDescriptor
+	md_PerpetualCounterResponse        protoreflect.MessageDescriptor
+	fd_PerpetualCounterResponse_result protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_perpetual_query_proto_init()
-	md_StatusResponse = File_elys_perpetual_query_proto.Messages().ByName("StatusResponse")
-	fd_StatusResponse_open_mtp_count = md_StatusResponse.Fields().ByName("open_mtp_count")
-	fd_StatusResponse_lifetime_mtp_count = md_StatusResponse.Fields().ByName("lifetime_mtp_count")
+	md_PerpetualCounterResponse = File_elys_perpetual_query_proto.Messages().ByName("PerpetualCounterResponse")
+	fd_PerpetualCounterResponse_result = md_PerpetualCounterResponse.Fields().ByName("result")
 }
 
-var _ protoreflect.Message = (*fastReflection_StatusResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_PerpetualCounterResponse)(nil)
 
-type fastReflection_StatusResponse StatusResponse
+type fastReflection_PerpetualCounterResponse PerpetualCounterResponse
 
-func (x *StatusResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_StatusResponse)(x)
+func (x *PerpetualCounterResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualCounterResponse)(x)
 }
 
-func (x *StatusResponse) slowProtoReflect() protoreflect.Message {
+func (x *PerpetualCounterResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_perpetual_query_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -4722,43 +4768,43 @@ func (x *StatusResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_StatusResponse_messageType fastReflection_StatusResponse_messageType
-var _ protoreflect.MessageType = fastReflection_StatusResponse_messageType{}
+var _fastReflection_PerpetualCounterResponse_messageType fastReflection_PerpetualCounterResponse_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualCounterResponse_messageType{}
 
-type fastReflection_StatusResponse_messageType struct{}
+type fastReflection_PerpetualCounterResponse_messageType struct{}
 
-func (x fastReflection_StatusResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_StatusResponse)(nil)
+func (x fastReflection_PerpetualCounterResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualCounterResponse)(nil)
 }
-func (x fastReflection_StatusResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_StatusResponse)
+func (x fastReflection_PerpetualCounterResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounterResponse)
 }
-func (x fastReflection_StatusResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_StatusResponse
+func (x fastReflection_PerpetualCounterResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounterResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_StatusResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_StatusResponse
+func (x *fastReflection_PerpetualCounterResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounterResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_StatusResponse) Type() protoreflect.MessageType {
-	return _fastReflection_StatusResponse_messageType
+func (x *fastReflection_PerpetualCounterResponse) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualCounterResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_StatusResponse) New() protoreflect.Message {
-	return new(fastReflection_StatusResponse)
+func (x *fastReflection_PerpetualCounterResponse) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounterResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_StatusResponse) Interface() protoreflect.ProtoMessage {
-	return (*StatusResponse)(x)
+func (x *fastReflection_PerpetualCounterResponse) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualCounterResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -4766,16 +4812,10 @@ func (x *fastReflection_StatusResponse) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_StatusResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.OpenMtpCount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.OpenMtpCount)
-		if !f(fd_StatusResponse_open_mtp_count, value) {
-			return
-		}
-	}
-	if x.LifetimeMtpCount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.LifetimeMtpCount)
-		if !f(fd_StatusResponse_lifetime_mtp_count, value) {
+func (x *fastReflection_PerpetualCounterResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Result != nil {
+		value := protoreflect.ValueOfMessage(x.Result.ProtoReflect())
+		if !f(fd_PerpetualCounterResponse_result, value) {
 			return
 		}
 	}
@@ -4792,17 +4832,15 @@ func (x *fastReflection_StatusResponse) Range(f func(protoreflect.FieldDescripto
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_StatusResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_PerpetualCounterResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		return x.OpenMtpCount != uint64(0)
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		return x.LifetimeMtpCount != uint64(0)
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		return x.Result != nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4812,17 +4850,15 @@ func (x *fastReflection_StatusResponse) Has(fd protoreflect.FieldDescriptor) boo
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_PerpetualCounterResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		x.OpenMtpCount = uint64(0)
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		x.LifetimeMtpCount = uint64(0)
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		x.Result = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4832,19 +4868,16 @@ func (x *fastReflection_StatusResponse) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_StatusResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		value := x.OpenMtpCount
-		return protoreflect.ValueOfUint64(value)
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		value := x.LifetimeMtpCount
-		return protoreflect.ValueOfUint64(value)
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		value := x.Result
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -4858,17 +4891,15 @@ func (x *fastReflection_StatusResponse) Get(descriptor protoreflect.FieldDescrip
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_PerpetualCounterResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		x.OpenMtpCount = value.Uint()
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		x.LifetimeMtpCount = value.Uint()
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		x.Result = value.Message().Interface().(*PerpetualCounter)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4882,44 +4913,44 @@ func (x *fastReflection_StatusResponse) Set(fd protoreflect.FieldDescriptor, val
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		panic(fmt.Errorf("field open_mtp_count of message elys.perpetual.StatusResponse is not mutable"))
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		panic(fmt.Errorf("field lifetime_mtp_count of message elys.perpetual.StatusResponse is not mutable"))
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		if x.Result == nil {
+			x.Result = new(PerpetualCounter)
+		}
+		return protoreflect.ValueOfMessage(x.Result.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_StatusResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_PerpetualCounterResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.StatusResponse.open_mtp_count":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.perpetual.StatusResponse.lifetime_mtp_count":
-		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.perpetual.PerpetualCounterResponse.result":
+		m := new(PerpetualCounter)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.StatusResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounterResponse"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.StatusResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounterResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_StatusResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_PerpetualCounterResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.StatusResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.PerpetualCounterResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -4927,7 +4958,7 @@ func (x *fastReflection_StatusResponse) WhichOneof(d protoreflect.OneofDescripto
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_StatusResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_PerpetualCounterResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -4938,7 +4969,7 @@ func (x *fastReflection_StatusResponse) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_StatusResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_PerpetualCounterResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -4950,7 +4981,7 @@ func (x *fastReflection_StatusResponse) SetUnknown(fields protoreflect.RawFields
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_StatusResponse) IsValid() bool {
+func (x *fastReflection_PerpetualCounterResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -4960,9 +4991,9 @@ func (x *fastReflection_StatusResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_PerpetualCounterResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*StatusResponse)
+		x := input.Message.Interface().(*PerpetualCounterResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4974,11 +5005,9 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if x.OpenMtpCount != 0 {
-			n += 1 + runtime.Sov(uint64(x.OpenMtpCount))
-		}
-		if x.LifetimeMtpCount != 0 {
-			n += 1 + runtime.Sov(uint64(x.LifetimeMtpCount))
+		if x.Result != nil {
+			l = options.Size(x.Result)
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -4990,7 +5019,7 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*StatusResponse)
+		x := input.Message.Interface().(*PerpetualCounterResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -5009,15 +5038,19 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.LifetimeMtpCount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.LifetimeMtpCount))
+		if x.Result != nil {
+			encoded, err := options.Marshal(x.Result)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x10
-		}
-		if x.OpenMtpCount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OpenMtpCount))
-			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -5030,7 +5063,7 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*StatusResponse)
+		x := input.Message.Interface().(*PerpetualCounterResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -5062,17 +5095,17 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StatusResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounterResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OpenMtpCount", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
 				}
-				x.OpenMtpCount = 0
+				var msglen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -5082,30 +5115,28 @@ func (x *fastReflection_StatusResponse) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.OpenMtpCount |= uint64(b&0x7F) << shift
+					msglen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LifetimeMtpCount", wireType)
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				x.LifetimeMtpCount = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.LifetimeMtpCount |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Result == nil {
+					x.Result = &PerpetualCounter{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Result); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -17059,14 +17090,16 @@ func (x *PositionsByPoolResponse) GetPagination() *v1beta11.PageResponse {
 	return nil
 }
 
-type StatusRequest struct {
+type PerpetualCounterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *StatusRequest) Reset() {
-	*x = StatusRequest{}
+func (x *PerpetualCounterRequest) Reset() {
+	*x = PerpetualCounterRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_perpetual_query_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -17074,28 +17107,34 @@ func (x *StatusRequest) Reset() {
 	}
 }
 
-func (x *StatusRequest) String() string {
+func (x *PerpetualCounterRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StatusRequest) ProtoMessage() {}
+func (*PerpetualCounterRequest) ProtoMessage() {}
 
-// Deprecated: Use StatusRequest.ProtoReflect.Descriptor instead.
-func (*StatusRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use PerpetualCounterRequest.ProtoReflect.Descriptor instead.
+func (*PerpetualCounterRequest) Descriptor() ([]byte, []int) {
 	return file_elys_perpetual_query_proto_rawDescGZIP(), []int{8}
 }
 
-type StatusResponse struct {
+func (x *PerpetualCounterRequest) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type PerpetualCounterResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OpenMtpCount     uint64 `protobuf:"varint,1,opt,name=open_mtp_count,json=openMtpCount,proto3" json:"open_mtp_count,omitempty"`
-	LifetimeMtpCount uint64 `protobuf:"varint,2,opt,name=lifetime_mtp_count,json=lifetimeMtpCount,proto3" json:"lifetime_mtp_count,omitempty"`
+	Result *PerpetualCounter `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (x *StatusResponse) Reset() {
-	*x = StatusResponse{}
+func (x *PerpetualCounterResponse) Reset() {
+	*x = PerpetualCounterResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_perpetual_query_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -17103,29 +17142,22 @@ func (x *StatusResponse) Reset() {
 	}
 }
 
-func (x *StatusResponse) String() string {
+func (x *PerpetualCounterResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StatusResponse) ProtoMessage() {}
+func (*PerpetualCounterResponse) ProtoMessage() {}
 
-// Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
-func (*StatusResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PerpetualCounterResponse.ProtoReflect.Descriptor instead.
+func (*PerpetualCounterResponse) Descriptor() ([]byte, []int) {
 	return file_elys_perpetual_query_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *StatusResponse) GetOpenMtpCount() uint64 {
+func (x *PerpetualCounterResponse) GetResult() *PerpetualCounter {
 	if x != nil {
-		return x.OpenMtpCount
+		return x.Result
 	}
-	return 0
-}
-
-func (x *StatusResponse) GetLifetimeMtpCount() uint64 {
-	if x != nil {
-		return x.LifetimeMtpCount
-	}
-	return 0
+	return nil
 }
 
 type PositionsForAddressRequest struct {
@@ -18328,14 +18360,15 @@ var file_elys_perpetual_query_proto_rawDesc = []byte{
 	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76,
 	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0x0f, 0x0a, 0x0d, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x22, 0x64, 0x0a, 0x0e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x6d, 0x74, 0x70, 0x5f, 0x63,
-	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6f, 0x70, 0x65, 0x6e,
-	0x4d, 0x74, 0x70, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x6c, 0x69, 0x66, 0x65,
-	0x74, 0x69, 0x6d, 0x65, 0x5f, 0x6d, 0x74, 0x70, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x6c, 0x69, 0x66, 0x65, 0x74, 0x69, 0x6d, 0x65, 0x4d, 0x74,
-	0x70, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x7e, 0x0a, 0x1a, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x29, 0x0a, 0x17, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e,
+	0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22, 0x5a, 0x0a, 0x18, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06,
+	0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x7e, 0x0a, 0x1a, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
 	0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x46,
@@ -18698,7 +18731,7 @@ var file_elys_perpetual_query_proto_rawDesc = []byte{
 	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
 	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x32, 0x9f,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x32, 0xc1,
 	0x0e, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x74, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61,
 	0x6d, 0x73, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
 	0x75, 0x61, 0x6c, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
@@ -18728,103 +18761,105 @@ var file_elys_perpetual_query_proto_rawDesc = []byte{
 	0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x73, 0x2d, 0x62, 0x79, 0x2d, 0x70, 0x6f, 0x6f, 0x6c,
 	0x2f, 0x7b, 0x61, 0x6d, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x7b,
 	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12,
-	0x77, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1d, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x53, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2b, 0x82, 0xd3, 0xe4,
-	0x93, 0x02, 0x25, 0x12, 0x23, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0xc3, 0x01, 0x0a, 0x16, 0x47, 0x65, 0x74,
-	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f,
-	0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x4a, 0x12, 0x48, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x73, 0x2d, 0x66, 0x6f, 0x72, 0x2d, 0x61, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x70,
-	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x94,
-	0x01, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12,
-	0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x2e, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x39, 0x12, 0x37, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x77, 0x68, 0x69, 0x74, 0x65,
-	0x6c, 0x69, 0x73, 0x74, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x91, 0x01, 0x0a, 0x0d, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74,
-	0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65,
-	0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49,
-	0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x69, 0x73, 0x2d, 0x77, 0x68,
-	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x84, 0x01, 0x0a, 0x04, 0x50, 0x6f,
-	0x6f, 0x6c, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65,
-	0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x31, 0x82,
-	0xd3, 0xe4, 0x93, 0x02, 0x2b, 0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x7d,
-	0x12, 0x8e, 0x01, 0x0a, 0x05, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x6f, 0x6c,
-	0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79,
-	0x7d, 0x12, 0x77, 0x0a, 0x03, 0x4d, 0x54, 0x50, 0x12, 0x1a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x2f, 0x7b, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9f, 0x01, 0x0a, 0x0e, 0x4f,
-	0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2a, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c,
+	0x98, 0x01, 0x0a, 0x10, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75,
+	0x6e, 0x74, 0x65, 0x72, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43,
+	0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x31, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2b, 0x12,
+	0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x65, 0x72, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0xc3, 0x01, 0x0a, 0x16, 0x47,
+	0x65, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x4a, 0x12, 0x48, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x73, 0x2d, 0x66, 0x6f, 0x72, 0x2d, 0x61, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f,
+	0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d,
+	0x12, 0x94, 0x01, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73,
+	0x74, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2e, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x2e, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x39, 0x12, 0x37,
 	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6f, 0x70, 0x65,
-	0x6e, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0xb1, 0x01, 0x0a,
-	0x0f, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69,
-	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x82, 0xd3, 0xe4,
-	0x93, 0x02, 0x3d, 0x12, 0x3b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x2f, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x2f, 0x7b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x7d,
-	0x42, 0xad, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72,
-	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa,
-	0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x77, 0x68, 0x69,
+	0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x91, 0x01, 0x0a, 0x0d, 0x49, 0x73, 0x57, 0x68,
+	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68, 0x69,
+	0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x2e, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x69, 0x73, 0x2d,
+	0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x84, 0x01, 0x0a, 0x04,
+	0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f,
+	0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x31, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2b, 0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x69, 0x6e, 0x64, 0x65,
+	0x78, 0x7d, 0x12, 0x8e, 0x01, 0x0a, 0x05, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x23, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12,
+	0x32, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f,
+	0x6f, 0x6c, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b,
+	0x65, 0x79, 0x7d, 0x12, 0x77, 0x0a, 0x03, 0x4d, 0x54, 0x50, 0x12, 0x1a, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x2f, 0x7b, 0x61,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9f, 0x01, 0x0a,
+	0x0e, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e,
+	0x12, 0x2c, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6f,
+	0x70, 0x65, 0x6e, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0xb1,
+	0x01, 0x0a, 0x0f, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73,
+	0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x3d, 0x12, 0x3b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2f, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x7b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69,
+	0x64, 0x7d, 0x42, 0xad, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50,
+	0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -18849,8 +18884,8 @@ var file_elys_perpetual_query_proto_goTypes = []interface{}{
 	(*PositionsResponse)(nil),            // 5: elys.perpetual.PositionsResponse
 	(*PositionsByPoolRequest)(nil),       // 6: elys.perpetual.PositionsByPoolRequest
 	(*PositionsByPoolResponse)(nil),      // 7: elys.perpetual.PositionsByPoolResponse
-	(*StatusRequest)(nil),                // 8: elys.perpetual.StatusRequest
-	(*StatusResponse)(nil),               // 9: elys.perpetual.StatusResponse
+	(*PerpetualCounterRequest)(nil),      // 8: elys.perpetual.PerpetualCounterRequest
+	(*PerpetualCounterResponse)(nil),     // 9: elys.perpetual.PerpetualCounterResponse
 	(*PositionsForAddressRequest)(nil),   // 10: elys.perpetual.PositionsForAddressRequest
 	(*PositionsForAddressResponse)(nil),  // 11: elys.perpetual.PositionsForAddressResponse
 	(*WhitelistRequest)(nil),             // 12: elys.perpetual.WhitelistRequest
@@ -18873,8 +18908,9 @@ var file_elys_perpetual_query_proto_goTypes = []interface{}{
 	(*Params)(nil),                       // 29: elys.perpetual.Params
 	(*v1beta11.PageRequest)(nil),         // 30: cosmos.base.query.v1beta1.PageRequest
 	(*v1beta11.PageResponse)(nil),        // 31: cosmos.base.query.v1beta1.PageResponse
-	(Position)(0),                        // 32: elys.perpetual.Position
-	(*PoolAsset)(nil),                    // 33: elys.perpetual.PoolAsset
+	(*PerpetualCounter)(nil),             // 32: elys.perpetual.PerpetualCounter
+	(Position)(0),                        // 33: elys.perpetual.Position
+	(*PoolAsset)(nil),                    // 34: elys.perpetual.PoolAsset
 }
 var file_elys_perpetual_query_proto_depIdxs = []int32{
 	27, // 0: elys.perpetual.MtpAndPrice.mtp:type_name -> elys.perpetual.MTP
@@ -18887,65 +18923,66 @@ var file_elys_perpetual_query_proto_depIdxs = []int32{
 	30, // 7: elys.perpetual.PositionsByPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	1,  // 8: elys.perpetual.PositionsByPoolResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
 	31, // 9: elys.perpetual.PositionsByPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	30, // 10: elys.perpetual.PositionsForAddressRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	1,  // 11: elys.perpetual.PositionsForAddressResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
-	31, // 12: elys.perpetual.PositionsForAddressResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	30, // 13: elys.perpetual.WhitelistRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	31, // 14: elys.perpetual.WhitelistResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	24, // 15: elys.perpetual.QueryGetPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
-	30, // 16: elys.perpetual.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	24, // 17: elys.perpetual.QueryAllPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
-	31, // 18: elys.perpetual.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	1,  // 19: elys.perpetual.MTPResponse.mtp:type_name -> elys.perpetual.MtpAndPrice
-	32, // 20: elys.perpetual.QueryOpenEstimationRequest.position:type_name -> elys.perpetual.Position
-	28, // 21: elys.perpetual.QueryOpenEstimationRequest.collateral:type_name -> cosmos.base.v1beta1.Coin
-	32, // 22: elys.perpetual.QueryOpenEstimationResponse.position:type_name -> elys.perpetual.Position
-	28, // 23: elys.perpetual.QueryOpenEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
-	28, // 24: elys.perpetual.QueryOpenEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
-	28, // 25: elys.perpetual.QueryOpenEstimationResponse.estimated_pnl:type_name -> cosmos.base.v1beta1.Coin
-	28, // 26: elys.perpetual.QueryOpenEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
-	28, // 27: elys.perpetual.QueryOpenEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
-	28, // 28: elys.perpetual.QueryOpenEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
-	33, // 29: elys.perpetual.PoolResponse.pool_assets_long:type_name -> elys.perpetual.PoolAsset
-	33, // 30: elys.perpetual.PoolResponse.pool_assets_short:type_name -> elys.perpetual.PoolAsset
-	28, // 31: elys.perpetual.PoolResponse.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
-	32, // 32: elys.perpetual.QueryCloseEstimationResponse.position:type_name -> elys.perpetual.Position
-	28, // 33: elys.perpetual.QueryCloseEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
-	28, // 34: elys.perpetual.QueryCloseEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
-	28, // 35: elys.perpetual.QueryCloseEstimationResponse.borrow_interest_unpaid_liability:type_name -> cosmos.base.v1beta1.Coin
-	28, // 36: elys.perpetual.QueryCloseEstimationResponse.returning_amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 37: elys.perpetual.QueryCloseEstimationResponse.paying_liabilities:type_name -> cosmos.base.v1beta1.Coin
-	28, // 38: elys.perpetual.QueryCloseEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
-	28, // 39: elys.perpetual.QueryCloseEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
-	2,  // 40: elys.perpetual.Query.Params:input_type -> elys.perpetual.ParamsRequest
-	4,  // 41: elys.perpetual.Query.GetPositions:input_type -> elys.perpetual.PositionsRequest
-	6,  // 42: elys.perpetual.Query.GetPositionsByPool:input_type -> elys.perpetual.PositionsByPoolRequest
-	8,  // 43: elys.perpetual.Query.GetStatus:input_type -> elys.perpetual.StatusRequest
-	10, // 44: elys.perpetual.Query.GetPositionsForAddress:input_type -> elys.perpetual.PositionsForAddressRequest
-	12, // 45: elys.perpetual.Query.GetWhitelist:input_type -> elys.perpetual.WhitelistRequest
-	14, // 46: elys.perpetual.Query.IsWhitelisted:input_type -> elys.perpetual.IsWhitelistedRequest
-	16, // 47: elys.perpetual.Query.Pool:input_type -> elys.perpetual.QueryGetPoolRequest
-	18, // 48: elys.perpetual.Query.Pools:input_type -> elys.perpetual.QueryAllPoolRequest
-	20, // 49: elys.perpetual.Query.MTP:input_type -> elys.perpetual.MTPRequest
-	22, // 50: elys.perpetual.Query.OpenEstimation:input_type -> elys.perpetual.QueryOpenEstimationRequest
-	25, // 51: elys.perpetual.Query.CloseEstimation:input_type -> elys.perpetual.QueryCloseEstimationRequest
-	3,  // 52: elys.perpetual.Query.Params:output_type -> elys.perpetual.ParamsResponse
-	5,  // 53: elys.perpetual.Query.GetPositions:output_type -> elys.perpetual.PositionsResponse
-	7,  // 54: elys.perpetual.Query.GetPositionsByPool:output_type -> elys.perpetual.PositionsByPoolResponse
-	9,  // 55: elys.perpetual.Query.GetStatus:output_type -> elys.perpetual.StatusResponse
-	11, // 56: elys.perpetual.Query.GetPositionsForAddress:output_type -> elys.perpetual.PositionsForAddressResponse
-	13, // 57: elys.perpetual.Query.GetWhitelist:output_type -> elys.perpetual.WhitelistResponse
-	15, // 58: elys.perpetual.Query.IsWhitelisted:output_type -> elys.perpetual.IsWhitelistedResponse
-	17, // 59: elys.perpetual.Query.Pool:output_type -> elys.perpetual.QueryGetPoolResponse
-	19, // 60: elys.perpetual.Query.Pools:output_type -> elys.perpetual.QueryAllPoolResponse
-	21, // 61: elys.perpetual.Query.MTP:output_type -> elys.perpetual.MTPResponse
-	23, // 62: elys.perpetual.Query.OpenEstimation:output_type -> elys.perpetual.QueryOpenEstimationResponse
-	26, // 63: elys.perpetual.Query.CloseEstimation:output_type -> elys.perpetual.QueryCloseEstimationResponse
-	52, // [52:64] is the sub-list for method output_type
-	40, // [40:52] is the sub-list for method input_type
-	40, // [40:40] is the sub-list for extension type_name
-	40, // [40:40] is the sub-list for extension extendee
-	0,  // [0:40] is the sub-list for field type_name
+	32, // 10: elys.perpetual.PerpetualCounterResponse.result:type_name -> elys.perpetual.PerpetualCounter
+	30, // 11: elys.perpetual.PositionsForAddressRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	1,  // 12: elys.perpetual.PositionsForAddressResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
+	31, // 13: elys.perpetual.PositionsForAddressResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	30, // 14: elys.perpetual.WhitelistRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	31, // 15: elys.perpetual.WhitelistResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	24, // 16: elys.perpetual.QueryGetPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
+	30, // 17: elys.perpetual.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	24, // 18: elys.perpetual.QueryAllPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
+	31, // 19: elys.perpetual.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	1,  // 20: elys.perpetual.MTPResponse.mtp:type_name -> elys.perpetual.MtpAndPrice
+	33, // 21: elys.perpetual.QueryOpenEstimationRequest.position:type_name -> elys.perpetual.Position
+	28, // 22: elys.perpetual.QueryOpenEstimationRequest.collateral:type_name -> cosmos.base.v1beta1.Coin
+	33, // 23: elys.perpetual.QueryOpenEstimationResponse.position:type_name -> elys.perpetual.Position
+	28, // 24: elys.perpetual.QueryOpenEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
+	28, // 25: elys.perpetual.QueryOpenEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
+	28, // 26: elys.perpetual.QueryOpenEstimationResponse.estimated_pnl:type_name -> cosmos.base.v1beta1.Coin
+	28, // 27: elys.perpetual.QueryOpenEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	28, // 28: elys.perpetual.QueryOpenEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
+	28, // 29: elys.perpetual.QueryOpenEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
+	34, // 30: elys.perpetual.PoolResponse.pool_assets_long:type_name -> elys.perpetual.PoolAsset
+	34, // 31: elys.perpetual.PoolResponse.pool_assets_short:type_name -> elys.perpetual.PoolAsset
+	28, // 32: elys.perpetual.PoolResponse.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
+	33, // 33: elys.perpetual.QueryCloseEstimationResponse.position:type_name -> elys.perpetual.Position
+	28, // 34: elys.perpetual.QueryCloseEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
+	28, // 35: elys.perpetual.QueryCloseEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
+	28, // 36: elys.perpetual.QueryCloseEstimationResponse.borrow_interest_unpaid_liability:type_name -> cosmos.base.v1beta1.Coin
+	28, // 37: elys.perpetual.QueryCloseEstimationResponse.returning_amount:type_name -> cosmos.base.v1beta1.Coin
+	28, // 38: elys.perpetual.QueryCloseEstimationResponse.paying_liabilities:type_name -> cosmos.base.v1beta1.Coin
+	28, // 39: elys.perpetual.QueryCloseEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
+	28, // 40: elys.perpetual.QueryCloseEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
+	2,  // 41: elys.perpetual.Query.Params:input_type -> elys.perpetual.ParamsRequest
+	4,  // 42: elys.perpetual.Query.GetPositions:input_type -> elys.perpetual.PositionsRequest
+	6,  // 43: elys.perpetual.Query.GetPositionsByPool:input_type -> elys.perpetual.PositionsByPoolRequest
+	8,  // 44: elys.perpetual.Query.PerpetualCounter:input_type -> elys.perpetual.PerpetualCounterRequest
+	10, // 45: elys.perpetual.Query.GetPositionsForAddress:input_type -> elys.perpetual.PositionsForAddressRequest
+	12, // 46: elys.perpetual.Query.GetWhitelist:input_type -> elys.perpetual.WhitelistRequest
+	14, // 47: elys.perpetual.Query.IsWhitelisted:input_type -> elys.perpetual.IsWhitelistedRequest
+	16, // 48: elys.perpetual.Query.Pool:input_type -> elys.perpetual.QueryGetPoolRequest
+	18, // 49: elys.perpetual.Query.Pools:input_type -> elys.perpetual.QueryAllPoolRequest
+	20, // 50: elys.perpetual.Query.MTP:input_type -> elys.perpetual.MTPRequest
+	22, // 51: elys.perpetual.Query.OpenEstimation:input_type -> elys.perpetual.QueryOpenEstimationRequest
+	25, // 52: elys.perpetual.Query.CloseEstimation:input_type -> elys.perpetual.QueryCloseEstimationRequest
+	3,  // 53: elys.perpetual.Query.Params:output_type -> elys.perpetual.ParamsResponse
+	5,  // 54: elys.perpetual.Query.GetPositions:output_type -> elys.perpetual.PositionsResponse
+	7,  // 55: elys.perpetual.Query.GetPositionsByPool:output_type -> elys.perpetual.PositionsByPoolResponse
+	9,  // 56: elys.perpetual.Query.PerpetualCounter:output_type -> elys.perpetual.PerpetualCounterResponse
+	11, // 57: elys.perpetual.Query.GetPositionsForAddress:output_type -> elys.perpetual.PositionsForAddressResponse
+	13, // 58: elys.perpetual.Query.GetWhitelist:output_type -> elys.perpetual.WhitelistResponse
+	15, // 59: elys.perpetual.Query.IsWhitelisted:output_type -> elys.perpetual.IsWhitelistedResponse
+	17, // 60: elys.perpetual.Query.Pool:output_type -> elys.perpetual.QueryGetPoolResponse
+	19, // 61: elys.perpetual.Query.Pools:output_type -> elys.perpetual.QueryAllPoolResponse
+	21, // 62: elys.perpetual.Query.MTP:output_type -> elys.perpetual.MTPResponse
+	23, // 63: elys.perpetual.Query.OpenEstimation:output_type -> elys.perpetual.QueryOpenEstimationResponse
+	26, // 64: elys.perpetual.Query.CloseEstimation:output_type -> elys.perpetual.QueryCloseEstimationResponse
+	53, // [53:65] is the sub-list for method output_type
+	41, // [41:53] is the sub-list for method input_type
+	41, // [41:41] is the sub-list for extension type_name
+	41, // [41:41] is the sub-list for extension extendee
+	0,  // [0:41] is the sub-list for field type_name
 }
 
 func init() { file_elys_perpetual_query_proto_init() }
@@ -19054,7 +19091,7 @@ func file_elys_perpetual_query_proto_init() {
 			}
 		}
 		file_elys_perpetual_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StatusRequest); i {
+			switch v := v.(*PerpetualCounterRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -19066,7 +19103,7 @@ func file_elys_perpetual_query_proto_init() {
 			}
 		}
 		file_elys_perpetual_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StatusResponse); i {
+			switch v := v.(*PerpetualCounterResponse); i {
 			case 0:
 				return &v.state
 			case 1:
