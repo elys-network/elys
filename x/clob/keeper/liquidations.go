@@ -25,7 +25,7 @@ import (
 func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket, liquidator sdk.AccAddress) (math.Int, error) {
 	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
 	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("forced_liquidation: failed to get subaccount for owner %s, market %d: %w", perpetual.Owner, market.Id, err)
+		return math.ZeroInt(), fmt.Errorf("forced_liquidation: %w", err)
 	}
 	liquidationPrice, err := k.GetLiquidationPrice(ctx, perpetual, market, subAccount)
 	if err != nil {
@@ -98,6 +98,7 @@ func (k Keeper) MarketLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 		MarketId:     market.Id,
 		BaseQuantity: perpetual.Quantity.Abs(),
 		OrderType:    types.OrderType_ORDER_TYPE_MARKET_SELL,
+		SubAccountId: perpetual.SubAccountId,
 	}
 	// Even if equity value is 0 or -ve, OnPositionClose internally handles by sending -ve amount from insurance fund to the market account
 	cacheCtx, write := ctx.CacheContext()

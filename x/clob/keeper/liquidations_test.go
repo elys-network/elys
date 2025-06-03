@@ -20,6 +20,7 @@ func newTestPerpetualForLiquidation(owner string, qty math.LegacyDec, ep math.Le
 		EntryPrice:       ep,
 		MarginAmount:     margin,
 		EntryFundingRate: math.LegacyZeroDec(), // Or set from current market rate if relevant
+		SubAccountId:     MarketId,
 	}
 }
 
@@ -62,7 +63,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			perpetualToLiquidate: newTestPerpetualForLiquidation("liquidating_owner_long", math.LegacyNewDec(10), math.LegacyNewDec(100), calcMarginForTest(math.LegacyNewDec(10), math.LegacyNewDec(100), baseImr)),
 			setupSpecific: func() {
 				// Provide enough sell liquidity to fill the entire long position
-				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(99), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec())
+				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(99), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId)
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sellOrder)
 			},
 			expectedRatio: math.LegacyOneDec(),
@@ -77,7 +78,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			perpetualToLiquidate: newTestPerpetualForLiquidation("liquidating_owner_short", math.LegacyNewDec(-10), math.LegacyNewDec(100), calcMarginForTest(math.LegacyNewDec(10), math.LegacyNewDec(100), baseImr)),
 			setupSpecific: func() {
 				// Provide enough buy liquidity
-				buyOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(101), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec())
+				buyOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(101), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId)
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buyOrder)
 			},
 			expectedRatio: math.LegacyOneDec(),
@@ -92,7 +93,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			perpetualToLiquidate: newTestPerpetualForLiquidation("liquidating_owner_long_partial", math.LegacyNewDec(10), math.LegacyNewDec(100), calcMarginForTest(math.LegacyNewDec(10), math.LegacyNewDec(100), baseImr)),
 			setupSpecific: func() {
 				// Provide less sell liquidity than needed
-				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(99), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(5), math.LegacyZeroDec()) // Only 5 available
+				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(99), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(5), math.LegacyZeroDec(), MarketId) // Only 5 available
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sellOrder)
 			},
 			expectedRatio: math.LegacyMustNewDecFromStr("0.5"), // 5 filled / 10 original
@@ -109,7 +110,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			name:                 "Short position partially liquidated due to insufficient buy liquidity",
 			perpetualToLiquidate: newTestPerpetualForLiquidation("liquidating_owner_short_partial", math.LegacyNewDec(-10), math.LegacyNewDec(100), calcMarginForTest(math.LegacyNewDec(10), math.LegacyNewDec(100), baseImr)),
 			setupSpecific: func() {
-				buyOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(101), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(7), math.LegacyZeroDec()) // Only 7 available
+				buyOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(101), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(7), math.LegacyZeroDec(), MarketId) // Only 7 available
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buyOrder)
 			},
 			expectedRatio: math.LegacyMustNewDecFromStr("0.7"), // 7 filled / 10 original
@@ -123,7 +124,7 @@ func (suite *KeeperTestSuite) TestMarketLiquidation() {
 			perpetualToLiquidate: newTestPerpetualForLiquidation("bankrupt_owner_long", math.LegacyNewDec(10), math.LegacyNewDec(100), calcMarginForTest(math.LegacyNewDec(10), math.LegacyNewDec(100), baseImr)), // Margin = 100
 			setupSpecific: func() {
 				// Order to fill against, at a very bad price for the long
-				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(1), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec())
+				sellOrder := types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(1), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId)
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sellOrder)
 				// Empty the Insurance Fund
 				err := suite.BurnAccountBalance(market.GetInsuranceAccount(), QuoteDenom)
@@ -198,6 +199,7 @@ func newTestPerpetualForForcedLiq(owner string, qty math.LegacyDec, ep math.Lega
 		EntryPrice:       ep,
 		MarginAmount:     margin,
 		EntryFundingRate: math.LegacyZeroDec(), // Assume funding settled for simplicity
+		SubAccountId:     MarketId,
 	}
 }
 
@@ -321,7 +323,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				return p
 			},
 			orderBookSetup: func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec()))
+				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
 				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(94), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
@@ -343,7 +345,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				return p
 			},
 			orderBookSetup: func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(5), math.LegacyZeroDec()))
+				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(5), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
 				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(94), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
@@ -367,7 +369,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				return p
 			},
 			orderBookSetup: func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(1), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec()))
+				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(1), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
 				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(1), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
@@ -387,7 +389,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				return p
 			},
 			orderBookSetup: func() { // Full fill
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(105), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec()))
+				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(105), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
 				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(105), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})

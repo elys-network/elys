@@ -35,15 +35,16 @@ func (o OrderKey) KeyWithoutPrefix() []byte {
 	return key
 }
 
-func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec) PerpetualOrder {
+func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec, subAccountId uint64) PerpetualOrder {
 	return PerpetualOrder{
-		MarketId:  marketId,
-		OrderType: orderType,
-		Price:     price,
-		Counter:   counter,
-		Owner:     owner.String(),
-		Amount:    amount,
-		Filled:    filled,
+		MarketId:     marketId,
+		OrderType:    orderType,
+		Price:        price,
+		Counter:      counter,
+		Owner:        owner.String(),
+		Amount:       amount,
+		Filled:       filled,
+		SubAccountId: subAccountId,
 	}
 }
 

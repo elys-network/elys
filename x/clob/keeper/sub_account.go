@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -14,7 +15,7 @@ func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, subAccountI
 
 	b := store.Get(key)
 	if b == nil {
-		return types.SubAccount{}, types.ErrSubAccountNotFound
+		return types.SubAccount{}, errors.Wrapf(types.ErrSubAccountNotFound, "owner: %s, subAccountId: %d", owner.String(), subAccountId)
 	}
 
 	var val types.SubAccount

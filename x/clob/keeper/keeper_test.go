@@ -211,7 +211,7 @@ func (suite *KeeperTestSuite) SetupSubAccounts(total uint64, balance sdk.Coins) 
 
 		subAccount := types.SubAccount{
 			Owner:       subAccountAddress.String(),
-			Id:          1,
+			Id:          MarketId,
 			TradeNounce: 0,
 		}
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, subAccount.GetTradingAccountAddress(), balance)
