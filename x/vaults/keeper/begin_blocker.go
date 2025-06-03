@@ -87,7 +87,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 					// log error
 					k.Logger().Error("error sending performance fee to protocol address", "error", err)
 				}
-
+				// TODO: track performance and management fee in state
 			}
 		}
 	}
