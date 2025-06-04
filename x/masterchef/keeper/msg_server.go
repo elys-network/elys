@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -52,9 +53,9 @@ func (k msgServer) AddExternalRewardDenom(goCtx context.Context, msg *types.MsgA
 	}
 
 	if index != -1 && !msg.Supported {
-		params.SupportedRewardDenoms = append(
-			params.SupportedRewardDenoms[:index],
-			params.SupportedRewardDenoms[index+1:]...,
+		params.SupportedRewardDenoms = slices.Delete(
+			params.SupportedRewardDenoms, index,
+			index+1,
 		)
 	}
 
