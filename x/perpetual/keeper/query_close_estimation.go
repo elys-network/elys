@@ -104,6 +104,12 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		executionPrice = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities)).Dec()
 	}
 
+	executionPriceBigDec, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, osmomath.BigDecFromDec(executionPrice), mtp.TradingAsset)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
+	}
+	executionPrice = executionPriceBigDec.Dec()
+
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
 	positionSize := mtp.Custody
