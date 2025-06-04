@@ -28,6 +28,10 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	redemptionRate := k.CalculateRedemptionRateForVault(ctx, vault.Id)
 	vaultAddress := types.NewVaultAddress(vault.Id)
 
+	if req.Amount.Denom != vault.DepositDenom {
+		return nil, types.ErrInvalidDepositDenom
+	}
+
 	depositCoin := sdk.NewCoin(vault.DepositDenom, req.Amount.Amount)
 	err := k.bk.SendCoins(ctx, depositer, vaultAddress, sdk.Coins{depositCoin})
 	if err != nil {
