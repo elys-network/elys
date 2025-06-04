@@ -91,6 +91,7 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v5/x/tokenomics/types"
 	tradeshieldmodule "github.com/elys-network/elys/v5/x/tradeshield"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v5/x/tradeshield/types"
+	vaultsmodule "github.com/elys-network/elys/v5/x/vaults"
 	vaultsmoduletypes "github.com/elys-network/elys/v5/x/vaults/types"
 )
 
@@ -176,6 +177,7 @@ func appModules(
 		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, *app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
+		vaultsmodule.NewAppModule(appCodec, app.VaultsKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -235,6 +237,7 @@ func simulationModules(
 		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, *app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
+		vaultsmodule.NewAppModule(appCodec, app.VaultsKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -288,6 +291,7 @@ func orderBeginBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
@@ -341,6 +345,7 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
@@ -396,6 +401,7 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		// wasm after ibc transfer
 		wasmTypes.ModuleName,
 		// ibc_hooks after auth keeper
