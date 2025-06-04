@@ -21,7 +21,7 @@ import (
 // BeginBlocker of amm module
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	// convert balances in taker address to elys and burn them
-	k.ProcessTakerFee(ctx)
+	//k.ProcessTakerFee(ctx)
 	return nil
 }
 

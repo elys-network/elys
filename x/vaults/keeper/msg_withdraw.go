@@ -7,6 +7,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v5/x/vaults/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
@@ -91,6 +92,15 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	if err != nil {
 		return nil, err
 	}
+
+	// Set withdrawal usd value
+	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
+	if err != nil {
+		return nil, err
+	}
+	usdValue = osmomath.BigDecFromDec(usdValue.Dec().Mul(shareRatio))
+	vault.WithdrawalUsdValue = vault.WithdrawalUsdValue.Add(usdValue.Dec())
+	k.SetVault(ctx, vault)
 
 	return &types.MsgWithdrawResponse{}, nil
 }
