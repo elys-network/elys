@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -131,4 +132,18 @@ func (k Keeper) HasPoolByDenom(ctx sdk.Context, depositDenom string) bool {
 	}
 
 	return false
+}
+
+func (k Keeper) GetMaxBondableAmount(ctx sdk.Context, asset string) math.Int {
+	allPoolIds := k.leverageLpKeeper.GetEnabledPoolIds(ctx)
+	amount := math.ZeroInt()
+	for _, poolId := range allPoolIds {
+		snapshot := k.ammKeeper.GetPoolWithAccountedBalance(ctx, poolId)
+		for _, poolAsset := range snapshot.PoolAssets {
+			if poolAsset.Token.Denom == asset {
+				amount = amount.Add(poolAsset.Token.Amount)
+			}
+		}
+	}
+	return amount
 }
