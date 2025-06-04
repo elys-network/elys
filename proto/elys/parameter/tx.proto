@@ -90,6 +90,8 @@ message MsgUpdateTakerFees {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  bool enable_taker_fee_swap = 3;
+  uint64 taker_fee_collection_interval = 4;
 }
 
 message MsgUpdateTakerFeesResponse {}
