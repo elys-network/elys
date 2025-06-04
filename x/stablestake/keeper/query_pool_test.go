@@ -73,6 +73,60 @@ func (suite *KeeperTestSuite) TestAmmPool() {
 	}
 }
 
+func (suite *KeeperTestSuite) TestMaxBondableAmount() {
+	suite.SetupTest()
+	tests := []struct {
+		name          string
+		req           *types.MaxBondableAmountRequest
+		setup         func(ctx sdk.Context, k keeper.Keeper)
+		expectedError error
+		expectedResp  *types.MaxBondableAmountResponse
+	}{
+		{
+			name: "valid request",
+			req:  &types.MaxBondableAmountRequest{PoolId: 1},
+			setup: func(ctx sdk.Context, k keeper.Keeper) {
+				k.SetPool(ctx, types.Pool{Id: 1, DepositDenom: ptypes.BaseCurrency})
+			},
+			expectedError: nil,
+			expectedResp: &types.MaxBondableAmountResponse{
+				Amount: math.NewInt(1000_000),
+			},
+		},
+		{
+			name:          "invalid request",
+			req:           nil,
+			setup:         func(ctx sdk.Context, k keeper.Keeper) {},
+			expectedError: status.Error(codes.InvalidArgument, "invalid request"),
+			expectedResp:  nil,
+		},
+		{
+			name: "pool not exists",
+			req:  &types.MaxBondableAmountRequest{PoolId: 2},
+			setup: func(ctx sdk.Context, k keeper.Keeper) {
+			},
+			expectedError: status.Errorf(codes.NotFound, "pool %d not found", 2),
+			expectedResp:  nil,
+		},
+	}
+
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			if tt.setup != nil {
+				tt.setup(suite.ctx, *suite.app.StablestakeKeeper)
+			}
+
+			resp, err := suite.app.StablestakeKeeper.MaxBondableAmount(suite.ctx, tt.req)
+			if tt.expectedError != nil {
+				require.ErrorIs(suite.T(), err, tt.expectedError)
+			} else {
+				require.NoError(suite.T(), err)
+				require.Equal(suite.T(), tt.expectedResp, resp)
+			}
+		})
+	}
+}
+
 func (suite *KeeperTestSuite) TestAllAmmPools() {
 	p := types.AmmPool{
 		Id:               1,

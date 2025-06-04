@@ -22,9 +22,9 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
-			sdk.NewCoin(ptypes.ATOM, issueAmount),
-			sdk.NewCoin(ptypes.Elys, issueAmount),
-			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+			sdk.NewCoin(ptypes.ATOM, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.Elys, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount.MulRaw(100)),
 		)
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 		if err != nil {
@@ -44,18 +44,18 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
+				Token:  sdk.NewCoin(asset1, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
+				Token:  sdk.NewCoin(asset2, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
+	suite.Require().NoError(err)
 	if createAmmPool {
-		poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-		suite.Require().NoError(err)
 		enablePoolMsg := types.MsgAddPool{
 			Authority: authtypes.NewModuleAddress("gov").String(),
 			Pool: types.AddPool{
@@ -68,13 +68,19 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		suite.Require().NoError(err)
 
 	}
+
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
-	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)
+	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
 	}

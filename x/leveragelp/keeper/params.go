@@ -67,3 +67,7 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	k.cdc.MustUnmarshal(b, &params)
 	return
 }
+
+func (k Keeper) GetEnabledPoolIds(ctx sdk.Context) (list []uint64) {
+	return k.GetParams(ctx).EnabledPools
+}
