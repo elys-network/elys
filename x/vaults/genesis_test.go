@@ -5,7 +5,7 @@ import (
 
 	keepertest "github.com/elys-network/elys/v5/testutil/keeper"
 	"github.com/elys-network/elys/v5/testutil/nullify"
-	vaults "github.com/elys-network/elys/v5/x/vaults/module"
+	vaults "github.com/elys-network/elys/v5/x/vaults"
 	"github.com/elys-network/elys/v5/x/vaults/types"
 	"github.com/stretchr/testify/require"
 )
