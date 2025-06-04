@@ -79,23 +79,29 @@ func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceInBaseUnit
 }
 
 func (mtp MTP) CheckForStopLoss(tradingAssetPrice sdkmath.LegacyDec) bool {
+	if mtp.StopLossPrice.IsNil() || mtp.StopLossPrice.IsZero() {
+		return false
+	}
 	stopLossReached := false
 	if mtp.Position == Position_LONG {
-		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.LTE(mtp.StopLossPrice)
+		stopLossReached = tradingAssetPrice.LTE(mtp.StopLossPrice)
 	}
 	if mtp.Position == Position_SHORT {
-		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.GTE(mtp.StopLossPrice)
+		stopLossReached = tradingAssetPrice.GTE(mtp.StopLossPrice)
 	}
 	return stopLossReached
 }
 
 func (mtp MTP) CheckForTakeProfit(tradingAssetPrice sdkmath.LegacyDec) bool {
+	if mtp.TakeProfitPrice.IsNil() || mtp.TakeProfitPrice.IsZero() {
+		return false
+	}
 	takeProfitReached := false
 	if mtp.Position == Position_LONG {
-		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.GTE(mtp.TakeProfitPrice)
+		takeProfitReached = tradingAssetPrice.GTE(mtp.TakeProfitPrice)
 	}
 	if mtp.Position == Position_SHORT {
-		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.LTE(mtp.TakeProfitPrice)
+		takeProfitReached = tradingAssetPrice.LTE(mtp.TakeProfitPrice)
 	}
 	return takeProfitReached
 }
