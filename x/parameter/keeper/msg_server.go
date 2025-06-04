@@ -82,6 +82,8 @@ func (k msgServer) UpdateTakerFees(goCtx context.Context, msg *types.MsgUpdateTa
 
 	params := k.GetParams(ctx)
 	params.TakerFees = msg.TakerFees
+	params.EnableTakerFeeSwap = msg.EnableTakerFeeSwap
+	params.TakerFeeCollectionInterval = msg.TakerFeeCollectionInterval
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateTakerFeesResponse{}, nil
 }
