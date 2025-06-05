@@ -93,6 +93,7 @@ type MasterchefKeeper interface {
 type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, denom string) (atypes.Entry, bool)
 	SetEntry(ctx sdk.Context, entry atypes.Entry)
+	GetUsdcDenom(ctx sdk.Context) (string, bool)
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.

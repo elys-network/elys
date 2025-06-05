@@ -24,7 +24,7 @@ func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDeno
 }
 
 func (k Keeper) AfterDeposit(ctx sdk.Context, poolId uint64, user sdk.AccAddress, amount math.Int) {
-	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+	for _, rewardDenom := range k.GetRewardDenoms(ctx) {
 		k.AfterDepositPerReward(ctx, poolId, rewardDenom, user, amount)
 	}
 }
@@ -47,36 +47,14 @@ func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDen
 }
 
 func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user sdk.AccAddress, amount math.Int) {
-	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+	for _, rewardDenom := range k.GetRewardDenoms(ctx) {
 		k.AfterWithdrawPerReward(ctx, poolId, rewardDenom, user, amount)
 	}
 }
 
-func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
-	rewardDenoms := make(map[string]bool)
-	rewardDenoms[ptypes.Eden] = true
-	rewardDenoms[k.GetBaseCurrencyDenom(ctx)] = true
-	keys := []string{k.GetBaseCurrencyDenom(ctx)}
-
-	poolInfo, found := k.GetPoolInfo(ctx, poolId)
-	if !found {
-		return []string{}
-	}
-
-	if poolInfo.EnableEdenRewards {
-		keys = append(keys, ptypes.Eden)
-	}
-
-	for _, denom := range poolInfo.ExternalRewardDenoms {
-		if rewardDenoms[denom] {
-			continue
-		}
-
-		keys = append(keys, denom)
-		rewardDenoms[denom] = true
-	}
-
-	return keys
+// TODO: Extend this to support external reward denoms
+func (k Keeper) GetRewardDenoms(ctx sdk.Context) []string {
+	return []string{ptypes.Eden, k.GetBaseCurrencyDenom(ctx)}
 }
 
 func (k Keeper) GetBaseCurrencyDenom(ctx sdk.Context) string {

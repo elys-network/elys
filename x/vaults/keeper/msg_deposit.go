@@ -96,6 +96,8 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(usdValue.Dec())
 	k.SetVault(ctx, vault)
 
+	k.AfterDeposit(ctx, vault.Id, depositer, shareAmount)
+
 	// convert input amount to USD value
 	usdValue = k.amm.CalculateUSDValue(ctx, vault.DepositDenom, req.Amount.Amount)
 	userData, found := k.GetUserData(ctx, depositer.String())

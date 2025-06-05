@@ -16,7 +16,7 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 	for _, poolId := range poolIds {
 		k.AfterWithdraw(ctx, poolId, sender, math.ZeroInt())
 
-		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+		for _, rewardDenom := range k.GetRewardDenoms(ctx) {
 			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender, poolId, rewardDenom)
 			if found && userRewardInfo.RewardPending.IsPositive() {
 				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
