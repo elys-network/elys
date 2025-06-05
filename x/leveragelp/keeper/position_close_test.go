@@ -78,6 +78,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
 	suite.Require().True(found)
 	err = suite.app.PerpetualKeeper.OnLeverageLpEnablePool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
 
 	usdcToken := sdk.NewInt64Coin("uusdc", amount*20)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})

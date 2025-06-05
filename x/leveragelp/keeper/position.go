@@ -403,7 +403,6 @@ func (k Keeper) SetAllPositions(ctx sdk.Context) {
 			k.DestroyPosition(ctx, sdk.MustAccAddressFromBech32(position.Address), position.Id)
 		}
 	}
-	return
 }
 
 func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
@@ -417,5 +416,4 @@ func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
 		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
 		k.SetPosition(ctx, &position)
 	}
-	return
 }
