@@ -29,12 +29,15 @@ service Query {
 
   // VaultValue queries the USD value of a vault.
   rpc VaultValue(QueryVaultValue) returns (QueryVaultValueResponse) {
-    option (google.api.http).get = "/elys-network/elys/vaults/vault_value/{vault_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault_value/{vault_id}";
   }
 
   // VaultPositions queries the positions of a vault.
-  rpc VaultPositions(QueryVaultPositionsRequest) returns (QueryVaultPositionsResponse) {
-    option (google.api.http).get = "/elys-network/elys/vaults/vault_positions/{vault_id}";
+  rpc VaultPositions(QueryVaultPositionsRequest)
+      returns (QueryVaultPositionsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault_positions/{vault_id}";
   }
 }
 
@@ -48,24 +51,17 @@ message QueryParamsResponse {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryVaultRequest {
-  uint64 vault_id = 1;
-}
+message QueryVaultRequest { uint64 vault_id = 1; }
 
-message QueryVaultResponse {
-  Vault vault = 1 [ (gogoproto.nullable) = false ];
-}
+message QueryVaultResponse { Vault vault = 1 [ (gogoproto.nullable) = false ]; }
 
-message QueryVaultsRequest {
-}
+message QueryVaultsRequest {}
 
 message QueryVaultsResponse {
   repeated Vault vaults = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryVaultValue {
-  uint64 vault_id = 1;
-}
+message QueryVaultValue { uint64 vault_id = 1; }
 
 message QueryVaultValueResponse {
   string usd_value = 1 [
@@ -89,9 +85,7 @@ message PositionToken {
   ];
 }
 
-message QueryVaultPositionsRequest {
-  uint64 vault_id = 1;
-}
+message QueryVaultPositionsRequest { uint64 vault_id = 1; }
 
 message QueryVaultPositionsResponse {
   repeated PositionToken positions = 1 [ (gogoproto.nullable) = false ];

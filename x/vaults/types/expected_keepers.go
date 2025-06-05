@@ -70,6 +70,7 @@ type CommitmentKeeper interface {
 	CancelVest(ctx sdk.Context, msg *commitmenttypes.MsgCancelVest) (*commitmenttypes.MsgCancelVestResponse, error)
 	ClaimVesting(ctx sdk.Context, msg *commitmenttypes.MsgClaimVesting) (*commitmenttypes.MsgClaimVestingResponse, error)
 	CommitLiquidTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdkmath.Int, lockUntil uint64) error
+	GetParams(ctx sdk.Context) (params commitmenttypes.Params)
 }
 
 type TierKeeper interface {
