@@ -664,7 +664,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
