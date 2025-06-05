@@ -314,7 +314,7 @@ func NewElysApp(
 			ParameterKeeper:       app.ParameterKeeper,
 			Cdc:                   appCodec,
 			IBCKeeper:             app.IBCKeeper,
-			StakingKeeper:         app.StakingKeeper.Keeper,
+			StakingKeeper:         app.StakingKeeper,
 			ConsumerKeeper:        app.ConsumerKeeper,
 			WasmConfig:            &wasmConfig,
 			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
