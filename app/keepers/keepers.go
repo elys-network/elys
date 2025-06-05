@@ -93,8 +93,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/v6/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	legacyoraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	legacyoracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/v6/x/perpetual/keeper"
@@ -107,6 +107,9 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -119,7 +122,7 @@ type AppKeepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    ICSStakingKeeper
+	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        *govkeeper.Keeper
@@ -150,11 +153,13 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
+	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -250,6 +255,7 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -296,17 +302,23 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.StakingKeeper = NewICSStakingKeeper(
-		stakingkeeper.NewKeeper(
-			appCodec,
-			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
-			app.AccountKeeper,
-			app.BankKeeper,
-			authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
-		),
+	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
+		appCodec,
+		app.keys[ccvconsumertypes.StoreKey],
+		app.GetSubspace(ccvconsumertypes.ModuleName),
 	)
+
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+	)
+
+	icsValidatorKeeper := NewICSValidatorKeeper(app.ConsumerKeeper)
 
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
@@ -320,7 +332,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -336,7 +348,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
@@ -373,17 +385,6 @@ func NewAppKeeper(
 		homePath,
 		bApp,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// ... other modules keepers
-	// pre-initialize ConsumerKeeper to satisfy ibckeeper.NewKeeper
-	// which would panic on nil or zero keeper
-	// ConsumerKeeper implements StakingKeeper but all function calls result in no-ops so this is safe
-	// communication over IBC is not affected by these changes
-	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
-		appCodec,
-		app.keys[ccvconsumertypes.StoreKey],
-		app.GetSubspace(ccvconsumertypes.ModuleName),
 	)
 
 	// UpgradeKeeper must be created before IBCKeeper
@@ -537,23 +538,22 @@ func NewAppKeeper(
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
-	app.OracleKeeper = *oraclekeeper.NewKeeper(
+	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	//app.OracleKeeper = oraclekeeper.NewKeeper(
-	//	appCodec,
-	//	runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
-	//	app.AccountKeeper,
-	//	app.BankKeeper,
-	//	app.DistrKeeper,
-	//	app.StakingKeeper,
-	//	distrtypes.ModuleName,
-	//	cast.ToBool(appOpts.Get("telemetry.enabled")),
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		icsValidatorKeeper,
+		distrtypes.ModuleName,
+		cast.ToBool(appOpts.Get("telemetry.enabled")),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
@@ -655,7 +655,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
@@ -694,7 +694,7 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		app.MasterchefKeeper,
 		app.CommitmentKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
@@ -860,7 +860,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	paramsKeeper.Subspace(oracletypes.ModuleName)
+	//paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
