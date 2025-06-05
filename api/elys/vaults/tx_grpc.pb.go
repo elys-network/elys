@@ -39,6 +39,8 @@ type MsgClient interface {
 	// UpdateVaultMaxAmountUsd defines a method for updating the max amount of a
 	// vault.
 	UpdateVaultMaxAmountUsd(ctx context.Context, in *MsgUpdateVaultMaxAmountUsd, opts ...grpc.CallOption) (*MsgUpdateVaultMaxAmountUsdResponse, error)
+	// ClaimRewards defines a method for claiming rewards from a vault.
+	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
 }
 
 type msgClient struct {
@@ -130,6 +132,15 @@ func (c *msgClient) UpdateVaultMaxAmountUsd(ctx context.Context, in *MsgUpdateVa
 	return out, nil
 }
 
+func (c *msgClient) ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error) {
+	out := new(MsgClaimRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/ClaimRewards", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -155,6 +166,8 @@ type MsgServer interface {
 	// UpdateVaultMaxAmountUsd defines a method for updating the max amount of a
 	// vault.
 	UpdateVaultMaxAmountUsd(context.Context, *MsgUpdateVaultMaxAmountUsd) (*MsgUpdateVaultMaxAmountUsdResponse, error)
+	// ClaimRewards defines a method for claiming rewards from a vault.
+	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -188,6 +201,9 @@ func (UnimplementedMsgServer) UpdateVaultLockupPeriod(context.Context, *MsgUpdat
 }
 func (UnimplementedMsgServer) UpdateVaultMaxAmountUsd(context.Context, *MsgUpdateVaultMaxAmountUsd) (*MsgUpdateVaultMaxAmountUsdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultMaxAmountUsd not implemented")
+}
+func (UnimplementedMsgServer) ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimRewards not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -364,6 +380,24 @@ func _Msg_UpdateVaultMaxAmountUsd_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ClaimRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimRewards)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimRewards(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/ClaimRewards",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimRewards(ctx, req.(*MsgClaimRewards))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -406,6 +440,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateVaultMaxAmountUsd",
 			Handler:    _Msg_UpdateVaultMaxAmountUsd_Handler,
+		},
+		{
+			MethodName: "ClaimRewards",
+			Handler:    _Msg_ClaimRewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

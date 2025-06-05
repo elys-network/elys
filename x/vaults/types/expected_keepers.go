@@ -71,6 +71,7 @@ type CommitmentKeeper interface {
 	ClaimVesting(ctx sdk.Context, msg *commitmenttypes.MsgClaimVesting) (*commitmenttypes.MsgClaimVestingResponse, error)
 	CommitLiquidTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdkmath.Int, lockUntil uint64) error
 	GetParams(ctx sdk.Context) (params commitmenttypes.Params)
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 }
 
 type TierKeeper interface {
