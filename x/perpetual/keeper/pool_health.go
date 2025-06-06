@@ -11,7 +11,6 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
@@ -100,10 +99,10 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 	}
 	baseCurrency := entry.Denom
 
-	totalLiabilities := osmomath.ZeroBigDec()
+	totalLiabilities := math.ZeroInt()
 	for _, poolAsset := range pool.PoolAssetsLong {
 		// for long, liabilities will always be in base currency
-		totalLiabilities = totalLiabilities.Add(poolAsset.GetBigDecLiabilities())
+		totalLiabilities = totalLiabilities.Add(poolAsset.Liabilities)
 	}
 
 	tradingAsset := ""
@@ -121,8 +120,8 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits)
+		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits).Dec().TruncateInt()
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
-	return sdk.NewCoin(baseCurrency, totalLiabilities.Dec().TruncateInt()), nil
+	return sdk.NewCoin(baseCurrency, totalLiabilities), nil
 }

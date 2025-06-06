@@ -153,15 +153,18 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	}
 
 	// Update interest first and then calculate health
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	_, _, _, err := k.UpdateFundingFee(ctx, &mtp, &pool)
+	err := k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	if err != nil {
+		return &types.MtpAndPrice{}, err
+	}
+	_, _, _, err = k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
 	}
 
-	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-	if err == nil {
-		mtp.MtpHealth = mtpHealth.Dec()
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
 	}
 	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 	if err != nil {
@@ -316,28 +319,28 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 }
 
 func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
-	liquidationPrice := osmomath.ZeroBigDec()
+	liquidationPriceDenomRatio := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
 		if !mtp.Custody.IsZero() {
-			liquidationPrice = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
+			liquidationPriceDenomRatio = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)
 		if !mtp.Liabilities.IsZero() {
-			liquidationPrice = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
+			liquidationPriceDenomRatio = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
 		}
 	}
 
-	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPrice, mtp.TradingAsset)
+	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPriceDenomRatio, mtp.TradingAsset)
 	if err != nil {
 		return math.LegacyZeroDec(), err
 	}
 
-	return liquidationPrice.Dec(), nil
+	return liquidationPrice, nil
 }
 
 func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
@@ -353,4 +356,33 @@ func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.I
 	} else {
 		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Mul(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
 	}
+}
+
+func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
+	// Ensure mtp.Custody is not zero to avoid division by zero
+	if mtp.Custody.IsZero() {
+		return types.ErrZeroCustodyAmount
+	}
+
+	// infinite for long, 0 for short
+	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
+		mtp.TakeProfitBorrowFactor = math.LegacyOneDec()
+		return nil
+	}
+
+	takeProfitPriceDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
+	if err != nil {
+		return err
+	}
+	takeProfitBorrowFactor := osmomath.OneBigDec()
+	if mtp.Position == types.Position_LONG {
+		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().Mul(takeProfitPriceDenomRatio)))
+	} else {
+		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub((mtp.GetBigDecLiabilities().Mul(takeProfitPriceDenomRatio)).Quo(mtp.GetBigDecCustody()))
+	}
+
+	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor.Dec()
+	return nil
 }

@@ -63,6 +63,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 			"asset profile not found",
 			func() *types.MsgUpdateStopLoss {
 				suite.ResetSuite()
+				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
@@ -88,7 +89,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					Price:   math.LegacyNewDec(2),
 				}
 			},
-			"price for outToken not set: uatom",
+			"asset info uatom not found",
 		},
 		{
 			"success: Stop Loss price updated",

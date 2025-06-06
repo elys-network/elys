@@ -66,6 +66,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 			"asset profile not found",
 			func() *types.MsgUpdateTakeProfitPrice {
 				suite.ResetSuite()
+				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
@@ -91,7 +92,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Price:   math.LegacyNewDec(2),
 				}
 			},
-			"price for outToken not set: uatom",
+			"asset info uatom not found",
 		},
 		{
 			"success: take profit price updated",

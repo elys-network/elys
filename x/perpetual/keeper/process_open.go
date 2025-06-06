@@ -1,14 +1,15 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmomath.BigDec, collateralAmountDec osmomath.BigDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
+func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage math.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -22,7 +23,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmom
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := collateralAmountDec.Mul(proxyLeverage).Dec().TruncateInt()
+	leveragedAmount := proxyLeverage.MulInt(msg.Collateral.Amount).TruncateInt()
 
 	// Calculate custody amount
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
@@ -85,11 +86,10 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmom
 	}
 
 	// Update the MTP health.
-	mtpHealth, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
-	mtp.MtpHealth = mtpHealth.Dec()
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
