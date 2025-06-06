@@ -163,7 +163,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	}
 
 	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
