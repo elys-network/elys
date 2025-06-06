@@ -171,13 +171,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 	mtp.TakeProfitPrice = req.TakeProfitPrice
-	err = k.GetAndSetOpenPrice(ctx, mtp)
+	err = k.GetAndSetOpenPrice(ctx, mtp, req.Leverage.IsZero())
 	if err != nil {
 		return nil, err
 	}
 	executionPrice := mtp.OpenPrice
 
-	err = mtp.UpdateMTPTakeProfitBorrowFactor()
+	err = k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}

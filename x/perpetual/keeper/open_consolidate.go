@@ -43,8 +43,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if !newMtp.Liabilities.IsZero() {
-		consolidatedOpenPrice := (existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecOpenPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecOpenPrice()))).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
-		existingMtp.OpenPrice = consolidatedOpenPrice.Dec()
+		consolidatedOpenPrice := (existingMtp.OpenPrice.MulInt(existingMtp.Custody).Add(newMtp.OpenPrice.MulInt(newMtp.Custody))).QuoInt(existingMtp.Custody.Add(newMtp.Custody))
+		existingMtp.OpenPrice = consolidatedOpenPrice
 	}
 
 	// overwrite take profit price instead of taking average of both take profit prices
@@ -57,11 +57,10 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	// no need to update pool's TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities as it was already in OpenDefineAssets
 
-	mtpHealth, err := k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
+	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
-	existingMtp.MtpHealth = mtpHealth.Dec()
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)

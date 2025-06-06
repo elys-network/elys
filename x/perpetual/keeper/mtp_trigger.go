@@ -23,7 +23,10 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 	interestFullyPaid := true
 
 	// Update interests
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
+	err = k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
+	if err != nil {
+		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, sdkerrors.Wrap(err, "error updating borrow interest unpaid liability")
+	}
 
 	// Pay funding fee
 	fundingFeeFullyPaid, fundingFeeAmt, fundingAmtDistributed, err = k.SettleFunding(ctx, mtp, pool)
@@ -67,11 +70,10 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 
 	baseCurrency := baseCurrencyEntry.Denom
 
-	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 	if err != nil {
 		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, sdkerrors.Wrap(err, "error updating mtp health")
 	}
-	mtp.MtpHealth = h.Dec()
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {

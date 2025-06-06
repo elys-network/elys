@@ -10,10 +10,6 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP,
 	existingMtp.Collateral = existingMtp.Collateral.Add(newMtp.Collateral)
 	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
 	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
-	// Set existing MTP
-	if err := k.SetMTP(ctx, existingMtp); err != nil {
-		return nil, err
-	}
 
 	// Destroy new MTP
 	k.DestroyMTP(ctx, *newMtp)
