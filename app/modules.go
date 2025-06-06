@@ -56,7 +56,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	ccvgov "github.com/cosmos/interchain-security/v6/x/ccv/democracy/governance"
+	ccvstaking "github.com/cosmos/interchain-security/v6/x/ccv/democracy/staking"
 	accountedpoolmodule "github.com/elys-network/elys/v6/x/accountedpool"
 	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
 	ammmodule "github.com/elys-network/elys/v6/x/amm"
@@ -71,7 +71,6 @@ import (
 	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
 	estakingmodule "github.com/elys-network/elys/v6/x/estaking"
 	exdistr "github.com/elys-network/elys/v6/x/estaking/modules/distribution"
-	exstaking "github.com/elys-network/elys/v6/x/estaking/modules/staking"
 	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
 	leveragelpmodule "github.com/elys-network/elys/v6/x/leveragelp"
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
@@ -138,14 +137,14 @@ func appModules(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
-		ccvgov.NewAppModule(appCodec, *app.GovKeeper, app.AccountKeeper, app.BankKeeper, IsProposalWhitelisted, app.GetSubspace(govtypes.ModuleName), IsModuleWhiteList),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsumerKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		// Important: The idea is that the rewards that needs to be sent to provider we will do so in estaking and masterchef EndBlocker by sending it to ConsumerToSendToProviderName.
 		// And the one that needs to be distributed on Consumer we will do there only by sending it to ConsumerRedistributeName. This requires that our distribution module uses ConsumerRedistributeName
 		// This needs consumer_redistribution_fraction MUST be 1 as we are totally controlling the rewards. Also, this needs  ccvconsumer EndBlocker to be run after estaking and masterchef as it will move funds from
 		// FeeCollector to ConsumerRedistributeName
 		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, ccvconsumertypes.ConsumerRedistributeName, app.GetSubspace(distrtypes.ModuleName)),
-		exstaking.NewAppModule(appCodec, app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		ccvstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -206,7 +205,7 @@ func simulationModules(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, nil, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		params.NewAppModule(app.ParamsKeeper),
