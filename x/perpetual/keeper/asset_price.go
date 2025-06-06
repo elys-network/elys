@@ -86,26 +86,26 @@ func (k Keeper) GetDenomDecimal(ctx sdk.Context, denom string) (uint64, error) {
 
 // ConvertDenomRatioPriceToUSDPrice price -  units are uusdc per uatom, uusdc per wei, usd per sat
 // gets converted to usd per atom, usd per eth and usd per btc
-func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, price osmomath.BigDec, tradingAssetDenom string) (osmomath.BigDec, error) {
+func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, denomRatioPrice osmomath.BigDec, tradingAssetDenom string) (math.LegacyDec, error) {
 	// units are uusdc per uatom, uusdc per wei, usd per sat
 	USDCInfo, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return osmomath.ZeroBigDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
+		return math.LegacyZeroDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrencyDenomPrice, err := k.GetDenomPrice(ctx, USDCInfo.Denom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 
 	// Now the units are usd per uatom, usd per wei, usd per sat
-	price = price.Mul(baseCurrencyDenomPrice) // Now the units are usd per uatom, usd per wei, usd per sat
+	denomRatioPrice = denomRatioPrice.Mul(baseCurrencyDenomPrice)
 
 	decimal, err := k.GetDenomDecimal(ctx, tradingAssetDenom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 
 	// Multiply by 10^decimal of taring asset
-	price = price.MulInt64(utils.Pow10Int64(decimal))
-	return price, nil
+	denomRatioPrice = denomRatioPrice.MulInt64(utils.Pow10Int64(decimal))
+	return denomRatioPrice.Dec(), nil
 }

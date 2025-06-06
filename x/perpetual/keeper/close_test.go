@@ -59,7 +59,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Amount:  math.NewInt(500),
 				}
 			},
-			"unable to find base currency entry",
+			"asset info uusdc not found",
 			math.NewInt(0),
 		},
 		{

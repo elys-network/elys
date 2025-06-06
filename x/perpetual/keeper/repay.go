@@ -61,11 +61,10 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		k.DestroyMTP(ctx, *mtp)
 	} else {
 		// update mtp health
-		mtpHealth, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+		mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 		if err != nil {
 			return err
 		}
-		mtp.MtpHealth = mtpHealth.Dec()
 		err = k.SetMTP(ctx, mtp)
 		if err != nil {
 			return err
