@@ -65,3 +65,7 @@ type AssetProfileKeeper interface {
 type ParameterKeeper interface {
 	GetParams(ctx sdk.Context) (params parametertypes.Params)
 }
+
+type ConsumerKeeper interface {
+	Unjail(sdkCtx context.Context, addr sdk.ConsAddress) error
+}

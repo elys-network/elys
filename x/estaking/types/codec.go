@@ -14,6 +14,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawReward{}, "estaking/MsgWithdrawReward")
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawElysStakingRewards{}, "estaking/MsgWithdrawElysStakingRewards")
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllRewards{}, "estaking/MsgWithdrawAllRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUnjailGovernor{}, "estaking/MsgUnjailGovernor")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -23,6 +24,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgWithdrawReward{},
 		&MsgWithdrawElysStakingRewards{},
 		&MsgWithdrawAllRewards{},
+		&MsgUnjailGovernor{},
 	)
 	// this line is used by starport scaffolding # 3
 

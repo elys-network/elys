@@ -4,6 +4,8 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/elys-network/elys/v6/api/elys/estaking"
 )
 
@@ -60,6 +62,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "WithdrawElysStakingRewards",
 					Use:       "withdraw-elys-staking-rewards",
 					Short:     "Withdraw rewards for delegations",
+				},
+				{
+					RpcMethod: "UnjailGovernor",
+					Use:       "unjail-governor",
+					Short:     "Unjail a jailed governor",
+					Example:   fmt.Sprintf("%s tx estaking unjail --from [governor]", version.AppName),
 				},
 				{
 					RpcMethod: "UpdateParams",
