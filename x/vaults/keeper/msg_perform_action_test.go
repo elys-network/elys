@@ -6,11 +6,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/elys-network/elys/v5/x/amm/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 
-	"github.com/elys-network/elys/v5/x/vaults/keeper"
-	vaulttypes "github.com/elys-network/elys/v5/x/vaults/types"
+	"github.com/elys-network/elys/v6/x/vaults/keeper"
+	vaulttypes "github.com/elys-network/elys/v6/x/vaults/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerPerformAction() {

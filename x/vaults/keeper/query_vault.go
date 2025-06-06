@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	tiertypes "github.com/elys-network/elys/v5/x/tier/types"
-	"github.com/elys-network/elys/v5/x/vaults/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	tiertypes "github.com/elys-network/elys/v6/x/tier/types"
+	"github.com/elys-network/elys/v6/x/vaults/types"
 )
 
 func (k Keeper) Vault(goCtx context.Context, req *types.QueryVaultRequest) (*types.QueryVaultResponse, error) {

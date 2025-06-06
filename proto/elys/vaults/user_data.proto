@@ -4,7 +4,7 @@ package elys.vaults;
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/elys-network/elys/v5/x/vaults/types";
+option go_package = "github.com/elys-network/elys/v6/x/vaults/types";
 
 // UserData is a structure that defines a user's data
 message UserData {

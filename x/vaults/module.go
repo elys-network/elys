@@ -14,8 +14,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
-	"github.com/elys-network/elys/v5/x/vaults/keeper"
-	"github.com/elys-network/elys/v5/x/vaults/types"
+	"github.com/elys-network/elys/v6/x/vaults/keeper"
+	"github.com/elys-network/elys/v6/x/vaults/types"
 )
 
 var (

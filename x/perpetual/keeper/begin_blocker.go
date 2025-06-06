@@ -7,30 +7,6 @@ import (
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
-	if ctx.BlockHeight() == 3702207 {
-		legacyPools := k.GetAllLegacyPools(ctx)
-		params := k.GetParams(ctx)
-
-		for _, legacyPool := range legacyPools {
-			newPool := types.Pool{
-				AmmPoolId:                            legacyPool.AmmPoolId,
-				BaseAssetLiabilitiesRatio:            legacyPool.Health,
-				QuoteAssetLiabilitiesRatio:           legacyPool.Health,
-				BorrowInterestRate:                   legacyPool.BorrowInterestRate,
-				PoolAssetsLong:                       legacyPool.PoolAssetsLong,
-				PoolAssetsShort:                      legacyPool.PoolAssetsShort,
-				LastHeightBorrowInterestRateComputed: legacyPool.LastHeightBorrowInterestRateComputed,
-				FundingRate:                          legacyPool.FundingRate,
-				FeesCollected:                        legacyPool.FeesCollected,
-				LeverageMax:                          params.LeverageMax,
-			}
-
-			err := k.UpdatePoolHealth(ctx, &newPool)
-			if err != nil {
-				ctx.Logger().Error(err.Error())
-			}
-		}
-	}
 
 	currentHeight := ctx.BlockHeight()
 	pools := k.GetAllPools(ctx)
