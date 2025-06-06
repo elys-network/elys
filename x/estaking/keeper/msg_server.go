@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -131,4 +130,31 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		return nil, err
 	}
 	return &types.MsgWithdrawAllRewardsResponse{Amount: rewards}, nil
+}
+
+func (k msgServer) UnjailGovernor(goCtx context.Context, msg *types.MsgUnjailGovernor) (*types.MsgUnjailGovernorResponse, error) {
+	sender, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	validator, err := k.Validator(ctx, sdk.ValAddress(sender))
+	if err != nil {
+		return nil, err
+	}
+
+	consAddr, err := validator.GetConsAddr()
+	if err != nil {
+		return nil, err
+	}
+
+	// Though we do have staking keeper in estaking keeper and we can directly call Unjail of staking keeper,
+	// calling through Consumer Keeper seems to be more appropriate as it have extra checks for PreCCV, etc.
+	if err = k.Keeper.ConsumerKeeper.Unjail(ctx, consAddr); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUnjailGovernorResponse{}, nil
 }
