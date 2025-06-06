@@ -16,10 +16,10 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	assetprofilekeeper "github.com/elys-network/elys/v5/x/assetprofile/keeper"
-	commitmentkeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
-	estakingkeeper "github.com/elys-network/elys/v5/x/estaking/keeper"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	assetprofilekeeper "github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	estakingkeeper "github.com/elys-network/elys/v6/x/estaking/keeper"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 var (

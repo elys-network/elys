@@ -6,25 +6,25 @@ import (
 	"testing"
 	"time"
 
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v5/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v5/app"
-	oraclekeeper "github.com/elys-network/elys/v5/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -357,13 +357,15 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                     math.LegacyNewDec(0),
 			Position:                      types.Position_LONG,
 			Id:                            0,
+			AmmPoolId:                     1,
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
 	}
 
-	mtpCount := perpetual.GetMTPCount(ctx)
-	require.Equal(t, mtpCount, (uint64)(2))
+	mtpCount := perpetual.GetPerpetualCounter(ctx, 1)
+	require.Equal(t, mtpCount.Counter, (uint64)(2))
+	require.Equal(t, mtpCount.TotalOpen, (uint64)(2))
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {

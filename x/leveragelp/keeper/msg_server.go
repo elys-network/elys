@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 type msgServer struct {

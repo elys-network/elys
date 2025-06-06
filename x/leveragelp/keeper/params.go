@@ -4,7 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 // SetParams set the params
@@ -66,4 +66,8 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 
 	k.cdc.MustUnmarshal(b, &params)
 	return
+}
+
+func (k Keeper) GetEnabledPoolIds(ctx sdk.Context) (list []uint64) {
+	return k.GetParams(ctx).EnabledPools
 }

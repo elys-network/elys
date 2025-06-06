@@ -8,9 +8,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -77,7 +77,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, errors.New("cannot open new position with leverage <= 1")
 		}
 		// Check if max positions are exceeded as we are opening new position, not updating old position
-		if err = k.CheckMaxOpenPositions(ctx); err != nil {
+		if err = k.CheckMaxOpenPositions(ctx, msg.PoolId); err != nil {
 			return nil, err
 		}
 	} else if msg.Leverage.Equal(math.LegacyZeroDec()) {
@@ -112,7 +112,17 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// calc and update open price
-	err = k.UpdateOpenPrice(ctx, mtp)
+	if msg.Leverage.GT(math.LegacyZeroDec()) {
+		err = k.GetAndSetOpenPrice(ctx, mtp)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		mtp.OpenPrice = math.LegacyZeroDec()
+	}
+
+	// if leverage is 0, it gets deleted in OpenConsolidateMergeMtp function
+	err = k.SetMTP(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}

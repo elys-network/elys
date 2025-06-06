@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
 

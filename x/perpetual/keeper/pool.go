@@ -6,9 +6,9 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // RemovePool removes a pool from the store
@@ -55,22 +55,6 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-// GetAllLegacyPools returns all legacy pool
-func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.PoolKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

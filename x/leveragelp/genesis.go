@@ -2,8 +2,8 @@ package leveragelp
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

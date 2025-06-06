@@ -11,7 +11,7 @@ import "elys/perpetual/pool.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v5/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -34,9 +34,9 @@ service Query {
                                    "{amm_pool_id}/{pagination.key}";
   }
 
-  // Retuns the total number of open and lifetime mtps.
-  rpc GetStatus(StatusRequest) returns (StatusResponse) {
-    option (google.api.http).get = "/elys-network/elys/perpetual/status";
+  rpc PerpetualCounter(PerpetualCounterRequest)
+      returns (PerpetualCounterResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/counter/{id}";
   }
 
   // Queries a list of mtp positions for a given address.
@@ -169,11 +169,10 @@ message PositionsByPoolResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message StatusRequest {}
+message PerpetualCounterRequest { uint64 id = 1; }
 
-message StatusResponse {
-  uint64 open_mtp_count = 1;
-  uint64 lifetime_mtp_count = 2;
+message PerpetualCounterResponse {
+  PerpetualCounter result = 1 [ (gogoproto.nullable) = false ];
 }
 
 message PositionsForAddressRequest {

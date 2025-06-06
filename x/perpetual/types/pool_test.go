@@ -10,8 +10,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
 )
 

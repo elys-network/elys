@@ -1,4 +1,4 @@
-module github.com/elys-network/elys/v5
+module github.com/elys-network/elys/v6
 
 go 1.23.9
 
@@ -25,7 +25,7 @@ require (
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.2.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.7.0
-	github.com/cosmos/interchain-security/v6 v6.3.0
+	github.com/cosmos/interchain-security/v6 v6.4.1
 	github.com/gorilla/mux v1.8.1
 	github.com/osmosis-labs/osmosis/osmomath v0.0.17
 	github.com/prometheus/client_golang v1.20.5 // indirect
@@ -257,7 +257,7 @@ require (
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/mod v0.21.0 // indirect
+	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect

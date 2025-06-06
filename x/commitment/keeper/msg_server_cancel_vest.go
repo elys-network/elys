@@ -8,8 +8,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v5/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // CancelVest cancel the user's vesting and the user reject to get vested tokens

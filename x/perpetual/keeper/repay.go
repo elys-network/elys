@@ -3,8 +3,8 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
@@ -58,10 +58,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	// This is for accounting purposes, mtp.Custody gets reduced by borrowInterestPaymentCustody and funding fee. so msg.Amount is greater than mtp.Custody here. So if it's negative it should be closed
 	if mtp.Custody.IsZero() || mtp.Custody.IsNegative() {
-		err = k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
-		if err != nil {
-			return err
-		}
+		k.DestroyMTP(ctx, *mtp)
 	} else {
 		// update mtp health
 		mtpHealth, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)

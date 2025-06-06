@@ -4,23 +4,9 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
-
-func (k Keeper) UpdateOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
-	err := k.GetAndSetOpenPrice(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
-	err = k.SetMTP(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func (k Keeper) GetAndSetOpenPrice(ctx sdk.Context, mtp *types.MTP) error {
 	openPrice := osmomath.ZeroBigDec()

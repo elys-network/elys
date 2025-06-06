@@ -8,9 +8,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	parametertypes "github.com/elys-network/elys/v5/x/parameter/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

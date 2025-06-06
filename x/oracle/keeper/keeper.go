@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 type Keeper struct {

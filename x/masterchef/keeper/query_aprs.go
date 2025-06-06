@@ -4,9 +4,9 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	commitmenttypes "github.com/elys-network/elys/v5/x/commitment/types"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

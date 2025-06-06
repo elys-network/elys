@@ -2,8 +2,8 @@ package perpetual
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/keeper"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
@@ -21,10 +21,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		}
 	}
 
-	// Set genesis MTP count
-	k.SetMTPCount(ctx, (uint64)(len(genState.MtpList)))
-	// Set genesis open MTP count
-	k.SetOpenMTPCount(ctx, (uint64)(len(genState.MtpList)))
+	for _, val := range genState.PerpetualCounter {
+		k.SetPerpetualCounter(ctx, val)
+	}
 
 	// Set all the whitelisted
 	for _, elem := range genState.AddressWhitelist {
@@ -45,6 +44,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PoolList = k.GetAllPools(ctx)
 	genesis.MtpList = k.GetAllMTPs(ctx)
+
+	genesis.PerpetualCounter = k.GetAllPerpetualCounter(ctx)
 
 	whitelist := k.GetAllWhitelistedAddress(ctx)
 	whitelistAddresses := make([]string, len(whitelist))

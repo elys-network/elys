@@ -6,13 +6,14 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 type AmmKeeper interface {
 	GetParams(ctx sdk.Context) (params ammtypes.Params)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.SnapshotPool)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -48,4 +49,9 @@ type OracleKeeper interface {
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+}
+
+// Have to do this way to avoid import cycle between types
+type LeverageLpKeeper interface {
+	GetEnabledPoolIds(ctx sdk.Context) []uint64
 }

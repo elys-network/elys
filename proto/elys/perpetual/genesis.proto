@@ -7,12 +7,14 @@ import "elys/perpetual/params.proto";
 import "elys/perpetual/pool.proto";
 import "elys/perpetual/types.proto";
 
-option go_package = "github.com/elys-network/elys/v5/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
 // GenesisState defines the perpetual module's genesis state.
 message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
   repeated Pool pool_list = 2 [ (gogoproto.nullable) = false ];
   repeated MTP mtp_list = 3 [ (gogoproto.nullable) = false ];
-  repeated string address_whitelist = 4;
+  repeated string address_whitelist = 4 [ (gogoproto.nullable) = false ];
+  repeated PerpetualCounter perpetual_counter = 5
+      [ (gogoproto.nullable) = false ];
 }

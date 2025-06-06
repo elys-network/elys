@@ -11,9 +11,9 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
-	stabletypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -403,7 +403,6 @@ func (k Keeper) SetAllPositions(ctx sdk.Context) {
 			k.DestroyPosition(ctx, sdk.MustAccAddressFromBech32(position.Address), position.Id)
 		}
 	}
-	return
 }
 
 func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
@@ -417,5 +416,4 @@ func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
 		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
 		k.SetPosition(ctx, &position)
 	}
-	return
 }

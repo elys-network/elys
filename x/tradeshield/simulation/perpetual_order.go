@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v5/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func SimulateMsgCreatePerpetualOpenOrder(

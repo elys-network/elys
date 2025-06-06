@@ -3,12 +3,12 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/v5/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 
 	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v5/testutil/sample"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

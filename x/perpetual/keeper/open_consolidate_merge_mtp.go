@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP) (*types.MTP, error) {
@@ -29,9 +29,7 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP,
 	}
 
 	// Destroy new MTP
-	if err := k.DestroyMTP(ctx, newMtp.GetAccountAddress(), newMtp.Id); err != nil {
-		return nil, err
-	}
+	k.DestroyMTP(ctx, *newMtp)
 
 	return existingMtp, nil
 }

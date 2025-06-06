@@ -3,7 +3,7 @@ package utils
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 // CreateModuleAccount creates a module account at the provided address.

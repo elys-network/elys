@@ -17,8 +17,8 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v5/x/vaults/keeper"
-	"github.com/elys-network/elys/v5/x/vaults/types"
+	"github.com/elys-network/elys/v6/x/vaults/keeper"
+	"github.com/elys-network/elys/v6/x/vaults/types"
 )
 
 func VaultsKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {

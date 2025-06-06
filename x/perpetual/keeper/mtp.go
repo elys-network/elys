@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,17 +17,15 @@ import (
 
 func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	count := k.GetMTPCount(ctx)
-	openCount := k.GetOpenMTPCount(ctx)
 
 	if mtp.Id == 0 {
+		perpetualCounter := k.GetPerpetualCounter(ctx, mtp.AmmPoolId)
 		// increment global id count
-		count++
-		mtp.Id = count
-		k.SetMTPCount(ctx, count)
+		perpetualCounter.Counter++
+		mtp.Id = perpetualCounter.Counter
 		// increment open mtp count
-		openCount++
-		k.SetOpenMTPCount(ctx, openCount)
+		perpetualCounter.TotalOpen++
+		k.SetPerpetualCounter(ctx, perpetualCounter)
 	}
 
 	// TODO Do we need validate MTP every single time we set it?
@@ -39,21 +37,15 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	return nil
 }
 
-func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) error {
-	key := types.GetMTPKey(mtpAddress, id)
+func (k Keeper) DestroyMTP(ctx sdk.Context, mtp types.MTP) {
+	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	if !store.Has(key) {
-		return types.ErrMTPDoesNotExist
-	}
 	store.Delete(key)
+
 	// decrement open mtp count
-	openCount := k.GetOpenMTPCount(ctx)
-	openCount--
-
-	// Set open MTP count
-	k.SetOpenMTPCount(ctx, openCount)
-
-	return nil
+	perpetualCounter := k.GetPerpetualCounter(ctx, mtp.AmmPoolId)
+	perpetualCounter.TotalOpen--
+	k.SetPerpetualCounter(ctx, perpetualCounter)
 }
 
 func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
@@ -248,40 +240,6 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 
 func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	return k.GetMTPData(ctx, pagination, mtpAddress, nil)
-}
-
-// Set MTP count
-func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
-}
-
-func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
-	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.MTPCountPrefix)
-	if countBz == nil {
-		count = 0
-	} else {
-		count = types.GetUint64FromBytes(countBz)
-	}
-	return count
-}
-
-// Set Open MTP count
-func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.OpenMTPCountPrefix, types.GetUint64Bytes(count))
-}
-
-func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
-	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.OpenMTPCountPrefix)
-	if countBz == nil {
-		count = 0
-	} else {
-		count = types.GetUint64FromBytes(countBz)
-	}
-	return count
 }
 
 // Delete all to pay if any

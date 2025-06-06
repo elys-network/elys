@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 // TODO: Add test for CreatePerpetualCloseOrder after enabling the code

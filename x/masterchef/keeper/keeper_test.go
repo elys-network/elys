@@ -5,12 +5,12 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	simapp "github.com/elys-network/elys/v5/app"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/masterchef/keeper"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/masterchef/keeper"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
