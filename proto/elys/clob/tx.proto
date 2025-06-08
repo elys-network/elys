@@ -11,6 +11,7 @@ import "elys/clob/order.proto";
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
+import "elys/clob/types.proto";
 
 // Msg defines the Msg service.
 service Msg {
@@ -22,13 +23,13 @@ service Msg {
 
   rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
 
-  rpc CreatePerpetualMarket(MsgCreatPerpetualMarket)
-      returns (MsgCreatPerpetualMarketResponse);
+  rpc CreatePerpetualMarket(MsgCreatPerpetualMarket) returns (MsgCreatPerpetualMarketResponse);
 
   rpc PlaceLimitOrder(MsgPlaceLimitOrder) returns (MsgPlaceLimitOrderResponse);
 
-  rpc PlaceMarketOrder(MsgPlaceMarketOrder)
-      returns (MsgPlaceMarketOrderResponse);
+  rpc PlaceMarketOrder(MsgPlaceMarketOrder) returns (MsgPlaceMarketOrderResponse);
+
+  rpc LiquidatePositions(MsgLiquidatePositions) returns (MsgLiquidatePositionsResponse);
 }
 
 message MsgUpdateParams {
@@ -160,3 +161,19 @@ message MsgPlaceMarketOrder {
 }
 
 message MsgPlaceMarketOrderResponse {}
+
+message MsgLiquidatePositions {
+  option (cosmos.msg.v1.signer) = "liquidator";
+  option (amino.name) = "clob/MsgLiquidatePositions";
+  string liquidator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated LiquidatePosition positions = 2 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgLiquidatePositionsResponse {
+  repeated cosmos.base.v1beta1.Coin liquidator_reward = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}

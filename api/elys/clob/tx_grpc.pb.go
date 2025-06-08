@@ -24,6 +24,7 @@ type MsgClient interface {
 	CreatePerpetualMarket(ctx context.Context, in *MsgCreatPerpetualMarket, opts ...grpc.CallOption) (*MsgCreatPerpetualMarketResponse, error)
 	PlaceLimitOrder(ctx context.Context, in *MsgPlaceLimitOrder, opts ...grpc.CallOption) (*MsgPlaceLimitOrderResponse, error)
 	PlaceMarketOrder(ctx context.Context, in *MsgPlaceMarketOrder, opts ...grpc.CallOption) (*MsgPlaceMarketOrderResponse, error)
+	LiquidatePositions(ctx context.Context, in *MsgLiquidatePositions, opts ...grpc.CallOption) (*MsgLiquidatePositionsResponse, error)
 }
 
 type msgClient struct {
@@ -88,6 +89,15 @@ func (c *msgClient) PlaceMarketOrder(ctx context.Context, in *MsgPlaceMarketOrde
 	return out, nil
 }
 
+func (c *msgClient) LiquidatePositions(ctx context.Context, in *MsgLiquidatePositions, opts ...grpc.CallOption) (*MsgLiquidatePositionsResponse, error) {
+	out := new(MsgLiquidatePositionsResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Msg/LiquidatePositions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -98,6 +108,7 @@ type MsgServer interface {
 	CreatePerpetualMarket(context.Context, *MsgCreatPerpetualMarket) (*MsgCreatPerpetualMarketResponse, error)
 	PlaceLimitOrder(context.Context, *MsgPlaceLimitOrder) (*MsgPlaceLimitOrderResponse, error)
 	PlaceMarketOrder(context.Context, *MsgPlaceMarketOrder) (*MsgPlaceMarketOrderResponse, error)
+	LiquidatePositions(context.Context, *MsgLiquidatePositions) (*MsgLiquidatePositionsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedMsgServer) PlaceLimitOrder(context.Context, *MsgPlaceLimitOrd
 }
 func (UnimplementedMsgServer) PlaceMarketOrder(context.Context, *MsgPlaceMarketOrder) (*MsgPlaceMarketOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PlaceMarketOrder not implemented")
+}
+func (UnimplementedMsgServer) LiquidatePositions(context.Context, *MsgLiquidatePositions) (*MsgLiquidatePositionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LiquidatePositions not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -244,6 +258,24 @@ func _Msg_PlaceMarketOrder_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_LiquidatePositions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLiquidatePositions)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LiquidatePositions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Msg/LiquidatePositions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LiquidatePositions(ctx, req.(*MsgLiquidatePositions))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,6 +306,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PlaceMarketOrder",
 			Handler:    _Msg_PlaceMarketOrder_Handler,
+		},
+		{
+			MethodName: "LiquidatePositions",
+			Handler:    _Msg_LiquidatePositions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
