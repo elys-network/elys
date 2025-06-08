@@ -2,7 +2,10 @@ package types
 
 import (
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // TODO Validate Basic
@@ -56,5 +59,13 @@ func (msg MsgPlaceMarketOrder) ValidateBasic() error {
 }
 
 func (msg MsgUpdateParams) ValidateBasic() error {
+	return nil
+}
+
+func (msg MsgLiquidatePositions) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Liquidator)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid liquidator address (%s)", err)
+	}
 	return nil
 }
