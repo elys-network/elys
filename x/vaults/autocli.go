@@ -67,6 +67,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateVaultMaxAmountUsd",
 					Skip:      true, // skipped because authority gated
 				},
+				{
+					RpcMethod: "PerformAction",
+					Skip:      true, // Skip autocli generation for this command
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

@@ -166,7 +166,7 @@ message MsgAddVaultResponse {
 }
 
 message MsgPerformAction {
-  option (cosmos.msg.v1.signer) = "performer";
+  option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "vaults/MsgPerformAction";
 
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
