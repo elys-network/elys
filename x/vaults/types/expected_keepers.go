@@ -72,6 +72,7 @@ type CommitmentKeeper interface {
 	CommitLiquidTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdkmath.Int, lockUntil uint64) error
 	GetParams(ctx sdk.Context) (params commitmenttypes.Params)
 	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 }
 
 type TierKeeper interface {

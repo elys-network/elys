@@ -17,3 +17,8 @@ func GetVaultIdModuleName(vaultId uint64) string {
 	vaultIdModuleName := ModuleName + "/account/" + vaultIdStr
 	return vaultIdModuleName
 }
+
+func NewVaultRewardCollectorAddress(vaultId uint64) sdk.AccAddress {
+	vaultIdModuleName := GetVaultIdModuleName(vaultId) + "/reward-collector"
+	return address.Module(vaultIdModuleName)
+}
