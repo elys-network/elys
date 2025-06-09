@@ -51,8 +51,6 @@ func (k Keeper) OwnerPerpetuals(goCtx context.Context, req *types.OwnerPerpetual
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	fmt.Println(list)
-
 	return &types.OwnerPerpetualsResponse{List: list, Pagination: pageRes}, nil
 }
 
