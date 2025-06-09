@@ -29,6 +29,9 @@ type MsgClient interface {
 	AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
 	PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error)
+	PerformActionJoinPool(ctx context.Context, in *MsgPerformActionJoinPool, opts ...grpc.CallOption) (*MsgPerformActionJoinPoolResponse, error)
+	PerformActionExitPool(ctx context.Context, in *MsgPerformActionExitPool, opts ...grpc.CallOption) (*MsgPerformActionExitPoolResponse, error)
+	PerformActionSwapByDenom(ctx context.Context, in *MsgPerformActionSwapByDenom, opts ...grpc.CallOption) (*MsgPerformActionSwapByDenomResponse, error)
 	// UpdateVaultCoins defines a method for updating the coins of a vault.
 	UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error)
 	// UpdateVaultFees defines a method for updating the fees of a vault.
@@ -96,6 +99,33 @@ func (c *msgClient) PerformAction(ctx context.Context, in *MsgPerformAction, opt
 	return out, nil
 }
 
+func (c *msgClient) PerformActionJoinPool(ctx context.Context, in *MsgPerformActionJoinPool, opts ...grpc.CallOption) (*MsgPerformActionJoinPoolResponse, error) {
+	out := new(MsgPerformActionJoinPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionJoinPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionExitPool(ctx context.Context, in *MsgPerformActionExitPool, opts ...grpc.CallOption) (*MsgPerformActionExitPoolResponse, error) {
+	out := new(MsgPerformActionExitPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionExitPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionSwapByDenom(ctx context.Context, in *MsgPerformActionSwapByDenom, opts ...grpc.CallOption) (*MsgPerformActionSwapByDenomResponse, error) {
+	out := new(MsgPerformActionSwapByDenomResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionSwapByDenom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error) {
 	out := new(MsgUpdateVaultCoinsResponse)
 	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultCoins", in, out, opts...)
@@ -156,6 +186,9 @@ type MsgServer interface {
 	AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
 	PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error)
+	PerformActionJoinPool(context.Context, *MsgPerformActionJoinPool) (*MsgPerformActionJoinPoolResponse, error)
+	PerformActionExitPool(context.Context, *MsgPerformActionExitPool) (*MsgPerformActionExitPoolResponse, error)
+	PerformActionSwapByDenom(context.Context, *MsgPerformActionSwapByDenom) (*MsgPerformActionSwapByDenomResponse, error)
 	// UpdateVaultCoins defines a method for updating the coins of a vault.
 	UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error)
 	// UpdateVaultFees defines a method for updating the fees of a vault.
@@ -189,6 +222,15 @@ func (UnimplementedMsgServer) AddVault(context.Context, *MsgAddVault) (*MsgAddVa
 }
 func (UnimplementedMsgServer) PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PerformAction not implemented")
+}
+func (UnimplementedMsgServer) PerformActionJoinPool(context.Context, *MsgPerformActionJoinPool) (*MsgPerformActionJoinPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionJoinPool not implemented")
+}
+func (UnimplementedMsgServer) PerformActionExitPool(context.Context, *MsgPerformActionExitPool) (*MsgPerformActionExitPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionExitPool not implemented")
+}
+func (UnimplementedMsgServer) PerformActionSwapByDenom(context.Context, *MsgPerformActionSwapByDenom) (*MsgPerformActionSwapByDenomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionSwapByDenom not implemented")
 }
 func (UnimplementedMsgServer) UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultCoins not implemented")
@@ -304,6 +346,60 @@ func _Msg_PerformAction_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).PerformAction(ctx, req.(*MsgPerformAction))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionJoinPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionJoinPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionJoinPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionJoinPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionJoinPool(ctx, req.(*MsgPerformActionJoinPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionExitPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionExitPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionExitPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionExitPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionExitPool(ctx, req.(*MsgPerformActionExitPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionSwapByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionSwapByDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionSwapByDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionSwapByDenom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionSwapByDenom(ctx, req.(*MsgPerformActionSwapByDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -424,6 +520,18 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PerformAction",
 			Handler:    _Msg_PerformAction_Handler,
+		},
+		{
+			MethodName: "PerformActionJoinPool",
+			Handler:    _Msg_PerformActionJoinPool_Handler,
+		},
+		{
+			MethodName: "PerformActionExitPool",
+			Handler:    _Msg_PerformActionExitPool_Handler,
+		},
+		{
+			MethodName: "PerformActionSwapByDenom",
+			Handler:    _Msg_PerformActionSwapByDenom_Handler,
 		},
 		{
 			MethodName: "UpdateVaultCoins",

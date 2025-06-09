@@ -30,6 +30,12 @@ service Msg {
   rpc AddVault(MsgAddVault) returns (MsgAddVaultResponse);
   // PerformAction defines a method for performing an action on a vault.
   rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
+  rpc PerformActionJoinPool(MsgPerformActionJoinPool)
+      returns (MsgPerformActionJoinPoolResponse);
+  rpc PerformActionExitPool(MsgPerformActionExitPool)
+      returns (MsgPerformActionExitPoolResponse);
+  rpc PerformActionSwapByDenom(MsgPerformActionSwapByDenom)
+      returns (MsgPerformActionSwapByDenomResponse);
   // UpdateVaultCoins defines a method for updating the coins of a vault.
   rpc UpdateVaultCoins(MsgUpdateVaultCoins)
       returns (MsgUpdateVaultCoinsResponse);
@@ -199,6 +205,73 @@ message Action {
 }
 
 message MsgPerformActionResponse { uint64 vault_id = 1; }
+
+message MsgPerformActionJoinPool {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgPerformActionJoinPool";
+  uint64 vault_id = 1;
+  uint64 pool_id = 2;
+  repeated cosmos.base.v1beta1.Coin max_amounts_in = 3
+      [ (gogoproto.nullable) = false ];
+  string share_amount_out = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgPerformActionJoinPoolResponse {
+  string share_amount_out = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgPerformActionExitPool {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgPerformActionExitPool";
+  uint64 vault_id = 1;
+  uint64 pool_id = 2;
+  repeated cosmos.base.v1beta1.Coin min_amounts_out = 3
+      [ (gogoproto.nullable) = false ];
+  string share_amount_in = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string token_out_denom = 5;
+}
+
+message MsgPerformActionExitPoolResponse {
+  repeated cosmos.base.v1beta1.Coin token_out = 1
+      [ (gogoproto.nullable) = false ];
+  string weight_balance_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgPerformActionSwapByDenom {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgPerformActionSwapByDenom";
+  uint64 vault_id = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin min_amount = 3 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin max_amount = 4 [ (gogoproto.nullable) = false ];
+  string denom_in = 5;
+  string denom_out = 6;
+}
+
+message MsgPerformActionSwapByDenomResponse {
+  cosmos.base.v1beta1.Coin out_amount = 1 [ (gogoproto.nullable) = false ];
+}
 
 message MsgUpdateVaultCoins {
   option (cosmos.msg.v1.signer) = "creator";

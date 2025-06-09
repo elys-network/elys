@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 
 	"github.com/elys-network/elys/v6/x/vaults/types"
@@ -24,7 +25,7 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 	vaultAddress := types.NewVaultAddress(req.VaultId)
 	verify := k.AllowedAction(ctx, req.Action.Action, sdk.MustBech32ifyAddressBytes("elys", vaultAddress))
 	if !verify {
-		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "vault %d does not allow this action", req.VaultId)
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "vault %d does not allow this action: %s", req.VaultId, req.Action)
 	}
 
 	switch perform_action := req.Action.Action.(type) {
@@ -99,7 +100,77 @@ func (k msgServer) PerformAction(goCtx context.Context, req *types.MsgPerformAct
 	return &types.MsgPerformActionResponse{}, nil
 }
 
+func (k msgServer) PerformActionJoinPool(goCtx context.Context, req *types.MsgPerformActionJoinPool) (*types.MsgPerformActionJoinPoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	_, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	_, sharesOut, err := k.amm.JoinPoolNoSwap(ctx, vaultAddress, req.PoolId, req.ShareAmountOut, req.MaxAmountsIn)
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionJoinPoolResponse{
+		ShareAmountOut: sharesOut,
+	}, nil
+}
+
+func (k msgServer) PerformActionExitPool(goCtx context.Context, req *types.MsgPerformActionExitPool) (*types.MsgPerformActionExitPoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	_, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	exitCoins, weightBalanceBonus, slippage, _, _, err := k.amm.ExitPool(ctx, vaultAddress, req.PoolId, req.ShareAmountIn, req.MinAmountsOut, req.TokenOutDenom, false, true)
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionExitPoolResponse{
+		TokenOut:           exitCoins,
+		WeightBalanceRatio: weightBalanceBonus.Dec(),
+		Slippage:           slippage.Dec(),
+	}, nil
+}
+
+func (k msgServer) PerformActionSwapByDenom(goCtx context.Context, req *types.MsgPerformActionSwapByDenom) (*types.MsgPerformActionSwapByDenomResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	_, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	swapByDenom := &ammtypes.MsgSwapByDenom{
+		Sender:    vaultAddress.String(),
+		Amount:    req.Amount,
+		MinAmount: req.MinAmount,
+		MaxAmount: req.MaxAmount,
+		DenomIn:   req.DenomIn,
+		DenomOut:  req.DenomOut,
+		Recipient: vaultAddress.String(),
+	}
+
+	swapCoins, err := k.amm.SwapByDenom(ctx, swapByDenom)
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionSwapByDenomResponse{
+		OutAmount: swapCoins.Amount,
+	}, nil
+}
+
 func (k Keeper) AllowedAction(ctx sdk.Context, action interface{}, vaultAddress string) bool {
+	if action == nil {
+		return false
+	}
+
 	switch perform_action := action.(type) {
 	case *types.Action_JoinPool:
 		// Verify join pool fields
@@ -202,6 +273,7 @@ func (k Keeper) AllowedAction(ctx sdk.Context, action interface{}, vaultAddress 
 			return false
 		}
 		return true
+	default:
+		return false
 	}
-	return false
 }
