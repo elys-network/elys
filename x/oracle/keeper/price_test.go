@@ -118,5 +118,5 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 	suite.Require().Equal(price, prices[0])
 }
 
-// TODO: add test GetAssetPrice
+// TODO: add test GetAssetPriceFromDenom
 // TODO: add test GetDenomPrice

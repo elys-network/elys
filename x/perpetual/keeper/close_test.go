@@ -288,7 +288,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 		// 		addr := suite.AddAccounts(1, nil)
 		// 		positionCreator := addr[0]
 		// 		_, _, ammPool := suite.SetPerpetualPool(1)
-		// 		tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+		// 		tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPriceFromDenom(suite.ctx, ptypes.ATOM)
 		// 		suite.Require().NoError(err)
 		// 		openPositionMsg := &types.MsgOpen{
 		// 			Creator:         positionCreator.String(),

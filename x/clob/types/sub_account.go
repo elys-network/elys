@@ -7,7 +7,7 @@ import (
 	"math"
 )
 
-const CrossMarginSubAccountId = math.MaxInt16 // 32767
+const CrossMarginSubAccountId = uint64(math.MaxInt16) // 32767
 
 func (s SubAccount) GetOwnerAccAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(s.Owner)

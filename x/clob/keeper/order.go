@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -9,8 +8,8 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOrder(ctx sdk.Context, marketId uint64, orderType types.OrderType, price math.LegacyDec, blockHeight uint64) (types.PerpetualOrder, bool) {
-	key := types.GetPerpetualOrderKey(marketId, orderType, price, blockHeight)
+func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (types.PerpetualOrder, bool) {
+	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.Price, orderKey.Counter)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -41,10 +40,15 @@ func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
 }
 
 func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.Price, v.Counter)
-	b := k.cdc.MustMarshal(&v)
-	store.Set(key, b)
+	if v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_BUY {
+		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+		key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.Price, v.Counter)
+		b := k.cdc.MustMarshal(&v)
+		store.Set(key, b)
+	} else {
+		panic("invalid order type")
+	}
+
 }
 
 func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.PerpetualOrderOwner) {
@@ -53,23 +57,6 @@ func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.Perpetual
 	store.Delete(key)
 
 	k.DeleteOrderOwner(ctx, perpetualOrderOwner)
-}
-
-func (k Keeper) GetOrderBookWithSide(ctx sdk.Context, marketId uint64, long bool, count uint64) []types.PerpetualOrder {
-	key := types.GetPerpetualOrderBookIteratorKey(marketId, long)
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-	var list []types.PerpetualOrder
-
-	for ; iterator.Valid() && count > 0; iterator.Next() {
-		var val types.PerpetualOrder
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-		count--
-	}
-	return list
 }
 
 func (k Keeper) GetBuyOrderIterator(ctx sdk.Context, marketId uint64) storetypes.Iterator {
@@ -83,4 +70,18 @@ func (k Keeper) GetSellOrderIterator(ctx sdk.Context, marketId uint64) storetype
 	key := types.GetPerpetualOrderBookIteratorKey(marketId, false)
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 	return storetypes.KVStorePrefixIterator(store, []byte{})
+}
+
+func (k Keeper) RequiredBalanceForOrder(ctx sdk.Context, order types.PerpetualOrder) (sdk.Coin, error) {
+	market, err := k.GetPerpetualMarket(ctx, order.MarketId)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	maxFees := k.CalculateMaxFees(market, order)
+	initialMarginRequired := order.UnfilledValue().Mul(market.InitialMarginRatio).RoundInt()
+
+	amount := maxFees.Add(initialMarginRequired)
+
+	return sdk.NewCoin(market.QuoteDenom, amount), nil
 }

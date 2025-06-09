@@ -21,7 +21,11 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	}
 
 	sellIterator := k.GetSellOrderIterator(ctx, market.Id)
-	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, msg.SubAccountId)
+	subAccountId := types.CrossMarginSubAccountId
+	if msg.IsIsolated {
+		subAccountId = msg.MarketId
+	}
+	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, subAccountId)
 	if err != nil {
 		return false, err
 	}
@@ -110,8 +114,13 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		return false, err
 	}
 
+	subAccountId := types.CrossMarginSubAccountId
+	if msg.IsIsolated {
+		subAccountId = msg.MarketId
+	}
+
 	buyIterator := k.GetBuyOrderIterator(ctx, market.Id)
-	sellerSubAccount, err = k.GetSubAccount(ctx, seller, msg.SubAccountId)
+	sellerSubAccount, err = k.GetSubAccount(ctx, seller, subAccountId)
 	if err != nil {
 		return false, err
 	}

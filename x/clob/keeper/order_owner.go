@@ -23,8 +23,8 @@ func (k Keeper) GetOrderOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountI
 	return val, nil
 }
 
-func (k Keeper) GetAllOrdersForOwner(ctx sdk.Context, owner sdk.AccAddress) []types.PerpetualOrderOwner {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetOrderOwnerAddressKey(owner))
+func (k Keeper) GetAllOrderOwnersForAccount(ctx sdk.Context, acc sdk.AccAddress) []types.PerpetualOrderOwner {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetOrderOwnerAddressKey(acc))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -40,11 +40,8 @@ func (k Keeper) GetAllOrdersForOwner(ctx sdk.Context, owner sdk.AccAddress) []ty
 	return list
 }
 
-func (k Keeper) GetAllOrdersForSubAccount(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64) []types.PerpetualOrderOwner {
-	key := types.GetOrderOwnerAddressKey(owner)
-	key = append(key, sdk.Uint64ToBigEndian(subAccountId)...)
-	key = append(key, []byte("/")...)
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
+func (k Keeper) GetAllOrderOwnersForSubAccount(ctx sdk.Context, subAccount types.SubAccount) []types.PerpetualOrderOwner {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetOrderSubAccountKey(subAccount.GetOwnerAccAddress(), subAccount.Id))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

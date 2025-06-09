@@ -24,7 +24,7 @@ func (o OrderKey) KeyWithoutPrefix() []byte {
 	counterBytes := sdk.Uint64ToBigEndian(o.Counter)
 	if IsBuy(o.OrderType) {
 		orderTypeByte = TrueByte
-		counterBytes = sdk.Uint64ToBigEndian(math.MaxUint64 - o.Counter) // Subtracting it so that in buy order book, it's sorted by height as Reverse iterator will be used
+		counterBytes = sdk.Uint64ToBigEndian(math.MaxUint64 - o.Counter) // Subtracting it so that in buy order book, it's sorted by counter (if 2 orders have same price) as Reverse iterator will be used
 	}
 	key = append(key, orderTypeByte)
 	key = append(key, []byte("/")...)
@@ -63,4 +63,8 @@ func IsBuy(orderType OrderType) bool {
 
 func (order PerpetualOrder) GetOwnerAccAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(order.Owner)
+}
+
+func (order PerpetualOrder) UnfilledValue() sdkmath.LegacyDec {
+	return order.Price.Mul(order.Amount.Sub(order.Filled))
 }

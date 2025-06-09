@@ -5,6 +5,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
 )
@@ -21,9 +22,31 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, err
 	}
 
-	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), market.Id)
+	subAccountId := types.CrossMarginSubAccountId
+	if msg.IsIsolated {
+		subAccountId = market.Id
+	}
+	crossMarginAccount := types.SubAccount{
+		Owner:       msg.Creator,
+		Id:          types.CrossMarginSubAccountId,
+		TradeNounce: 0,
+	}
+	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), subAccountId)
 	if err != nil {
-		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
+		if errors.Is(err, types.ErrSubAccountNotFound) {
+			subAccount = types.SubAccount{
+				Owner:       msg.Creator,
+				Id:          subAccountId,
+				TradeNounce: 0,
+			}
+		} else {
+			return nil, err
+		}
+	}
+
+	crossMarginRequiredMinimumBalance, err := k.RequiredMinimumBalance(ctx, crossMarginAccount)
+	if err != nil {
+		return nil, err
 	}
 
 	counter := k.GetAndIncrementOrderCounter(ctx, market.Id)
@@ -36,6 +59,30 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		SubAccountId: subAccount.Id,
 		Amount:       msg.BaseQuantity,
 	}
+
+	orderRequiredBalance, err := k.RequiredBalanceForOrder(ctx, order)
+	if err != nil {
+		return nil, err
+	}
+
+	// freeCollateral = currentBalance - requiredBalance
+	freeCollateral := k.GetSubAccountBalanceOf(ctx, crossMarginAccount, market.QuoteDenom).Amount.Sub(crossMarginRequiredMinimumBalance.AmountOf(market.QuoteDenom))
+
+	// Check the minimum balance in the subaccount required to execute the position
+	// crossMarginBalance >= crossMarginMinimumBalance + orderRequiredBalance
+	if !freeCollateral.GTE(orderRequiredBalance.Amount) {
+		return nil, fmt.Errorf("insufficient balance, deposit more. free: %s, required minimum: %s, required by order: %s", freeCollateral.String(), crossMarginRequiredMinimumBalance.AmountOf(market.QuoteDenom).String(), orderRequiredBalance.String())
+	}
+
+	if subAccountId != types.CrossMarginSubAccountId {
+		err = k.TransferFromSubAccountToSubAccount(ctx, crossMarginAccount, subAccount, sdk.NewCoins(orderRequiredBalance))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	subAccount.TradeNounce++
+	k.SetSubAccount(ctx, subAccount)
 
 	k.SetPerpetualOrder(ctx, order)
 	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
@@ -58,10 +105,49 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		return nil, err
 	}
 
-	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.SubAccountId)
-	if err != nil {
-		return nil, errorsmod.Wrapf(err, "subaccount id: %d", market.Id)
+	subAccountId := types.CrossMarginSubAccountId
+	if msg.IsIsolated {
+		subAccountId = market.Id
 	}
+	crossMarginAccount := types.SubAccount{
+		Owner:       msg.Creator,
+		Id:          types.CrossMarginSubAccountId,
+		TradeNounce: 0,
+	}
+	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), subAccountId)
+	if err != nil {
+		if errors.Is(err, types.ErrSubAccountNotFound) {
+			subAccount = types.SubAccount{
+				Owner:       msg.Creator,
+				Id:          subAccountId,
+				TradeNounce: 0,
+			}
+		} else {
+			return nil, err
+		}
+	}
+
+	crossMarginRequiredMinimumBalance, err := k.RequiredMinimumBalance(ctx, crossMarginAccount)
+	if err != nil {
+		return nil, err
+	}
+
+	crossMarginBalance := k.GetSubAccountBalanceOf(ctx, crossMarginAccount, market.QuoteDenom)
+
+	freeCollateral := crossMarginBalance.Amount.Sub(crossMarginRequiredMinimumBalance.AmountOf(market.QuoteDenom))
+	if !freeCollateral.IsPositive() {
+		return nil, fmt.Errorf("insufficient balance, balance: %s, required to maintain: %s", crossMarginBalance.String(), crossMarginRequiredMinimumBalance.String())
+	}
+
+	if subAccountId != types.CrossMarginSubAccountId {
+		err = k.TransferFromSubAccountToSubAccount(ctx, crossMarginAccount, subAccount, sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, freeCollateral)))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	subAccount.TradeNounce++
+	k.SetSubAccount(ctx, subAccount)
 
 	fullyFilled := false
 	switch msg.OrderType {

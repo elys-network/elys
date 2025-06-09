@@ -53,7 +53,7 @@ func (k Keeper) DeletePerpetualOwner(ctx sdk.Context, v types.PerpetualOwner) {
 }
 
 // CheckAndGetPerpetualOwner Since we follow a net accounting model,
-// for each market a subaccount will always have only one position
+// for each market, a subaccount will always have only one position
 // The total number of perpetuals per subaccount is limited by total number of markets
 func (k Keeper) CheckAndGetPerpetualOwner(ctx sdk.Context, subAccount types.SubAccount, marketId uint64) (types.PerpetualOwner, bool) {
 	prefixKey := types.GetPerpetualOwnerAddressKey(subAccount.GetOwnerAccAddress())
@@ -74,4 +74,21 @@ func (k Keeper) CheckAndGetPerpetualOwner(ctx sdk.Context, subAccount types.SubA
 	}
 
 	return types.PerpetualOwner{}, false
+}
+
+func (k Keeper) GetAllSubAccountPerpetualOwners(ctx sdk.Context, subAccount types.SubAccount) []types.PerpetualOwner {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetPerpetualOwnerSubAccountKey(subAccount.GetOwnerAccAddress(), subAccount.Id))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	var list []types.PerpetualOwner
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.PerpetualOwner
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return list
 }

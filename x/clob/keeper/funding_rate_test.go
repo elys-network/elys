@@ -213,7 +213,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		},
 		{
 			name:           "Error on zero index price",
-			expectedErrMsg: "asset price",    // Expect error from GetAssetPrice containing this
+			expectedErrMsg: "asset price",    // Expect error from GetAssetPriceFromDenom containing this
 			result:         math.LegacyDec{}, // Result is irrelevant on error
 			pre: func() {
 				// Set oracle price to zero
@@ -223,7 +223,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		},
 		{
 			name:           "Error on negative index price",
-			expectedErrMsg: "asset price",    // Expect error from GetAssetPrice containing this
+			expectedErrMsg: "asset price",    // Expect error from GetAssetPriceFromDenom containing this
 			result:         math.LegacyDec{}, // Result is irrelevant on error
 			pre: func() {
 				// Set oracle price to negative

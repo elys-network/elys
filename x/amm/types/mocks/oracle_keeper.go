@@ -86,7 +86,7 @@ func (_m *OracleKeeper) GetAssetPrice(ctx types.Context, asset string) (osmomath
 	ret := _m.Called(ctx, asset)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetAssetPrice")
+		panic("no return value specified for GetAssetPriceFromDenom")
 	}
 
 	var r0 osmomath.BigDec
@@ -109,7 +109,7 @@ func (_m *OracleKeeper) GetAssetPrice(ctx types.Context, asset string) (osmomath
 	return r0, r1
 }
 
-// OracleKeeper_GetAssetPrice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssetPrice'
+// OracleKeeper_GetAssetPrice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssetPriceFromDenom'
 type OracleKeeper_GetAssetPrice_Call struct {
 	*mock.Call
 }
@@ -118,7 +118,7 @@ type OracleKeeper_GetAssetPrice_Call struct {
 //   - ctx types.Context
 //   - asset string
 func (_e *OracleKeeper_Expecter) GetAssetPrice(ctx interface{}, asset interface{}) *OracleKeeper_GetAssetPrice_Call {
-	return &OracleKeeper_GetAssetPrice_Call{Call: _e.mock.On("GetAssetPrice", ctx, asset)}
+	return &OracleKeeper_GetAssetPrice_Call{Call: _e.mock.On("GetAssetPriceFromDenom", ctx, asset)}
 }
 
 func (_c *OracleKeeper_GetAssetPrice_Call) Run(run func(ctx types.Context, asset string)) *OracleKeeper_GetAssetPrice_Call {

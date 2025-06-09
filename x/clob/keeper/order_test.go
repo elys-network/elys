@@ -1,0 +1,118 @@
+package keeper_test
+
+import (
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/elys-network/elys/x/clob/types"
+)
+
+func (suite *KeeperTestSuite) TestBuyOrderBook() {
+	order1 := types.PerpetualOrder{
+		MarketId:     MarketId,
+		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_BUY,
+		Price:        math.LegacyMustNewDecFromStr("1.0"),
+		Counter:      1,
+		Owner:        authtypes.NewModuleAddress("1").String(),
+		SubAccountId: MarketId,
+		Amount:       math.LegacyNewDec(100),
+		Filled:       math.LegacyZeroDec(),
+	}
+
+	order2 := order1
+	order2.Price = math.LegacyMustNewDecFromStr("1.5")
+	order2.Counter = 2
+	order2.Owner = authtypes.NewModuleAddress("2").String()
+	order2.Amount = math.LegacyNewDec(50)
+
+	order3 := order1
+	order3.Price = math.LegacyMustNewDecFromStr("1.5")
+	order3.Counter = 3
+	order3.Owner = authtypes.NewModuleAddress("3").String()
+	order3.Amount = math.LegacyNewDec(75)
+
+	order4 := order1
+	order4.Price = math.LegacyMustNewDecFromStr("2")
+	order4.Counter = 4
+	order4.Owner = authtypes.NewModuleAddress("4").String()
+	order4.Amount = math.LegacyNewDec(90)
+
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order2)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order4)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order1)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order3)
+
+	expectedList := []types.PerpetualOrder{order4, order2, order3, order1}
+
+	iterator := suite.app.ClobKeeper.GetBuyOrderIterator(suite.ctx, MarketId)
+	defer iterator.Close()
+
+	index := 0
+	for ; iterator.Valid(); iterator.Next() {
+		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].Price, expectedList[index].Counter)
+
+		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
+		prefix = append(prefix, types.TrueByte)
+		prefix = append(prefix, []byte("/")...)
+		iteratorKeyWithMarketId := append(prefix, iterator.Key()...)
+
+		suite.Equal(expectedOrderKey.KeyWithoutPrefix(), iteratorKeyWithMarketId)
+
+		index++
+	}
+}
+
+func (suite *KeeperTestSuite) TestSellOrderBook() {
+	order1 := types.PerpetualOrder{
+		MarketId:     MarketId,
+		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_SELL,
+		Price:        math.LegacyMustNewDecFromStr("1.0"),
+		Counter:      1,
+		Owner:        authtypes.NewModuleAddress("1").String(),
+		SubAccountId: MarketId,
+		Amount:       math.LegacyNewDec(100),
+		Filled:       math.LegacyZeroDec(),
+	}
+
+	order2 := order1
+	order2.Price = math.LegacyMustNewDecFromStr("1.5")
+	order2.Counter = 2
+	order2.Owner = authtypes.NewModuleAddress("2").String()
+	order2.Amount = math.LegacyNewDec(50)
+
+	order3 := order1
+	order3.Price = math.LegacyMustNewDecFromStr("1.5")
+	order3.Counter = 3
+	order3.Owner = authtypes.NewModuleAddress("3").String()
+	order3.Amount = math.LegacyNewDec(75)
+
+	order4 := order1
+	order4.Price = math.LegacyMustNewDecFromStr("2")
+	order4.Counter = 4
+	order4.Owner = authtypes.NewModuleAddress("4").String()
+	order4.Amount = math.LegacyNewDec(90)
+
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order2)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order4)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order1)
+	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order3)
+
+	expectedList := []types.PerpetualOrder{order1, order2, order3, order4}
+
+	iterator := suite.app.ClobKeeper.GetSellOrderIterator(suite.ctx, MarketId)
+	defer iterator.Close()
+
+	index := 0
+	for ; iterator.Valid(); iterator.Next() {
+		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].Price, expectedList[index].Counter)
+
+		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
+		prefix = append(prefix, types.FalseByte)
+		prefix = append(prefix, []byte("/")...)
+		iteratorKeyWithMarketId := append(prefix, iterator.Key()...)
+
+		suite.Equal(expectedOrderKey.KeyWithoutPrefix(), iteratorKeyWithMarketId)
+
+		index++
+	}
+}

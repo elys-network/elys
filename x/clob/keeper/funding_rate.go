@@ -55,7 +55,7 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRate {
 // fundingRate = clamp(premium / indexPrice, -cap, +cap)
 func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket) error {
 	twapMarkPrice := k.GetCurrentTwapPrice(ctx, market.Id)
-	indexPrice, err := k.GetAssetPrice(ctx, market.BaseDenom)
+	indexPrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
 	if err != nil {
 		return err
 	}
