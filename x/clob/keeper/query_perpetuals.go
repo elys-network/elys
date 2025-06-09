@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/store/prefix"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -49,8 +48,6 @@ func (k Keeper) OwnerPerpetuals(goCtx context.Context, req *types.OwnerPerpetual
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-
-	fmt.Println(list)
 
 	return &types.OwnerPerpetualsResponse{List: list, Pagination: pageRes}, nil
 }

@@ -116,3 +116,30 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 		index++
 	}
 }
+
+func (suite *KeeperTestSuite) TestRequiredBalanceForOrder() {
+	suite.SetupTest()
+	suite.CreateMarketWithFees(BaseDenom)
+	order1 := types.PerpetualOrder{
+		MarketId:     MarketId,
+		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_BUY,
+		Price:        math.LegacyMustNewDecFromStr("10.5"),
+		Counter:      1,
+		Owner:        authtypes.NewModuleAddress("1").String(),
+		SubAccountId: MarketId,
+		Amount:       math.LegacyNewDec(100),
+		Filled:       math.LegacyZeroDec(),
+	}
+
+	market, err := suite.app.ClobKeeper.GetPerpetualMarket(suite.ctx, MarketId)
+	suite.Require().NoError(err)
+
+	got, err := suite.app.ClobKeeper.RequiredBalanceForOrder(suite.ctx, order1)
+	suite.Require().NoError(err)
+
+	value := order1.Price.Mul(order1.Amount)
+	// Assuming taker fees >= maker fees
+	fees := math.LegacyMaxDec(market.TakerFeeRate, market.MakerFeeRate).Mul(value)
+	margin := market.InitialMarginRatio.Mul(value)
+	suite.Require().Equal(got, sdk.NewCoin(market.QuoteDenom, fees.Add(margin).RoundInt()))
+}
