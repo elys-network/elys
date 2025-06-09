@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -14,28 +15,80 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestMsgServerPerformActionJoinPool() {
-	// Create the vault first with the correct authority
+	// Create test accounts
+	manager := sdk.AccAddress([]byte("manager"))
+	depositor := sdk.AccAddress([]byte("depositor"))
+
+	// Setup initial balances for depositor
+	coinsToSend := sdk.Coins{sdk.NewCoin("uusdc", sdkmath.NewInt(1000000))}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, "mint", coinsToSend)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", depositor, coinsToSend)
+	suite.Require().NoError(err)
+
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, coinsToSend)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, types.ModuleName, manager, coinsToSend)
+	suite.Require().NoError(err)
+
+	coinsToSend = sdk.Coins{sdk.NewCoin("uatom", sdkmath.NewInt(1000000))}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, "mint", coinsToSend)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", manager, coinsToSend)
+	suite.Require().NoError(err)
+
+	// Step 1: Add a new vault
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := vaulttypes.MsgAddVault{
 		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:  "ustake",
-		MaxAmountUsd:  math.LegacyMustNewDecFromStr("1000000"),
-		AllowedCoins:  []string{"ustake", "uusdc", "uelys"},
+		DepositDenom:  "uusdc",
+		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
+		RewardCoins:   []string{"uelys"},
 		BenchmarkCoin: "uatom",
-		RewardCoins:   []string{},
+		Manager:       manager.String(),
 	}
-	_, err := msgServer.AddVault(suite.ctx, &addVault)
+	_, err = msgServer.AddVault(suite.ctx, &addVault)
 	suite.Require().NoError(err)
 
-	// Create test accounts
-	manager := sdk.AccAddress("manager")
-	invalidManager := sdk.AccAddress("invalid")
-
-	// Update vault with manager
+	// Verify vault was created correctly
 	vault, found := suite.app.VaultsKeeper.GetVault(suite.ctx, 1)
 	suite.Require().True(found)
-	vault.Manager = manager.String()
-	suite.app.VaultsKeeper.SetVault(suite.ctx, vault)
+	suite.Require().Equal("uusdc", vault.DepositDenom)
+	suite.Require().Equal(manager.String(), vault.Manager)
+
+	// Step 2: Deposit to vault
+	depositMsg := vaulttypes.MsgDeposit{
+		VaultId:   1,
+		Depositor: depositor.String(),
+		Amount:    sdk.NewCoin("uusdc", sdkmath.NewInt(100000)),
+	}
+	_, err = msgServer.Deposit(suite.ctx, &depositMsg)
+	suite.Require().NoError(err)
+
+	// Verify deposit was successful
+	vaultAddress := vaulttypes.NewVaultAddress(1)
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, vaultAddress, "uusdc")
+	suite.Require().Equal(sdkmath.NewInt(100000), balance.Amount)
+
+	// Verify depositor received share tokens
+	shareDenom := vaulttypes.GetShareDenomForVault(1)
+	commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, depositor)
+	committedAmount := commitments.GetCommittedAmountForDenom(shareDenom)
+	suite.Require().True(committedAmount.GT(sdkmath.ZeroInt()), "depositor should have received share tokens")
+
+	// Step 3: Create a pool for the vault to join
+	suite.CreateNewAmmPool(
+		manager,
+		false,                                    // useOracle
+		sdkmath.LegacyMustNewDecFromStr("0.003"), // swapFee
+		sdkmath.LegacyMustNewDecFromStr("0.003"), // exitFee
+		"uatom",                                  // asset2
+		sdkmath.NewInt(1000),                     // baseTokenAmount
+		sdkmath.NewInt(1000),                     // assetAmount
+	)
+
+	invalidManager := sdk.AccAddress([]byte("invalid"))
 
 	for _, tc := range []struct {
 		desc        string
@@ -165,7 +218,7 @@ func (suite *KeeperTestSuite) TestMsgServerPerformActionJoinPool() {
 				if tc.desc == "successful join pool" {
 					vaultAddress := vaulttypes.NewVaultAddress(1)
 					balance := suite.app.BankKeeper.GetBalance(suite.ctx, vaultAddress, "uusdc")
-					suite.Require().True(balance.Amount.LT(math.NewInt(1000)), "vault balance should have decreased")
+					suite.Require().True(balance.Amount.LT(math.NewInt(100000)), "vault balance should have decreased")
 				}
 			}
 		})

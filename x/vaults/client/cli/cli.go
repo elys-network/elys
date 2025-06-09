@@ -15,5 +15,10 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdPerformActionJoinPool())
+	cmd.AddCommand(CmdPerformActionExitPool())
+	cmd.AddCommand(CmdPerformActionSwapByDenom())
+	// this line is used by ignite scaffolding # 1
+
 	return cmd
 }

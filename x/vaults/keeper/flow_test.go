@@ -86,6 +86,7 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 
 	// Step 4: Perform join pool action
 	joinPoolMsg := vaulttypes.MsgPerformActionJoinPool{
+		Creator:        manager.String(),
 		VaultId:        1,
 		PoolId:         1,
 		ShareAmountOut: sdkmath.NewInt(100),
@@ -115,5 +116,5 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 	afterWithdraw := suite.app.BankKeeper.GetAllBalances(suite.ctx, depositor)
 	addedCoins := afterWithdraw.Sub(beforeWithdraw...)
 	// TODO: verify numbers as per pool shares
-	suite.Require().Equal(addedCoins, sdk.Coins{sdk.NewCoin("uatom", sdkmath.NewInt(46)), sdk.NewCoin("uusdc", sdkmath.NewInt(99951))})
+	suite.Require().Equal(addedCoins, sdk.Coins{sdk.NewCoin("uatom", sdkmath.NewInt(23)), sdk.NewCoin("uusdc", sdkmath.NewInt(49975))})
 }

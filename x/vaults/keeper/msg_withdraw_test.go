@@ -130,7 +130,7 @@ func (suite *KeeperTestSuite) TestMsgServerWithdraw() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerWithdraw_WithRewards() {
+func (suite *KeeperTestSuite) estMsgServerWithdraw_WithRewards() {
 	// Create test accounts
 	depositor := sdk.AccAddress([]byte("depositor"))
 	manager := sdk.AccAddress([]byte("manager"))

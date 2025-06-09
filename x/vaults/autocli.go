@@ -68,7 +68,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, // skipped because authority gated
 				},
 				{
-					RpcMethod: "PerformAction",
+					RpcMethod: "PerformActionJoinPool",
+					Skip:      true, // Skip autocli generation for this command
+				},
+				{
+					RpcMethod: "PerformActionExitPool",
+					Skip:      true, // Skip autocli generation for this command
+				},
+				{
+					RpcMethod: "PerformActionSwapByDenom",
 					Skip:      true, // Skip autocli generation for this command
 				},
 				// this line is used by ignite scaffolding # autocli/tx
