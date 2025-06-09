@@ -57,6 +57,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query perpetual order",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "sub_account_id"}},
 				},
+				{
+					RpcMethod: "AllPerpetualsWithLiquidationPrice",
+					Use:       "all-perpetuals-with-liquidation-price",
+					Short:     "Query all perpetuals with liquidation price",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
