@@ -10,6 +10,7 @@ import "elys/clob/market.proto";
 import "elys/clob/subaccount.proto";
 import "elys/clob/order.proto";
 import "elys/clob/perpetual.proto";
+import "elys/clob/types.proto";
 import "elys/clob/adl.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
@@ -60,6 +61,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/clob/owner-perpetual-order/{address}/"
         "{sub_account_id}";
+  }
+
+  rpc AllPerpetualsWithLiquidationPrice(
+    AllPerpetualsWithLiquidationPriceRequest) returns (AllPerpetualsWithLiquidationPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/all-perpetuals-with-liquidation-price/{pagination.key}";
   }
 }
 
@@ -151,5 +158,14 @@ message AllPerpetualADLRequest {
 
 message AllPerpetualADLResponse {
   repeated PerpetualADL adl_list = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message AllPerpetualsWithLiquidationPriceRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message AllPerpetualsWithLiquidationPriceResponse {
+  repeated PerpetualInfo perpetual_infos = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

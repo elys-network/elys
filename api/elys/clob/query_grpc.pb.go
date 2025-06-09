@@ -28,6 +28,7 @@ type QueryClient interface {
 	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error)
+	AllPerpetualsWithLiquidationPrice(ctx context.Context, in *AllPerpetualsWithLiquidationPriceRequest, opts ...grpc.CallOption) (*AllPerpetualsWithLiquidationPriceResponse, error)
 }
 
 type queryClient struct {
@@ -110,6 +111,15 @@ func (c *queryClient) OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetua
 	return out, nil
 }
 
+func (c *queryClient) AllPerpetualsWithLiquidationPrice(ctx context.Context, in *AllPerpetualsWithLiquidationPriceRequest, opts ...grpc.CallOption) (*AllPerpetualsWithLiquidationPriceResponse, error) {
+	out := new(AllPerpetualsWithLiquidationPriceResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/AllPerpetualsWithLiquidationPrice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type QueryServer interface {
 	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error)
+	AllPerpetualsWithLiquidationPrice(context.Context, *AllPerpetualsWithLiquidationPriceRequest) (*AllPerpetualsWithLiquidationPriceResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedQueryServer) OwnerPerpetuals(context.Context, *OwnerPerpetual
 }
 func (UnimplementedQueryServer) OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetualOrder not implemented")
+}
+func (UnimplementedQueryServer) AllPerpetualsWithLiquidationPrice(context.Context, *AllPerpetualsWithLiquidationPriceRequest) (*AllPerpetualsWithLiquidationPriceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllPerpetualsWithLiquidationPrice not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -312,6 +326,24 @@ func _Query_OwnerPerpetualOrder_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_AllPerpetualsWithLiquidationPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AllPerpetualsWithLiquidationPriceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllPerpetualsWithLiquidationPrice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Query/AllPerpetualsWithLiquidationPrice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllPerpetualsWithLiquidationPrice(ctx, req.(*AllPerpetualsWithLiquidationPriceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OwnerPerpetualOrder",
 			Handler:    _Query_OwnerPerpetualOrder_Handler,
+		},
+		{
+			MethodName: "AllPerpetualsWithLiquidationPrice",
+			Handler:    _Query_AllPerpetualsWithLiquidationPrice_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
