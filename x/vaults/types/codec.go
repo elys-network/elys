@@ -14,7 +14,9 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgAddVault{}, "vaults/MsgAddVault")
 	legacy.RegisterAminoMsg(cdc, &MsgDeposit{}, "vaults/MsgDeposit")
 	legacy.RegisterAminoMsg(cdc, &MsgWithdraw{}, "vaults/MsgWithdraw")
-	legacy.RegisterAminoMsg(cdc, &MsgPerformAction{}, "vaults/MsgPerformAction")
+	legacy.RegisterAminoMsg(cdc, &MsgPerformActionJoinPool{}, "vaults/MsgPerformActionJoinPool")
+	legacy.RegisterAminoMsg(cdc, &MsgPerformActionExitPool{}, "vaults/MsgPerformActionExitPool")
+	legacy.RegisterAminoMsg(cdc, &MsgPerformActionSwapByDenom{}, "vaults/MsgPerformActionSwapByDenom")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultCoins{}, "vaults/MsgUpdateVaultCoins")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultFees{}, "vaults/MsgUpdateVaultFees")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultLockupPeriod{}, "vaults/MsgUpdateVaultLockupPeriod")
@@ -30,7 +32,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgAddVault{},
 		&MsgDeposit{},
 		&MsgWithdraw{},
-		&MsgPerformAction{},
+		&MsgPerformActionJoinPool{},
+		&MsgPerformActionExitPool{},
+		&MsgPerformActionSwapByDenom{},
 		&MsgUpdateVaultCoins{},
 		&MsgUpdateVaultFees{},
 		&MsgUpdateVaultLockupPeriod{},

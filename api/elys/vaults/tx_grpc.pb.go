@@ -28,7 +28,7 @@ type MsgClient interface {
 	// AddVault defines a method for creating a new vault.
 	AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
-	PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error)
+	// rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
 	PerformActionJoinPool(ctx context.Context, in *MsgPerformActionJoinPool, opts ...grpc.CallOption) (*MsgPerformActionJoinPoolResponse, error)
 	PerformActionExitPool(ctx context.Context, in *MsgPerformActionExitPool, opts ...grpc.CallOption) (*MsgPerformActionExitPoolResponse, error)
 	PerformActionSwapByDenom(ctx context.Context, in *MsgPerformActionSwapByDenom, opts ...grpc.CallOption) (*MsgPerformActionSwapByDenomResponse, error)
@@ -84,15 +84,6 @@ func (c *msgClient) Withdraw(ctx context.Context, in *MsgWithdraw, opts ...grpc.
 func (c *msgClient) AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error) {
 	out := new(MsgAddVaultResponse)
 	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/AddVault", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error) {
-	out := new(MsgPerformActionResponse)
-	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformAction", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +176,7 @@ type MsgServer interface {
 	// AddVault defines a method for creating a new vault.
 	AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
-	PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error)
+	// rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
 	PerformActionJoinPool(context.Context, *MsgPerformActionJoinPool) (*MsgPerformActionJoinPoolResponse, error)
 	PerformActionExitPool(context.Context, *MsgPerformActionExitPool) (*MsgPerformActionExitPoolResponse, error)
 	PerformActionSwapByDenom(context.Context, *MsgPerformActionSwapByDenom) (*MsgPerformActionSwapByDenomResponse, error)
@@ -219,9 +210,6 @@ func (UnimplementedMsgServer) Withdraw(context.Context, *MsgWithdraw) (*MsgWithd
 }
 func (UnimplementedMsgServer) AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddVault not implemented")
-}
-func (UnimplementedMsgServer) PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PerformAction not implemented")
 }
 func (UnimplementedMsgServer) PerformActionJoinPool(context.Context, *MsgPerformActionJoinPool) (*MsgPerformActionJoinPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PerformActionJoinPool not implemented")
@@ -328,24 +316,6 @@ func _Msg_AddVault_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AddVault(ctx, req.(*MsgAddVault))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_PerformAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgPerformAction)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).PerformAction(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.vaults.Msg/PerformAction",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).PerformAction(ctx, req.(*MsgPerformAction))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -516,10 +486,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddVault",
 			Handler:    _Msg_AddVault_Handler,
-		},
-		{
-			MethodName: "PerformAction",
-			Handler:    _Msg_PerformAction_Handler,
 		},
 		{
 			MethodName: "PerformActionJoinPool",

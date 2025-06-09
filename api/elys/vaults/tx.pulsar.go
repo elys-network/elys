@@ -9,10 +9,10 @@ import (
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	amm "github.com/elys-network/elys/v6/api/elys/amm"
-	commitment "github.com/elys-network/elys/v6/api/elys/commitment"
-	masterchef "github.com/elys-network/elys/v6/api/elys/masterchef"
-	stablestake "github.com/elys-network/elys/v6/api/elys/stablestake"
+	_ "github.com/elys-network/elys/v6/api/elys/amm"
+	_ "github.com/elys-network/elys/v6/api/elys/commitment"
+	_ "github.com/elys-network/elys/v6/api/elys/masterchef"
+	_ "github.com/elys-network/elys/v6/api/elys/stablestake"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -4534,2275 +4534,6 @@ func (x *fastReflection_MsgAddVaultResponse) ProtoMethods() *protoiface.Methods 
 }
 
 var (
-	md_MsgPerformAction          protoreflect.MessageDescriptor
-	fd_MsgPerformAction_creator  protoreflect.FieldDescriptor
-	fd_MsgPerformAction_vault_id protoreflect.FieldDescriptor
-	fd_MsgPerformAction_action   protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_elys_vaults_tx_proto_init()
-	md_MsgPerformAction = File_elys_vaults_tx_proto.Messages().ByName("MsgPerformAction")
-	fd_MsgPerformAction_creator = md_MsgPerformAction.Fields().ByName("creator")
-	fd_MsgPerformAction_vault_id = md_MsgPerformAction.Fields().ByName("vault_id")
-	fd_MsgPerformAction_action = md_MsgPerformAction.Fields().ByName("action")
-}
-
-var _ protoreflect.Message = (*fastReflection_MsgPerformAction)(nil)
-
-type fastReflection_MsgPerformAction MsgPerformAction
-
-func (x *MsgPerformAction) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgPerformAction)(x)
-}
-
-func (x *MsgPerformAction) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_MsgPerformAction_messageType fastReflection_MsgPerformAction_messageType
-var _ protoreflect.MessageType = fastReflection_MsgPerformAction_messageType{}
-
-type fastReflection_MsgPerformAction_messageType struct{}
-
-func (x fastReflection_MsgPerformAction_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgPerformAction)(nil)
-}
-func (x fastReflection_MsgPerformAction_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgPerformAction)
-}
-func (x fastReflection_MsgPerformAction_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgPerformAction
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_MsgPerformAction) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgPerformAction
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgPerformAction) Type() protoreflect.MessageType {
-	return _fastReflection_MsgPerformAction_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgPerformAction) New() protoreflect.Message {
-	return new(fastReflection_MsgPerformAction)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgPerformAction) Interface() protoreflect.ProtoMessage {
-	return (*MsgPerformAction)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_MsgPerformAction) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Creator != "" {
-		value := protoreflect.ValueOfString(x.Creator)
-		if !f(fd_MsgPerformAction_creator, value) {
-			return
-		}
-	}
-	if x.VaultId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.VaultId)
-		if !f(fd_MsgPerformAction_vault_id, value) {
-			return
-		}
-	}
-	if x.Action != nil {
-		value := protoreflect.ValueOfMessage(x.Action.ProtoReflect())
-		if !f(fd_MsgPerformAction_action, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgPerformAction) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "elys.vaults.MsgPerformAction.creator":
-		return x.Creator != ""
-	case "elys.vaults.MsgPerformAction.vault_id":
-		return x.VaultId != uint64(0)
-	case "elys.vaults.MsgPerformAction.action":
-		return x.Action != nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgPerformAction) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "elys.vaults.MsgPerformAction.creator":
-		x.Creator = ""
-	case "elys.vaults.MsgPerformAction.vault_id":
-		x.VaultId = uint64(0)
-	case "elys.vaults.MsgPerformAction.action":
-		x.Action = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgPerformAction) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "elys.vaults.MsgPerformAction.creator":
-		value := x.Creator
-		return protoreflect.ValueOfString(value)
-	case "elys.vaults.MsgPerformAction.vault_id":
-		value := x.VaultId
-		return protoreflect.ValueOfUint64(value)
-	case "elys.vaults.MsgPerformAction.action":
-		value := x.Action
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgPerformAction) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "elys.vaults.MsgPerformAction.creator":
-		x.Creator = value.Interface().(string)
-	case "elys.vaults.MsgPerformAction.vault_id":
-		x.VaultId = value.Uint()
-	case "elys.vaults.MsgPerformAction.action":
-		x.Action = value.Message().Interface().(*Action)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgPerformAction) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.vaults.MsgPerformAction.action":
-		if x.Action == nil {
-			x.Action = new(Action)
-		}
-		return protoreflect.ValueOfMessage(x.Action.ProtoReflect())
-	case "elys.vaults.MsgPerformAction.creator":
-		panic(fmt.Errorf("field creator of message elys.vaults.MsgPerformAction is not mutable"))
-	case "elys.vaults.MsgPerformAction.vault_id":
-		panic(fmt.Errorf("field vault_id of message elys.vaults.MsgPerformAction is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgPerformAction) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.vaults.MsgPerformAction.creator":
-		return protoreflect.ValueOfString("")
-	case "elys.vaults.MsgPerformAction.vault_id":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.vaults.MsgPerformAction.action":
-		m := new(Action)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.MsgPerformAction"))
-		}
-		panic(fmt.Errorf("message elys.vaults.MsgPerformAction does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgPerformAction) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.vaults.MsgPerformAction", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgPerformAction) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgPerformAction) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_MsgPerformAction) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgPerformAction) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgPerformAction)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.Creator)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.VaultId != 0 {
-			n += 1 + runtime.Sov(uint64(x.VaultId))
-		}
-		if x.Action != nil {
-			l = options.Size(x.Action)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgPerformAction)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if x.Action != nil {
-			encoded, err := options.Marshal(x.Action)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if x.VaultId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.VaultId))
-			i--
-			dAtA[i] = 0x10
-		}
-		if len(x.Creator) > 0 {
-			i -= len(x.Creator)
-			copy(dAtA[i:], x.Creator)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgPerformAction)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgPerformAction: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgPerformAction: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Creator = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
-				}
-				x.VaultId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.VaultId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.Action == nil {
-					x.Action = &Action{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Action); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_Action                        protoreflect.MessageDescriptor
-	fd_Action_join_pool              protoreflect.FieldDescriptor
-	fd_Action_exit_pool              protoreflect.FieldDescriptor
-	fd_Action_swap_by_denom          protoreflect.FieldDescriptor
-	fd_Action_commit_claimed_rewards protoreflect.FieldDescriptor
-	fd_Action_uncommit_tokens        protoreflect.FieldDescriptor
-	fd_Action_vest                   protoreflect.FieldDescriptor
-	fd_Action_cancel_vest            protoreflect.FieldDescriptor
-	fd_Action_claim_vesting          protoreflect.FieldDescriptor
-	fd_Action_stake                  protoreflect.FieldDescriptor
-	fd_Action_unstake                protoreflect.FieldDescriptor
-	fd_Action_bond                   protoreflect.FieldDescriptor
-	fd_Action_unbond                 protoreflect.FieldDescriptor
-	fd_Action_claim_rewards          protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_elys_vaults_tx_proto_init()
-	md_Action = File_elys_vaults_tx_proto.Messages().ByName("Action")
-	fd_Action_join_pool = md_Action.Fields().ByName("join_pool")
-	fd_Action_exit_pool = md_Action.Fields().ByName("exit_pool")
-	fd_Action_swap_by_denom = md_Action.Fields().ByName("swap_by_denom")
-	fd_Action_commit_claimed_rewards = md_Action.Fields().ByName("commit_claimed_rewards")
-	fd_Action_uncommit_tokens = md_Action.Fields().ByName("uncommit_tokens")
-	fd_Action_vest = md_Action.Fields().ByName("vest")
-	fd_Action_cancel_vest = md_Action.Fields().ByName("cancel_vest")
-	fd_Action_claim_vesting = md_Action.Fields().ByName("claim_vesting")
-	fd_Action_stake = md_Action.Fields().ByName("stake")
-	fd_Action_unstake = md_Action.Fields().ByName("unstake")
-	fd_Action_bond = md_Action.Fields().ByName("bond")
-	fd_Action_unbond = md_Action.Fields().ByName("unbond")
-	fd_Action_claim_rewards = md_Action.Fields().ByName("claim_rewards")
-}
-
-var _ protoreflect.Message = (*fastReflection_Action)(nil)
-
-type fastReflection_Action Action
-
-func (x *Action) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Action)(x)
-}
-
-func (x *Action) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_Action_messageType fastReflection_Action_messageType
-var _ protoreflect.MessageType = fastReflection_Action_messageType{}
-
-type fastReflection_Action_messageType struct{}
-
-func (x fastReflection_Action_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Action)(nil)
-}
-func (x fastReflection_Action_messageType) New() protoreflect.Message {
-	return new(fastReflection_Action)
-}
-func (x fastReflection_Action_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Action
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_Action) Descriptor() protoreflect.MessageDescriptor {
-	return md_Action
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Action) Type() protoreflect.MessageType {
-	return _fastReflection_Action_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Action) New() protoreflect.Message {
-	return new(fastReflection_Action)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_Action) Interface() protoreflect.ProtoMessage {
-	return (*Action)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_Action) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Action != nil {
-		switch o := x.Action.(type) {
-		case *Action_JoinPool:
-			v := o.JoinPool
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_join_pool, value) {
-				return
-			}
-		case *Action_ExitPool:
-			v := o.ExitPool
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_exit_pool, value) {
-				return
-			}
-		case *Action_SwapByDenom:
-			v := o.SwapByDenom
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_swap_by_denom, value) {
-				return
-			}
-		case *Action_CommitClaimedRewards:
-			v := o.CommitClaimedRewards
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_commit_claimed_rewards, value) {
-				return
-			}
-		case *Action_UncommitTokens:
-			v := o.UncommitTokens
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_uncommit_tokens, value) {
-				return
-			}
-		case *Action_Vest:
-			v := o.Vest
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_vest, value) {
-				return
-			}
-		case *Action_CancelVest:
-			v := o.CancelVest
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_cancel_vest, value) {
-				return
-			}
-		case *Action_ClaimVesting:
-			v := o.ClaimVesting
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_claim_vesting, value) {
-				return
-			}
-		case *Action_Stake:
-			v := o.Stake
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_stake, value) {
-				return
-			}
-		case *Action_Unstake:
-			v := o.Unstake
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_unstake, value) {
-				return
-			}
-		case *Action_Bond:
-			v := o.Bond
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_bond, value) {
-				return
-			}
-		case *Action_Unbond:
-			v := o.Unbond
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_unbond, value) {
-				return
-			}
-		case *Action_ClaimRewards:
-			v := o.ClaimRewards
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_Action_claim_rewards, value) {
-				return
-			}
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_Action) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "elys.vaults.Action.join_pool":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_JoinPool); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.exit_pool":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_ExitPool); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.swap_by_denom":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_SwapByDenom); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.commit_claimed_rewards":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_CommitClaimedRewards); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.uncommit_tokens":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_UncommitTokens); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.vest":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_Vest); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.cancel_vest":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_CancelVest); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.claim_vesting":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_ClaimVesting); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.stake":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_Stake); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.unstake":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_Unstake); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.bond":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_Bond); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.unbond":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_Unbond); ok {
-			return true
-		} else {
-			return false
-		}
-	case "elys.vaults.Action.claim_rewards":
-		if x.Action == nil {
-			return false
-		} else if _, ok := x.Action.(*Action_ClaimRewards); ok {
-			return true
-		} else {
-			return false
-		}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Action) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "elys.vaults.Action.join_pool":
-		x.Action = nil
-	case "elys.vaults.Action.exit_pool":
-		x.Action = nil
-	case "elys.vaults.Action.swap_by_denom":
-		x.Action = nil
-	case "elys.vaults.Action.commit_claimed_rewards":
-		x.Action = nil
-	case "elys.vaults.Action.uncommit_tokens":
-		x.Action = nil
-	case "elys.vaults.Action.vest":
-		x.Action = nil
-	case "elys.vaults.Action.cancel_vest":
-		x.Action = nil
-	case "elys.vaults.Action.claim_vesting":
-		x.Action = nil
-	case "elys.vaults.Action.stake":
-		x.Action = nil
-	case "elys.vaults.Action.unstake":
-		x.Action = nil
-	case "elys.vaults.Action.bond":
-		x.Action = nil
-	case "elys.vaults.Action.unbond":
-		x.Action = nil
-	case "elys.vaults.Action.claim_rewards":
-		x.Action = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Action) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "elys.vaults.Action.join_pool":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*amm.MsgJoinPool)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_JoinPool); ok {
-			return protoreflect.ValueOfMessage(v.JoinPool.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*amm.MsgJoinPool)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.exit_pool":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*amm.MsgExitPool)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_ExitPool); ok {
-			return protoreflect.ValueOfMessage(v.ExitPool.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*amm.MsgExitPool)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.swap_by_denom":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*amm.MsgSwapByDenom)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_SwapByDenom); ok {
-			return protoreflect.ValueOfMessage(v.SwapByDenom.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*amm.MsgSwapByDenom)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.commit_claimed_rewards":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgCommitClaimedRewards)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_CommitClaimedRewards); ok {
-			return protoreflect.ValueOfMessage(v.CommitClaimedRewards.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgCommitClaimedRewards)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.uncommit_tokens":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgUncommitTokens)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_UncommitTokens); ok {
-			return protoreflect.ValueOfMessage(v.UncommitTokens.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgUncommitTokens)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.vest":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgVest)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_Vest); ok {
-			return protoreflect.ValueOfMessage(v.Vest.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgVest)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.cancel_vest":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgCancelVest)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_CancelVest); ok {
-			return protoreflect.ValueOfMessage(v.CancelVest.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgCancelVest)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.claim_vesting":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgClaimVesting)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_ClaimVesting); ok {
-			return protoreflect.ValueOfMessage(v.ClaimVesting.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgClaimVesting)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.stake":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgStake)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_Stake); ok {
-			return protoreflect.ValueOfMessage(v.Stake.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgStake)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.unstake":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*commitment.MsgUnstake)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_Unstake); ok {
-			return protoreflect.ValueOfMessage(v.Unstake.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*commitment.MsgUnstake)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.bond":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*stablestake.MsgBond)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_Bond); ok {
-			return protoreflect.ValueOfMessage(v.Bond.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*stablestake.MsgBond)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.unbond":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*stablestake.MsgUnbond)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_Unbond); ok {
-			return protoreflect.ValueOfMessage(v.Unbond.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*stablestake.MsgUnbond)(nil).ProtoReflect())
-		}
-	case "elys.vaults.Action.claim_rewards":
-		if x.Action == nil {
-			return protoreflect.ValueOfMessage((*masterchef.MsgClaimRewards)(nil).ProtoReflect())
-		} else if v, ok := x.Action.(*Action_ClaimRewards); ok {
-			return protoreflect.ValueOfMessage(v.ClaimRewards.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*masterchef.MsgClaimRewards)(nil).ProtoReflect())
-		}
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Action) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "elys.vaults.Action.join_pool":
-		cv := value.Message().Interface().(*amm.MsgJoinPool)
-		x.Action = &Action_JoinPool{JoinPool: cv}
-	case "elys.vaults.Action.exit_pool":
-		cv := value.Message().Interface().(*amm.MsgExitPool)
-		x.Action = &Action_ExitPool{ExitPool: cv}
-	case "elys.vaults.Action.swap_by_denom":
-		cv := value.Message().Interface().(*amm.MsgSwapByDenom)
-		x.Action = &Action_SwapByDenom{SwapByDenom: cv}
-	case "elys.vaults.Action.commit_claimed_rewards":
-		cv := value.Message().Interface().(*commitment.MsgCommitClaimedRewards)
-		x.Action = &Action_CommitClaimedRewards{CommitClaimedRewards: cv}
-	case "elys.vaults.Action.uncommit_tokens":
-		cv := value.Message().Interface().(*commitment.MsgUncommitTokens)
-		x.Action = &Action_UncommitTokens{UncommitTokens: cv}
-	case "elys.vaults.Action.vest":
-		cv := value.Message().Interface().(*commitment.MsgVest)
-		x.Action = &Action_Vest{Vest: cv}
-	case "elys.vaults.Action.cancel_vest":
-		cv := value.Message().Interface().(*commitment.MsgCancelVest)
-		x.Action = &Action_CancelVest{CancelVest: cv}
-	case "elys.vaults.Action.claim_vesting":
-		cv := value.Message().Interface().(*commitment.MsgClaimVesting)
-		x.Action = &Action_ClaimVesting{ClaimVesting: cv}
-	case "elys.vaults.Action.stake":
-		cv := value.Message().Interface().(*commitment.MsgStake)
-		x.Action = &Action_Stake{Stake: cv}
-	case "elys.vaults.Action.unstake":
-		cv := value.Message().Interface().(*commitment.MsgUnstake)
-		x.Action = &Action_Unstake{Unstake: cv}
-	case "elys.vaults.Action.bond":
-		cv := value.Message().Interface().(*stablestake.MsgBond)
-		x.Action = &Action_Bond{Bond: cv}
-	case "elys.vaults.Action.unbond":
-		cv := value.Message().Interface().(*stablestake.MsgUnbond)
-		x.Action = &Action_Unbond{Unbond: cv}
-	case "elys.vaults.Action.claim_rewards":
-		cv := value.Message().Interface().(*masterchef.MsgClaimRewards)
-		x.Action = &Action_ClaimRewards{ClaimRewards: cv}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Action) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.vaults.Action.join_pool":
-		if x.Action == nil {
-			value := &amm.MsgJoinPool{}
-			oneofValue := &Action_JoinPool{JoinPool: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_JoinPool:
-			return protoreflect.ValueOfMessage(m.JoinPool.ProtoReflect())
-		default:
-			value := &amm.MsgJoinPool{}
-			oneofValue := &Action_JoinPool{JoinPool: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.exit_pool":
-		if x.Action == nil {
-			value := &amm.MsgExitPool{}
-			oneofValue := &Action_ExitPool{ExitPool: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_ExitPool:
-			return protoreflect.ValueOfMessage(m.ExitPool.ProtoReflect())
-		default:
-			value := &amm.MsgExitPool{}
-			oneofValue := &Action_ExitPool{ExitPool: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.swap_by_denom":
-		if x.Action == nil {
-			value := &amm.MsgSwapByDenom{}
-			oneofValue := &Action_SwapByDenom{SwapByDenom: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_SwapByDenom:
-			return protoreflect.ValueOfMessage(m.SwapByDenom.ProtoReflect())
-		default:
-			value := &amm.MsgSwapByDenom{}
-			oneofValue := &Action_SwapByDenom{SwapByDenom: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.commit_claimed_rewards":
-		if x.Action == nil {
-			value := &commitment.MsgCommitClaimedRewards{}
-			oneofValue := &Action_CommitClaimedRewards{CommitClaimedRewards: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_CommitClaimedRewards:
-			return protoreflect.ValueOfMessage(m.CommitClaimedRewards.ProtoReflect())
-		default:
-			value := &commitment.MsgCommitClaimedRewards{}
-			oneofValue := &Action_CommitClaimedRewards{CommitClaimedRewards: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.uncommit_tokens":
-		if x.Action == nil {
-			value := &commitment.MsgUncommitTokens{}
-			oneofValue := &Action_UncommitTokens{UncommitTokens: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_UncommitTokens:
-			return protoreflect.ValueOfMessage(m.UncommitTokens.ProtoReflect())
-		default:
-			value := &commitment.MsgUncommitTokens{}
-			oneofValue := &Action_UncommitTokens{UncommitTokens: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.vest":
-		if x.Action == nil {
-			value := &commitment.MsgVest{}
-			oneofValue := &Action_Vest{Vest: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_Vest:
-			return protoreflect.ValueOfMessage(m.Vest.ProtoReflect())
-		default:
-			value := &commitment.MsgVest{}
-			oneofValue := &Action_Vest{Vest: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.cancel_vest":
-		if x.Action == nil {
-			value := &commitment.MsgCancelVest{}
-			oneofValue := &Action_CancelVest{CancelVest: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_CancelVest:
-			return protoreflect.ValueOfMessage(m.CancelVest.ProtoReflect())
-		default:
-			value := &commitment.MsgCancelVest{}
-			oneofValue := &Action_CancelVest{CancelVest: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.claim_vesting":
-		if x.Action == nil {
-			value := &commitment.MsgClaimVesting{}
-			oneofValue := &Action_ClaimVesting{ClaimVesting: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_ClaimVesting:
-			return protoreflect.ValueOfMessage(m.ClaimVesting.ProtoReflect())
-		default:
-			value := &commitment.MsgClaimVesting{}
-			oneofValue := &Action_ClaimVesting{ClaimVesting: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.stake":
-		if x.Action == nil {
-			value := &commitment.MsgStake{}
-			oneofValue := &Action_Stake{Stake: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_Stake:
-			return protoreflect.ValueOfMessage(m.Stake.ProtoReflect())
-		default:
-			value := &commitment.MsgStake{}
-			oneofValue := &Action_Stake{Stake: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.unstake":
-		if x.Action == nil {
-			value := &commitment.MsgUnstake{}
-			oneofValue := &Action_Unstake{Unstake: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_Unstake:
-			return protoreflect.ValueOfMessage(m.Unstake.ProtoReflect())
-		default:
-			value := &commitment.MsgUnstake{}
-			oneofValue := &Action_Unstake{Unstake: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.bond":
-		if x.Action == nil {
-			value := &stablestake.MsgBond{}
-			oneofValue := &Action_Bond{Bond: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_Bond:
-			return protoreflect.ValueOfMessage(m.Bond.ProtoReflect())
-		default:
-			value := &stablestake.MsgBond{}
-			oneofValue := &Action_Bond{Bond: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.unbond":
-		if x.Action == nil {
-			value := &stablestake.MsgUnbond{}
-			oneofValue := &Action_Unbond{Unbond: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_Unbond:
-			return protoreflect.ValueOfMessage(m.Unbond.ProtoReflect())
-		default:
-			value := &stablestake.MsgUnbond{}
-			oneofValue := &Action_Unbond{Unbond: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "elys.vaults.Action.claim_rewards":
-		if x.Action == nil {
-			value := &masterchef.MsgClaimRewards{}
-			oneofValue := &Action_ClaimRewards{ClaimRewards: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Action.(type) {
-		case *Action_ClaimRewards:
-			return protoreflect.ValueOfMessage(m.ClaimRewards.ProtoReflect())
-		default:
-			value := &masterchef.MsgClaimRewards{}
-			oneofValue := &Action_ClaimRewards{ClaimRewards: value}
-			x.Action = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Action) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.vaults.Action.join_pool":
-		value := &amm.MsgJoinPool{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.exit_pool":
-		value := &amm.MsgExitPool{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.swap_by_denom":
-		value := &amm.MsgSwapByDenom{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.commit_claimed_rewards":
-		value := &commitment.MsgCommitClaimedRewards{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.uncommit_tokens":
-		value := &commitment.MsgUncommitTokens{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.vest":
-		value := &commitment.MsgVest{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.cancel_vest":
-		value := &commitment.MsgCancelVest{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.claim_vesting":
-		value := &commitment.MsgClaimVesting{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.stake":
-		value := &commitment.MsgStake{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.unstake":
-		value := &commitment.MsgUnstake{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.bond":
-		value := &stablestake.MsgBond{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.unbond":
-		value := &stablestake.MsgUnbond{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.vaults.Action.claim_rewards":
-		value := &masterchef.MsgClaimRewards{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.Action"))
-		}
-		panic(fmt.Errorf("message elys.vaults.Action does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Action) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	case "elys.vaults.Action.action":
-		if x.Action == nil {
-			return nil
-		}
-		switch x.Action.(type) {
-		case *Action_JoinPool:
-			return x.Descriptor().Fields().ByName("join_pool")
-		case *Action_ExitPool:
-			return x.Descriptor().Fields().ByName("exit_pool")
-		case *Action_SwapByDenom:
-			return x.Descriptor().Fields().ByName("swap_by_denom")
-		case *Action_CommitClaimedRewards:
-			return x.Descriptor().Fields().ByName("commit_claimed_rewards")
-		case *Action_UncommitTokens:
-			return x.Descriptor().Fields().ByName("uncommit_tokens")
-		case *Action_Vest:
-			return x.Descriptor().Fields().ByName("vest")
-		case *Action_CancelVest:
-			return x.Descriptor().Fields().ByName("cancel_vest")
-		case *Action_ClaimVesting:
-			return x.Descriptor().Fields().ByName("claim_vesting")
-		case *Action_Stake:
-			return x.Descriptor().Fields().ByName("stake")
-		case *Action_Unstake:
-			return x.Descriptor().Fields().ByName("unstake")
-		case *Action_Bond:
-			return x.Descriptor().Fields().ByName("bond")
-		case *Action_Unbond:
-			return x.Descriptor().Fields().ByName("unbond")
-		case *Action_ClaimRewards:
-			return x.Descriptor().Fields().ByName("claim_rewards")
-		}
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.vaults.Action", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Action) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Action) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_Action) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_Action) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Action)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		switch x := x.Action.(type) {
-		case *Action_JoinPool:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.JoinPool)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_ExitPool:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.ExitPool)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_SwapByDenom:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.SwapByDenom)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_CommitClaimedRewards:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.CommitClaimedRewards)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_UncommitTokens:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.UncommitTokens)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_Vest:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.Vest)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_CancelVest:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.CancelVest)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_ClaimVesting:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.ClaimVesting)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_Stake:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.Stake)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_Unstake:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.Unstake)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_Bond:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.Bond)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_Unbond:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.Unbond)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *Action_ClaimRewards:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.ClaimRewards)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Action)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		switch x := x.Action.(type) {
-		case *Action_JoinPool:
-			encoded, err := options.Marshal(x.JoinPool)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x1a
-		case *Action_ExitPool:
-			encoded, err := options.Marshal(x.ExitPool)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x22
-		case *Action_SwapByDenom:
-			encoded, err := options.Marshal(x.SwapByDenom)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x2a
-		case *Action_CommitClaimedRewards:
-			encoded, err := options.Marshal(x.CommitClaimedRewards)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x32
-		case *Action_UncommitTokens:
-			encoded, err := options.Marshal(x.UncommitTokens)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x3a
-		case *Action_Vest:
-			encoded, err := options.Marshal(x.Vest)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x42
-		case *Action_CancelVest:
-			encoded, err := options.Marshal(x.CancelVest)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x4a
-		case *Action_ClaimVesting:
-			encoded, err := options.Marshal(x.ClaimVesting)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x52
-		case *Action_Stake:
-			encoded, err := options.Marshal(x.Stake)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x5a
-		case *Action_Unstake:
-			encoded, err := options.Marshal(x.Unstake)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x62
-		case *Action_Bond:
-			encoded, err := options.Marshal(x.Bond)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x6a
-		case *Action_Unbond:
-			encoded, err := options.Marshal(x.Unbond)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x72
-		case *Action_ClaimRewards:
-			encoded, err := options.Marshal(x.ClaimRewards)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x7a
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Action)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Action: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Action: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field JoinPool", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &amm.MsgJoinPool{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_JoinPool{v}
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExitPool", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &amm.MsgExitPool{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_ExitPool{v}
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SwapByDenom", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &amm.MsgSwapByDenom{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_SwapByDenom{v}
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CommitClaimedRewards", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgCommitClaimedRewards{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_CommitClaimedRewards{v}
-				iNdEx = postIndex
-			case 7:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UncommitTokens", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgUncommitTokens{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_UncommitTokens{v}
-				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Vest", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgVest{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_Vest{v}
-				iNdEx = postIndex
-			case 9:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CancelVest", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgCancelVest{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_CancelVest{v}
-				iNdEx = postIndex
-			case 10:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClaimVesting", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgClaimVesting{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_ClaimVesting{v}
-				iNdEx = postIndex
-			case 11:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Stake", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgStake{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_Stake{v}
-				iNdEx = postIndex
-			case 12:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Unstake", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &commitment.MsgUnstake{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_Unstake{v}
-				iNdEx = postIndex
-			case 13:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Bond", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &stablestake.MsgBond{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_Bond{v}
-				iNdEx = postIndex
-			case 14:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Unbond", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &stablestake.MsgUnbond{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_Unbond{v}
-				iNdEx = postIndex
-			case 15:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClaimRewards", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				v := &masterchef.MsgClaimRewards{}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				x.Action = &Action_ClaimRewards{v}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
 	md_MsgPerformActionResponse          protoreflect.MessageDescriptor
 	fd_MsgPerformActionResponse_vault_id protoreflect.FieldDescriptor
 )
@@ -6822,7 +4553,7 @@ func (x *MsgPerformActionResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[10]
+	mi := &file_elys_vaults_tx_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7206,59 +4937,60 @@ func (x *fastReflection_MsgPerformActionResponse) ProtoMethods() *protoiface.Met
 	}
 }
 
-var _ protoreflect.List = (*_MsgPerformActionJoinPool_3_list)(nil)
+var _ protoreflect.List = (*_MsgPerformActionJoinPool_4_list)(nil)
 
-type _MsgPerformActionJoinPool_3_list struct {
+type _MsgPerformActionJoinPool_4_list struct {
 	list *[]*v1beta1.Coin
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) Len() int {
+func (x *_MsgPerformActionJoinPool_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) Get(i int) protoreflect.Value {
+func (x *_MsgPerformActionJoinPool_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) Set(i int, value protoreflect.Value) {
+func (x *_MsgPerformActionJoinPool_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) Append(value protoreflect.Value) {
+func (x *_MsgPerformActionJoinPool_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) AppendMutable() protoreflect.Value {
+func (x *_MsgPerformActionJoinPool_4_list) AppendMutable() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) Truncate(n int) {
+func (x *_MsgPerformActionJoinPool_4_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) NewElement() protoreflect.Value {
+func (x *_MsgPerformActionJoinPool_4_list) NewElement() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_MsgPerformActionJoinPool_3_list) IsValid() bool {
+func (x *_MsgPerformActionJoinPool_4_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
 	md_MsgPerformActionJoinPool                  protoreflect.MessageDescriptor
+	fd_MsgPerformActionJoinPool_creator          protoreflect.FieldDescriptor
 	fd_MsgPerformActionJoinPool_vault_id         protoreflect.FieldDescriptor
 	fd_MsgPerformActionJoinPool_pool_id          protoreflect.FieldDescriptor
 	fd_MsgPerformActionJoinPool_max_amounts_in   protoreflect.FieldDescriptor
@@ -7268,6 +5000,7 @@ var (
 func init() {
 	file_elys_vaults_tx_proto_init()
 	md_MsgPerformActionJoinPool = File_elys_vaults_tx_proto.Messages().ByName("MsgPerformActionJoinPool")
+	fd_MsgPerformActionJoinPool_creator = md_MsgPerformActionJoinPool.Fields().ByName("creator")
 	fd_MsgPerformActionJoinPool_vault_id = md_MsgPerformActionJoinPool.Fields().ByName("vault_id")
 	fd_MsgPerformActionJoinPool_pool_id = md_MsgPerformActionJoinPool.Fields().ByName("pool_id")
 	fd_MsgPerformActionJoinPool_max_amounts_in = md_MsgPerformActionJoinPool.Fields().ByName("max_amounts_in")
@@ -7283,7 +5016,7 @@ func (x *MsgPerformActionJoinPool) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionJoinPool) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[11]
+	mi := &file_elys_vaults_tx_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7339,6 +5072,12 @@ func (x *fastReflection_MsgPerformActionJoinPool) Interface() protoreflect.Proto
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_MsgPerformActionJoinPool) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Creator != "" {
+		value := protoreflect.ValueOfString(x.Creator)
+		if !f(fd_MsgPerformActionJoinPool_creator, value) {
+			return
+		}
+	}
 	if x.VaultId != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.VaultId)
 		if !f(fd_MsgPerformActionJoinPool_vault_id, value) {
@@ -7352,7 +5091,7 @@ func (x *fastReflection_MsgPerformActionJoinPool) Range(f func(protoreflect.Fiel
 		}
 	}
 	if len(x.MaxAmountsIn) != 0 {
-		value := protoreflect.ValueOfList(&_MsgPerformActionJoinPool_3_list{list: &x.MaxAmountsIn})
+		value := protoreflect.ValueOfList(&_MsgPerformActionJoinPool_4_list{list: &x.MaxAmountsIn})
 		if !f(fd_MsgPerformActionJoinPool_max_amounts_in, value) {
 			return
 		}
@@ -7378,6 +5117,8 @@ func (x *fastReflection_MsgPerformActionJoinPool) Range(f func(protoreflect.Fiel
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_MsgPerformActionJoinPool) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		return x.Creator != ""
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		return x.VaultId != uint64(0)
 	case "elys.vaults.MsgPerformActionJoinPool.pool_id":
@@ -7402,6 +5143,8 @@ func (x *fastReflection_MsgPerformActionJoinPool) Has(fd protoreflect.FieldDescr
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionJoinPool) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		x.Creator = ""
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		x.VaultId = uint64(0)
 	case "elys.vaults.MsgPerformActionJoinPool.pool_id":
@@ -7426,6 +5169,9 @@ func (x *fastReflection_MsgPerformActionJoinPool) Clear(fd protoreflect.FieldDes
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_MsgPerformActionJoinPool) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		value := x.Creator
+		return protoreflect.ValueOfString(value)
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		value := x.VaultId
 		return protoreflect.ValueOfUint64(value)
@@ -7434,9 +5180,9 @@ func (x *fastReflection_MsgPerformActionJoinPool) Get(descriptor protoreflect.Fi
 		return protoreflect.ValueOfUint64(value)
 	case "elys.vaults.MsgPerformActionJoinPool.max_amounts_in":
 		if len(x.MaxAmountsIn) == 0 {
-			return protoreflect.ValueOfList(&_MsgPerformActionJoinPool_3_list{})
+			return protoreflect.ValueOfList(&_MsgPerformActionJoinPool_4_list{})
 		}
-		listValue := &_MsgPerformActionJoinPool_3_list{list: &x.MaxAmountsIn}
+		listValue := &_MsgPerformActionJoinPool_4_list{list: &x.MaxAmountsIn}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.vaults.MsgPerformActionJoinPool.share_amount_out":
 		value := x.ShareAmountOut
@@ -7461,13 +5207,15 @@ func (x *fastReflection_MsgPerformActionJoinPool) Get(descriptor protoreflect.Fi
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionJoinPool) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		x.Creator = value.Interface().(string)
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		x.VaultId = value.Uint()
 	case "elys.vaults.MsgPerformActionJoinPool.pool_id":
 		x.PoolId = value.Uint()
 	case "elys.vaults.MsgPerformActionJoinPool.max_amounts_in":
 		lv := value.List()
-		clv := lv.(*_MsgPerformActionJoinPool_3_list)
+		clv := lv.(*_MsgPerformActionJoinPool_4_list)
 		x.MaxAmountsIn = *clv.list
 	case "elys.vaults.MsgPerformActionJoinPool.share_amount_out":
 		x.ShareAmountOut = value.Interface().(string)
@@ -7495,8 +5243,10 @@ func (x *fastReflection_MsgPerformActionJoinPool) Mutable(fd protoreflect.FieldD
 		if x.MaxAmountsIn == nil {
 			x.MaxAmountsIn = []*v1beta1.Coin{}
 		}
-		value := &_MsgPerformActionJoinPool_3_list{list: &x.MaxAmountsIn}
+		value := &_MsgPerformActionJoinPool_4_list{list: &x.MaxAmountsIn}
 		return protoreflect.ValueOfList(value)
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		panic(fmt.Errorf("field creator of message elys.vaults.MsgPerformActionJoinPool is not mutable"))
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		panic(fmt.Errorf("field vault_id of message elys.vaults.MsgPerformActionJoinPool is not mutable"))
 	case "elys.vaults.MsgPerformActionJoinPool.pool_id":
@@ -7516,13 +5266,15 @@ func (x *fastReflection_MsgPerformActionJoinPool) Mutable(fd protoreflect.FieldD
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_MsgPerformActionJoinPool) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionJoinPool.creator":
+		return protoreflect.ValueOfString("")
 	case "elys.vaults.MsgPerformActionJoinPool.vault_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.vaults.MsgPerformActionJoinPool.pool_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.vaults.MsgPerformActionJoinPool.max_amounts_in":
 		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_MsgPerformActionJoinPool_3_list{list: &list})
+		return protoreflect.ValueOfList(&_MsgPerformActionJoinPool_4_list{list: &list})
 	case "elys.vaults.MsgPerformActionJoinPool.share_amount_out":
 		return protoreflect.ValueOfString("")
 	default:
@@ -7594,6 +5346,10 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 		var n int
 		var l int
 		_ = l
+		l = len(x.Creator)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.VaultId != 0 {
 			n += 1 + runtime.Sov(uint64(x.VaultId))
 		}
@@ -7644,7 +5400,7 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 			copy(dAtA[i:], x.ShareAmountOut)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ShareAmountOut)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x2a
 		}
 		if len(x.MaxAmountsIn) > 0 {
 			for iNdEx := len(x.MaxAmountsIn) - 1; iNdEx >= 0; iNdEx-- {
@@ -7659,18 +5415,25 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x1a
+				dAtA[i] = 0x22
 			}
 		}
 		if x.PoolId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x18
 		}
 		if x.VaultId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.VaultId))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0x10
+		}
+		if len(x.Creator) > 0 {
+			i -= len(x.Creator)
+			copy(dAtA[i:], x.Creator)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
+			i--
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -7722,6 +5485,38 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Creator = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
 				}
@@ -7740,7 +5535,7 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 						break
 					}
 				}
-			case 2:
+			case 3:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
 				}
@@ -7759,7 +5554,7 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 						break
 					}
 				}
-			case 3:
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxAmountsIn", wireType)
 				}
@@ -7793,7 +5588,7 @@ func (x *fastReflection_MsgPerformActionJoinPool) ProtoMethods() *protoiface.Met
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 4:
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ShareAmountOut", wireType)
 				}
@@ -7880,7 +5675,7 @@ func (x *MsgPerformActionJoinPoolResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionJoinPoolResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[12]
+	mi := &file_elys_vaults_tx_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8280,59 +6075,60 @@ func (x *fastReflection_MsgPerformActionJoinPoolResponse) ProtoMethods() *protoi
 	}
 }
 
-var _ protoreflect.List = (*_MsgPerformActionExitPool_3_list)(nil)
+var _ protoreflect.List = (*_MsgPerformActionExitPool_4_list)(nil)
 
-type _MsgPerformActionExitPool_3_list struct {
+type _MsgPerformActionExitPool_4_list struct {
 	list *[]*v1beta1.Coin
 }
 
-func (x *_MsgPerformActionExitPool_3_list) Len() int {
+func (x *_MsgPerformActionExitPool_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_MsgPerformActionExitPool_3_list) Get(i int) protoreflect.Value {
+func (x *_MsgPerformActionExitPool_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_MsgPerformActionExitPool_3_list) Set(i int, value protoreflect.Value) {
+func (x *_MsgPerformActionExitPool_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_MsgPerformActionExitPool_3_list) Append(value protoreflect.Value) {
+func (x *_MsgPerformActionExitPool_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_MsgPerformActionExitPool_3_list) AppendMutable() protoreflect.Value {
+func (x *_MsgPerformActionExitPool_4_list) AppendMutable() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_MsgPerformActionExitPool_3_list) Truncate(n int) {
+func (x *_MsgPerformActionExitPool_4_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_MsgPerformActionExitPool_3_list) NewElement() protoreflect.Value {
+func (x *_MsgPerformActionExitPool_4_list) NewElement() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_MsgPerformActionExitPool_3_list) IsValid() bool {
+func (x *_MsgPerformActionExitPool_4_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
 	md_MsgPerformActionExitPool                 protoreflect.MessageDescriptor
+	fd_MsgPerformActionExitPool_creator         protoreflect.FieldDescriptor
 	fd_MsgPerformActionExitPool_vault_id        protoreflect.FieldDescriptor
 	fd_MsgPerformActionExitPool_pool_id         protoreflect.FieldDescriptor
 	fd_MsgPerformActionExitPool_min_amounts_out protoreflect.FieldDescriptor
@@ -8343,6 +6139,7 @@ var (
 func init() {
 	file_elys_vaults_tx_proto_init()
 	md_MsgPerformActionExitPool = File_elys_vaults_tx_proto.Messages().ByName("MsgPerformActionExitPool")
+	fd_MsgPerformActionExitPool_creator = md_MsgPerformActionExitPool.Fields().ByName("creator")
 	fd_MsgPerformActionExitPool_vault_id = md_MsgPerformActionExitPool.Fields().ByName("vault_id")
 	fd_MsgPerformActionExitPool_pool_id = md_MsgPerformActionExitPool.Fields().ByName("pool_id")
 	fd_MsgPerformActionExitPool_min_amounts_out = md_MsgPerformActionExitPool.Fields().ByName("min_amounts_out")
@@ -8359,7 +6156,7 @@ func (x *MsgPerformActionExitPool) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionExitPool) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[13]
+	mi := &file_elys_vaults_tx_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8415,6 +6212,12 @@ func (x *fastReflection_MsgPerformActionExitPool) Interface() protoreflect.Proto
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_MsgPerformActionExitPool) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Creator != "" {
+		value := protoreflect.ValueOfString(x.Creator)
+		if !f(fd_MsgPerformActionExitPool_creator, value) {
+			return
+		}
+	}
 	if x.VaultId != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.VaultId)
 		if !f(fd_MsgPerformActionExitPool_vault_id, value) {
@@ -8428,7 +6231,7 @@ func (x *fastReflection_MsgPerformActionExitPool) Range(f func(protoreflect.Fiel
 		}
 	}
 	if len(x.MinAmountsOut) != 0 {
-		value := protoreflect.ValueOfList(&_MsgPerformActionExitPool_3_list{list: &x.MinAmountsOut})
+		value := protoreflect.ValueOfList(&_MsgPerformActionExitPool_4_list{list: &x.MinAmountsOut})
 		if !f(fd_MsgPerformActionExitPool_min_amounts_out, value) {
 			return
 		}
@@ -8460,6 +6263,8 @@ func (x *fastReflection_MsgPerformActionExitPool) Range(f func(protoreflect.Fiel
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_MsgPerformActionExitPool) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		return x.Creator != ""
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		return x.VaultId != uint64(0)
 	case "elys.vaults.MsgPerformActionExitPool.pool_id":
@@ -8486,6 +6291,8 @@ func (x *fastReflection_MsgPerformActionExitPool) Has(fd protoreflect.FieldDescr
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionExitPool) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		x.Creator = ""
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		x.VaultId = uint64(0)
 	case "elys.vaults.MsgPerformActionExitPool.pool_id":
@@ -8512,6 +6319,9 @@ func (x *fastReflection_MsgPerformActionExitPool) Clear(fd protoreflect.FieldDes
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_MsgPerformActionExitPool) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		value := x.Creator
+		return protoreflect.ValueOfString(value)
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		value := x.VaultId
 		return protoreflect.ValueOfUint64(value)
@@ -8520,9 +6330,9 @@ func (x *fastReflection_MsgPerformActionExitPool) Get(descriptor protoreflect.Fi
 		return protoreflect.ValueOfUint64(value)
 	case "elys.vaults.MsgPerformActionExitPool.min_amounts_out":
 		if len(x.MinAmountsOut) == 0 {
-			return protoreflect.ValueOfList(&_MsgPerformActionExitPool_3_list{})
+			return protoreflect.ValueOfList(&_MsgPerformActionExitPool_4_list{})
 		}
-		listValue := &_MsgPerformActionExitPool_3_list{list: &x.MinAmountsOut}
+		listValue := &_MsgPerformActionExitPool_4_list{list: &x.MinAmountsOut}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.vaults.MsgPerformActionExitPool.share_amount_in":
 		value := x.ShareAmountIn
@@ -8550,13 +6360,15 @@ func (x *fastReflection_MsgPerformActionExitPool) Get(descriptor protoreflect.Fi
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionExitPool) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		x.Creator = value.Interface().(string)
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		x.VaultId = value.Uint()
 	case "elys.vaults.MsgPerformActionExitPool.pool_id":
 		x.PoolId = value.Uint()
 	case "elys.vaults.MsgPerformActionExitPool.min_amounts_out":
 		lv := value.List()
-		clv := lv.(*_MsgPerformActionExitPool_3_list)
+		clv := lv.(*_MsgPerformActionExitPool_4_list)
 		x.MinAmountsOut = *clv.list
 	case "elys.vaults.MsgPerformActionExitPool.share_amount_in":
 		x.ShareAmountIn = value.Interface().(string)
@@ -8586,8 +6398,10 @@ func (x *fastReflection_MsgPerformActionExitPool) Mutable(fd protoreflect.FieldD
 		if x.MinAmountsOut == nil {
 			x.MinAmountsOut = []*v1beta1.Coin{}
 		}
-		value := &_MsgPerformActionExitPool_3_list{list: &x.MinAmountsOut}
+		value := &_MsgPerformActionExitPool_4_list{list: &x.MinAmountsOut}
 		return protoreflect.ValueOfList(value)
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		panic(fmt.Errorf("field creator of message elys.vaults.MsgPerformActionExitPool is not mutable"))
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		panic(fmt.Errorf("field vault_id of message elys.vaults.MsgPerformActionExitPool is not mutable"))
 	case "elys.vaults.MsgPerformActionExitPool.pool_id":
@@ -8609,13 +6423,15 @@ func (x *fastReflection_MsgPerformActionExitPool) Mutable(fd protoreflect.FieldD
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_MsgPerformActionExitPool) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionExitPool.creator":
+		return protoreflect.ValueOfString("")
 	case "elys.vaults.MsgPerformActionExitPool.vault_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.vaults.MsgPerformActionExitPool.pool_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.vaults.MsgPerformActionExitPool.min_amounts_out":
 		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_MsgPerformActionExitPool_3_list{list: &list})
+		return protoreflect.ValueOfList(&_MsgPerformActionExitPool_4_list{list: &list})
 	case "elys.vaults.MsgPerformActionExitPool.share_amount_in":
 		return protoreflect.ValueOfString("")
 	case "elys.vaults.MsgPerformActionExitPool.token_out_denom":
@@ -8689,6 +6505,10 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 		var n int
 		var l int
 		_ = l
+		l = len(x.Creator)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.VaultId != 0 {
 			n += 1 + runtime.Sov(uint64(x.VaultId))
 		}
@@ -8743,14 +6563,14 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 			copy(dAtA[i:], x.TokenOutDenom)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TokenOutDenom)))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x32
 		}
 		if len(x.ShareAmountIn) > 0 {
 			i -= len(x.ShareAmountIn)
 			copy(dAtA[i:], x.ShareAmountIn)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ShareAmountIn)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x2a
 		}
 		if len(x.MinAmountsOut) > 0 {
 			for iNdEx := len(x.MinAmountsOut) - 1; iNdEx >= 0; iNdEx-- {
@@ -8765,18 +6585,25 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x1a
+				dAtA[i] = 0x22
 			}
 		}
 		if x.PoolId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x18
 		}
 		if x.VaultId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.VaultId))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0x10
+		}
+		if len(x.Creator) > 0 {
+			i -= len(x.Creator)
+			copy(dAtA[i:], x.Creator)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
+			i--
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -8828,6 +6655,38 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Creator = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
 				}
@@ -8846,7 +6705,7 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 						break
 					}
 				}
-			case 2:
+			case 3:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
 				}
@@ -8865,7 +6724,7 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 						break
 					}
 				}
-			case 3:
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinAmountsOut", wireType)
 				}
@@ -8899,7 +6758,7 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 4:
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ShareAmountIn", wireType)
 				}
@@ -8931,7 +6790,7 @@ func (x *fastReflection_MsgPerformActionExitPool) ProtoMethods() *protoiface.Met
 				}
 				x.ShareAmountIn = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 5:
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenOutDenom", wireType)
 				}
@@ -9073,7 +6932,7 @@ func (x *MsgPerformActionExitPoolResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionExitPoolResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[14]
+	mi := &file_elys_vaults_tx_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9622,6 +7481,7 @@ func (x *fastReflection_MsgPerformActionExitPoolResponse) ProtoMethods() *protoi
 
 var (
 	md_MsgPerformActionSwapByDenom            protoreflect.MessageDescriptor
+	fd_MsgPerformActionSwapByDenom_creator    protoreflect.FieldDescriptor
 	fd_MsgPerformActionSwapByDenom_vault_id   protoreflect.FieldDescriptor
 	fd_MsgPerformActionSwapByDenom_amount     protoreflect.FieldDescriptor
 	fd_MsgPerformActionSwapByDenom_min_amount protoreflect.FieldDescriptor
@@ -9633,6 +7493,7 @@ var (
 func init() {
 	file_elys_vaults_tx_proto_init()
 	md_MsgPerformActionSwapByDenom = File_elys_vaults_tx_proto.Messages().ByName("MsgPerformActionSwapByDenom")
+	fd_MsgPerformActionSwapByDenom_creator = md_MsgPerformActionSwapByDenom.Fields().ByName("creator")
 	fd_MsgPerformActionSwapByDenom_vault_id = md_MsgPerformActionSwapByDenom.Fields().ByName("vault_id")
 	fd_MsgPerformActionSwapByDenom_amount = md_MsgPerformActionSwapByDenom.Fields().ByName("amount")
 	fd_MsgPerformActionSwapByDenom_min_amount = md_MsgPerformActionSwapByDenom.Fields().ByName("min_amount")
@@ -9650,7 +7511,7 @@ func (x *MsgPerformActionSwapByDenom) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgPerformActionSwapByDenom) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[15]
+	mi := &file_elys_vaults_tx_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9706,6 +7567,12 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Interface() protoreflect.Pr
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_MsgPerformActionSwapByDenom) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Creator != "" {
+		value := protoreflect.ValueOfString(x.Creator)
+		if !f(fd_MsgPerformActionSwapByDenom_creator, value) {
+			return
+		}
+	}
 	if x.VaultId != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.VaultId)
 		if !f(fd_MsgPerformActionSwapByDenom_vault_id, value) {
@@ -9757,6 +7624,8 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Range(f func(protoreflect.F
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_MsgPerformActionSwapByDenom) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		return x.Creator != ""
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		return x.VaultId != uint64(0)
 	case "elys.vaults.MsgPerformActionSwapByDenom.amount":
@@ -9785,6 +7654,8 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Has(fd protoreflect.FieldDe
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionSwapByDenom) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		x.Creator = ""
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		x.VaultId = uint64(0)
 	case "elys.vaults.MsgPerformActionSwapByDenom.amount":
@@ -9813,6 +7684,9 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Clear(fd protoreflect.Field
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_MsgPerformActionSwapByDenom) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		value := x.Creator
+		return protoreflect.ValueOfString(value)
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		value := x.VaultId
 		return protoreflect.ValueOfUint64(value)
@@ -9851,6 +7725,8 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Get(descriptor protoreflect
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgPerformActionSwapByDenom) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		x.Creator = value.Interface().(string)
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		x.VaultId = value.Uint()
 	case "elys.vaults.MsgPerformActionSwapByDenom.amount":
@@ -9898,6 +7774,8 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Mutable(fd protoreflect.Fie
 			x.MaxAmount = new(v1beta1.Coin)
 		}
 		return protoreflect.ValueOfMessage(x.MaxAmount.ProtoReflect())
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		panic(fmt.Errorf("field creator of message elys.vaults.MsgPerformActionSwapByDenom is not mutable"))
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		panic(fmt.Errorf("field vault_id of message elys.vaults.MsgPerformActionSwapByDenom is not mutable"))
 	case "elys.vaults.MsgPerformActionSwapByDenom.denom_in":
@@ -9917,6 +7795,8 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) Mutable(fd protoreflect.Fie
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_MsgPerformActionSwapByDenom) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.vaults.MsgPerformActionSwapByDenom.creator":
+		return protoreflect.ValueOfString("")
 	case "elys.vaults.MsgPerformActionSwapByDenom.vault_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.vaults.MsgPerformActionSwapByDenom.amount":
@@ -10001,6 +7881,10 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 		var n int
 		var l int
 		_ = l
+		l = len(x.Creator)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.VaultId != 0 {
 			n += 1 + runtime.Sov(uint64(x.VaultId))
 		}
@@ -10058,14 +7942,14 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 			copy(dAtA[i:], x.DenomOut)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DenomOut)))
 			i--
-			dAtA[i] = 0x32
+			dAtA[i] = 0x3a
 		}
 		if len(x.DenomIn) > 0 {
 			i -= len(x.DenomIn)
 			copy(dAtA[i:], x.DenomIn)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DenomIn)))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x32
 		}
 		if x.MaxAmount != nil {
 			encoded, err := options.Marshal(x.MaxAmount)
@@ -10079,7 +7963,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x2a
 		}
 		if x.MinAmount != nil {
 			encoded, err := options.Marshal(x.MinAmount)
@@ -10093,7 +7977,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x22
 		}
 		if x.Amount != nil {
 			encoded, err := options.Marshal(x.Amount)
@@ -10107,12 +7991,19 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x12
+			dAtA[i] = 0x1a
 		}
 		if x.VaultId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.VaultId))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0x10
+		}
+		if len(x.Creator) > 0 {
+			i -= len(x.Creator)
+			copy(dAtA[i:], x.Creator)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
+			i--
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -10164,6 +8055,38 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Creator = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
 				}
@@ -10182,7 +8105,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 						break
 					}
 				}
-			case 2:
+			case 3:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 				}
@@ -10218,7 +8141,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 3:
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinAmount", wireType)
 				}
@@ -10254,7 +8177,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 4:
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxAmount", wireType)
 				}
@@ -10290,7 +8213,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 5:
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DenomIn", wireType)
 				}
@@ -10322,7 +8245,7 @@ func (x *fastReflection_MsgPerformActionSwapByDenom) ProtoMethods() *protoiface.
 				}
 				x.DenomIn = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 6:
+			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DenomOut", wireType)
 				}
@@ -10409,7 +8332,7 @@ func (x *MsgPerformActionSwapByDenomResponse) ProtoReflect() protoreflect.Messag
 }
 
 func (x *MsgPerformActionSwapByDenomResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[16]
+	mi := &file_elys_vaults_tx_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10942,7 +8865,7 @@ func (x *MsgUpdateVaultCoins) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultCoins) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[17]
+	mi := &file_elys_vaults_tx_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11560,7 +9483,7 @@ func (x *MsgUpdateVaultCoinsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultCoinsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[18]
+	mi := &file_elys_vaults_tx_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11972,7 +9895,7 @@ func (x *MsgUpdateVaultFees) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultFees) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[19]
+	mi := &file_elys_vaults_tx_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12624,7 +10547,7 @@ func (x *MsgUpdateVaultFeesResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultFeesResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[20]
+	mi := &file_elys_vaults_tx_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13032,7 +10955,7 @@ func (x *MsgUpdateVaultLockupPeriod) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultLockupPeriod) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[21]
+	mi := &file_elys_vaults_tx_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13544,7 +11467,7 @@ func (x *MsgUpdateVaultLockupPeriodResponse) ProtoReflect() protoreflect.Message
 }
 
 func (x *MsgUpdateVaultLockupPeriodResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[22]
+	mi := &file_elys_vaults_tx_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13952,7 +11875,7 @@ func (x *MsgUpdateVaultMaxAmountUsd) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateVaultMaxAmountUsd) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[23]
+	mi := &file_elys_vaults_tx_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14480,7 +12403,7 @@ func (x *MsgUpdateVaultMaxAmountUsdResponse) ProtoReflect() protoreflect.Message
 }
 
 func (x *MsgUpdateVaultMaxAmountUsdResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[24]
+	mi := &file_elys_vaults_tx_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14932,7 +12855,7 @@ func (x *MsgClaimRewards) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgClaimRewards) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[25]
+	mi := &file_elys_vaults_tx_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -15482,7 +13405,7 @@ func (x *MsgClaimRewardsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgClaimRewardsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_vaults_tx_proto_msgTypes[26]
+	mi := &file_elys_vaults_tx_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -16265,285 +14188,6 @@ func (x *MsgAddVaultResponse) GetVaultId() uint64 {
 	return 0
 }
 
-type MsgPerformAction struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	VaultId uint64  `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
-	Action  *Action `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
-}
-
-func (x *MsgPerformAction) Reset() {
-	*x = MsgPerformAction{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *MsgPerformAction) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MsgPerformAction) ProtoMessage() {}
-
-// Deprecated: Use MsgPerformAction.ProtoReflect.Descriptor instead.
-func (*MsgPerformAction) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *MsgPerformAction) GetCreator() string {
-	if x != nil {
-		return x.Creator
-	}
-	return ""
-}
-
-func (x *MsgPerformAction) GetVaultId() uint64 {
-	if x != nil {
-		return x.VaultId
-	}
-	return 0
-}
-
-func (x *MsgPerformAction) GetAction() *Action {
-	if x != nil {
-		return x.Action
-	}
-	return nil
-}
-
-type Action struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Types that are assignable to Action:
-	//
-	//	*Action_JoinPool
-	//	*Action_ExitPool
-	//	*Action_SwapByDenom
-	//	*Action_CommitClaimedRewards
-	//	*Action_UncommitTokens
-	//	*Action_Vest
-	//	*Action_CancelVest
-	//	*Action_ClaimVesting
-	//	*Action_Stake
-	//	*Action_Unstake
-	//	*Action_Bond
-	//	*Action_Unbond
-	//	*Action_ClaimRewards
-	Action isAction_Action `protobuf_oneof:"action"`
-}
-
-func (x *Action) Reset() {
-	*x = Action{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Action) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Action) ProtoMessage() {}
-
-// Deprecated: Use Action.ProtoReflect.Descriptor instead.
-func (*Action) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *Action) GetAction() isAction_Action {
-	if x != nil {
-		return x.Action
-	}
-	return nil
-}
-
-func (x *Action) GetJoinPool() *amm.MsgJoinPool {
-	if x, ok := x.GetAction().(*Action_JoinPool); ok {
-		return x.JoinPool
-	}
-	return nil
-}
-
-func (x *Action) GetExitPool() *amm.MsgExitPool {
-	if x, ok := x.GetAction().(*Action_ExitPool); ok {
-		return x.ExitPool
-	}
-	return nil
-}
-
-func (x *Action) GetSwapByDenom() *amm.MsgSwapByDenom {
-	if x, ok := x.GetAction().(*Action_SwapByDenom); ok {
-		return x.SwapByDenom
-	}
-	return nil
-}
-
-func (x *Action) GetCommitClaimedRewards() *commitment.MsgCommitClaimedRewards {
-	if x, ok := x.GetAction().(*Action_CommitClaimedRewards); ok {
-		return x.CommitClaimedRewards
-	}
-	return nil
-}
-
-func (x *Action) GetUncommitTokens() *commitment.MsgUncommitTokens {
-	if x, ok := x.GetAction().(*Action_UncommitTokens); ok {
-		return x.UncommitTokens
-	}
-	return nil
-}
-
-func (x *Action) GetVest() *commitment.MsgVest {
-	if x, ok := x.GetAction().(*Action_Vest); ok {
-		return x.Vest
-	}
-	return nil
-}
-
-func (x *Action) GetCancelVest() *commitment.MsgCancelVest {
-	if x, ok := x.GetAction().(*Action_CancelVest); ok {
-		return x.CancelVest
-	}
-	return nil
-}
-
-func (x *Action) GetClaimVesting() *commitment.MsgClaimVesting {
-	if x, ok := x.GetAction().(*Action_ClaimVesting); ok {
-		return x.ClaimVesting
-	}
-	return nil
-}
-
-func (x *Action) GetStake() *commitment.MsgStake {
-	if x, ok := x.GetAction().(*Action_Stake); ok {
-		return x.Stake
-	}
-	return nil
-}
-
-func (x *Action) GetUnstake() *commitment.MsgUnstake {
-	if x, ok := x.GetAction().(*Action_Unstake); ok {
-		return x.Unstake
-	}
-	return nil
-}
-
-func (x *Action) GetBond() *stablestake.MsgBond {
-	if x, ok := x.GetAction().(*Action_Bond); ok {
-		return x.Bond
-	}
-	return nil
-}
-
-func (x *Action) GetUnbond() *stablestake.MsgUnbond {
-	if x, ok := x.GetAction().(*Action_Unbond); ok {
-		return x.Unbond
-	}
-	return nil
-}
-
-func (x *Action) GetClaimRewards() *masterchef.MsgClaimRewards {
-	if x, ok := x.GetAction().(*Action_ClaimRewards); ok {
-		return x.ClaimRewards
-	}
-	return nil
-}
-
-type isAction_Action interface {
-	isAction_Action()
-}
-
-type Action_JoinPool struct {
-	// AMM
-	JoinPool *amm.MsgJoinPool `protobuf:"bytes,3,opt,name=join_pool,json=joinPool,proto3,oneof"`
-}
-
-type Action_ExitPool struct {
-	ExitPool *amm.MsgExitPool `protobuf:"bytes,4,opt,name=exit_pool,json=exitPool,proto3,oneof"`
-}
-
-type Action_SwapByDenom struct {
-	SwapByDenom *amm.MsgSwapByDenom `protobuf:"bytes,5,opt,name=swap_by_denom,json=swapByDenom,proto3,oneof"`
-}
-
-type Action_CommitClaimedRewards struct {
-	// Commitment (Rewards management)
-	CommitClaimedRewards *commitment.MsgCommitClaimedRewards `protobuf:"bytes,6,opt,name=commit_claimed_rewards,json=commitClaimedRewards,proto3,oneof"`
-}
-
-type Action_UncommitTokens struct {
-	UncommitTokens *commitment.MsgUncommitTokens `protobuf:"bytes,7,opt,name=uncommit_tokens,json=uncommitTokens,proto3,oneof"`
-}
-
-type Action_Vest struct {
-	Vest *commitment.MsgVest `protobuf:"bytes,8,opt,name=vest,proto3,oneof"`
-}
-
-type Action_CancelVest struct {
-	CancelVest *commitment.MsgCancelVest `protobuf:"bytes,9,opt,name=cancel_vest,json=cancelVest,proto3,oneof"`
-}
-
-type Action_ClaimVesting struct {
-	ClaimVesting *commitment.MsgClaimVesting `protobuf:"bytes,10,opt,name=claim_vesting,json=claimVesting,proto3,oneof"`
-}
-
-type Action_Stake struct {
-	// Staking
-	Stake *commitment.MsgStake `protobuf:"bytes,11,opt,name=stake,proto3,oneof"`
-}
-
-type Action_Unstake struct {
-	Unstake *commitment.MsgUnstake `protobuf:"bytes,12,opt,name=unstake,proto3,oneof"`
-}
-
-type Action_Bond struct {
-	// Stablestake
-	Bond *stablestake.MsgBond `protobuf:"bytes,13,opt,name=bond,proto3,oneof"`
-}
-
-type Action_Unbond struct {
-	Unbond *stablestake.MsgUnbond `protobuf:"bytes,14,opt,name=unbond,proto3,oneof"`
-}
-
-type Action_ClaimRewards struct {
-	// Masterchef
-	ClaimRewards *masterchef.MsgClaimRewards `protobuf:"bytes,15,opt,name=claim_rewards,json=claimRewards,proto3,oneof"`
-}
-
-func (*Action_JoinPool) isAction_Action() {}
-
-func (*Action_ExitPool) isAction_Action() {}
-
-func (*Action_SwapByDenom) isAction_Action() {}
-
-func (*Action_CommitClaimedRewards) isAction_Action() {}
-
-func (*Action_UncommitTokens) isAction_Action() {}
-
-func (*Action_Vest) isAction_Action() {}
-
-func (*Action_CancelVest) isAction_Action() {}
-
-func (*Action_ClaimVesting) isAction_Action() {}
-
-func (*Action_Stake) isAction_Action() {}
-
-func (*Action_Unstake) isAction_Action() {}
-
-func (*Action_Bond) isAction_Action() {}
-
-func (*Action_Unbond) isAction_Action() {}
-
-func (*Action_ClaimRewards) isAction_Action() {}
-
 type MsgPerformActionResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16555,7 +14199,7 @@ type MsgPerformActionResponse struct {
 func (x *MsgPerformActionResponse) Reset() {
 	*x = MsgPerformActionResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[10]
+		mi := &file_elys_vaults_tx_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16569,7 +14213,7 @@ func (*MsgPerformActionResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionResponse.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{10}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MsgPerformActionResponse) GetVaultId() uint64 {
@@ -16584,16 +14228,17 @@ type MsgPerformActionJoinPool struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VaultId        uint64          `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
-	PoolId         uint64          `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	MaxAmountsIn   []*v1beta1.Coin `protobuf:"bytes,3,rep,name=max_amounts_in,json=maxAmountsIn,proto3" json:"max_amounts_in,omitempty"`
-	ShareAmountOut string          `protobuf:"bytes,4,opt,name=share_amount_out,json=shareAmountOut,proto3" json:"share_amount_out,omitempty"`
+	Creator        string          `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId        uint64          `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	PoolId         uint64          `protobuf:"varint,3,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	MaxAmountsIn   []*v1beta1.Coin `protobuf:"bytes,4,rep,name=max_amounts_in,json=maxAmountsIn,proto3" json:"max_amounts_in,omitempty"`
+	ShareAmountOut string          `protobuf:"bytes,5,opt,name=share_amount_out,json=shareAmountOut,proto3" json:"share_amount_out,omitempty"`
 }
 
 func (x *MsgPerformActionJoinPool) Reset() {
 	*x = MsgPerformActionJoinPool{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[11]
+		mi := &file_elys_vaults_tx_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16607,7 +14252,14 @@ func (*MsgPerformActionJoinPool) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionJoinPool.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionJoinPool) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{11}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *MsgPerformActionJoinPool) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
 }
 
 func (x *MsgPerformActionJoinPool) GetVaultId() uint64 {
@@ -16649,7 +14301,7 @@ type MsgPerformActionJoinPoolResponse struct {
 func (x *MsgPerformActionJoinPoolResponse) Reset() {
 	*x = MsgPerformActionJoinPoolResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[12]
+		mi := &file_elys_vaults_tx_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16663,7 +14315,7 @@ func (*MsgPerformActionJoinPoolResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionJoinPoolResponse.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionJoinPoolResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{12}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *MsgPerformActionJoinPoolResponse) GetShareAmountOut() string {
@@ -16678,17 +14330,18 @@ type MsgPerformActionExitPool struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VaultId       uint64          `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
-	PoolId        uint64          `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	MinAmountsOut []*v1beta1.Coin `protobuf:"bytes,3,rep,name=min_amounts_out,json=minAmountsOut,proto3" json:"min_amounts_out,omitempty"`
-	ShareAmountIn string          `protobuf:"bytes,4,opt,name=share_amount_in,json=shareAmountIn,proto3" json:"share_amount_in,omitempty"`
-	TokenOutDenom string          `protobuf:"bytes,5,opt,name=token_out_denom,json=tokenOutDenom,proto3" json:"token_out_denom,omitempty"`
+	Creator       string          `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId       uint64          `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	PoolId        uint64          `protobuf:"varint,3,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	MinAmountsOut []*v1beta1.Coin `protobuf:"bytes,4,rep,name=min_amounts_out,json=minAmountsOut,proto3" json:"min_amounts_out,omitempty"`
+	ShareAmountIn string          `protobuf:"bytes,5,opt,name=share_amount_in,json=shareAmountIn,proto3" json:"share_amount_in,omitempty"`
+	TokenOutDenom string          `protobuf:"bytes,6,opt,name=token_out_denom,json=tokenOutDenom,proto3" json:"token_out_denom,omitempty"`
 }
 
 func (x *MsgPerformActionExitPool) Reset() {
 	*x = MsgPerformActionExitPool{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[13]
+		mi := &file_elys_vaults_tx_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16702,7 +14355,14 @@ func (*MsgPerformActionExitPool) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionExitPool.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionExitPool) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{13}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *MsgPerformActionExitPool) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
 }
 
 func (x *MsgPerformActionExitPool) GetVaultId() uint64 {
@@ -16753,7 +14413,7 @@ type MsgPerformActionExitPoolResponse struct {
 func (x *MsgPerformActionExitPoolResponse) Reset() {
 	*x = MsgPerformActionExitPoolResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[14]
+		mi := &file_elys_vaults_tx_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16767,7 +14427,7 @@ func (*MsgPerformActionExitPoolResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionExitPoolResponse.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionExitPoolResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{14}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *MsgPerformActionExitPoolResponse) GetTokenOut() []*v1beta1.Coin {
@@ -16796,18 +14456,19 @@ type MsgPerformActionSwapByDenom struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VaultId   uint64        `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
-	Amount    *v1beta1.Coin `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	MinAmount *v1beta1.Coin `protobuf:"bytes,3,opt,name=min_amount,json=minAmount,proto3" json:"min_amount,omitempty"`
-	MaxAmount *v1beta1.Coin `protobuf:"bytes,4,opt,name=max_amount,json=maxAmount,proto3" json:"max_amount,omitempty"`
-	DenomIn   string        `protobuf:"bytes,5,opt,name=denom_in,json=denomIn,proto3" json:"denom_in,omitempty"`
-	DenomOut  string        `protobuf:"bytes,6,opt,name=denom_out,json=denomOut,proto3" json:"denom_out,omitempty"`
+	Creator   string        `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	VaultId   uint64        `protobuf:"varint,2,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	Amount    *v1beta1.Coin `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	MinAmount *v1beta1.Coin `protobuf:"bytes,4,opt,name=min_amount,json=minAmount,proto3" json:"min_amount,omitempty"`
+	MaxAmount *v1beta1.Coin `protobuf:"bytes,5,opt,name=max_amount,json=maxAmount,proto3" json:"max_amount,omitempty"`
+	DenomIn   string        `protobuf:"bytes,6,opt,name=denom_in,json=denomIn,proto3" json:"denom_in,omitempty"`
+	DenomOut  string        `protobuf:"bytes,7,opt,name=denom_out,json=denomOut,proto3" json:"denom_out,omitempty"`
 }
 
 func (x *MsgPerformActionSwapByDenom) Reset() {
 	*x = MsgPerformActionSwapByDenom{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[15]
+		mi := &file_elys_vaults_tx_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16821,7 +14482,14 @@ func (*MsgPerformActionSwapByDenom) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionSwapByDenom.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionSwapByDenom) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{15}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *MsgPerformActionSwapByDenom) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
 }
 
 func (x *MsgPerformActionSwapByDenom) GetVaultId() uint64 {
@@ -16877,7 +14545,7 @@ type MsgPerformActionSwapByDenomResponse struct {
 func (x *MsgPerformActionSwapByDenomResponse) Reset() {
 	*x = MsgPerformActionSwapByDenomResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[16]
+		mi := &file_elys_vaults_tx_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16891,7 +14559,7 @@ func (*MsgPerformActionSwapByDenomResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgPerformActionSwapByDenomResponse.ProtoReflect.Descriptor instead.
 func (*MsgPerformActionSwapByDenomResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{16}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *MsgPerformActionSwapByDenomResponse) GetOutAmount() *v1beta1.Coin {
@@ -16915,7 +14583,7 @@ type MsgUpdateVaultCoins struct {
 func (x *MsgUpdateVaultCoins) Reset() {
 	*x = MsgUpdateVaultCoins{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[17]
+		mi := &file_elys_vaults_tx_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16929,7 +14597,7 @@ func (*MsgUpdateVaultCoins) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultCoins.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultCoins) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{17}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *MsgUpdateVaultCoins) GetCreator() string {
@@ -16971,7 +14639,7 @@ type MsgUpdateVaultCoinsResponse struct {
 func (x *MsgUpdateVaultCoinsResponse) Reset() {
 	*x = MsgUpdateVaultCoinsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[18]
+		mi := &file_elys_vaults_tx_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16985,7 +14653,7 @@ func (*MsgUpdateVaultCoinsResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultCoinsResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultCoinsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{18}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *MsgUpdateVaultCoinsResponse) GetVaultId() uint64 {
@@ -17010,7 +14678,7 @@ type MsgUpdateVaultFees struct {
 func (x *MsgUpdateVaultFees) Reset() {
 	*x = MsgUpdateVaultFees{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[19]
+		mi := &file_elys_vaults_tx_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17024,7 +14692,7 @@ func (*MsgUpdateVaultFees) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultFees.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultFees) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{19}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *MsgUpdateVaultFees) GetCreator() string {
@@ -17073,7 +14741,7 @@ type MsgUpdateVaultFeesResponse struct {
 func (x *MsgUpdateVaultFeesResponse) Reset() {
 	*x = MsgUpdateVaultFeesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[20]
+		mi := &file_elys_vaults_tx_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17087,7 +14755,7 @@ func (*MsgUpdateVaultFeesResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultFeesResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultFeesResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{20}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *MsgUpdateVaultFeesResponse) GetVaultId() uint64 {
@@ -17110,7 +14778,7 @@ type MsgUpdateVaultLockupPeriod struct {
 func (x *MsgUpdateVaultLockupPeriod) Reset() {
 	*x = MsgUpdateVaultLockupPeriod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[21]
+		mi := &file_elys_vaults_tx_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17124,7 +14792,7 @@ func (*MsgUpdateVaultLockupPeriod) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultLockupPeriod.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultLockupPeriod) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{21}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *MsgUpdateVaultLockupPeriod) GetCreator() string {
@@ -17159,7 +14827,7 @@ type MsgUpdateVaultLockupPeriodResponse struct {
 func (x *MsgUpdateVaultLockupPeriodResponse) Reset() {
 	*x = MsgUpdateVaultLockupPeriodResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[22]
+		mi := &file_elys_vaults_tx_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17173,7 +14841,7 @@ func (*MsgUpdateVaultLockupPeriodResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultLockupPeriodResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultLockupPeriodResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{22}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *MsgUpdateVaultLockupPeriodResponse) GetVaultId() uint64 {
@@ -17196,7 +14864,7 @@ type MsgUpdateVaultMaxAmountUsd struct {
 func (x *MsgUpdateVaultMaxAmountUsd) Reset() {
 	*x = MsgUpdateVaultMaxAmountUsd{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[23]
+		mi := &file_elys_vaults_tx_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17210,7 +14878,7 @@ func (*MsgUpdateVaultMaxAmountUsd) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultMaxAmountUsd.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultMaxAmountUsd) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{23}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *MsgUpdateVaultMaxAmountUsd) GetCreator() string {
@@ -17245,7 +14913,7 @@ type MsgUpdateVaultMaxAmountUsdResponse struct {
 func (x *MsgUpdateVaultMaxAmountUsdResponse) Reset() {
 	*x = MsgUpdateVaultMaxAmountUsdResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[24]
+		mi := &file_elys_vaults_tx_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17259,7 +14927,7 @@ func (*MsgUpdateVaultMaxAmountUsdResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateVaultMaxAmountUsdResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateVaultMaxAmountUsdResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{24}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *MsgUpdateVaultMaxAmountUsdResponse) GetVaultId() uint64 {
@@ -17281,7 +14949,7 @@ type MsgClaimRewards struct {
 func (x *MsgClaimRewards) Reset() {
 	*x = MsgClaimRewards{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[25]
+		mi := &file_elys_vaults_tx_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17295,7 +14963,7 @@ func (*MsgClaimRewards) ProtoMessage() {}
 
 // Deprecated: Use MsgClaimRewards.ProtoReflect.Descriptor instead.
 func (*MsgClaimRewards) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{25}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *MsgClaimRewards) GetSender() string {
@@ -17321,7 +14989,7 @@ type MsgClaimRewardsResponse struct {
 func (x *MsgClaimRewardsResponse) Reset() {
 	*x = MsgClaimRewardsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_vaults_tx_proto_msgTypes[26]
+		mi := &file_elys_vaults_tx_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -17335,7 +15003,7 @@ func (*MsgClaimRewardsResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgClaimRewardsResponse.ProtoReflect.Descriptor instead.
 func (*MsgClaimRewardsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{26}
+	return file_elys_vaults_tx_proto_rawDescGZIP(), []int{24}
 }
 
 var File_elys_vaults_tx_proto protoreflect.FileDescriptor
@@ -17461,349 +15129,289 @@ var file_elys_vaults_tx_proto_rawDesc = []byte{
 	0x13, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22,
-	0xb8, 0x01, 0x0a, 0x10, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
-	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x49, 0x64, 0x12, 0x2b, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
-	0x73, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x3a, 0x28, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7,
-	0xb0, 0x2a, 0x17, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72,
-	0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xc8, 0x06, 0x0a, 0x06, 0x41,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x34, 0x0a, 0x09, 0x6a, 0x6f, 0x69, 0x6e, 0x5f, 0x70, 0x6f,
-	0x6f, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x6d, 0x6d, 0x2e, 0x4d, 0x73, 0x67, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x48,
-	0x00, 0x52, 0x08, 0x6a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x34, 0x0a, 0x09, 0x65,
-	0x78, 0x69, 0x74, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x69,
-	0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x48, 0x00, 0x52, 0x08, 0x65, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f,
-	0x6c, 0x12, 0x3e, 0x0a, 0x0d, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x6d, 0x6d, 0x2e, 0x4d, 0x73, 0x67, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e,
-	0x6f, 0x6d, 0x48, 0x00, 0x52, 0x0b, 0x73, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f,
-	0x6d, 0x12, 0x60, 0x0a, 0x16, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x5f, 0x63, 0x6c, 0x61, 0x69,
-	0x6d, 0x65, 0x64, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
-	0x65, 0x6e, 0x74, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x43, 0x6c, 0x61,
-	0x69, 0x6d, 0x65, 0x64, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x48, 0x00, 0x52, 0x14, 0x63,
-	0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x65, 0x64, 0x52, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x12, 0x4d, 0x0a, 0x0f, 0x75, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x5f,
-	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x73,
-	0x48, 0x00, 0x52, 0x0e, 0x75, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x54, 0x6f, 0x6b, 0x65,
-	0x6e, 0x73, 0x12, 0x2e, 0x0a, 0x04, 0x76, 0x65, 0x73, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65,
-	0x6e, 0x74, 0x2e, 0x4d, 0x73, 0x67, 0x56, 0x65, 0x73, 0x74, 0x48, 0x00, 0x52, 0x04, 0x76, 0x65,
-	0x73, 0x74, 0x12, 0x41, 0x0a, 0x0b, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x5f, 0x76, 0x65, 0x73,
-	0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
-	0x63, 0x65, 0x6c, 0x56, 0x65, 0x73, 0x74, 0x48, 0x00, 0x52, 0x0a, 0x63, 0x61, 0x6e, 0x63, 0x65,
-	0x6c, 0x56, 0x65, 0x73, 0x74, 0x12, 0x47, 0x0a, 0x0d, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x76,
-	0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4d,
-	0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x48, 0x00,
-	0x52, 0x0c, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x12, 0x31,
-	0x0a, 0x05, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e,
-	0x4d, 0x73, 0x67, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x48, 0x00, 0x52, 0x05, 0x73, 0x74, 0x61, 0x6b,
-	0x65, 0x12, 0x37, 0x0a, 0x07, 0x75, 0x6e, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x18, 0x0c, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74,
-	0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x6e, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x48,
-	0x00, 0x52, 0x07, 0x75, 0x6e, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6f,
-	0x6e, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x42,
-	0x6f, 0x6e, 0x64, 0x48, 0x00, 0x52, 0x04, 0x62, 0x6f, 0x6e, 0x64, 0x12, 0x35, 0x0a, 0x06, 0x75,
-	0x6e, 0x62, 0x6f, 0x6e, 0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x6e, 0x62, 0x6f, 0x6e, 0x64, 0x48, 0x00, 0x52, 0x06, 0x75, 0x6e, 0x62, 0x6f,
-	0x6e, 0x64, 0x12, 0x47, 0x0a, 0x0d, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x72, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x43,
-	0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x48, 0x00, 0x52, 0x0c, 0x63,
-	0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x42, 0x08, 0x0a, 0x06, 0x61,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x35, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66,
-	0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0x9e, 0x02, 0x0a,
-	0x18, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75,
-	0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75,
-	0x6c, 0x74, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x45, 0x0a,
-	0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69, 0x6e, 0x18,
-	0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e,
-	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x73, 0x49, 0x6e, 0x12, 0x55, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b,
-	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
-	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x73, 0x68, 0x61,
-	0x72, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x3a, 0x30, 0x82, 0xe7, 0xb0,
-	0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1f, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x22, 0x79, 0x0a,
-	0x20, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x55, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x22, 0xc6, 0x02, 0x0a, 0x18, 0x4d, 0x73, 0x67,
-	0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69,
-	0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64,
-	0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x47, 0x0a, 0x0f, 0x6d, 0x69, 0x6e,
-	0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x03, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x0d, 0x6d, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x4f,
-	0x75, 0x74, 0x12, 0x53, 0x0a, 0x0f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x5f, 0x69, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x12, 0x26, 0x0a, 0x0f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x5f, 0x6f, 0x75, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0d, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x3a,
-	0x30, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0,
-	0x2a, 0x1f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66,
-	0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f,
-	0x6c, 0x22, 0x94, 0x02, 0x0a, 0x20, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d,
-	0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f,
-	0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
-	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x08, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x4f, 0x75, 0x74, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62,
-	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
-	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c,
-	0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69,
-	0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08,
-	0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x22, 0xde, 0x02, 0x0a, 0x1b, 0x4d, 0x73, 0x67,
-	0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61,
-	0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x49, 0x64, 0x12, 0x37, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04,
-	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x3e, 0x0a, 0x0a,
-	0x6d, 0x69, 0x6e, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
-	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x09, 0x6d, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x3e, 0x0a, 0x0a,
-	0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
-	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x09, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x5f, 0x6f, 0x75, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x4f, 0x75, 0x74, 0x3a, 0x33, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
-	0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x22, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73,
-	0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77,
-	0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x65, 0x0a, 0x23, 0x4d, 0x73, 0x67,
-	0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61,
-	0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x3e, 0x0a, 0x0a, 0x6f, 0x75, 0x74, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
-	0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42,
-	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6f, 0x75, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x22, 0xd9, 0x01, 0x0a, 0x13, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x61, 0x6c, 0x6c, 0x6f, 0x77,
-	0x65, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0c,
-	0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x21, 0x0a, 0x0c,
-	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x3a,
-	0x2b, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0,
-	0x2a, 0x1a, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x22, 0x38, 0x0a, 0x1b,
-	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f,
-	0x69, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76,
+	0x35, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76,
 	0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xa6, 0x03, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12, 0x32, 0x0a,
+	0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xd2, 0x02, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x50, 0x65,
+	0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50,
+	0x6f, 0x6f, 0x6c, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x45, 0x0a, 0x0e, 0x6d,
+	0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69, 0x6e, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
+	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73,
+	0x49, 0x6e, 0x12, 0x55, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x73, 0x68, 0x61, 0x72, 0x65,
+	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x3a, 0x30, 0x82, 0xe7, 0xb0, 0x2a, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1f, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x22, 0x79, 0x0a, 0x20, 0x4d,
+	0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a,
+	0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x55, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x22, 0xfa, 0x02, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x50, 0x65,
+	0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50,
+	0x6f, 0x6f, 0x6c, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x47, 0x0a, 0x0f, 0x6d,
+	0x69, 0x6e, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x04,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
+	0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0d, 0x6d, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x73, 0x4f, 0x75, 0x74, 0x12, 0x53, 0x0a, 0x0f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d, 0x73, 0x68, 0x61, 0x72,
+	0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x12, 0x26, 0x0a, 0x0f, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0d, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x3a, 0x30, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a,
+	0xe7, 0xb0, 0x2a, 0x1f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65,
+	0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50,
+	0x6f, 0x6f, 0x6c, 0x22, 0x94, 0x02, 0x0a, 0x20, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f,
+	0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x74, 0x6f, 0x6b, 0x65,
+	0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
+	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x08, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42,
+	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4d, 0x0a, 0x08, 0x73,
+	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x22, 0x92, 0x03, 0x0a, 0x1b, 0x4d,
+	0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53,
+	0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
+	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19,
+	0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x37, 0x0a, 0x06, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x3e, 0x0a, 0x0a, 0x6d, 0x69, 0x6e, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6d, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x3e, 0x0a, 0x0a, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x06,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a,
+	0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4f, 0x75, 0x74, 0x3a, 0x33, 0x82, 0xe7, 0xb0, 0x2a,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x22, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22,
+	0x65, 0x0a, 0x23, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x0a, 0x6f, 0x75, 0x74, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6f, 0x75, 0x74,
+	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xd9, 0x01, 0x0a, 0x13, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x32,
+	0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
+	0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x23, 0x0a,
+	0x0d, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73, 0x18, 0x03,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x0c, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x43, 0x6f, 0x69,
+	0x6e, 0x73, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x63, 0x6f, 0x69,
+	0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x43, 0x6f, 0x69, 0x6e, 0x73, 0x3a, 0x2b, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1a, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d,
+	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69,
+	0x6e, 0x73, 0x22, 0x38, 0x0a, 0x1b, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xa6, 0x03, 0x0a,
+	0x12, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46,
+	0x65, 0x65, 0x73, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x49, 0x64, 0x12, 0x58, 0x0a, 0x0e, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d, 0x65, 0x6e, 0x74,
+	0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x6d,
+	0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x46, 0x65, 0x65, 0x12, 0x5a, 0x0a, 0x0f,
+	0x70, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0e, 0x70, 0x65, 0x72, 0x66, 0x6f, 0x72,
+	0x6d, 0x61, 0x6e, 0x63, 0x65, 0x46, 0x65, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x63, 0x6f, 0x6c, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f,
+	0x6c, 0x46, 0x65, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x3a, 0x2a, 0x82, 0xe7, 0xb0, 0x2a, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x46, 0x65, 0x65, 0x73, 0x22, 0x37, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46, 0x65, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xc4,
+	0x01, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x32, 0x0a,
 	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
 	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
 	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
 	0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x58, 0x0a, 0x0e,
-	0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d,
-	0x65, 0x6e, 0x74, 0x46, 0x65, 0x65, 0x12, 0x5a, 0x0a, 0x0f, 0x70, 0x65, 0x72, 0x66, 0x6f, 0x72,
-	0x6d, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x0e, 0x70, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x46,
-	0x65, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x5f, 0x66,
-	0x65, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
-	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
-	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
-	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x10, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x46, 0x65, 0x65, 0x53, 0x68,
-	0x61, 0x72, 0x65, 0x3a, 0x2a, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
-	0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46, 0x65, 0x65, 0x73, 0x22,
-	0x37, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x46, 0x65, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a,
-	0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
-	0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xc4, 0x01, 0x0a, 0x1a, 0x4d, 0x73, 0x67,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75,
-	0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
-	0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
-	0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x6c, 0x6f, 0x63, 0x6b, 0x75, 0x70,
-	0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6c,
-	0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x3a, 0x32, 0x82, 0xe7, 0xb0,
-	0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x21, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x22,
-	0x3f, 0x0a, 0x22, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64,
-	0x22, 0xf8, 0x01, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x12,
-	0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x57,
-	0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x3a, 0x32, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72,
-	0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x21, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
-	0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d,
-	0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x22, 0x3f, 0x0a, 0x22, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78,
-	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0x88, 0x01, 0x0a,
-	0x0f, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
-	0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64,
-	0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x73, 0x18,
-	0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x73, 0x3a,
-	0x26, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a,
-	0x16, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x19, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x43, 0x6c,
-	0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x32, 0xdd, 0x09, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x52, 0x0a, 0x0c, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43,
-	0x0a, 0x07, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x1a, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
-	0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x46, 0x0a, 0x08, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x12,
-	0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73,
-	0x67, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x69, 0x74, 0x68, 0x64,
-	0x72, 0x61, 0x77, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x46, 0x0a, 0x08, 0x41,
-	0x64, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
+	0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d,
+	0x6c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x0c, 0x6c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f,
+	0x64, 0x3a, 0x32, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a,
+	0xe7, 0xb0, 0x2a, 0x21, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x22, 0x3f, 0x0a, 0x22, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72,
+	0x69, 0x6f, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x49, 0x64, 0x22, 0xf8, 0x01, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x55, 0x73, 0x64, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x49, 0x64, 0x12, 0x57, 0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
+	0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x3a, 0x32, 0x82,
+	0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x21,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73,
+	0x64, 0x22, 0x3f, 0x0a, 0x22, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
+	0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x49, 0x64, 0x22, 0x88, 0x01, 0x0a, 0x0f, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x08, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x49, 0x64, 0x73, 0x3a, 0x26, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x73, 0x65, 0x6e, 0x64,
+	0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x16, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x4d, 0x73,
+	0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x19, 0x0a,
+	0x17, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x86, 0x09, 0x0a, 0x03, 0x4d, 0x73, 0x67,
+	0x12, 0x52, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d,
+	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x24,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x07, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12,
+	0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73,
+	0x67, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x1a, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x46, 0x0a, 0x08, 0x57, 0x69, 0x74,
+	0x68, 0x64, 0x72, 0x61, 0x77, 0x12, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x1a,
+	0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73,
+	0x67, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x46, 0x0a, 0x08, 0x41, 0x64, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x18, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41,
+	0x64, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
 	0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e,
-	0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x55, 0x0a, 0x0d, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
-	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6d, 0x0a, 0x15, 0x50, 0x65,
-	0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50,
-	0x6f, 0x6f, 0x6c, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
-	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x2d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66,
-	0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f,
-	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6d, 0x0a, 0x15, 0x50, 0x65, 0x72,
-	0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6d, 0x0a, 0x15, 0x50, 0x65, 0x72,
+	0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f,
 	0x6f, 0x6c, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
 	0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
 	0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f,
-	0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x76, 0x0a, 0x18, 0x50, 0x65, 0x72, 0x66,
-	0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x1a, 0x30,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67,
-	0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61,
-	0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x5e, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43,
-	0x6f, 0x69, 0x6e, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x5b, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46,
-	0x65, 0x65, 0x73, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6d, 0x0a, 0x15, 0x50, 0x65, 0x72, 0x66,
+	0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f,
+	0x6c, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e,
+	0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72,
+	0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x76, 0x0a, 0x18, 0x50, 0x65, 0x72, 0x66, 0x6f,
+	0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65,
+	0x6e, 0x6f, 0x6d, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50, 0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x1a, 0x30, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x50,
+	0x65, 0x72, 0x66, 0x6f, 0x72, 0x6d, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x77, 0x61, 0x70,
+	0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x5e, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f,
+	0x69, 0x6e, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
 	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74,
-	0x46, 0x65, 0x65, 0x73, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x46, 0x65, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x73, 0x0a,
-	0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b,
-	0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f,
-	0x64, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e,
-	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f,
-	0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x73, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x12, 0x27, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x52, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75,
-	0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0,
-	0x2a, 0x01, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e,
-	0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x43, 0x6f, 0x69, 0x6e, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x5b, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46, 0x65,
+	0x65, 0x73, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
+	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x46,
+	0x65, 0x65, 0x73, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x46, 0x65, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x73, 0x0a, 0x17,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75,
+	0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64,
+	0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d,
+	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x6f, 0x63,
+	0x6b, 0x75, 0x70, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x73, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x12, 0x27, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x55, 0x73, 0x64, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x4d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x52, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x73, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a,
+	0x01, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76,
+	0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c,
+	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -17818,7 +15426,7 @@ func file_elys_vaults_tx_proto_rawDescGZIP() []byte {
 	return file_elys_vaults_tx_proto_rawDescData
 }
 
-var file_elys_vaults_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_elys_vaults_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_elys_vaults_tx_proto_goTypes = []interface{}{
 	(*MsgUpdateParams)(nil),                     // 0: elys.vaults.MsgUpdateParams
 	(*MsgUpdateParamsResponse)(nil),             // 1: elys.vaults.MsgUpdateParamsResponse
@@ -17828,97 +15436,66 @@ var file_elys_vaults_tx_proto_goTypes = []interface{}{
 	(*MsgWithdrawResponse)(nil),                 // 5: elys.vaults.MsgWithdrawResponse
 	(*MsgAddVault)(nil),                         // 6: elys.vaults.MsgAddVault
 	(*MsgAddVaultResponse)(nil),                 // 7: elys.vaults.MsgAddVaultResponse
-	(*MsgPerformAction)(nil),                    // 8: elys.vaults.MsgPerformAction
-	(*Action)(nil),                              // 9: elys.vaults.Action
-	(*MsgPerformActionResponse)(nil),            // 10: elys.vaults.MsgPerformActionResponse
-	(*MsgPerformActionJoinPool)(nil),            // 11: elys.vaults.MsgPerformActionJoinPool
-	(*MsgPerformActionJoinPoolResponse)(nil),    // 12: elys.vaults.MsgPerformActionJoinPoolResponse
-	(*MsgPerformActionExitPool)(nil),            // 13: elys.vaults.MsgPerformActionExitPool
-	(*MsgPerformActionExitPoolResponse)(nil),    // 14: elys.vaults.MsgPerformActionExitPoolResponse
-	(*MsgPerformActionSwapByDenom)(nil),         // 15: elys.vaults.MsgPerformActionSwapByDenom
-	(*MsgPerformActionSwapByDenomResponse)(nil), // 16: elys.vaults.MsgPerformActionSwapByDenomResponse
-	(*MsgUpdateVaultCoins)(nil),                 // 17: elys.vaults.MsgUpdateVaultCoins
-	(*MsgUpdateVaultCoinsResponse)(nil),         // 18: elys.vaults.MsgUpdateVaultCoinsResponse
-	(*MsgUpdateVaultFees)(nil),                  // 19: elys.vaults.MsgUpdateVaultFees
-	(*MsgUpdateVaultFeesResponse)(nil),          // 20: elys.vaults.MsgUpdateVaultFeesResponse
-	(*MsgUpdateVaultLockupPeriod)(nil),          // 21: elys.vaults.MsgUpdateVaultLockupPeriod
-	(*MsgUpdateVaultLockupPeriodResponse)(nil),  // 22: elys.vaults.MsgUpdateVaultLockupPeriodResponse
-	(*MsgUpdateVaultMaxAmountUsd)(nil),          // 23: elys.vaults.MsgUpdateVaultMaxAmountUsd
-	(*MsgUpdateVaultMaxAmountUsdResponse)(nil),  // 24: elys.vaults.MsgUpdateVaultMaxAmountUsdResponse
-	(*MsgClaimRewards)(nil),                     // 25: elys.vaults.MsgClaimRewards
-	(*MsgClaimRewardsResponse)(nil),             // 26: elys.vaults.MsgClaimRewardsResponse
-	(*Params)(nil),                              // 27: elys.vaults.Params
-	(*v1beta1.Coin)(nil),                        // 28: cosmos.base.v1beta1.Coin
-	(*amm.MsgJoinPool)(nil),                     // 29: elys.amm.MsgJoinPool
-	(*amm.MsgExitPool)(nil),                     // 30: elys.amm.MsgExitPool
-	(*amm.MsgSwapByDenom)(nil),                  // 31: elys.amm.MsgSwapByDenom
-	(*commitment.MsgCommitClaimedRewards)(nil),  // 32: elys.commitment.MsgCommitClaimedRewards
-	(*commitment.MsgUncommitTokens)(nil),        // 33: elys.commitment.MsgUncommitTokens
-	(*commitment.MsgVest)(nil),                  // 34: elys.commitment.MsgVest
-	(*commitment.MsgCancelVest)(nil),            // 35: elys.commitment.MsgCancelVest
-	(*commitment.MsgClaimVesting)(nil),          // 36: elys.commitment.MsgClaimVesting
-	(*commitment.MsgStake)(nil),                 // 37: elys.commitment.MsgStake
-	(*commitment.MsgUnstake)(nil),               // 38: elys.commitment.MsgUnstake
-	(*stablestake.MsgBond)(nil),                 // 39: elys.stablestake.MsgBond
-	(*stablestake.MsgUnbond)(nil),               // 40: elys.stablestake.MsgUnbond
-	(*masterchef.MsgClaimRewards)(nil),          // 41: elys.masterchef.MsgClaimRewards
+	(*MsgPerformActionResponse)(nil),            // 8: elys.vaults.MsgPerformActionResponse
+	(*MsgPerformActionJoinPool)(nil),            // 9: elys.vaults.MsgPerformActionJoinPool
+	(*MsgPerformActionJoinPoolResponse)(nil),    // 10: elys.vaults.MsgPerformActionJoinPoolResponse
+	(*MsgPerformActionExitPool)(nil),            // 11: elys.vaults.MsgPerformActionExitPool
+	(*MsgPerformActionExitPoolResponse)(nil),    // 12: elys.vaults.MsgPerformActionExitPoolResponse
+	(*MsgPerformActionSwapByDenom)(nil),         // 13: elys.vaults.MsgPerformActionSwapByDenom
+	(*MsgPerformActionSwapByDenomResponse)(nil), // 14: elys.vaults.MsgPerformActionSwapByDenomResponse
+	(*MsgUpdateVaultCoins)(nil),                 // 15: elys.vaults.MsgUpdateVaultCoins
+	(*MsgUpdateVaultCoinsResponse)(nil),         // 16: elys.vaults.MsgUpdateVaultCoinsResponse
+	(*MsgUpdateVaultFees)(nil),                  // 17: elys.vaults.MsgUpdateVaultFees
+	(*MsgUpdateVaultFeesResponse)(nil),          // 18: elys.vaults.MsgUpdateVaultFeesResponse
+	(*MsgUpdateVaultLockupPeriod)(nil),          // 19: elys.vaults.MsgUpdateVaultLockupPeriod
+	(*MsgUpdateVaultLockupPeriodResponse)(nil),  // 20: elys.vaults.MsgUpdateVaultLockupPeriodResponse
+	(*MsgUpdateVaultMaxAmountUsd)(nil),          // 21: elys.vaults.MsgUpdateVaultMaxAmountUsd
+	(*MsgUpdateVaultMaxAmountUsdResponse)(nil),  // 22: elys.vaults.MsgUpdateVaultMaxAmountUsdResponse
+	(*MsgClaimRewards)(nil),                     // 23: elys.vaults.MsgClaimRewards
+	(*MsgClaimRewardsResponse)(nil),             // 24: elys.vaults.MsgClaimRewardsResponse
+	(*Params)(nil),                              // 25: elys.vaults.Params
+	(*v1beta1.Coin)(nil),                        // 26: cosmos.base.v1beta1.Coin
 }
 var file_elys_vaults_tx_proto_depIdxs = []int32{
-	27, // 0: elys.vaults.MsgUpdateParams.params:type_name -> elys.vaults.Params
-	28, // 1: elys.vaults.MsgDeposit.amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 2: elys.vaults.MsgWithdrawResponse.amount:type_name -> cosmos.base.v1beta1.Coin
-	9,  // 3: elys.vaults.MsgPerformAction.action:type_name -> elys.vaults.Action
-	29, // 4: elys.vaults.Action.join_pool:type_name -> elys.amm.MsgJoinPool
-	30, // 5: elys.vaults.Action.exit_pool:type_name -> elys.amm.MsgExitPool
-	31, // 6: elys.vaults.Action.swap_by_denom:type_name -> elys.amm.MsgSwapByDenom
-	32, // 7: elys.vaults.Action.commit_claimed_rewards:type_name -> elys.commitment.MsgCommitClaimedRewards
-	33, // 8: elys.vaults.Action.uncommit_tokens:type_name -> elys.commitment.MsgUncommitTokens
-	34, // 9: elys.vaults.Action.vest:type_name -> elys.commitment.MsgVest
-	35, // 10: elys.vaults.Action.cancel_vest:type_name -> elys.commitment.MsgCancelVest
-	36, // 11: elys.vaults.Action.claim_vesting:type_name -> elys.commitment.MsgClaimVesting
-	37, // 12: elys.vaults.Action.stake:type_name -> elys.commitment.MsgStake
-	38, // 13: elys.vaults.Action.unstake:type_name -> elys.commitment.MsgUnstake
-	39, // 14: elys.vaults.Action.bond:type_name -> elys.stablestake.MsgBond
-	40, // 15: elys.vaults.Action.unbond:type_name -> elys.stablestake.MsgUnbond
-	41, // 16: elys.vaults.Action.claim_rewards:type_name -> elys.masterchef.MsgClaimRewards
-	28, // 17: elys.vaults.MsgPerformActionJoinPool.max_amounts_in:type_name -> cosmos.base.v1beta1.Coin
-	28, // 18: elys.vaults.MsgPerformActionExitPool.min_amounts_out:type_name -> cosmos.base.v1beta1.Coin
-	28, // 19: elys.vaults.MsgPerformActionExitPoolResponse.token_out:type_name -> cosmos.base.v1beta1.Coin
-	28, // 20: elys.vaults.MsgPerformActionSwapByDenom.amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 21: elys.vaults.MsgPerformActionSwapByDenom.min_amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 22: elys.vaults.MsgPerformActionSwapByDenom.max_amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 23: elys.vaults.MsgPerformActionSwapByDenomResponse.out_amount:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 24: elys.vaults.Msg.UpdateParams:input_type -> elys.vaults.MsgUpdateParams
-	2,  // 25: elys.vaults.Msg.Deposit:input_type -> elys.vaults.MsgDeposit
-	4,  // 26: elys.vaults.Msg.Withdraw:input_type -> elys.vaults.MsgWithdraw
-	6,  // 27: elys.vaults.Msg.AddVault:input_type -> elys.vaults.MsgAddVault
-	8,  // 28: elys.vaults.Msg.PerformAction:input_type -> elys.vaults.MsgPerformAction
-	11, // 29: elys.vaults.Msg.PerformActionJoinPool:input_type -> elys.vaults.MsgPerformActionJoinPool
-	13, // 30: elys.vaults.Msg.PerformActionExitPool:input_type -> elys.vaults.MsgPerformActionExitPool
-	15, // 31: elys.vaults.Msg.PerformActionSwapByDenom:input_type -> elys.vaults.MsgPerformActionSwapByDenom
-	17, // 32: elys.vaults.Msg.UpdateVaultCoins:input_type -> elys.vaults.MsgUpdateVaultCoins
-	19, // 33: elys.vaults.Msg.UpdateVaultFees:input_type -> elys.vaults.MsgUpdateVaultFees
-	21, // 34: elys.vaults.Msg.UpdateVaultLockupPeriod:input_type -> elys.vaults.MsgUpdateVaultLockupPeriod
-	23, // 35: elys.vaults.Msg.UpdateVaultMaxAmountUsd:input_type -> elys.vaults.MsgUpdateVaultMaxAmountUsd
-	25, // 36: elys.vaults.Msg.ClaimRewards:input_type -> elys.vaults.MsgClaimRewards
-	1,  // 37: elys.vaults.Msg.UpdateParams:output_type -> elys.vaults.MsgUpdateParamsResponse
-	3,  // 38: elys.vaults.Msg.Deposit:output_type -> elys.vaults.MsgDepositResponse
-	5,  // 39: elys.vaults.Msg.Withdraw:output_type -> elys.vaults.MsgWithdrawResponse
-	7,  // 40: elys.vaults.Msg.AddVault:output_type -> elys.vaults.MsgAddVaultResponse
-	10, // 41: elys.vaults.Msg.PerformAction:output_type -> elys.vaults.MsgPerformActionResponse
-	12, // 42: elys.vaults.Msg.PerformActionJoinPool:output_type -> elys.vaults.MsgPerformActionJoinPoolResponse
-	14, // 43: elys.vaults.Msg.PerformActionExitPool:output_type -> elys.vaults.MsgPerformActionExitPoolResponse
-	16, // 44: elys.vaults.Msg.PerformActionSwapByDenom:output_type -> elys.vaults.MsgPerformActionSwapByDenomResponse
-	18, // 45: elys.vaults.Msg.UpdateVaultCoins:output_type -> elys.vaults.MsgUpdateVaultCoinsResponse
-	20, // 46: elys.vaults.Msg.UpdateVaultFees:output_type -> elys.vaults.MsgUpdateVaultFeesResponse
-	22, // 47: elys.vaults.Msg.UpdateVaultLockupPeriod:output_type -> elys.vaults.MsgUpdateVaultLockupPeriodResponse
-	24, // 48: elys.vaults.Msg.UpdateVaultMaxAmountUsd:output_type -> elys.vaults.MsgUpdateVaultMaxAmountUsdResponse
-	26, // 49: elys.vaults.Msg.ClaimRewards:output_type -> elys.vaults.MsgClaimRewardsResponse
-	37, // [37:50] is the sub-list for method output_type
-	24, // [24:37] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	25, // 0: elys.vaults.MsgUpdateParams.params:type_name -> elys.vaults.Params
+	26, // 1: elys.vaults.MsgDeposit.amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 2: elys.vaults.MsgWithdrawResponse.amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 3: elys.vaults.MsgPerformActionJoinPool.max_amounts_in:type_name -> cosmos.base.v1beta1.Coin
+	26, // 4: elys.vaults.MsgPerformActionExitPool.min_amounts_out:type_name -> cosmos.base.v1beta1.Coin
+	26, // 5: elys.vaults.MsgPerformActionExitPoolResponse.token_out:type_name -> cosmos.base.v1beta1.Coin
+	26, // 6: elys.vaults.MsgPerformActionSwapByDenom.amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 7: elys.vaults.MsgPerformActionSwapByDenom.min_amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 8: elys.vaults.MsgPerformActionSwapByDenom.max_amount:type_name -> cosmos.base.v1beta1.Coin
+	26, // 9: elys.vaults.MsgPerformActionSwapByDenomResponse.out_amount:type_name -> cosmos.base.v1beta1.Coin
+	0,  // 10: elys.vaults.Msg.UpdateParams:input_type -> elys.vaults.MsgUpdateParams
+	2,  // 11: elys.vaults.Msg.Deposit:input_type -> elys.vaults.MsgDeposit
+	4,  // 12: elys.vaults.Msg.Withdraw:input_type -> elys.vaults.MsgWithdraw
+	6,  // 13: elys.vaults.Msg.AddVault:input_type -> elys.vaults.MsgAddVault
+	9,  // 14: elys.vaults.Msg.PerformActionJoinPool:input_type -> elys.vaults.MsgPerformActionJoinPool
+	11, // 15: elys.vaults.Msg.PerformActionExitPool:input_type -> elys.vaults.MsgPerformActionExitPool
+	13, // 16: elys.vaults.Msg.PerformActionSwapByDenom:input_type -> elys.vaults.MsgPerformActionSwapByDenom
+	15, // 17: elys.vaults.Msg.UpdateVaultCoins:input_type -> elys.vaults.MsgUpdateVaultCoins
+	17, // 18: elys.vaults.Msg.UpdateVaultFees:input_type -> elys.vaults.MsgUpdateVaultFees
+	19, // 19: elys.vaults.Msg.UpdateVaultLockupPeriod:input_type -> elys.vaults.MsgUpdateVaultLockupPeriod
+	21, // 20: elys.vaults.Msg.UpdateVaultMaxAmountUsd:input_type -> elys.vaults.MsgUpdateVaultMaxAmountUsd
+	23, // 21: elys.vaults.Msg.ClaimRewards:input_type -> elys.vaults.MsgClaimRewards
+	1,  // 22: elys.vaults.Msg.UpdateParams:output_type -> elys.vaults.MsgUpdateParamsResponse
+	3,  // 23: elys.vaults.Msg.Deposit:output_type -> elys.vaults.MsgDepositResponse
+	5,  // 24: elys.vaults.Msg.Withdraw:output_type -> elys.vaults.MsgWithdrawResponse
+	7,  // 25: elys.vaults.Msg.AddVault:output_type -> elys.vaults.MsgAddVaultResponse
+	10, // 26: elys.vaults.Msg.PerformActionJoinPool:output_type -> elys.vaults.MsgPerformActionJoinPoolResponse
+	12, // 27: elys.vaults.Msg.PerformActionExitPool:output_type -> elys.vaults.MsgPerformActionExitPoolResponse
+	14, // 28: elys.vaults.Msg.PerformActionSwapByDenom:output_type -> elys.vaults.MsgPerformActionSwapByDenomResponse
+	16, // 29: elys.vaults.Msg.UpdateVaultCoins:output_type -> elys.vaults.MsgUpdateVaultCoinsResponse
+	18, // 30: elys.vaults.Msg.UpdateVaultFees:output_type -> elys.vaults.MsgUpdateVaultFeesResponse
+	20, // 31: elys.vaults.Msg.UpdateVaultLockupPeriod:output_type -> elys.vaults.MsgUpdateVaultLockupPeriodResponse
+	22, // 32: elys.vaults.Msg.UpdateVaultMaxAmountUsd:output_type -> elys.vaults.MsgUpdateVaultMaxAmountUsdResponse
+	24, // 33: elys.vaults.Msg.ClaimRewards:output_type -> elys.vaults.MsgClaimRewardsResponse
+	22, // [22:34] is the sub-list for method output_type
+	10, // [10:22] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_elys_vaults_tx_proto_init() }
@@ -18025,30 +15602,6 @@ func file_elys_vaults_tx_proto_init() {
 			}
 		}
 		file_elys_vaults_tx_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgPerformAction); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_elys_vaults_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Action); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_elys_vaults_tx_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionResponse); i {
 			case 0:
 				return &v.state
@@ -18060,7 +15613,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionJoinPool); i {
 			case 0:
 				return &v.state
@@ -18072,7 +15625,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionJoinPoolResponse); i {
 			case 0:
 				return &v.state
@@ -18084,7 +15637,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionExitPool); i {
 			case 0:
 				return &v.state
@@ -18096,7 +15649,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionExitPoolResponse); i {
 			case 0:
 				return &v.state
@@ -18108,7 +15661,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionSwapByDenom); i {
 			case 0:
 				return &v.state
@@ -18120,7 +15673,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgPerformActionSwapByDenomResponse); i {
 			case 0:
 				return &v.state
@@ -18132,7 +15685,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultCoins); i {
 			case 0:
 				return &v.state
@@ -18144,7 +15697,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultCoinsResponse); i {
 			case 0:
 				return &v.state
@@ -18156,7 +15709,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultFees); i {
 			case 0:
 				return &v.state
@@ -18168,7 +15721,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultFeesResponse); i {
 			case 0:
 				return &v.state
@@ -18180,7 +15733,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultLockupPeriod); i {
 			case 0:
 				return &v.state
@@ -18192,7 +15745,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultLockupPeriodResponse); i {
 			case 0:
 				return &v.state
@@ -18204,7 +15757,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultMaxAmountUsd); i {
 			case 0:
 				return &v.state
@@ -18216,7 +15769,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgUpdateVaultMaxAmountUsdResponse); i {
 			case 0:
 				return &v.state
@@ -18228,7 +15781,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgClaimRewards); i {
 			case 0:
 				return &v.state
@@ -18240,7 +15793,7 @@ func file_elys_vaults_tx_proto_init() {
 				return nil
 			}
 		}
-		file_elys_vaults_tx_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_vaults_tx_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgClaimRewardsResponse); i {
 			case 0:
 				return &v.state
@@ -18253,28 +15806,13 @@ func file_elys_vaults_tx_proto_init() {
 			}
 		}
 	}
-	file_elys_vaults_tx_proto_msgTypes[9].OneofWrappers = []interface{}{
-		(*Action_JoinPool)(nil),
-		(*Action_ExitPool)(nil),
-		(*Action_SwapByDenom)(nil),
-		(*Action_CommitClaimedRewards)(nil),
-		(*Action_UncommitTokens)(nil),
-		(*Action_Vest)(nil),
-		(*Action_CancelVest)(nil),
-		(*Action_ClaimVesting)(nil),
-		(*Action_Stake)(nil),
-		(*Action_Unstake)(nil),
-		(*Action_Bond)(nil),
-		(*Action_Unbond)(nil),
-		(*Action_ClaimRewards)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_vaults_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   27,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

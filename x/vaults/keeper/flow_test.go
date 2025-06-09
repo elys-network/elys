@@ -85,21 +85,14 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 	)
 
 	// Step 4: Perform join pool action
-	joinPoolMsg := vaulttypes.MsgPerformAction{
-		Creator: manager.String(),
-		VaultId: 1,
-		Action: &vaulttypes.Action{
-			Action: &vaulttypes.Action_JoinPool{
-				JoinPool: &types.MsgJoinPool{
-					Sender:         manager.String(),
-					PoolId:         1,
-					ShareAmountOut: sdkmath.NewInt(100),
-					MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: sdkmath.NewInt(100)}},
-				},
-			},
-		},
+	joinPoolMsg := vaulttypes.MsgPerformActionJoinPool{
+		VaultId:        1,
+		PoolId:         1,
+		ShareAmountOut: sdkmath.NewInt(100),
+		MaxAmountsIn:   []sdk.Coin{{Denom: "uusdc", Amount: sdkmath.NewInt(100)}},
 	}
-	_, err = msgServer.PerformAction(suite.ctx, &joinPoolMsg)
+
+	_, err = msgServer.PerformActionJoinPool(suite.ctx, &joinPoolMsg)
 	suite.Require().NoError(err)
 
 	// Verify vault's balance decreased after joining pool
