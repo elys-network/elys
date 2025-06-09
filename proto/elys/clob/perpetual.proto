@@ -46,3 +46,11 @@ message Perpetual {
     (gogoproto.nullable) = false
   ];
 }
+
+message PerpetualInfo {
+  Perpetual perpetual = 1;
+  string liquidation_price = 2 [
+  (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+  (gogoproto.nullable) = false
+];
+}

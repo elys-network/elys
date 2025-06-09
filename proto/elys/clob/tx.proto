@@ -11,7 +11,7 @@ import "elys/clob/order.proto";
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
-import "elys/clob/types.proto";
+import "elys/clob/liquidation.proto";
 
 // Msg defines the Msg service.
 service Msg {

@@ -10,7 +10,6 @@ import "elys/clob/market.proto";
 import "elys/clob/subaccount.proto";
 import "elys/clob/order.proto";
 import "elys/clob/perpetual.proto";
-import "elys/clob/types.proto";
 import "elys/clob/adl.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
