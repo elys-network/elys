@@ -37,9 +37,14 @@ func (k Keeper) OwnerPerpetualOrder(goCtx context.Context, request *types.OwnerP
 	}
 
 	pageRes, err := query.Paginate(prefixStore, request.Pagination, func(key []byte, value []byte) error {
-		var order types.PerpetualOrder
-		if err := k.cdc.Unmarshal(value, &order); err != nil {
+		var orderOwner types.PerpetualOrderOwner
+		if err := k.cdc.Unmarshal(value, &orderOwner); err != nil {
 			return err
+		}
+
+		order, found := k.GetPerpetualOrder(ctx, orderOwner.OrderKey)
+		if !found {
+			return types.ErrPerpetualOrderNotFound
 		}
 
 		orders = append(orders, order)

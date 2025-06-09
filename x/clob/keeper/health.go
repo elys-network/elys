@@ -13,6 +13,9 @@ func (k Keeper) GetHealth(ctx sdk.Context, perpetual types.Perpetual, market typ
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
-	currentPrice := k.GetCurrentTwapPrice(ctx, market.Id)
+	currentPrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
 	return currentPrice.Quo(liquidationPrice).Sub(math.LegacyOneDec()), nil
 }

@@ -72,7 +72,7 @@ func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
 }
 
-func (k Keeper) SendFromSubAccountToSubAccount(ctx sdk.Context, from types.SubAccount, to types.SubAccount, coins sdk.Coins) error {
+func (k Keeper) TransferFromSubAccountToSubAccount(ctx sdk.Context, from types.SubAccount, to types.SubAccount, coins sdk.Coins) error {
 	return k.bankKeeper.SendCoins(ctx, from.GetTradingAccountAddress(), to.GetTradingAccountAddress(), coins)
 }
 
@@ -84,10 +84,64 @@ func (k Keeper) GetSubAccountBalanceOf(ctx sdk.Context, subAccount types.SubAcco
 	return k.bankKeeper.GetBalance(ctx, subAccount.GetTradingAccountAddress(), denom)
 }
 
-//func (k Keeper) WithdrawableBalance(ctx sdk.Context, subAccount types.SubAccount) error {
-//	if subAccount.IsIsolated() {
-//		// No need to check for current positions as the margin amount has already been transferred to the market account
-//		// Need to check for the open orders and the trading fees and margin amount for that
-//		k.GetPerpetualOrder()
-//	}
-//}
+// RequiredMinimumBalance
+// 1. Check all open orders for sub account
+// 2. Calculate Maximum margin amount + trading fees (maker/taker)
+func (k Keeper) RequiredMinimumBalance(ctx sdk.Context, subAccount types.SubAccount) (sdk.Coins, error) {
+	var coins sdk.Coins
+
+	// calculate for open orders
+	for _, openOrder := range k.GetAllOrderOwnersForSubAccount(ctx, subAccount) {
+		order, found := k.GetPerpetualOrder(ctx, openOrder.OrderKey)
+		if !found {
+			return sdk.Coins{}, types.ErrPerpetualOrderNotFound
+		}
+
+		coin, err := k.RequiredBalanceForOrder(ctx, order)
+		if err != nil {
+			return sdk.Coins{}, err
+		}
+		coins = coins.Add(coin)
+	}
+
+	// calculate maintenance margin for open positions
+	if subAccount.IsIsolated() {
+		// For isolated sub account id is market id
+		perpetualOwner, found := k.CheckAndGetPerpetualOwner(ctx, subAccount, subAccount.Id)
+		if found {
+			perpetual, err := k.GetPerpetual(ctx, perpetualOwner.MarketId, perpetualOwner.PerpetualId)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+
+			market, err := k.GetPerpetualMarket(ctx, perpetual.MarketId)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+			maintenanceMargin, err := k.GetMaintenanceMargin(ctx, perpetual, market)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+			coins = coins.Add(sdk.NewCoin(market.QuoteDenom, maintenanceMargin))
+		}
+	} else {
+		for _, perpetualOwner := range k.GetAllSubAccountPerpetualOwners(ctx, subAccount) {
+			perpetual, err := k.GetPerpetual(ctx, perpetualOwner.MarketId, perpetualOwner.PerpetualId)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+
+			market, err := k.GetPerpetualMarket(ctx, perpetual.MarketId)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+			maintenanceMargin, err := k.GetMaintenanceMargin(ctx, perpetual, market)
+			if err != nil {
+				return sdk.Coins{}, err
+			}
+			coins = coins.Add(sdk.NewCoin(market.QuoteDenom, maintenanceMargin))
+		}
+	}
+
+	return coins, nil
+}

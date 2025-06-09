@@ -33,7 +33,8 @@ service Query {
   }
 
   rpc OrderBook(OrderBookRequest) returns (OrderBookResponse) {
-    option (google.api.http).get = "/elys-network/elys/clob/order-book";
+    option (google.api.http).get =
+        "/elys-network/elys/clob/order-book/{market_id}/{is_buy}";
   }
 
   rpc AllPerpetualADL(AllPerpetualADLRequest)
@@ -46,12 +47,14 @@ service Query {
         "/elys-network/elys/clob/sub-accounts/{address}";
   }
 
+  // set sub_account_id to 0 to get for all subaccounts
   rpc OwnerPerpetuals(OwnerPerpetualsRequest)
       returns (OwnerPerpetualsResponse) {
     option (google.api.http).get =
         "/elys-network/elys/clob/owner-perpetuals/{address}/{sub_account_id}";
   }
 
+  // set sub_account_id to 0 to get for all subaccounts
   rpc OwnerPerpetualOrder(OwnerPerpetualOrdersRequest)
       returns (OwnerPerpetualOrdersResponse) {
     option (google.api.http).get =

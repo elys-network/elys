@@ -55,33 +55,43 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 	k.DecrementTotalOpenPosition(ctx, p.MarketId)
 }
 
-func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {
-	currentValue := k.GetPerpetualAbsValue(ctx, perpetual)
-	return market.MaintenanceMarginRatio.Mul(currentValue)
+func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.Int, error) {
+	currentValue, err := k.GetPerpetualOracleValue(ctx, market, perpetual)
+	if err != nil {
+		return math.Int{}, err
+	}
+	quoteDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+	if err != nil {
+		return math.Int{}, err
+	}
+	return market.MaintenanceMarginRatio.Mul(currentValue).Quo(quoteDenomPrice).RoundInt(), nil
 }
 
-func (k Keeper) GetPerpetualAbsValue(ctx sdk.Context, perpetual types.Perpetual) math.LegacyDec {
-	twapPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
-	if twapPrice.IsZero() {
-		panic("twap price is zero while calculating perpetual value")
+func (k Keeper) GetPerpetualOracleValue(ctx sdk.Context, market types.PerpetualMarket, perpetual types.Perpetual) (math.LegacyDec, error) {
+	currentPrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
+	if err != nil {
+		return math.LegacyDec{}, err
 	}
-	return twapPrice.Mul(perpetual.Quantity).Abs()
+	return currentPrice.Mul(perpetual.Quantity).Abs(), nil
 }
 
 // GetEquityValue = InitialMarginValue + UPnL
 func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAccount types.SubAccount, market types.PerpetualMarket) (math.LegacyDec, error) {
 	if subAccount.IsIsolated() {
 		// InitialMarginPosted + UnrealizedPNL
-		markPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
-		unrealizedPnLValue, err := perpetual.CalculateUnrealizedPnLValue(markPrice)
+		baseAssetCurrentPrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
+		if err != nil {
+			return math.LegacyZeroDec(), err
+		}
+		unrealizedPnLValue, err := perpetual.CalculateUnrealizedPnLValue(baseAssetCurrentPrice)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}
-		price, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+		quoteAssetDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}
-		initialMarginValue := perpetual.MarginAmount.ToLegacyDec().Mul(price)
+		initialMarginValue := perpetual.MarginAmount.ToLegacyDec().Mul(quoteAssetDenomPrice)
 		return initialMarginValue.Add(unrealizedPnLValue), nil
 	} else {
 		// TODO TotalAccountValue
@@ -95,7 +105,10 @@ func (k Keeper) GetEffectiveLeverage(ctx sdk.Context, perpetual types.Perpetual,
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
-	currentValue := k.GetPerpetualAbsValue(ctx, perpetual)
+	currentValue, err := k.GetPerpetualOracleValue(ctx, market, perpetual)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
 	equityValue, err := k.GetEquityValue(ctx, perpetual, subAccount, market)
 	if err != nil {
 		return math.LegacyDec{}, err

@@ -31,15 +31,15 @@ func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("forced_liquidation: failed to get liquidation price for perp %d: %w", perpetual.Id, err)
 	}
-	currentTwapPrice := k.GetCurrentTwapPrice(ctx, market.Id) // Assuming this is the Mark Price
-	if currentTwapPrice.IsZero() {
-		return math.ZeroInt(), errors.New("forced_liquidation: cannot liquidate, current twap mark price is zero")
+	currentOraclePrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
+	if err != nil {
+		return math.ZeroInt(), err
 	}
-	if perpetual.IsLong() && liquidationPrice.LT(currentTwapPrice) { // Price hasn't dropped enough for Long
-		return math.ZeroInt(), fmt.Errorf("forced_liquidation: long position not yet liquidatable. LiqPx: %s, MarkPx: %s", liquidationPrice.String(), currentTwapPrice.String())
+	if perpetual.IsLong() && liquidationPrice.LT(currentOraclePrice) { // Price hasn't dropped enough for Long
+		return math.ZeroInt(), fmt.Errorf("forced_liquidation: long position not yet liquidatable. LiqPx: %s, MarkPx: %s", liquidationPrice.String(), currentOraclePrice.String())
 	}
-	if perpetual.IsShort() && liquidationPrice.GT(currentTwapPrice) { // Price hasn't risen enough for Short
-		return math.ZeroInt(), fmt.Errorf("forced_liquidation: short position not yet liquidatable. LiqPx: %s, MarkPx: %s", liquidationPrice.String(), currentTwapPrice.String())
+	if perpetual.IsShort() && liquidationPrice.GT(currentOraclePrice) { // Price hasn't risen enough for Short
+		return math.ZeroInt(), fmt.Errorf("forced_liquidation: short position not yet liquidatable. LiqPx: %s, MarkPx: %s", liquidationPrice.String(), currentOraclePrice.String())
 	}
 
 	closingRatio, adlTriggered, err := k.MarketLiquidation(ctx, perpetual, market)
@@ -93,12 +93,17 @@ func (k Keeper) MarketLiquidation(ctx sdk.Context, perpetual types.Perpetual, ma
 	adlTriggered := false
 	var err error
 
+	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
+	if err != nil {
+		return math.LegacyZeroDec(), false, err
+	}
+
 	msg := types.MsgPlaceMarketOrder{
 		Creator:      perpetual.Owner,
 		MarketId:     market.Id,
 		BaseQuantity: perpetual.Quantity.Abs(),
 		OrderType:    types.OrderType_ORDER_TYPE_MARKET_SELL,
-		SubAccountId: perpetual.SubAccountId,
+		IsIsolated:   subAccount.IsIsolated(),
 	}
 	// Even if equity value is 0 or -ve, OnPositionClose internally handles by sending -ve amount from insurance fund to the market account
 	cacheCtx, write := ctx.CacheContext()

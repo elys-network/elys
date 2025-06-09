@@ -65,10 +65,15 @@ func GetPerpetualOwnerAddressKey(addr sdk.AccAddress) []byte {
 	return key
 }
 
-func GetPerpetualOwnerKey(addr sdk.AccAddress, subAccountId, marketId, perpetualId uint64) []byte {
+func GetPerpetualOwnerSubAccountKey(addr sdk.AccAddress, subAccountId uint64) []byte {
 	key := GetPerpetualOwnerAddressKey(addr)
 	key = append(key, sdk.Uint64ToBigEndian(subAccountId)...)
 	key = append(key, []byte("/")...)
+	return key
+}
+
+func GetPerpetualOwnerKey(addr sdk.AccAddress, subAccountId, marketId, perpetualId uint64) []byte {
+	key := GetPerpetualOwnerSubAccountKey(addr, subAccountId)
 	key = append(key, sdk.Uint64ToBigEndian(marketId)...)
 	key = append(key, []byte("/")...)
 	key = append(key, sdk.Uint64ToBigEndian(perpetualId)...)
@@ -114,10 +119,15 @@ func GetOrderOwnerAddressKey(addr sdk.AccAddress) []byte {
 	return key
 }
 
-func GetOrderOwnerKey(addr sdk.AccAddress, subAccountId uint64, orderKey OrderKey) []byte {
+func GetOrderSubAccountKey(addr sdk.AccAddress, subAccountId uint64) []byte {
 	key := GetOrderOwnerAddressKey(addr)
 	key = append(key, sdk.Uint64ToBigEndian(subAccountId)...)
 	key = append(key, []byte("/")...)
+	return key
+}
+
+func GetOrderOwnerKey(addr sdk.AccAddress, subAccountId uint64, orderKey OrderKey) []byte {
+	key := GetOrderSubAccountKey(addr, subAccountId)
 	key = append(key, orderKey.KeyWithoutPrefix()...)
 	return key
 }

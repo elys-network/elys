@@ -247,7 +247,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 	}{
 		// --- A. Eligibility Check Failures ---
 		{
-			name: "Fail: Current TWAP Mark Price is zero",
+			name: "Fail: Asset price is 0",
 			perpetualToLiquidateSetup: func() types.Perpetual {
 				// Margin is 100_000_000 uusdc (100 base units if 1M uusdc = 1 USDC)
 				p := newTestPerpetualForForcedLiq(liquidatingSubAccount.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000))
@@ -255,9 +255,9 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			},
 			orderBookSetup: func() {},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyZeroDec(), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyZeroDec()})
 			},
-			expectedErrSubstring:         "current twap mark price is zero",
+			expectedErrSubstring:         "asset price (0.000000000000000000) is invalid",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
 		},
 		{
@@ -269,7 +269,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			orderBookSetup: func() {},
 			preSetup: func() {
 
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(104), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(104)})
 			},
 			expectedErrSubstring:         "short position not yet liquidatable",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
@@ -283,7 +283,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			orderBookSetup: func() {},
 			preSetup: func() {
 				suite.app.OracleKeeper.RemovePrice(suite.ctx, "USDC", "test", uint64(suite.ctx.BlockTime().Unix()))
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(104), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(104)})
 			},
 			expectedErrSubstring:         "denom (uusdc) price not found",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
@@ -296,7 +296,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			},
 			orderBookSetup: func() {},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(96), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(96)})
 			},
 			expectedErrSubstring:         "long position not yet liquidatable",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
@@ -309,7 +309,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			},
 			orderBookSetup: func() {},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(104), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(104)})
 			},
 			expectedErrSubstring:         "short position not yet liquidatable",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
@@ -326,7 +326,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(94), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(94)})
 			},
 			expectedErrSubstring:         "",
 			expectADLSet:                 false,
@@ -348,7 +348,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(5), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(94), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(94)})
 			},
 			expectedErrSubstring: "", // ForcedLiquidation returns nil if partial fill was settled and ADL set
 			expectADLSet:         true,
@@ -372,7 +372,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(1), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(1), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(1)})
 				err := suite.BurnAccountBalance(market.GetInsuranceAccount(), QuoteDenom)
 				suite.Require().NoError(err)
 			},
@@ -392,7 +392,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_SELL, math.LegacyNewDec(105), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			preSetup: func() {
-				suite.SetTwapRecordDirectly(types.TwapPrice{MarketId: MarketId, Block: uint64(suite.ctx.BlockHeight() - 1), AverageTradePrice: math.LegacyNewDec(105), Timestamp: uint64(suite.ctx.BlockTime().Unix() - 60)})
+				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyNewDec(105)})
 				err := suite.BurnAccountBalance(marketModuleAcc, QuoteDenom)
 				suite.Require().NoError(err)
 				suite.FundAccount(market.GetInsuranceAccount(), sdk.NewCoins(sdk.NewInt64Coin(QuoteDenom, 500_000_000))) // Ensure IF is very solvent

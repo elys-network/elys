@@ -74,6 +74,5 @@ func (perpetual Perpetual) CalculateUnrealizedPnLValue(markPrice math.LegacyDec)
 	// Short (Qty < 0): If Mark > Entry, diff is positive -> PNL is negative (loss)
 	// Short (Qty < 0): If Mark < Entry, diff is negative -> PNL is positive (profit)
 	unrealizedPNL := perpetual.Quantity.Mul(priceDifference)
-
 	return unrealizedPNL, nil
 }

@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (math.LegacyDec, error) {
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (math.LegacyDec, error) {
 	assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
 	if !found {
 		return math.LegacyDec{}, fmt.Errorf("asset info (%s) not found for denom", denom)
