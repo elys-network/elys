@@ -24,14 +24,12 @@ func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidat
 			return nil, err
 		}
 
-		cachedCtx, write := ctx.CacheContext()
-		liquidatorRewardAmount, err := k.ForcedLiquidation(cachedCtx, perpetual, market, liquidator)
+		liquidatorRewardAmount, err := k.ForcedLiquidation(ctx, perpetual, market, liquidator)
 		if err == nil {
 			if !liquidatorRewardAmount.IsZero() {
 				liquidatorRewardCoin := sdk.NewCoin(market.QuoteDenom, liquidatorRewardAmount)
 				liquidatorReward = liquidatorReward.Add(liquidatorRewardCoin)
 			}
-			write()
 		} else {
 			ctx.Logger().Error(fmt.Sprintf("Error liquidating position: Address:%s Id:%d cannot be liquidated due to err: %s", perpetual.GetOwner(), perpetual.Id, err.Error()))
 		}
