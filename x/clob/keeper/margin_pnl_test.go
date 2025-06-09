@@ -14,7 +14,7 @@ func (suite *KeeperTestSuite) TestSettleMarginAndRPnL_Complete() { // Renamed sl
 	suite.ResetSuite()
 
 	// --- Setup ---
-	markets := suite.CreateMarket("uatom")
+	markets := suite.CreateMarketWithZeroFees("uatom")
 	market := markets[0]
 	marketAccAddr := market.GetAccount() // Get market module account address
 

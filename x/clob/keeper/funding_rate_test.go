@@ -8,7 +8,7 @@ import (
 func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 	suite.ResetSuite()
 
-	markets := suite.CreateMarket(BaseDenom)
+	markets := suite.CreateMarketWithZeroFees(BaseDenom)
 	market := markets[0]
 
 	p1 := []types.Trade{
@@ -151,7 +151,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 			pre: func() {
 				// Clear previous TWAP data (needs helper)
 				suite.ResetSuite()
-				markets = suite.CreateMarket(BaseDenom)
+				markets = suite.CreateMarketWithZeroFees(BaseDenom)
 				market = markets[0]
 				// Set a last funding rate
 				lastRate := market.MaxAbsFundingRate.QuoInt64(2) // e.g., 0.005
@@ -196,7 +196,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 			result: math.LegacyMustNewDecFromStr("-0.005"),
 			pre: func() {
 				suite.ResetSuite()
-				markets = suite.CreateMarket(BaseDenom)
+				markets = suite.CreateMarketWithZeroFees(BaseDenom)
 				market = markets[0]
 				// Set last rate such that abs(0 - lastRate) <= MaxAbsFundingRateChange
 				lastRate := market.MaxAbsFundingRateChange.QuoInt64(2) // e.g., 0.0005 if MaxChange is 0.001
@@ -255,7 +255,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 
 func (suite *KeeperTestSuite) TestFundingRate() {
 	suite.ResetSuite()
-	markets := suite.CreateMarket(BaseDenom, "uosmo")
+	markets := suite.CreateMarketWithZeroFees(BaseDenom, "uosmo")
 	suite.SetPrice([]string{"OSMO"}, []math.LegacyDec{math.LegacyNewDec(2)})
 	err := suite.app.ClobKeeper.UpdateFundingRate(suite.ctx, markets[0])
 	suite.Require().NoError(err)
