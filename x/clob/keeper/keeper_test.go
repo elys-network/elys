@@ -223,7 +223,7 @@ func (suite *KeeperTestSuite) SetupSubAccounts(total uint64, balance sdk.Coins) 
 	return list
 }
 
-func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.PerpetualMarket {
+func (suite *KeeperTestSuite) CreateMarketWithZeroFees(baseDenoms ...string) []types.PerpetualMarket {
 	all := suite.app.ClobKeeper.GetAllPerpetualMarket(suite.ctx)
 	var list []types.PerpetualMarket
 	for i, baseDenom := range baseDenoms {
@@ -241,6 +241,35 @@ func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.Perpetu
 			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
 			TwapPricesWindow:        15,
 			LiquidationFeeShareRate: math.LegacyMustNewDecFromStr("0.01"),
+			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.0"),
+			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.0"),
+		}
+		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
+		list = append(list, market)
+	}
+	return list
+}
+
+func (suite *KeeperTestSuite) CreateMarketWithFees(baseDenoms ...string) []types.PerpetualMarket {
+	all := suite.app.ClobKeeper.GetAllPerpetualMarket(suite.ctx)
+	var list []types.PerpetualMarket
+	for i, baseDenom := range baseDenoms {
+		if baseDenom == "" || baseDenom == QuoteDenom {
+			panic("base Denom cannot be uusdc or empty")
+		}
+		market := types.PerpetualMarket{
+			Id:                      uint64(len(all) + i + 1),
+			BaseDenom:               baseDenom,
+			QuoteDenom:              QuoteDenom,
+			InitialMarginRatio:      IMR,
+			MaintenanceMarginRatio:  math.LegacyMustNewDecFromStr("0.2"),
+			Status:                  1,
+			MaxAbsFundingRate:       math.LegacyMustNewDecFromStr("0.05"),
+			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
+			TwapPricesWindow:        15,
+			LiquidationFeeShareRate: math.LegacyMustNewDecFromStr("0.01"),
+			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.01"),
+			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.025"),
 		}
 		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 		list = append(list, market)
@@ -319,7 +348,7 @@ func (suite *KeeperTestSuite) BurnAccountBalance(addr sdk.AccAddress, denom stri
 func (suite *KeeperTestSuite) SetupExchangeTest() (market types.PerpetualMarket, buyerAcc types.SubAccount, sellerAcc types.SubAccount, marketAccAddr sdk.AccAddress) {
 	suite.ResetSuite() // Or equivalent setup/teardown
 
-	markets := suite.CreateMarket(BaseDenom)
+	markets := suite.CreateMarketWithZeroFees(BaseDenom)
 	market = markets[0]
 	marketAccAddr = market.GetAccount()
 	// Ensure module account exists
