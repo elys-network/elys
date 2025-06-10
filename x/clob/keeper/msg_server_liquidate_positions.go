@@ -19,6 +19,7 @@ func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidat
 			return nil, err
 		}
 
+		// Fetch the market after each close since the exchange updates the total open interest (total open) of the market.
 		market, err := k.GetPerpetualMarket(ctx, position.MarketId)
 		if err != nil {
 			return nil, err
