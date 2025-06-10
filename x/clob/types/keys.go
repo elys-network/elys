@@ -19,6 +19,8 @@ const (
 	FalseByte = byte(0)
 )
 
+const MaxPageLimit = 10000
+
 var (
 	ParamsPrefix                 = []byte{0x01}
 	SubAccountPrefix             = []byte{0x02}

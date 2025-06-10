@@ -10,4 +10,3 @@ message LiquidatePosition {
     uint64 market_id = 1;
     uint64 perpetual_id = 2;
 }
-

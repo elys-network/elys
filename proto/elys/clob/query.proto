@@ -61,6 +61,12 @@ service Query {
         "/elys-network/elys/clob/owner-perpetual-order/{address}/"
         "{sub_account_id}";
   }
+
+  rpc AllPerpetualsWithLiquidationPrice(
+    AllPerpetualsWithLiquidationPriceRequest) returns (AllPerpetualsWithLiquidationPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/clob/all-perpetuals-with-liquidation-price/{pagination.key}";
+  }
 }
 
 message ParamsRequest {}
@@ -151,5 +157,14 @@ message AllPerpetualADLRequest {
 
 message AllPerpetualADLResponse {
   repeated PerpetualADL adl_list = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message AllPerpetualsWithLiquidationPriceRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message AllPerpetualsWithLiquidationPriceResponse {
+  repeated PerpetualInfo perpetual_infos = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
