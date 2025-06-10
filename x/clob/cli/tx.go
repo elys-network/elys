@@ -22,5 +22,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdDeposit())
 	cmd.AddCommand(CmdPlaceLimitOrder())
 	cmd.AddCommand(CmdPlaceMarketOrder())
+	cmd.AddCommand(CmdLiquidatePositions())
 	return cmd
 }

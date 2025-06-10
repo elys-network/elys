@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package elys.clob;
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+import "gogoproto/gogo.proto";
+
+message LiquidatePosition {
+    uint64 market_id = 1;
+    uint64 perpetual_id = 2;
+}
+
