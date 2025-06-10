@@ -115,6 +115,27 @@ func (k msgServer) PerformActionJoinPool(goCtx context.Context, req *types.MsgPe
 		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 	}
 
+	// get coins after action
+	coinsAfter := k.bk.GetAllBalances(ctx, vaultAddress)
+	allCommitments := k.commitment.GetCommitments(ctx, vaultAddress)
+	for _, commitment := range allCommitments.CommittedTokens {
+		coinsAfter = coinsAfter.Add(sdk.NewCoin(commitment.Denom, commitment.Amount))
+	}
+
+	// check if coins after action are only allowed coins
+	for _, coin := range coinsAfter {
+		found := false
+		for _, allowedCoin := range vault.AllowedCoins {
+			if coin.Denom == allowedCoin {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "vault %d does not allow this action", req.VaultId)
+		}
+	}
+
 	return &types.MsgPerformActionJoinPoolResponse{
 		ShareAmountOut: sharesOut,
 	}, nil
@@ -136,6 +157,27 @@ func (k msgServer) PerformActionExitPool(goCtx context.Context, req *types.MsgPe
 		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
 	}
 
+	// get coins after action
+	coinsAfter := k.bk.GetAllBalances(ctx, vaultAddress)
+	allCommitments := k.commitment.GetCommitments(ctx, vaultAddress)
+	for _, commitment := range allCommitments.CommittedTokens {
+		coinsAfter = coinsAfter.Add(sdk.NewCoin(commitment.Denom, commitment.Amount))
+	}
+
+	// check if coins after action are only allowed coins
+	for _, coin := range coinsAfter {
+		found := false
+		for _, allowedCoin := range vault.AllowedCoins {
+			if coin.Denom == allowedCoin {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return nil, errorsmod.Wrapf(types.ErrInvalidAction, "vault %d does not allow this action", req.VaultId)
+		}
+	}
+
 	return &types.MsgPerformActionExitPoolResponse{
 		TokenOut:           exitCoins,
 		WeightBalanceRatio: weightBalanceBonus.Dec(),
@@ -153,6 +195,18 @@ func (k msgServer) PerformActionSwapByDenom(goCtx context.Context, req *types.Ms
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
 	}
 	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	// denomOut should be in the allowed coins
+	found = false
+	for _, allowedCoin := range vault.AllowedCoins {
+		if req.DenomOut == allowedCoin {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "vault %d does not allow this action", req.VaultId)
+	}
 
 	swapByDenom := &ammtypes.MsgSwapByDenom{
 		Sender:    vaultAddress.String(),

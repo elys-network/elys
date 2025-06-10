@@ -29,6 +29,12 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 				} else {
 					k.SetUserRewardInfo(ctx, userRewardInfo)
 				}
+
+				vaultRewardCollectorAddress := types.NewVaultRewardCollectorAddressString(poolId)
+				err := k.commitment.SendCoinsFromModuleToAccount(ctx, vaultRewardCollectorAddress, recipient, sdk.NewCoins(coin))
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -42,12 +48,6 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 			sdk.NewAttribute(sdk.AttributeKeyAmount, coins.String()),
 		),
 	})
-
-	// Transfer rewards (Eden/EdenB is transferred through commitment module)
-	err := k.commitment.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

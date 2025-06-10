@@ -99,32 +99,34 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 }
 
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	// Claim rewards for all vaults
-	vaults := k.GetAllVaults(ctx)
-	for _, vault := range vaults {
-		vaultAddress := types.NewVaultAddress(vault.Id)
-		vaultRewardCollectorAddress := types.NewVaultRewardCollectorAddress(vault.Id)
+	if k.GetEpochPosition(ctx, k.GetParams(ctx).PerformanceFeeEpochLength) == 0 {
+		// Claim rewards for all vaults
+		vaults := k.GetAllVaults(ctx)
+		for _, vault := range vaults {
+			vaultAddress := types.NewVaultAddress(vault.Id)
+			vaultRewardCollectorAddress := types.NewVaultRewardCollectorAddress(vault.Id)
 
-		usdcDenom := k.GetBaseCurrencyDenom(ctx)
+			usdcDenom := k.GetBaseCurrencyDenom(ctx)
 
-		beforeBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
-		// TODO: get all pools ids
-		err := k.masterchef.ClaimRewards(ctx, vaultAddress, []uint64{1, 2, 3, 4}, vaultRewardCollectorAddress)
-		if err != nil {
-			k.Logger(ctx).Error("error claiming rewards", "error", err)
-		}
-		afterBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
-		usdcAmount := afterBalance.AmountOf(usdcDenom).Sub(beforeBalance.AmountOf(usdcDenom))
+			beforeBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
+			// TODO: get all pools ids
+			err := k.masterchef.ClaimRewards(ctx, vaultAddress, []uint64{1, 2, 3, 4}, vaultRewardCollectorAddress)
+			if err != nil {
+				k.Logger(ctx).Error("error claiming rewards", "error", err)
+			}
+			afterBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
+			usdcAmount := afterBalance.AmountOf(usdcDenom).Sub(beforeBalance.AmountOf(usdcDenom))
 
-		// Update reward USDC share
-		if usdcAmount.IsPositive() {
-			k.UpdateAccPerShare(ctx, vault.Id, usdcDenom, usdcAmount)
-		}
+			// Update reward USDC share
+			if usdcAmount.IsPositive() {
+				k.UpdateAccPerShare(ctx, vault.Id, usdcDenom, usdcAmount)
+			}
 
-		// Update reward EDEN share
-		edenAmount := afterBalance.AmountOf(ptypes.Eden).Sub(beforeBalance.AmountOf(ptypes.Eden))
-		if edenAmount.IsPositive() {
-			k.UpdateAccPerShare(ctx, vault.Id, ptypes.Eden, edenAmount)
+			// Update reward EDEN share
+			edenAmount := afterBalance.AmountOf(ptypes.Eden).Sub(beforeBalance.AmountOf(ptypes.Eden))
+			if edenAmount.IsPositive() {
+				k.UpdateAccPerShare(ctx, vault.Id, ptypes.Eden, edenAmount)
+			}
 		}
 	}
 }
