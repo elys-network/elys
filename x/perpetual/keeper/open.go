@@ -86,27 +86,16 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
 
-	poolId := msg.PoolId
-	// Get pool id, amm pool, and perpetual pool
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, errorsmod.Wrapf(err, "amm pool not found for pool %d", poolId)
-	}
-
-	if !ammPool.PoolParams.UseOracle {
-		return nil, types.ErrPoolHasToBeOracle
-	}
-
-	pool, found := k.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, msg.PoolId)
 	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("PoolId: %d", msg.PoolId))
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
 
-	mtp, err := k.OpenDefineAssets(ctx, poolId, msg, baseCurrency)
+	mtp, err := k.OpenDefineAssets(ctx, msg.PoolId, msg, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -127,16 +116,21 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
 		// pool values has been updated
-		pool, found = k.GetPool(ctx, poolId)
+		ammPool, err := k.GetAmmPool(ctx, msg.PoolId)
+		if err != nil {
+			return nil, errorsmod.Wrapf(err, "amm pool not found for pool %d", msg.PoolId)
+		}
+
+		pool, found = k.GetPool(ctx, msg.PoolId)
 		if !found {
-			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.PoolId))
 		}
 
 		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)

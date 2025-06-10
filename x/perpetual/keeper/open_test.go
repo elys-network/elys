@@ -26,6 +26,12 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	suite.Require().NoError(err)
 
+	var initialPoolBankBalance sdk.Coins
+	var initialAccountedPoolBalance sdk.Coins
+
+	var finalPoolBankBalance sdk.Coins
+	var finalAccountedPoolBalance sdk.Coins
+
 	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
@@ -254,8 +260,20 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 				msg.Position = types.Position_LONG
 				msg.StopLossPrice = math.LegacyZeroDec()
 				msg.TakeProfitPrice = math.LegacyOneDec().MulInt64(8)
+
+				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				initialAccountedPoolBalance = accountedPool.TotalTokens
 			},
 			func(mtp *types.MTP) {
+				finalPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				finalAccountedPoolBalance = accountedPool.TotalTokens
+
+				suite.Require().Equal(initialPoolBankBalance.Add(msg.Collateral), finalPoolBankBalance)
+				suite.Require().Equal(initialAccountedPoolBalance.Add(msg.Collateral).Add(sdk.NewCoin(msg.Collateral.Denom, msg.Leverage.Sub(math.LegacyOneDec()).MulInt(msg.Collateral.Amount).TruncateInt())), finalAccountedPoolBalance)
 			},
 		},
 		{
@@ -270,8 +288,20 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM
 				msg.Leverage = math.LegacyOneDec().MulInt64(2)
+
+				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				initialAccountedPoolBalance = accountedPool.TotalTokens
 			},
 			func(mtp *types.MTP) {
+				finalPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				finalAccountedPoolBalance = accountedPool.TotalTokens
+
+				suite.Require().Equal(initialPoolBankBalance.Add(msg.Collateral), finalPoolBankBalance)
+				suite.Require().Equal(initialAccountedPoolBalance.Add(msg.Collateral).Add(sdk.NewCoin(msg.Collateral.Denom, msg.Leverage.Sub(math.LegacyOneDec()).MulInt(msg.Collateral.Amount).TruncateInt())), finalAccountedPoolBalance)
 			},
 		},
 		{
