@@ -189,3 +189,72 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 		})
 	}
 }
+
+func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
+	asset1 := ptypes.ATOM
+	asset2 := ptypes.BaseCurrency
+	leverage := osmomath.MustNewBigDecFromStr("2.0")
+	collateralAmount := sdkmath.NewInt(10000000)
+	testCases := []struct {
+		name                 string
+		input                *types.MsgClaimAllRewards
+		expectErr            bool
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{"module is out of funds",
+			&types.MsgClaimAllRewards{
+				Sender: addresses[0].String(),
+			},
+			true,
+			"insufficient funds",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
+				openPosition(suite, addresses[0], collateralAmount, leverage)
+				moduleAddress := address.Module("masterchef")
+				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, moduleAddress)
+				err := suite.app.BankKeeper.SendCoins(suite.ctx, moduleAddress, addresses[2], balances)
+				if err != nil {
+					panic(err)
+				}
+				positonAddress := types.GetPositionAddress(1)
+				suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, mastercheftypes.UserRewardInfo{
+					User:          positonAddress.String(),
+					PoolId:        1,
+					RewardDenom:   "uusdc",
+					RewardPending: sdkmath.LegacyMustNewDecFromStr("100"),
+				})
+			},
+		},
+		{"positive case",
+			&types.MsgClaimAllRewards{
+				Sender: addresses[0].String(),
+			},
+			false,
+			"",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
+				openPosition(suite, addresses[0], collateralAmount, leverage)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+			_, err := msgServer.ClaimAllRewards(suite.ctx, tc.input)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
+}
