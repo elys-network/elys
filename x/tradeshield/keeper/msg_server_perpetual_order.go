@@ -217,3 +217,33 @@ func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCa
 
 	return &types.MsgCancelPerpetualOrdersResponse{}, nil
 }
+
+func (k msgServer) CancelAllPerpetualOrders(goCtx context.Context, msg *types.MsgCancelAllPerpetualOrders) (*types.MsgCancelAllPerpetualOrdersResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	pendingStatus := types.Status_PENDING
+	pendingOrders, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, msg.OwnerAddress, &pendingStatus, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, order := range pendingOrders {
+		// Get all balances from the spot order address
+		orderAddress := order.GetOrderAddress()
+		balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+		// Send all available balances back to the owner if there are any
+		if !balances.IsZero() {
+			ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+			err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+		types.EmitCancelPerpetualOrderEvent(ctx, order)
+	}
+
+	return &types.MsgCancelAllPerpetualOrdersResponse{}, nil
+}

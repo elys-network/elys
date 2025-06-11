@@ -40,6 +40,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdatePerpetualOrder())
 	cmd.AddCommand(CmdCancelPerpetualOrder())
 	cmd.AddCommand(CmdCancelPerpetualOrders())
+	cmd.AddCommand(CmdCancelAllPerpetualOrders())
 
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdExecuteOrders())

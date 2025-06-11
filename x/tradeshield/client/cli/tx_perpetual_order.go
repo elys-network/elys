@@ -236,3 +236,29 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 
 	return cmd
 }
+
+func CmdCancelAllPerpetualOrders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "cancel-all-perpetual-orders",
+		Short:   "Cancel all pending perpetual orders for the user",
+		Example: "elysd tx perpetual cancel-all-perpetual-orders --from=bob --yes --gas=1000000",
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelAllPerpetualOrders(clientCtx.GetFromAddress().String())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
