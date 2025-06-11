@@ -117,7 +117,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "cancel-spot-orders [ids.json]",
 		Short:   "Cancel spot-orders",
-		Example: "elysd tx perpetual cancel-spot-orders ids.json --from=bob --yes --gas=1000000",
+		Example: "elysd tx tradeshield cancel-spot-orders ids.json --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])
@@ -155,4 +155,30 @@ func readPositionRequestJSON(filename string) ([]uint64, error) {
 	}
 
 	return positions, nil
+}
+
+func CmdCancelAllSpotOrders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "cancel-all-spot-limit-orders",
+		Short:   "Cancel all spot-limit-orders",
+		Example: "elysd tx tradeshield cancel-all-spot-limit-orders --from=bob --yes --gas=1000000",
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelAllSpotOrders(clientCtx.GetFromAddress().String())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
 }
