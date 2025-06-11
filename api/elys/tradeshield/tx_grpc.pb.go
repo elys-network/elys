@@ -22,6 +22,7 @@ type MsgClient interface {
 	UpdateSpotOrder(ctx context.Context, in *MsgUpdateSpotOrder, opts ...grpc.CallOption) (*MsgUpdateSpotOrderResponse, error)
 	CancelSpotOrder(ctx context.Context, in *MsgCancelSpotOrder, opts ...grpc.CallOption) (*MsgCancelSpotOrderResponse, error)
 	CancelSpotOrders(ctx context.Context, in *MsgCancelSpotOrders, opts ...grpc.CallOption) (*MsgCancelSpotOrdersResponse, error)
+	CancelAllSpotOrders(ctx context.Context, in *MsgCancelAllSpotOrders, opts ...grpc.CallOption) (*MsgCancelAllSpotOrdersResponse, error)
 	CreatePerpetualOpenOrder(ctx context.Context, in *MsgCreatePerpetualOpenOrder, opts ...grpc.CallOption) (*MsgCreatePerpetualOpenOrderResponse, error)
 	CreatePerpetualCloseOrder(ctx context.Context, in *MsgCreatePerpetualCloseOrder, opts ...grpc.CallOption) (*MsgCreatePerpetualCloseOrderResponse, error)
 	UpdatePerpetualOrder(ctx context.Context, in *MsgUpdatePerpetualOrder, opts ...grpc.CallOption) (*MsgUpdatePerpetualOrderResponse, error)
@@ -70,6 +71,15 @@ func (c *msgClient) CancelSpotOrder(ctx context.Context, in *MsgCancelSpotOrder,
 func (c *msgClient) CancelSpotOrders(ctx context.Context, in *MsgCancelSpotOrders, opts ...grpc.CallOption) (*MsgCancelSpotOrdersResponse, error) {
 	out := new(MsgCancelSpotOrdersResponse)
 	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/CancelSpotOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CancelAllSpotOrders(ctx context.Context, in *MsgCancelAllSpotOrders, opts ...grpc.CallOption) (*MsgCancelAllSpotOrdersResponse, error) {
+	out := new(MsgCancelAllSpotOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/CancelAllSpotOrders", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -156,6 +166,7 @@ type MsgServer interface {
 	UpdateSpotOrder(context.Context, *MsgUpdateSpotOrder) (*MsgUpdateSpotOrderResponse, error)
 	CancelSpotOrder(context.Context, *MsgCancelSpotOrder) (*MsgCancelSpotOrderResponse, error)
 	CancelSpotOrders(context.Context, *MsgCancelSpotOrders) (*MsgCancelSpotOrdersResponse, error)
+	CancelAllSpotOrders(context.Context, *MsgCancelAllSpotOrders) (*MsgCancelAllSpotOrdersResponse, error)
 	CreatePerpetualOpenOrder(context.Context, *MsgCreatePerpetualOpenOrder) (*MsgCreatePerpetualOpenOrderResponse, error)
 	CreatePerpetualCloseOrder(context.Context, *MsgCreatePerpetualCloseOrder) (*MsgCreatePerpetualCloseOrderResponse, error)
 	UpdatePerpetualOrder(context.Context, *MsgUpdatePerpetualOrder) (*MsgUpdatePerpetualOrderResponse, error)
@@ -182,6 +193,9 @@ func (UnimplementedMsgServer) CancelSpotOrder(context.Context, *MsgCancelSpotOrd
 }
 func (UnimplementedMsgServer) CancelSpotOrders(context.Context, *MsgCancelSpotOrders) (*MsgCancelSpotOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelSpotOrders not implemented")
+}
+func (UnimplementedMsgServer) CancelAllSpotOrders(context.Context, *MsgCancelAllSpotOrders) (*MsgCancelAllSpotOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelAllSpotOrders not implemented")
 }
 func (UnimplementedMsgServer) CreatePerpetualOpenOrder(context.Context, *MsgCreatePerpetualOpenOrder) (*MsgCreatePerpetualOpenOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePerpetualOpenOrder not implemented")
@@ -288,6 +302,24 @@ func _Msg_CancelSpotOrders_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).CancelSpotOrders(ctx, req.(*MsgCancelSpotOrders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CancelAllSpotOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCancelAllSpotOrders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CancelAllSpotOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/CancelAllSpotOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CancelAllSpotOrders(ctx, req.(*MsgCancelAllSpotOrders))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -458,6 +490,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelSpotOrders",
 			Handler:    _Msg_CancelSpotOrders_Handler,
+		},
+		{
+			MethodName: "CancelAllSpotOrders",
+			Handler:    _Msg_CancelAllSpotOrders_Handler,
 		},
 		{
 			MethodName: "CreatePerpetualOpenOrder",
