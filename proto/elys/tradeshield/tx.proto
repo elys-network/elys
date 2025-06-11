@@ -30,6 +30,8 @@ service Msg {
       returns (MsgCancelPerpetualOrderResponse);
   rpc CancelPerpetualOrders(MsgCancelPerpetualOrders)
       returns (MsgCancelPerpetualOrdersResponse);
+  rpc CancelAllPerpetualOrders(MsgCancelAllPerpetualOrders)
+      returns (MsgCancelAllPerpetualOrdersResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc ExecuteOrders(MsgExecuteOrders) returns (MsgExecuteOrdersResponse);
 }
@@ -167,6 +169,14 @@ message MsgCancelPerpetualOrders {
 }
 
 message MsgCancelPerpetualOrdersResponse {}
+
+message MsgCancelAllPerpetualOrders {
+  option (cosmos.msg.v1.signer) = "owner_address";
+  option (amino.name) = "tradeshield/MsgCancelAllPerpetualOrders";
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgCancelAllPerpetualOrdersResponse {}
 
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";

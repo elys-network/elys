@@ -27,6 +27,7 @@ type MsgClient interface {
 	UpdatePerpetualOrder(ctx context.Context, in *MsgUpdatePerpetualOrder, opts ...grpc.CallOption) (*MsgUpdatePerpetualOrderResponse, error)
 	CancelPerpetualOrder(ctx context.Context, in *MsgCancelPerpetualOrder, opts ...grpc.CallOption) (*MsgCancelPerpetualOrderResponse, error)
 	CancelPerpetualOrders(ctx context.Context, in *MsgCancelPerpetualOrders, opts ...grpc.CallOption) (*MsgCancelPerpetualOrdersResponse, error)
+	CancelAllPerpetualOrders(ctx context.Context, in *MsgCancelAllPerpetualOrders, opts ...grpc.CallOption) (*MsgCancelAllPerpetualOrdersResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	ExecuteOrders(ctx context.Context, in *MsgExecuteOrders, opts ...grpc.CallOption) (*MsgExecuteOrdersResponse, error)
 }
@@ -120,6 +121,15 @@ func (c *msgClient) CancelPerpetualOrders(ctx context.Context, in *MsgCancelPerp
 	return out, nil
 }
 
+func (c *msgClient) CancelAllPerpetualOrders(ctx context.Context, in *MsgCancelAllPerpetualOrders, opts ...grpc.CallOption) (*MsgCancelAllPerpetualOrdersResponse, error) {
+	out := new(MsgCancelAllPerpetualOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/CancelAllPerpetualOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/UpdateParams", in, out, opts...)
@@ -151,6 +161,7 @@ type MsgServer interface {
 	UpdatePerpetualOrder(context.Context, *MsgUpdatePerpetualOrder) (*MsgUpdatePerpetualOrderResponse, error)
 	CancelPerpetualOrder(context.Context, *MsgCancelPerpetualOrder) (*MsgCancelPerpetualOrderResponse, error)
 	CancelPerpetualOrders(context.Context, *MsgCancelPerpetualOrders) (*MsgCancelPerpetualOrdersResponse, error)
+	CancelAllPerpetualOrders(context.Context, *MsgCancelAllPerpetualOrders) (*MsgCancelAllPerpetualOrdersResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	ExecuteOrders(context.Context, *MsgExecuteOrders) (*MsgExecuteOrdersResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -186,6 +197,9 @@ func (UnimplementedMsgServer) CancelPerpetualOrder(context.Context, *MsgCancelPe
 }
 func (UnimplementedMsgServer) CancelPerpetualOrders(context.Context, *MsgCancelPerpetualOrders) (*MsgCancelPerpetualOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelPerpetualOrders not implemented")
+}
+func (UnimplementedMsgServer) CancelAllPerpetualOrders(context.Context, *MsgCancelAllPerpetualOrders) (*MsgCancelAllPerpetualOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelAllPerpetualOrders not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -368,6 +382,24 @@ func _Msg_CancelPerpetualOrders_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CancelAllPerpetualOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCancelAllPerpetualOrders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CancelAllPerpetualOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/CancelAllPerpetualOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CancelAllPerpetualOrders(ctx, req.(*MsgCancelAllPerpetualOrders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -446,6 +478,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelPerpetualOrders",
 			Handler:    _Msg_CancelPerpetualOrders_Handler,
+		},
+		{
+			MethodName: "CancelAllPerpetualOrders",
+			Handler:    _Msg_CancelAllPerpetualOrders_Handler,
 		},
 		{
 			MethodName: "UpdateParams",
