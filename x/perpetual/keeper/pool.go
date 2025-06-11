@@ -11,6 +11,10 @@ import (
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
+const (
+	secondsPerYear = 31536000
+)
+
 // RemovePool removes a pool from the store
 func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -112,8 +116,6 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetInterestRateKey(startBlock, poolId)
 
-	blocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
 		bz := store.Get(startBlockKey)
@@ -130,11 +132,11 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 		finalInterestRate := totalInterestRate.
 			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(numberOfBlocks).
-			QuoInt64(blocksPerYear)
+			QuoInt64(secondsPerYear)
 
 		return math.LegacyMaxDec(
 			finalInterestRate.Mul(takeProfitBorrowFactor),
-			k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
+			k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(secondsPerYear),
 		)
 	}
 
@@ -159,11 +161,11 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 			finalInterestRate := totalInterestRate.
 				MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 				QuoInt64(numberOfBlocks).
-				QuoInt64(blocksPerYear)
+				QuoInt64(secondsPerYear)
 
 			return math.LegacyMaxDec(
 				finalInterestRate.Mul(takeProfitBorrowFactor),
-				k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(blocksPerYear),
+				k.GetParams(ctx).BorrowInterestRateMin.MulInt64(ctx.BlockTime().Unix()-int64(startTime)).QuoInt64(secondsPerYear),
 			)
 		}
 	}
@@ -172,7 +174,7 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 		// this is handling case of future block
 		return math.LegacyZeroDec()
 	}
-	newInterest := pool.BorrowInterestRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).QuoInt64(blocksPerYear)
+	newInterest := pool.BorrowInterestRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).QuoInt64(secondsPerYear)
 	return newInterest
 }
 
@@ -230,8 +232,6 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetFundingRateKey(startBlock, poolId)
 
-	blocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
 		bz := store.Get(startBlockKey)
@@ -247,11 +247,11 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 		totalFundingLong := endFundingBlock.FundingRateLong.Sub(startFundingBlock.FundingRateLong).
 			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(numberOfBlocks).
-			QuoInt64(blocksPerYear)
+			QuoInt64(secondsPerYear)
 		totalFundingShort := endFundingBlock.FundingRateShort.Sub(startFundingBlock.FundingRateShort).
 			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 			QuoInt64(numberOfBlocks).
-			QuoInt64(blocksPerYear)
+			QuoInt64(secondsPerYear)
 		return totalFundingLong, totalFundingShort
 	}
 
@@ -273,10 +273,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 
 			return endFundingBlock.FundingRateLong.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 					QuoInt64(numberOfBlocks).
-					QuoInt64(blocksPerYear),
+					QuoInt64(secondsPerYear),
 				endFundingBlock.FundingRateShort.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
 					QuoInt64(numberOfBlocks).
-					QuoInt64(blocksPerYear)
+					QuoInt64(secondsPerYear)
 		}
 	}
 	pool, found := k.GetPool(ctx, poolId)
@@ -286,10 +286,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 
 	if pool.BorrowInterestRate.IsPositive() {
 		return pool.FundingRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
-			QuoInt64(blocksPerYear), math.LegacyZeroDec()
+			QuoInt64(secondsPerYear), math.LegacyZeroDec()
 	} else {
 		return math.LegacyZeroDec(), pool.FundingRate.MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
-			QuoInt64(blocksPerYear)
+			QuoInt64(secondsPerYear)
 	}
 }
 
