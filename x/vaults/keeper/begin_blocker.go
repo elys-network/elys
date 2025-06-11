@@ -63,6 +63,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				k.Logger(ctx).Error("error getting vault value", "error", err)
 				continue
 			}
+			//panic("not implemented " + strconv.FormatUint(vault.Id, 10) + " " + currentValue.String() + " " + vault.SumOfDepositsUsdValue.String() + " " + vault.WithdrawalUsdValue.String())
 			profit := currentValue.Dec().Sub(vault.SumOfDepositsUsdValue).Add(vault.WithdrawalUsdValue)
 			//panic("not implemented " + strconv.FormatUint(vault.Id, 10) + " " + profit.String() + " " + currentValue.String() + " " + vault.SumOfDepositsUsdValue.String() + " " + vault.WithdrawalUsdValue.String())
 			if profit.IsPositive() {
