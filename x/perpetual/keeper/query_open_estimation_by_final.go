@@ -100,7 +100,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := req.FinalAmount.Amount
 	slippage := osmomath.ZeroBigDec()
-	//eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := math.NewInt(0)
 	weightBreakingFee := osmomath.ZeroBigDec()
 
