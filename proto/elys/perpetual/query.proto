@@ -444,7 +444,7 @@ message QueryOpenEstimationByFinalRequest {
     (gogoproto.nullable) = false
   ];
   string trading_asset = 3;
-  cosmos.base.v1beta1.Coin custody = 4 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin final_amount = 4 [ (gogoproto.nullable) = false ];
   string address = 5;
   string take_profit_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",

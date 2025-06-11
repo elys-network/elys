@@ -95,14 +95,10 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	}
 	mtp := types.NewMTP(ctx, "", req.CollateralDenom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
-	proxyLeverage := req.Leverage
-	if req.Position == types.Position_SHORT {
-		proxyLeverage = req.Leverage.Add(math.LegacyOneDec())
-	}
 	//leveragedAmount := proxyLeverage.MulInt(req.Collateral.Amount).TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
-	custodyAmount := req.Custody.Amount
+	custodyAmount := req.FinalAmount.Amount
 	slippage := osmomath.ZeroBigDec()
 	//eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := math.NewInt(0)
@@ -112,13 +108,12 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		// Getting custody
 		// LONG: if collateral is base, and input is custody, then EstimateSwapGivenOut(total_input_custody) = collateral * lev
 		if mtp.CollateralAsset == baseCurrency {
-			//leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
 			var collateralLiab math.Int
-			collateralLiab, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, req.Custody, mtp.CollateralAsset, ammPool, req.Address)
+			collateralLiab, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, req.FinalAmount, mtp.CollateralAsset, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
-			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(proxyLeverage).TruncateInt()
+			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
 			liabilities = collateralLiab.Sub(collateral)
 		}
@@ -126,15 +121,12 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		// Getting Liabilities
 		// LONG: if !=: remains same
 		if mtp.CollateralAsset != baseCurrency {
-			var collateralLiab math.Int
-
-			collateralLiab, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, req.Custody, baseCurrency, ammPool, req.Address)
+			collateral := math.LegacyNewDecFromInt(req.FinalAmount.Amount).Quo(req.Leverage).TruncateInt()
+			mtp.Collateral = collateral
+			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.FinalAmount.Denom, req.FinalAmount.Amount.Sub(collateral)), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
-			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(proxyLeverage).TruncateInt()
-			mtp.Collateral = collateral
-			liabilities = collateralLiab.Sub(collateral)
 		}
 
 	}
@@ -142,13 +134,14 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev - 1)
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenIn(ctx, req.Custody, baseCurrency, ammPool, mtp.Address)
+		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
 		}
-		collateral := math.LegacyNewDecFromInt(liabilities).Quo(proxyLeverage.Sub(math.LegacyOneDec())).TruncateInt()
+		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage.Sub(math.LegacyOneDec())).TruncateInt()
 		mtp.Collateral = collateral
-		custodyAmount = req.Custody.Amount.Sub(collateral)
+		liabilities = req.FinalAmount.Amount
+		custodyAmount = collateral.Mul(req.Leverage.TruncateInt())
 	}
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
