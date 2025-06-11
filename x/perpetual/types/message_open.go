@@ -59,10 +59,10 @@ func (msg *MsgOpen) ValidateBasic() error {
 	if err = CheckLegacyDecNilAndNegative(msg.StopLossPrice, "StopLossPrice"); err != nil {
 		return err
 	}
-	if msg.Position == Position_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
+	if msg.Position == Position_LONG && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
 		return errors.New("TakeProfitPrice cannot be <= StopLossPrice for LONG")
 	}
-	if msg.Position == Position_SHORT && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
+	if msg.Position == Position_SHORT && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
 		return errors.New("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
 	}
 	return nil
