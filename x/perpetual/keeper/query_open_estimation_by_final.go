@@ -95,7 +95,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	}
 	mtp := types.NewMTP(ctx, "", req.CollateralDenom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
-	//leveragedAmount := proxyLeverage.MulInt(req.Collateral.Amount).TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := req.FinalAmount.Amount
@@ -127,7 +126,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 				return nil, err
 			}
 		}
-
 	}
 	// Getting Liabilities
 	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev)

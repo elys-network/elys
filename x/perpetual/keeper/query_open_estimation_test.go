@@ -513,7 +513,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		OpenPrice:          math.LegacyMustNewDecFromStr("4.985004980393850786"),
 		TakeProfitPrice:    tradingAssetPrice.QuoInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("6.079274366333964374"),
-		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, math.NewInt(266265597)},
+		EstimatedPnl:       sdk.Coin{Denom: ptypes.BaseCurrency, Amount: math.NewInt(266265597)},
 		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
 		Slippage:           math.LegacyMustNewDecFromStr("0.003008025000000000"),
