@@ -15,4 +15,5 @@ var (
 	ErrInsufficientShares  = sdkerrors.Register(ModuleName, 1104, "insufficient shares")
 	ErrNoShares            = sdkerrors.Register(ModuleName, 1105, "no shares")
 	ErrInvalidDepositDenom = sdkerrors.Register(ModuleName, 1106, "invalid deposit denom")
+	ErrDepositValueZero    = sdkerrors.Register(ModuleName, 1107, "deposit value is zero")
 )

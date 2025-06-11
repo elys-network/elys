@@ -64,6 +64,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				continue
 			}
 			profit := currentValue.Dec().Sub(vault.SumOfDepositsUsdValue).Add(vault.WithdrawalUsdValue)
+			//panic("not implemented " + strconv.FormatUint(vault.Id, 10) + " " + profit.String() + " " + currentValue.String() + " " + vault.SumOfDepositsUsdValue.String() + " " + vault.WithdrawalUsdValue.String())
 			if profit.IsPositive() {
 				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
 				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)

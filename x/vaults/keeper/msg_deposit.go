@@ -93,6 +93,9 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 
 	// Set sum of deposits usd value
 	usdValue := k.amm.CalculateUSDValue(ctx, req.Amount.Denom, req.Amount.Amount)
+	if usdValue.IsZero() {
+		return nil, types.ErrDepositValueZero
+	}
 	vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(usdValue.Dec())
 	k.SetVault(ctx, vault)
 
