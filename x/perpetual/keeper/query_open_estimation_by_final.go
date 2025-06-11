@@ -131,17 +131,17 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 
 	}
 	// Getting Liabilities
-	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev - 1)
+	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev)
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
 		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
 		}
-		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage.Sub(math.LegacyOneDec())).TruncateInt()
+		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage).TruncateInt()
 		mtp.Collateral = collateral
 		liabilities = req.FinalAmount.Amount
-		custodyAmount = collateral.Mul(req.Leverage.TruncateInt())
+		custodyAmount = collateral.Mul(req.Leverage.Add(math.LegacyOneDec()).TruncateInt())
 	}
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
