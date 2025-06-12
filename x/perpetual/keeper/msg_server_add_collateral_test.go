@@ -67,7 +67,6 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -102,7 +101,6 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -137,7 +135,6 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -183,7 +180,6 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -213,8 +209,8 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 				// This is position expansion
 				suite.Require().Equal(initialPoolBankBalance.Add(msg.AddCollateral), finalPoolBankBalance)
 				atleastExpected := initialAccountedPoolBalance.Add(msg.AddCollateral)
-				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).GTE(atleastExpected.AmountOf(ptypes.ATOM)))
-				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.BaseCurrency).LTE(atleastExpected.AmountOf(ptypes.BaseCurrency)))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).LTE(atleastExpected.AmountOf(ptypes.ATOM)))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.BaseCurrency).GTE(atleastExpected.AmountOf(ptypes.BaseCurrency)))
 			},
 		},
 		{
@@ -232,7 +228,6 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.QuoInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
