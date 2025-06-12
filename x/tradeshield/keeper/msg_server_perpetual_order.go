@@ -227,6 +227,10 @@ func (k msgServer) CancelAllPerpetualOrders(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 
+	if len(pendingOrders) == 0 {
+		return nil, types.ErrPerpetualOrderNotFound
+	}
+
 	for _, order := range pendingOrders {
 		// Get all balances from the spot order address
 		orderAddress := order.GetOrderAddress()

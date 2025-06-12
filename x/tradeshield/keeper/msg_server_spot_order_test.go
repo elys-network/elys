@@ -280,7 +280,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelAllSpotOrders() {
 	}{
 		{
 			"No order for cancellation",
-			"",
+			"spot order not found",
 			func() *types.MsgCancelAllSpotOrders {
 				return &types.MsgCancelAllSpotOrders{
 					Creator: addr[2].String(),

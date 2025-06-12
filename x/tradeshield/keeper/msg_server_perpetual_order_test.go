@@ -361,7 +361,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelAllPerpetualOrders()
 	}{
 		{
 			"No order for cancelling",
-			"",
+			"perpetual order not found",
 			func() *types.MsgCancelAllPerpetualOrders {
 				return &types.MsgCancelAllPerpetualOrders{
 					OwnerAddress: addr[2].String(),

@@ -139,6 +139,10 @@ func (k msgServer) CancelAllSpotOrders(goCtx context.Context, msg *types.MsgCanc
 		return nil, err
 	}
 
+	if len(pendingOrders) == 0 {
+		return nil, types.ErrSpotOrderNotFound
+	}
+
 	for _, order := range pendingOrders {
 		// Get all balances from the spot order address
 		orderAddress := order.GetOrderAddress()
