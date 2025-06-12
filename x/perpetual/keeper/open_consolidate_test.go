@@ -31,7 +31,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -66,7 +65,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -102,7 +100,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -120,7 +117,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg, existingMtp, newMtp := tc.setup()
-			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.BaseCurrency)
+			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.ATOM, ptypes.BaseCurrency)
 
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)
@@ -167,7 +164,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -221,7 +217,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),

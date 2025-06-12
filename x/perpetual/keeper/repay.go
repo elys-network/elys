@@ -25,12 +25,6 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	reducingCollateralAmt := closingRatio.MulInt(mtp.Collateral).TruncateInt()
 	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
 
-	oldTakeProfitCustody := mtp.TakeProfitCustody
-	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(closingRatio.MulInt(mtp.TakeProfitCustody).TruncateInt())
-
-	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
-	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(closingRatio.MulInt(mtp.TakeProfitLiabilities).TruncateInt())
-
 	err := pool.UpdateCustody(mtp.CustodyAsset, closingCustodyAmount, false, mtp.Position)
 	if err != nil {
 		return err
@@ -42,16 +36,6 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	}
 
 	err = pool.UpdateCollateral(mtp.CollateralAsset, reducingCollateralAmt, false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, oldTakeProfitCustody.Sub(mtp.TakeProfitCustody), false, mtp.Position)
 	if err != nil {
 		return err
 	}

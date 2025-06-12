@@ -7,7 +7,7 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
-message PoolAsset {
+message LegacyPoolAsset {
   string liabilities = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -30,6 +30,61 @@ message PoolAsset {
   ];
   string asset_denom = 5;
   string collateral = 6 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message LegacyPool {
+  uint64 amm_pool_id = 1;
+  string base_asset_liabilities_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string quote_asset_liabilities_ratio = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  string borrow_interest_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAsset pool_assets_long = 5 [ (gogoproto.nullable) = false ];
+  repeated PoolAsset pool_assets_short = 6 [ (gogoproto.nullable) = false ];
+  int64 last_height_borrow_interest_rate_computed = 7;
+  // funding rate, if positive longs pay shorts, if negative shorts pay longs
+  string funding_rate = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin fees_collected = 9
+      [ (gogoproto.nullable) = false ];
+  string leverage_max = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolAsset {
+  string asset_denom = 1;
+  string liabilities = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string custody = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string collateral = 4 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

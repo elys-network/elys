@@ -74,7 +74,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 	_, err = k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 		Position:        perpetualtypes.Position(msg.Position),
 		Leverage:        msg.Leverage,
-		TradingAsset:    msg.TradingAsset,
 		Collateral:      msg.Collateral,
 		TakeProfitPrice: msg.TakeProfitPrice,
 		PoolId:          msg.PoolId,

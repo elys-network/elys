@@ -6,7 +6,7 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
-message Params {
+message LegacyParams {
   string leverage_max = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -106,4 +106,110 @@ message Params {
     (gogoproto.nullable) = false
   ];
   repeated uint64 enabled_pools = 22;
+}
+
+message Params {
+  string leverage_max = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate_max = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate_min = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate_increase = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate_decrease = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string health_gain_factor = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  int64 max_open_positions = 7;
+  string pool_max_liabilities_threshold = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_payment_fund_percentage = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string safety_factor = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  bool borrow_interest_payment_enabled = 11;
+  bool whitelisting_enabled = 12;
+  string perpetual_swap_fee = 13 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  int64 max_limit_order = 14;
+  string fixed_funding_rate = 15 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // minimum value for take_profit_price/current price for long, should be
+  // greater than 1
+  string minimum_long_take_profit_price_ratio = 16 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // max value for take_profit_price/current price for long, should be greater
+  // than 1
+  string maximum_long_take_profit_price_ratio = 17 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // max value for take_profit_price/current price for short, should be less
+  // than 1
+  string maximum_short_take_profit_price_ratio = 18 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in
+  // validate message
+
+  // We create this and send this value to estimate swap ONLY when opening and
+  // closing the position Ideally this value is set to half. When trader open a
+  // position if they receive a weight balance bonus (which is half of weight
+  // breaking fee, ideally) then while closing position they are charged weight
+  // breaking fee. So we just directly apply half weight breaking fee on
+  // perpetual swaps Question: does each need to have separate value of this
+  // because PoolParams.WeightRecoveryFeePortion can be different Also, if
+  // trader has no bonus only fee, then overall we are only applying the fee
+  // half time
+  string weight_breaking_fee_factor = 19 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated uint64 enabled_pools = 20;
+  string minimum_notional_value = 21 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

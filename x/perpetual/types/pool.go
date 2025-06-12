@@ -91,38 +91,6 @@ func (p *Pool) UpdateCollateral(assetDenom string, amount math.Int, isIncrease b
 	return nil
 }
 
-// Update the asset take profit liabilities
-func (p *Pool) UpdateTakeProfitLiabilities(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.TakeProfitLiabilities = poolAsset.TakeProfitLiabilities.Add(amount)
-	} else {
-		poolAsset.TakeProfitLiabilities = poolAsset.TakeProfitLiabilities.Sub(amount)
-	}
-
-	return nil
-}
-
-// Update the asset take profit custody
-func (p *Pool) UpdateTakeProfitCustody(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.TakeProfitCustody = poolAsset.TakeProfitCustody.Add(amount)
-	} else {
-		poolAsset.TakeProfitCustody = poolAsset.TakeProfitCustody.Sub(amount)
-	}
-
-	return nil
-}
-
 // Update the asset custody
 func (p *Pool) UpdateCustody(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
@@ -214,20 +182,27 @@ func (pool Pool) GetInsuranceAccount() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurance_fund/%d", pool.AmmPoolId))
 }
 
-func (perpetualPool Pool) GetPerpetualPoolBalancesByPosition(denom string, position Position) (math.Int, math.Int, math.Int, math.Int) {
+func (perpetualPool Pool) GetPerpetualPoolBalancesByPosition(denom string, position Position) (math.Int, math.Int) {
 	poolAsset := perpetualPool.GetPoolAsset(position, denom)
-	return poolAsset.Liabilities, poolAsset.Custody, poolAsset.TakeProfitCustody, poolAsset.TakeProfitLiabilities
+	return poolAsset.Liabilities, poolAsset.Custody
 }
 
 // Get Perpetual Pool Balance
-func (perpetualPool Pool) GetPerpetualPoolBalances(denom string) (math.Int, math.Int, math.Int, math.Int) {
-	liabilitiesLong, custodyLong, longTakeProfitCustody, longTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_LONG)
-	liabilitiesShort, custodyShort, shortTakeProfitCustody, shortTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_SHORT)
+func (perpetualPool Pool) GetPerpetualPoolBalances(denom string) (math.Int, math.Int) {
+	liabilitiesLong, custodyLong := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_LONG)
+	liabilitiesShort, custodyShort := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_SHORT)
 
 	totalLiabilities := liabilitiesLong.Add(liabilitiesShort)
 	totalCustody := custodyLong.Add(custodyShort)
-	totalTakeProfitCustody := longTakeProfitCustody.Add(shortTakeProfitCustody)
-	totalTakeProfitLiabilities := longTakeProfitLiabilities.Add(shortTakeProfitLiabilities)
 
-	return totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities
+	return totalLiabilities, totalCustody
+}
+
+func (p Pool) GetTradingAsset(baseCurrency string) string {
+	for _, asset := range p.PoolAssetsLong {
+		if asset.AssetDenom != baseCurrency {
+			return asset.AssetDenom
+		}
+	}
+	return ""
 }

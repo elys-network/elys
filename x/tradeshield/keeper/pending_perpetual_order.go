@@ -226,7 +226,6 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
-		TradingAsset:    order.TradingAsset,
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
@@ -285,7 +284,6 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
-		TradingAsset:    order.TradingAsset,
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
@@ -325,7 +323,6 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 		res, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 			Position:        perpetualtypes.Position(order.Position),
 			Leverage:        order.Leverage,
-			TradingAsset:    order.TradingAsset,
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
 			PoolId:          order.PoolId,
