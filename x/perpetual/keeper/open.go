@@ -25,9 +25,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("PoolId: %d", msg.PoolId))
 	}
 
-	tradingAsset := pool.GetTradingAsset(baseCurrency)
-	if tradingAsset == "" {
-		return nil, errors.New("trading asset is empty")
+	tradingAsset, err := pool.GetTradingAsset(baseCurrency)
+	if err != nil {
+		return nil, err
 	}
 
 	if err := msg.ValidatePosition(tradingAsset, baseCurrency); err != nil {

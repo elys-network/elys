@@ -96,24 +96,23 @@ message MsgCreatePerpetualOpenOrder {
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 3 [ (gogoproto.nullable) = false ];
-  string trading_asset = 4;
-  PerpetualPosition position = 5;
-  string leverage = 6 [
+  PerpetualPosition position = 4;
+  string leverage = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string take_profit_price = 7 [
+  string take_profit_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string stop_loss_price = 8 [
+  string stop_loss_price = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 pool_id = 9;
+  uint64 pool_id = 8;
 }
 
 message MsgCreatePerpetualOpenOrderResponse { uint64 order_id = 1; }

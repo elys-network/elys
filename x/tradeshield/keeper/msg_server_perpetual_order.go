@@ -26,7 +26,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		TriggerPrice:       msg.TriggerPrice,
 		Collateral:         msg.Collateral,
 		OwnerAddress:       msg.OwnerAddress,
-		TradingAsset:       msg.TradingAsset,
 		Position:           msg.Position,
 		Leverage:           msg.Leverage,
 		TakeProfitPrice:    msg.TakeProfitPrice,
@@ -46,9 +45,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 	for _, order := range orders {
-		if order.PoolId == msg.PoolId && order.Position == msg.Position &&
-			order.Collateral.Denom == msg.Collateral.Denom &&
-			order.TradingAsset == msg.TradingAsset {
+		if order.Position == msg.Position && order.Collateral.Denom == msg.Collateral.Denom && order.PoolId == msg.PoolId {
 			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
 		}
 	}
@@ -60,7 +57,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 	for _, mtp := range mtps {
-		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom && mtp.Mtp.TradingAsset == msg.TradingAsset {
+		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom {
 			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
 		}
 	}

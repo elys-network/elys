@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -198,11 +199,11 @@ func (perpetualPool Pool) GetPerpetualPoolBalances(denom string) (math.Int, math
 	return totalLiabilities, totalCustody
 }
 
-func (p Pool) GetTradingAsset(baseCurrency string) string {
+func (p Pool) GetTradingAsset(baseCurrency string) (string, error) {
 	for _, asset := range p.PoolAssetsLong {
 		if asset.AssetDenom != baseCurrency {
-			return asset.AssetDenom
+			return asset.AssetDenom, nil
 		}
 	}
-	return ""
+	return "", errors.New("trading asset not found")
 }

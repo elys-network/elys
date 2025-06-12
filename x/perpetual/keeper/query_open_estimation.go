@@ -37,9 +37,9 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 	baseCurrency := entry.Denom
 
-	tradingAsset := pool.GetTradingAsset(baseCurrency)
-	if tradingAsset == "" {
-		return nil, status.Error(codes.NotFound, "trading asset not found")
+	tradingAsset, err := pool.GetTradingAsset(baseCurrency)
+	if err != nil {
+		return nil, err
 	}
 	ammPool, err := k.GetAmmPool(ctx, req.PoolId)
 	if err != nil {

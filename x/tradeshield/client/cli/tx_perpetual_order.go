@@ -19,9 +19,9 @@ import (
 
 func CmdCreatePerpetualOpenOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-perpetual-open-order [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
+		Use:   "create-perpetual-open-order [position] [leverage] [pool-id] [collateral] [trigger-price]",
 		Short: "Create a new perpetual open order",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -45,14 +45,12 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			tradingAsset := args[3]
-
-			collateral, err := sdk.ParseCoinNormalized(args[4])
+			collateral, err := sdk.ParseCoinNormalized(args[3])
 			if err != nil {
 				return err
 			}
 
-			triggerPrice := math.LegacyMustNewDecFromStr(args[5])
+			triggerPrice := math.LegacyMustNewDecFromStr(args[4])
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
 			if err != nil {
@@ -88,7 +86,6 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				signer.String(),
 				triggerPrice,
 				collateral,
-				tradingAsset,
 				position,
 				leverage,
 				takeProfitPrice,
