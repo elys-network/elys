@@ -39,7 +39,6 @@ func TestCreatePerpetualOpenOrder(t *testing.T) {
 				"long",                          // position
 				"10",                            // leverage
 				"1",                             // pool id
-				ptypes.ATOM,                     // trading asset
 				"1000000" + ptypes.BaseCurrency, // collateral
 				"0.5",                           // trigger price
 			},
