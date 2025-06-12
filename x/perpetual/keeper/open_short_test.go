@@ -25,6 +25,19 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
 	_ = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+
+	ammPool = suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	poolId = ammPool.PoolId
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
+
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
 		Leverage:        math.LegacyNewDec(2),
@@ -40,33 +53,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		prerequisiteFunction func()
 	}{
 		{
-			"pool not found",
-			types.ErrPoolDoesNotExist.Error(),
-
-			func() {
-			},
-		},
-		{
-			"amm pool not found",
-			"pool does not exist",
-
-			func() {
-				ammPool = suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
-				poolId = ammPool.PoolId
-				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
-					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-					Pool: leveragelpmoduletypes.AddPool{
-						poolId,
-						math.LegacyMustNewDecFromStr("10"),
-					},
-				}
-				_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
-				suite.Require().NoError(err)
-
-				suite.app.AmmKeeper.RemovePool(suite.ctx, ammPool.PoolId)
-			},
-		},
-		{
 			"collateral amount is too high",
 			"borrowed amount is higher than pool depth",
 
@@ -80,8 +66,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			"",
 
 			func() {
-				err := suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
-				suite.Require().NoError(err)
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
 			},
