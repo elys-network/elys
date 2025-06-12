@@ -19,6 +19,7 @@ var (
 	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
+	_ sdk.Msg = &MsgClaimAllRewards{}
 )
 
 func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
