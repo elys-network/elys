@@ -1915,6 +1915,7 @@ var (
 	fd_Params_weight_breaking_fee_factor              protoreflect.FieldDescriptor
 	fd_Params_enabled_pools                           protoreflect.FieldDescriptor
 	fd_Params_minimum_notional_value                  protoreflect.FieldDescriptor
+	fd_Params_long_minimum_liability_amount           protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1941,6 +1942,7 @@ func init() {
 	fd_Params_weight_breaking_fee_factor = md_Params.Fields().ByName("weight_breaking_fee_factor")
 	fd_Params_enabled_pools = md_Params.Fields().ByName("enabled_pools")
 	fd_Params_minimum_notional_value = md_Params.Fields().ByName("minimum_notional_value")
+	fd_Params_long_minimum_liability_amount = md_Params.Fields().ByName("long_minimum_liability_amount")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -2134,6 +2136,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.LongMinimumLiabilityAmount != "" {
+		value := protoreflect.ValueOfString(x.LongMinimumLiabilityAmount)
+		if !f(fd_Params_long_minimum_liability_amount, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -2191,6 +2199,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.EnabledPools) != 0
 	case "elys.perpetual.Params.minimum_notional_value":
 		return x.MinimumNotionalValue != ""
+	case "elys.perpetual.Params.long_minimum_liability_amount":
+		return x.LongMinimumLiabilityAmount != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
@@ -2249,6 +2259,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.EnabledPools = nil
 	case "elys.perpetual.Params.minimum_notional_value":
 		x.MinimumNotionalValue = ""
+	case "elys.perpetual.Params.long_minimum_liability_amount":
+		x.LongMinimumLiabilityAmount = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
@@ -2331,6 +2343,9 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "elys.perpetual.Params.minimum_notional_value":
 		value := x.MinimumNotionalValue
 		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.long_minimum_liability_amount":
+		value := x.LongMinimumLiabilityAmount
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
@@ -2395,6 +2410,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.EnabledPools = *clv.list
 	case "elys.perpetual.Params.minimum_notional_value":
 		x.MinimumNotionalValue = value.Interface().(string)
+	case "elys.perpetual.Params.long_minimum_liability_amount":
+		x.LongMinimumLiabilityAmount = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
@@ -2461,6 +2478,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field weight_breaking_fee_factor of message elys.perpetual.Params is not mutable"))
 	case "elys.perpetual.Params.minimum_notional_value":
 		panic(fmt.Errorf("field minimum_notional_value of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.long_minimum_liability_amount":
+		panic(fmt.Errorf("field long_minimum_liability_amount of message elys.perpetual.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
@@ -2516,6 +2535,8 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_Params_20_list{list: &list})
 	case "elys.perpetual.Params.minimum_notional_value":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.long_minimum_liability_amount":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -2669,6 +2690,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 2 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.LongMinimumLiabilityAmount)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2697,6 +2722,15 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.LongMinimumLiabilityAmount) > 0 {
+			i -= len(x.LongMinimumLiabilityAmount)
+			copy(dAtA[i:], x.LongMinimumLiabilityAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LongMinimumLiabilityAmount)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xb2
 		}
 		if len(x.MinimumNotionalValue) > 0 {
 			i -= len(x.MinimumNotionalValue)
@@ -3587,6 +3621,38 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 				x.MinimumNotionalValue = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 22:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LongMinimumLiabilityAmount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LongMinimumLiabilityAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -3893,9 +3959,10 @@ type Params struct {
 	// because PoolParams.WeightRecoveryFeePortion can be different Also, if
 	// trader has no bonus only fee, then overall we are only applying the fee
 	// half time
-	WeightBreakingFeeFactor string   `protobuf:"bytes,19,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3" json:"weight_breaking_fee_factor,omitempty"`
-	EnabledPools            []uint64 `protobuf:"varint,20,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
-	MinimumNotionalValue    string   `protobuf:"bytes,21,opt,name=minimum_notional_value,json=minimumNotionalValue,proto3" json:"minimum_notional_value,omitempty"`
+	WeightBreakingFeeFactor    string   `protobuf:"bytes,19,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3" json:"weight_breaking_fee_factor,omitempty"`
+	EnabledPools               []uint64 `protobuf:"varint,20,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
+	MinimumNotionalValue       string   `protobuf:"bytes,21,opt,name=minimum_notional_value,json=minimumNotionalValue,proto3" json:"minimum_notional_value,omitempty"`
+	LongMinimumLiabilityAmount string   `protobuf:"bytes,22,opt,name=long_minimum_liability_amount,json=longMinimumLiabilityAmount,proto3" json:"long_minimum_liability_amount,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -4065,6 +4132,13 @@ func (x *Params) GetMinimumNotionalValue() string {
 	return ""
 }
 
+func (x *Params) GetLongMinimumLiabilityAmount() string {
+	if x != nil {
+		return x.LongMinimumLiabilityAmount
+	}
+	return ""
+}
+
 var File_elys_perpetual_params_proto protoreflect.FileDescriptor
 
 var file_elys_perpetual_params_proto_rawDesc = []byte{
@@ -4206,7 +4280,7 @@ var file_elys_perpetual_params_proto_rawDesc = []byte{
 	0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x46, 0x61, 0x63, 0x74,
 	0x6f, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f,
 	0x6f, 0x6c, 0x73, 0x18, 0x16, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c,
-	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0xf8, 0x0f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61,
+	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0xe8, 0x10, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61,
 	0x6d, 0x73, 0x12, 0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d,
 	0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
 	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
@@ -4334,7 +4408,14 @@ var file_elys_perpetual_params_proto_rawDesc = []byte{
 	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
 	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x14, 0x6d, 0x69,
 	0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x4e, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x56, 0x61, 0x6c,
-	0x75, 0x65, 0x42, 0xae, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x75, 0x65, 0x12, 0x6e, 0x0a, 0x1d, 0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x6d, 0x69, 0x6e, 0x69, 0x6d,
+	0x75, 0x6d, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x16, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x1a, 0x6c, 0x6f, 0x6e, 0x67, 0x4d, 0x69, 0x6e, 0x69,
+	0x6d, 0x75, 0x6d, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x42, 0xae, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
 	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d,
 	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
 	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,

@@ -5,6 +5,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
@@ -67,12 +68,17 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		// interest amount has been paid from custody
+		params := k.GetParams(ctx)
+		maxAmount := mtp.Liabilities.Sub(params.LongMinimumLiabilityAmount)
+		if !maxAmount.IsPositive() {
+			return nil, fmt.Errorf("cannot reduce liabilties less than %s", params.LongMinimumLiabilityAmount.String())
+		}
 
 		var finalAmount math.Int
-		if msg.AddCollateral.Amount.LT(mtp.Liabilities) {
+		if msg.AddCollateral.Amount.LT(maxAmount) {
 			finalAmount = msg.AddCollateral.Amount
 		} else {
-			finalAmount = mtp.Liabilities
+			finalAmount = maxAmount
 		}
 
 		mtp.Liabilities = mtp.Liabilities.Sub(finalAmount)

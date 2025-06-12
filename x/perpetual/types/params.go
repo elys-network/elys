@@ -32,6 +32,7 @@ func NewParams() Params {
 		WhitelistingEnabled:                 false,
 		EnabledPools:                        []uint64(nil),
 		MinimumNotionalValue:                math.LegacyNewDec(0),
+		LongMinimumLiabilityAmount:          math.NewInt(1),
 	}
 }
 

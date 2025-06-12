@@ -32,6 +32,7 @@ func (m Migrator) V19Migration(ctx sdk.Context) error {
 		WeightBreakingFeeFactor:             legacyParams.WeightBreakingFeeFactor,
 		EnabledPools:                        legacyParams.EnabledPools,
 		MinimumNotionalValue:                math.LegacyNewDec(10),
+		LongMinimumLiabilityAmount:          math.NewInt(1_000_000),
 	}
 
 	err := m.keeper.SetParams(ctx, &params)
