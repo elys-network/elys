@@ -203,6 +203,20 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 	return nil
 }
 
+func NewMsgClaimAllRewards(signer string) *MsgClaimAllRewards {
+	return &MsgClaimAllRewards{
+		Sender: signer,
+	}
+}
+
+func (msg *MsgClaimAllRewards) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
+}
+
 func (msg *MsgUpdatePool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
