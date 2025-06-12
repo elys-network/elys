@@ -209,7 +209,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 				// This is position expansion
 				suite.Require().Equal(initialPoolBankBalance.Add(msg.AddCollateral), finalPoolBankBalance)
 				atleastExpected := initialAccountedPoolBalance.Add(msg.AddCollateral)
-				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).LTE(atleastExpected.AmountOf(ptypes.ATOM)))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).LTE(initialAccountedPoolBalance.AmountOf(ptypes.ATOM)))
 				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.BaseCurrency).GTE(atleastExpected.AmountOf(ptypes.BaseCurrency)))
 			},
 		},
