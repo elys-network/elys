@@ -159,10 +159,10 @@ func readPositionRequestJSON(filename string) ([]uint64, error) {
 
 func CmdCancelAllSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "cancel-all-spot-limit-orders",
-		Short:   "Cancel all spot-limit-orders",
-		Example: "elysd tx tradeshield cancel-all-spot-limit-orders --from=bob --yes --gas=1000000",
-		Args:    cobra.ExactArgs(1),
+		Use:     "cancel-all-spot-orders",
+		Short:   "Cancel all spot-orders",
+		Example: "elysd tx tradeshield cancel-all-spot-orders --from=bob --yes --gas=1000000",
+		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
