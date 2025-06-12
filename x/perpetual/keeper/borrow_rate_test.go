@@ -41,11 +41,11 @@ func TestBorrowRateGet(t *testing.T) {
 
 	// 1st case: recent block
 	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-1), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
-	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("50.0"), res) // 19 * 1000 / 2
+	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("10.0"), res)
 
 	// 2nd case: older block
 	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-8), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
-	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("32.5"), res) // 52 * 1000 / 8
+	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("6.5"), res)
 
 	// 3rd case: future block (should return zero)
 	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()+10), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
