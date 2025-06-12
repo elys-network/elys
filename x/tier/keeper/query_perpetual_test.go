@@ -34,7 +34,6 @@ func (suite *TierKeeperTestSuite) TestQueryPerpetual() {
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amountToOpen),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),

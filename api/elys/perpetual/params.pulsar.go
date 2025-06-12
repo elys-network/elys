@@ -14,114 +14,114 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Params_22_list)(nil)
+var _ protoreflect.List = (*_LegacyParams_22_list)(nil)
 
-type _Params_22_list struct {
+type _LegacyParams_22_list struct {
 	list *[]uint64
 }
 
-func (x *_Params_22_list) Len() int {
+func (x *_LegacyParams_22_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Params_22_list) Get(i int) protoreflect.Value {
+func (x *_LegacyParams_22_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfUint64((*x.list)[i])
 }
 
-func (x *_Params_22_list) Set(i int, value protoreflect.Value) {
+func (x *_LegacyParams_22_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Uint()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Params_22_list) Append(value protoreflect.Value) {
+func (x *_LegacyParams_22_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Uint()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Params_22_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Params at list field EnabledPools as it is not of Message kind"))
+func (x *_LegacyParams_22_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message LegacyParams at list field EnabledPools as it is not of Message kind"))
 }
 
-func (x *_Params_22_list) Truncate(n int) {
+func (x *_LegacyParams_22_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Params_22_list) NewElement() protoreflect.Value {
+func (x *_LegacyParams_22_list) NewElement() protoreflect.Value {
 	v := uint64(0)
 	return protoreflect.ValueOfUint64(v)
 }
 
-func (x *_Params_22_list) IsValid() bool {
+func (x *_LegacyParams_22_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Params                                             protoreflect.MessageDescriptor
-	fd_Params_leverage_max                                protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_rate_max                    protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_rate_min                    protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_rate_increase               protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_rate_decrease               protoreflect.FieldDescriptor
-	fd_Params_health_gain_factor                          protoreflect.FieldDescriptor
-	fd_Params_max_open_positions                          protoreflect.FieldDescriptor
-	fd_Params_pool_max_liabilities_threshold              protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_payment_fund_percentage     protoreflect.FieldDescriptor
-	fd_Params_legacy_borrow_interest_payment_fund_address protoreflect.FieldDescriptor
-	fd_Params_safety_factor                               protoreflect.FieldDescriptor
-	fd_Params_borrow_interest_payment_enabled             protoreflect.FieldDescriptor
-	fd_Params_whitelisting_enabled                        protoreflect.FieldDescriptor
-	fd_Params_perpetual_swap_fee                          protoreflect.FieldDescriptor
-	fd_Params_max_limit_order                             protoreflect.FieldDescriptor
-	fd_Params_fixed_funding_rate                          protoreflect.FieldDescriptor
-	fd_Params_minimum_long_take_profit_price_ratio        protoreflect.FieldDescriptor
-	fd_Params_maximum_long_take_profit_price_ratio        protoreflect.FieldDescriptor
-	fd_Params_maximum_short_take_profit_price_ratio       protoreflect.FieldDescriptor
-	fd_Params_enable_take_profit_custody_liabilities      protoreflect.FieldDescriptor
-	fd_Params_weight_breaking_fee_factor                  protoreflect.FieldDescriptor
-	fd_Params_enabled_pools                               protoreflect.FieldDescriptor
+	md_LegacyParams                                             protoreflect.MessageDescriptor
+	fd_LegacyParams_leverage_max                                protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_rate_max                    protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_rate_min                    protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_rate_increase               protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_rate_decrease               protoreflect.FieldDescriptor
+	fd_LegacyParams_health_gain_factor                          protoreflect.FieldDescriptor
+	fd_LegacyParams_max_open_positions                          protoreflect.FieldDescriptor
+	fd_LegacyParams_pool_max_liabilities_threshold              protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_payment_fund_percentage     protoreflect.FieldDescriptor
+	fd_LegacyParams_legacy_borrow_interest_payment_fund_address protoreflect.FieldDescriptor
+	fd_LegacyParams_safety_factor                               protoreflect.FieldDescriptor
+	fd_LegacyParams_borrow_interest_payment_enabled             protoreflect.FieldDescriptor
+	fd_LegacyParams_whitelisting_enabled                        protoreflect.FieldDescriptor
+	fd_LegacyParams_perpetual_swap_fee                          protoreflect.FieldDescriptor
+	fd_LegacyParams_max_limit_order                             protoreflect.FieldDescriptor
+	fd_LegacyParams_fixed_funding_rate                          protoreflect.FieldDescriptor
+	fd_LegacyParams_minimum_long_take_profit_price_ratio        protoreflect.FieldDescriptor
+	fd_LegacyParams_maximum_long_take_profit_price_ratio        protoreflect.FieldDescriptor
+	fd_LegacyParams_maximum_short_take_profit_price_ratio       protoreflect.FieldDescriptor
+	fd_LegacyParams_enable_take_profit_custody_liabilities      protoreflect.FieldDescriptor
+	fd_LegacyParams_weight_breaking_fee_factor                  protoreflect.FieldDescriptor
+	fd_LegacyParams_enabled_pools                               protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_perpetual_params_proto_init()
-	md_Params = File_elys_perpetual_params_proto.Messages().ByName("Params")
-	fd_Params_leverage_max = md_Params.Fields().ByName("leverage_max")
-	fd_Params_borrow_interest_rate_max = md_Params.Fields().ByName("borrow_interest_rate_max")
-	fd_Params_borrow_interest_rate_min = md_Params.Fields().ByName("borrow_interest_rate_min")
-	fd_Params_borrow_interest_rate_increase = md_Params.Fields().ByName("borrow_interest_rate_increase")
-	fd_Params_borrow_interest_rate_decrease = md_Params.Fields().ByName("borrow_interest_rate_decrease")
-	fd_Params_health_gain_factor = md_Params.Fields().ByName("health_gain_factor")
-	fd_Params_max_open_positions = md_Params.Fields().ByName("max_open_positions")
-	fd_Params_pool_max_liabilities_threshold = md_Params.Fields().ByName("pool_max_liabilities_threshold")
-	fd_Params_borrow_interest_payment_fund_percentage = md_Params.Fields().ByName("borrow_interest_payment_fund_percentage")
-	fd_Params_legacy_borrow_interest_payment_fund_address = md_Params.Fields().ByName("legacy_borrow_interest_payment_fund_address")
-	fd_Params_safety_factor = md_Params.Fields().ByName("safety_factor")
-	fd_Params_borrow_interest_payment_enabled = md_Params.Fields().ByName("borrow_interest_payment_enabled")
-	fd_Params_whitelisting_enabled = md_Params.Fields().ByName("whitelisting_enabled")
-	fd_Params_perpetual_swap_fee = md_Params.Fields().ByName("perpetual_swap_fee")
-	fd_Params_max_limit_order = md_Params.Fields().ByName("max_limit_order")
-	fd_Params_fixed_funding_rate = md_Params.Fields().ByName("fixed_funding_rate")
-	fd_Params_minimum_long_take_profit_price_ratio = md_Params.Fields().ByName("minimum_long_take_profit_price_ratio")
-	fd_Params_maximum_long_take_profit_price_ratio = md_Params.Fields().ByName("maximum_long_take_profit_price_ratio")
-	fd_Params_maximum_short_take_profit_price_ratio = md_Params.Fields().ByName("maximum_short_take_profit_price_ratio")
-	fd_Params_enable_take_profit_custody_liabilities = md_Params.Fields().ByName("enable_take_profit_custody_liabilities")
-	fd_Params_weight_breaking_fee_factor = md_Params.Fields().ByName("weight_breaking_fee_factor")
-	fd_Params_enabled_pools = md_Params.Fields().ByName("enabled_pools")
+	md_LegacyParams = File_elys_perpetual_params_proto.Messages().ByName("LegacyParams")
+	fd_LegacyParams_leverage_max = md_LegacyParams.Fields().ByName("leverage_max")
+	fd_LegacyParams_borrow_interest_rate_max = md_LegacyParams.Fields().ByName("borrow_interest_rate_max")
+	fd_LegacyParams_borrow_interest_rate_min = md_LegacyParams.Fields().ByName("borrow_interest_rate_min")
+	fd_LegacyParams_borrow_interest_rate_increase = md_LegacyParams.Fields().ByName("borrow_interest_rate_increase")
+	fd_LegacyParams_borrow_interest_rate_decrease = md_LegacyParams.Fields().ByName("borrow_interest_rate_decrease")
+	fd_LegacyParams_health_gain_factor = md_LegacyParams.Fields().ByName("health_gain_factor")
+	fd_LegacyParams_max_open_positions = md_LegacyParams.Fields().ByName("max_open_positions")
+	fd_LegacyParams_pool_max_liabilities_threshold = md_LegacyParams.Fields().ByName("pool_max_liabilities_threshold")
+	fd_LegacyParams_borrow_interest_payment_fund_percentage = md_LegacyParams.Fields().ByName("borrow_interest_payment_fund_percentage")
+	fd_LegacyParams_legacy_borrow_interest_payment_fund_address = md_LegacyParams.Fields().ByName("legacy_borrow_interest_payment_fund_address")
+	fd_LegacyParams_safety_factor = md_LegacyParams.Fields().ByName("safety_factor")
+	fd_LegacyParams_borrow_interest_payment_enabled = md_LegacyParams.Fields().ByName("borrow_interest_payment_enabled")
+	fd_LegacyParams_whitelisting_enabled = md_LegacyParams.Fields().ByName("whitelisting_enabled")
+	fd_LegacyParams_perpetual_swap_fee = md_LegacyParams.Fields().ByName("perpetual_swap_fee")
+	fd_LegacyParams_max_limit_order = md_LegacyParams.Fields().ByName("max_limit_order")
+	fd_LegacyParams_fixed_funding_rate = md_LegacyParams.Fields().ByName("fixed_funding_rate")
+	fd_LegacyParams_minimum_long_take_profit_price_ratio = md_LegacyParams.Fields().ByName("minimum_long_take_profit_price_ratio")
+	fd_LegacyParams_maximum_long_take_profit_price_ratio = md_LegacyParams.Fields().ByName("maximum_long_take_profit_price_ratio")
+	fd_LegacyParams_maximum_short_take_profit_price_ratio = md_LegacyParams.Fields().ByName("maximum_short_take_profit_price_ratio")
+	fd_LegacyParams_enable_take_profit_custody_liabilities = md_LegacyParams.Fields().ByName("enable_take_profit_custody_liabilities")
+	fd_LegacyParams_weight_breaking_fee_factor = md_LegacyParams.Fields().ByName("weight_breaking_fee_factor")
+	fd_LegacyParams_enabled_pools = md_LegacyParams.Fields().ByName("enabled_pools")
 }
 
-var _ protoreflect.Message = (*fastReflection_Params)(nil)
+var _ protoreflect.Message = (*fastReflection_LegacyParams)(nil)
 
-type fastReflection_Params Params
+type fastReflection_LegacyParams LegacyParams
 
-func (x *Params) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Params)(x)
+func (x *LegacyParams) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LegacyParams)(x)
 }
 
-func (x *Params) slowProtoReflect() protoreflect.Message {
+func (x *LegacyParams) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_perpetual_params_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -133,43 +133,43 @@ func (x *Params) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Params_messageType fastReflection_Params_messageType
-var _ protoreflect.MessageType = fastReflection_Params_messageType{}
+var _fastReflection_LegacyParams_messageType fastReflection_LegacyParams_messageType
+var _ protoreflect.MessageType = fastReflection_LegacyParams_messageType{}
 
-type fastReflection_Params_messageType struct{}
+type fastReflection_LegacyParams_messageType struct{}
 
-func (x fastReflection_Params_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Params)(nil)
+func (x fastReflection_LegacyParams_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LegacyParams)(nil)
 }
-func (x fastReflection_Params_messageType) New() protoreflect.Message {
-	return new(fastReflection_Params)
+func (x fastReflection_LegacyParams_messageType) New() protoreflect.Message {
+	return new(fastReflection_LegacyParams)
 }
-func (x fastReflection_Params_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Params
+func (x fastReflection_LegacyParams_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyParams
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Params) Descriptor() protoreflect.MessageDescriptor {
-	return md_Params
+func (x *fastReflection_LegacyParams) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyParams
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Params) Type() protoreflect.MessageType {
-	return _fastReflection_Params_messageType
+func (x *fastReflection_LegacyParams) Type() protoreflect.MessageType {
+	return _fastReflection_LegacyParams_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Params) New() protoreflect.Message {
-	return new(fastReflection_Params)
+func (x *fastReflection_LegacyParams) New() protoreflect.Message {
+	return new(fastReflection_LegacyParams)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
-	return (*Params)(x)
+func (x *fastReflection_LegacyParams) Interface() protoreflect.ProtoMessage {
+	return (*LegacyParams)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -177,136 +177,136 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_LegacyParams) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.LeverageMax != "" {
 		value := protoreflect.ValueOfString(x.LeverageMax)
-		if !f(fd_Params_leverage_max, value) {
+		if !f(fd_LegacyParams_leverage_max, value) {
 			return
 		}
 	}
 	if x.BorrowInterestRateMax != "" {
 		value := protoreflect.ValueOfString(x.BorrowInterestRateMax)
-		if !f(fd_Params_borrow_interest_rate_max, value) {
+		if !f(fd_LegacyParams_borrow_interest_rate_max, value) {
 			return
 		}
 	}
 	if x.BorrowInterestRateMin != "" {
 		value := protoreflect.ValueOfString(x.BorrowInterestRateMin)
-		if !f(fd_Params_borrow_interest_rate_min, value) {
+		if !f(fd_LegacyParams_borrow_interest_rate_min, value) {
 			return
 		}
 	}
 	if x.BorrowInterestRateIncrease != "" {
 		value := protoreflect.ValueOfString(x.BorrowInterestRateIncrease)
-		if !f(fd_Params_borrow_interest_rate_increase, value) {
+		if !f(fd_LegacyParams_borrow_interest_rate_increase, value) {
 			return
 		}
 	}
 	if x.BorrowInterestRateDecrease != "" {
 		value := protoreflect.ValueOfString(x.BorrowInterestRateDecrease)
-		if !f(fd_Params_borrow_interest_rate_decrease, value) {
+		if !f(fd_LegacyParams_borrow_interest_rate_decrease, value) {
 			return
 		}
 	}
 	if x.HealthGainFactor != "" {
 		value := protoreflect.ValueOfString(x.HealthGainFactor)
-		if !f(fd_Params_health_gain_factor, value) {
+		if !f(fd_LegacyParams_health_gain_factor, value) {
 			return
 		}
 	}
 	if x.MaxOpenPositions != int64(0) {
 		value := protoreflect.ValueOfInt64(x.MaxOpenPositions)
-		if !f(fd_Params_max_open_positions, value) {
+		if !f(fd_LegacyParams_max_open_positions, value) {
 			return
 		}
 	}
 	if x.PoolMaxLiabilitiesThreshold != "" {
 		value := protoreflect.ValueOfString(x.PoolMaxLiabilitiesThreshold)
-		if !f(fd_Params_pool_max_liabilities_threshold, value) {
+		if !f(fd_LegacyParams_pool_max_liabilities_threshold, value) {
 			return
 		}
 	}
 	if x.BorrowInterestPaymentFundPercentage != "" {
 		value := protoreflect.ValueOfString(x.BorrowInterestPaymentFundPercentage)
-		if !f(fd_Params_borrow_interest_payment_fund_percentage, value) {
+		if !f(fd_LegacyParams_borrow_interest_payment_fund_percentage, value) {
 			return
 		}
 	}
 	if x.LegacyBorrowInterestPaymentFundAddress != "" {
 		value := protoreflect.ValueOfString(x.LegacyBorrowInterestPaymentFundAddress)
-		if !f(fd_Params_legacy_borrow_interest_payment_fund_address, value) {
+		if !f(fd_LegacyParams_legacy_borrow_interest_payment_fund_address, value) {
 			return
 		}
 	}
 	if x.SafetyFactor != "" {
 		value := protoreflect.ValueOfString(x.SafetyFactor)
-		if !f(fd_Params_safety_factor, value) {
+		if !f(fd_LegacyParams_safety_factor, value) {
 			return
 		}
 	}
 	if x.BorrowInterestPaymentEnabled != false {
 		value := protoreflect.ValueOfBool(x.BorrowInterestPaymentEnabled)
-		if !f(fd_Params_borrow_interest_payment_enabled, value) {
+		if !f(fd_LegacyParams_borrow_interest_payment_enabled, value) {
 			return
 		}
 	}
 	if x.WhitelistingEnabled != false {
 		value := protoreflect.ValueOfBool(x.WhitelistingEnabled)
-		if !f(fd_Params_whitelisting_enabled, value) {
+		if !f(fd_LegacyParams_whitelisting_enabled, value) {
 			return
 		}
 	}
 	if x.PerpetualSwapFee != "" {
 		value := protoreflect.ValueOfString(x.PerpetualSwapFee)
-		if !f(fd_Params_perpetual_swap_fee, value) {
+		if !f(fd_LegacyParams_perpetual_swap_fee, value) {
 			return
 		}
 	}
 	if x.MaxLimitOrder != int64(0) {
 		value := protoreflect.ValueOfInt64(x.MaxLimitOrder)
-		if !f(fd_Params_max_limit_order, value) {
+		if !f(fd_LegacyParams_max_limit_order, value) {
 			return
 		}
 	}
 	if x.FixedFundingRate != "" {
 		value := protoreflect.ValueOfString(x.FixedFundingRate)
-		if !f(fd_Params_fixed_funding_rate, value) {
+		if !f(fd_LegacyParams_fixed_funding_rate, value) {
 			return
 		}
 	}
 	if x.MinimumLongTakeProfitPriceRatio != "" {
 		value := protoreflect.ValueOfString(x.MinimumLongTakeProfitPriceRatio)
-		if !f(fd_Params_minimum_long_take_profit_price_ratio, value) {
+		if !f(fd_LegacyParams_minimum_long_take_profit_price_ratio, value) {
 			return
 		}
 	}
 	if x.MaximumLongTakeProfitPriceRatio != "" {
 		value := protoreflect.ValueOfString(x.MaximumLongTakeProfitPriceRatio)
-		if !f(fd_Params_maximum_long_take_profit_price_ratio, value) {
+		if !f(fd_LegacyParams_maximum_long_take_profit_price_ratio, value) {
 			return
 		}
 	}
 	if x.MaximumShortTakeProfitPriceRatio != "" {
 		value := protoreflect.ValueOfString(x.MaximumShortTakeProfitPriceRatio)
-		if !f(fd_Params_maximum_short_take_profit_price_ratio, value) {
+		if !f(fd_LegacyParams_maximum_short_take_profit_price_ratio, value) {
 			return
 		}
 	}
 	if x.EnableTakeProfitCustodyLiabilities != false {
 		value := protoreflect.ValueOfBool(x.EnableTakeProfitCustodyLiabilities)
-		if !f(fd_Params_enable_take_profit_custody_liabilities, value) {
+		if !f(fd_LegacyParams_enable_take_profit_custody_liabilities, value) {
 			return
 		}
 	}
 	if x.WeightBreakingFeeFactor != "" {
 		value := protoreflect.ValueOfString(x.WeightBreakingFeeFactor)
-		if !f(fd_Params_weight_breaking_fee_factor, value) {
+		if !f(fd_LegacyParams_weight_breaking_fee_factor, value) {
 			return
 		}
 	}
 	if len(x.EnabledPools) != 0 {
-		value := protoreflect.ValueOfList(&_Params_22_list{list: &x.EnabledPools})
-		if !f(fd_Params_enabled_pools, value) {
+		value := protoreflect.ValueOfList(&_LegacyParams_22_list{list: &x.EnabledPools})
+		if !f(fd_LegacyParams_enabled_pools, value) {
 			return
 		}
 	}
@@ -323,57 +323,57 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_LegacyParams) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.perpetual.Params.leverage_max":
+	case "elys.perpetual.LegacyParams.leverage_max":
 		return x.LeverageMax != ""
-	case "elys.perpetual.Params.borrow_interest_rate_max":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
 		return x.BorrowInterestRateMax != ""
-	case "elys.perpetual.Params.borrow_interest_rate_min":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
 		return x.BorrowInterestRateMin != ""
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
 		return x.BorrowInterestRateIncrease != ""
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
 		return x.BorrowInterestRateDecrease != ""
-	case "elys.perpetual.Params.health_gain_factor":
+	case "elys.perpetual.LegacyParams.health_gain_factor":
 		return x.HealthGainFactor != ""
-	case "elys.perpetual.Params.max_open_positions":
+	case "elys.perpetual.LegacyParams.max_open_positions":
 		return x.MaxOpenPositions != int64(0)
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
 		return x.PoolMaxLiabilitiesThreshold != ""
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
 		return x.BorrowInterestPaymentFundPercentage != ""
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
 		return x.LegacyBorrowInterestPaymentFundAddress != ""
-	case "elys.perpetual.Params.safety_factor":
+	case "elys.perpetual.LegacyParams.safety_factor":
 		return x.SafetyFactor != ""
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
 		return x.BorrowInterestPaymentEnabled != false
-	case "elys.perpetual.Params.whitelisting_enabled":
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
 		return x.WhitelistingEnabled != false
-	case "elys.perpetual.Params.perpetual_swap_fee":
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
 		return x.PerpetualSwapFee != ""
-	case "elys.perpetual.Params.max_limit_order":
+	case "elys.perpetual.LegacyParams.max_limit_order":
 		return x.MaxLimitOrder != int64(0)
-	case "elys.perpetual.Params.fixed_funding_rate":
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
 		return x.FixedFundingRate != ""
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
 		return x.MinimumLongTakeProfitPriceRatio != ""
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
 		return x.MaximumLongTakeProfitPriceRatio != ""
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
 		return x.MaximumShortTakeProfitPriceRatio != ""
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
 		return x.EnableTakeProfitCustodyLiabilities != false
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
 		return x.WeightBreakingFeeFactor != ""
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		return len(x.EnabledPools) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -383,57 +383,57 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_LegacyParams) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.perpetual.Params.leverage_max":
+	case "elys.perpetual.LegacyParams.leverage_max":
 		x.LeverageMax = ""
-	case "elys.perpetual.Params.borrow_interest_rate_max":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
 		x.BorrowInterestRateMax = ""
-	case "elys.perpetual.Params.borrow_interest_rate_min":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
 		x.BorrowInterestRateMin = ""
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
 		x.BorrowInterestRateIncrease = ""
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
 		x.BorrowInterestRateDecrease = ""
-	case "elys.perpetual.Params.health_gain_factor":
+	case "elys.perpetual.LegacyParams.health_gain_factor":
 		x.HealthGainFactor = ""
-	case "elys.perpetual.Params.max_open_positions":
+	case "elys.perpetual.LegacyParams.max_open_positions":
 		x.MaxOpenPositions = int64(0)
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
 		x.PoolMaxLiabilitiesThreshold = ""
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
 		x.BorrowInterestPaymentFundPercentage = ""
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
 		x.LegacyBorrowInterestPaymentFundAddress = ""
-	case "elys.perpetual.Params.safety_factor":
+	case "elys.perpetual.LegacyParams.safety_factor":
 		x.SafetyFactor = ""
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
 		x.BorrowInterestPaymentEnabled = false
-	case "elys.perpetual.Params.whitelisting_enabled":
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
 		x.WhitelistingEnabled = false
-	case "elys.perpetual.Params.perpetual_swap_fee":
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
 		x.PerpetualSwapFee = ""
-	case "elys.perpetual.Params.max_limit_order":
+	case "elys.perpetual.LegacyParams.max_limit_order":
 		x.MaxLimitOrder = int64(0)
-	case "elys.perpetual.Params.fixed_funding_rate":
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
 		x.FixedFundingRate = ""
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
 		x.MinimumLongTakeProfitPriceRatio = ""
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
 		x.MaximumLongTakeProfitPriceRatio = ""
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
 		x.MaximumShortTakeProfitPriceRatio = ""
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
 		x.EnableTakeProfitCustodyLiabilities = false
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
 		x.WeightBreakingFeeFactor = ""
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		x.EnabledPools = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -443,82 +443,82 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyParams) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.perpetual.Params.leverage_max":
+	case "elys.perpetual.LegacyParams.leverage_max":
 		value := x.LeverageMax
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_rate_max":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
 		value := x.BorrowInterestRateMax
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_rate_min":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
 		value := x.BorrowInterestRateMin
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
 		value := x.BorrowInterestRateIncrease
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
 		value := x.BorrowInterestRateDecrease
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.health_gain_factor":
+	case "elys.perpetual.LegacyParams.health_gain_factor":
 		value := x.HealthGainFactor
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.max_open_positions":
+	case "elys.perpetual.LegacyParams.max_open_positions":
 		value := x.MaxOpenPositions
 		return protoreflect.ValueOfInt64(value)
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
 		value := x.PoolMaxLiabilitiesThreshold
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
 		value := x.BorrowInterestPaymentFundPercentage
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
 		value := x.LegacyBorrowInterestPaymentFundAddress
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.safety_factor":
+	case "elys.perpetual.LegacyParams.safety_factor":
 		value := x.SafetyFactor
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
 		value := x.BorrowInterestPaymentEnabled
 		return protoreflect.ValueOfBool(value)
-	case "elys.perpetual.Params.whitelisting_enabled":
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
 		value := x.WhitelistingEnabled
 		return protoreflect.ValueOfBool(value)
-	case "elys.perpetual.Params.perpetual_swap_fee":
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
 		value := x.PerpetualSwapFee
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.max_limit_order":
+	case "elys.perpetual.LegacyParams.max_limit_order":
 		value := x.MaxLimitOrder
 		return protoreflect.ValueOfInt64(value)
-	case "elys.perpetual.Params.fixed_funding_rate":
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
 		value := x.FixedFundingRate
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
 		value := x.MinimumLongTakeProfitPriceRatio
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
 		value := x.MaximumLongTakeProfitPriceRatio
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
 		value := x.MaximumShortTakeProfitPriceRatio
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
 		value := x.EnableTakeProfitCustodyLiabilities
 		return protoreflect.ValueOfBool(value)
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
 		value := x.WeightBreakingFeeFactor
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		if len(x.EnabledPools) == 0 {
-			return protoreflect.ValueOfList(&_Params_22_list{})
+			return protoreflect.ValueOfList(&_LegacyParams_22_list{})
 		}
-		listValue := &_Params_22_list{list: &x.EnabledPools}
+		listValue := &_LegacyParams_22_list{list: &x.EnabledPools}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -532,59 +532,59 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_LegacyParams) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.perpetual.Params.leverage_max":
+	case "elys.perpetual.LegacyParams.leverage_max":
 		x.LeverageMax = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_rate_max":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
 		x.BorrowInterestRateMax = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_rate_min":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
 		x.BorrowInterestRateMin = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
 		x.BorrowInterestRateIncrease = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
 		x.BorrowInterestRateDecrease = value.Interface().(string)
-	case "elys.perpetual.Params.health_gain_factor":
+	case "elys.perpetual.LegacyParams.health_gain_factor":
 		x.HealthGainFactor = value.Interface().(string)
-	case "elys.perpetual.Params.max_open_positions":
+	case "elys.perpetual.LegacyParams.max_open_positions":
 		x.MaxOpenPositions = value.Int()
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
 		x.PoolMaxLiabilitiesThreshold = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
 		x.BorrowInterestPaymentFundPercentage = value.Interface().(string)
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
 		x.LegacyBorrowInterestPaymentFundAddress = value.Interface().(string)
-	case "elys.perpetual.Params.safety_factor":
+	case "elys.perpetual.LegacyParams.safety_factor":
 		x.SafetyFactor = value.Interface().(string)
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
 		x.BorrowInterestPaymentEnabled = value.Bool()
-	case "elys.perpetual.Params.whitelisting_enabled":
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
 		x.WhitelistingEnabled = value.Bool()
-	case "elys.perpetual.Params.perpetual_swap_fee":
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
 		x.PerpetualSwapFee = value.Interface().(string)
-	case "elys.perpetual.Params.max_limit_order":
+	case "elys.perpetual.LegacyParams.max_limit_order":
 		x.MaxLimitOrder = value.Int()
-	case "elys.perpetual.Params.fixed_funding_rate":
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
 		x.FixedFundingRate = value.Interface().(string)
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
 		x.MinimumLongTakeProfitPriceRatio = value.Interface().(string)
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
 		x.MaximumLongTakeProfitPriceRatio = value.Interface().(string)
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
 		x.MaximumShortTakeProfitPriceRatio = value.Interface().(string)
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
 		x.EnableTakeProfitCustodyLiabilities = value.Bool()
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
 		x.WeightBreakingFeeFactor = value.Interface().(string)
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		lv := value.List()
-		clv := lv.(*_Params_22_list)
+		clv := lv.(*_LegacyParams_22_list)
 		x.EnabledPools = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -598,129 +598,129 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyParams) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		if x.EnabledPools == nil {
 			x.EnabledPools = []uint64{}
 		}
-		value := &_Params_22_list{list: &x.EnabledPools}
+		value := &_LegacyParams_22_list{list: &x.EnabledPools}
 		return protoreflect.ValueOfList(value)
-	case "elys.perpetual.Params.leverage_max":
-		panic(fmt.Errorf("field leverage_max of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_rate_max":
-		panic(fmt.Errorf("field borrow_interest_rate_max of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_rate_min":
-		panic(fmt.Errorf("field borrow_interest_rate_min of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
-		panic(fmt.Errorf("field borrow_interest_rate_increase of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
-		panic(fmt.Errorf("field borrow_interest_rate_decrease of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.health_gain_factor":
-		panic(fmt.Errorf("field health_gain_factor of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.max_open_positions":
-		panic(fmt.Errorf("field max_open_positions of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
-		panic(fmt.Errorf("field pool_max_liabilities_threshold of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
-		panic(fmt.Errorf("field borrow_interest_payment_fund_percentage of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
-		panic(fmt.Errorf("field legacy_borrow_interest_payment_fund_address of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.safety_factor":
-		panic(fmt.Errorf("field safety_factor of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
-		panic(fmt.Errorf("field borrow_interest_payment_enabled of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.whitelisting_enabled":
-		panic(fmt.Errorf("field whitelisting_enabled of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.perpetual_swap_fee":
-		panic(fmt.Errorf("field perpetual_swap_fee of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.max_limit_order":
-		panic(fmt.Errorf("field max_limit_order of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.fixed_funding_rate":
-		panic(fmt.Errorf("field fixed_funding_rate of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
-		panic(fmt.Errorf("field minimum_long_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
-		panic(fmt.Errorf("field maximum_long_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
-		panic(fmt.Errorf("field maximum_short_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
-		panic(fmt.Errorf("field enable_take_profit_custody_liabilities of message elys.perpetual.Params is not mutable"))
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
-		panic(fmt.Errorf("field weight_breaking_fee_factor of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.LegacyParams.leverage_max":
+		panic(fmt.Errorf("field leverage_max of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
+		panic(fmt.Errorf("field borrow_interest_rate_max of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
+		panic(fmt.Errorf("field borrow_interest_rate_min of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
+		panic(fmt.Errorf("field borrow_interest_rate_increase of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
+		panic(fmt.Errorf("field borrow_interest_rate_decrease of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.health_gain_factor":
+		panic(fmt.Errorf("field health_gain_factor of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.max_open_positions":
+		panic(fmt.Errorf("field max_open_positions of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
+		panic(fmt.Errorf("field pool_max_liabilities_threshold of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
+		panic(fmt.Errorf("field borrow_interest_payment_fund_percentage of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
+		panic(fmt.Errorf("field legacy_borrow_interest_payment_fund_address of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.safety_factor":
+		panic(fmt.Errorf("field safety_factor of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
+		panic(fmt.Errorf("field borrow_interest_payment_enabled of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
+		panic(fmt.Errorf("field whitelisting_enabled of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
+		panic(fmt.Errorf("field perpetual_swap_fee of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.max_limit_order":
+		panic(fmt.Errorf("field max_limit_order of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
+		panic(fmt.Errorf("field fixed_funding_rate of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
+		panic(fmt.Errorf("field minimum_long_take_profit_price_ratio of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
+		panic(fmt.Errorf("field maximum_long_take_profit_price_ratio of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
+		panic(fmt.Errorf("field maximum_short_take_profit_price_ratio of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
+		panic(fmt.Errorf("field enable_take_profit_custody_liabilities of message elys.perpetual.LegacyParams is not mutable"))
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
+		panic(fmt.Errorf("field weight_breaking_fee_factor of message elys.perpetual.LegacyParams is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyParams) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.Params.leverage_max":
+	case "elys.perpetual.LegacyParams.leverage_max":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_rate_max":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_max":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_rate_min":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_min":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_rate_increase":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_increase":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+	case "elys.perpetual.LegacyParams.borrow_interest_rate_decrease":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.health_gain_factor":
+	case "elys.perpetual.LegacyParams.health_gain_factor":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.max_open_positions":
+	case "elys.perpetual.LegacyParams.max_open_positions":
 		return protoreflect.ValueOfInt64(int64(0))
-	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+	case "elys.perpetual.LegacyParams.pool_max_liabilities_threshold":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_fund_percentage":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.legacy_borrow_interest_payment_fund_address":
+	case "elys.perpetual.LegacyParams.legacy_borrow_interest_payment_fund_address":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.safety_factor":
+	case "elys.perpetual.LegacyParams.safety_factor":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+	case "elys.perpetual.LegacyParams.borrow_interest_payment_enabled":
 		return protoreflect.ValueOfBool(false)
-	case "elys.perpetual.Params.whitelisting_enabled":
+	case "elys.perpetual.LegacyParams.whitelisting_enabled":
 		return protoreflect.ValueOfBool(false)
-	case "elys.perpetual.Params.perpetual_swap_fee":
+	case "elys.perpetual.LegacyParams.perpetual_swap_fee":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.max_limit_order":
+	case "elys.perpetual.LegacyParams.max_limit_order":
 		return protoreflect.ValueOfInt64(int64(0))
-	case "elys.perpetual.Params.fixed_funding_rate":
+	case "elys.perpetual.LegacyParams.fixed_funding_rate":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.minimum_long_take_profit_price_ratio":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_long_take_profit_price_ratio":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+	case "elys.perpetual.LegacyParams.maximum_short_take_profit_price_ratio":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.enable_take_profit_custody_liabilities":
+	case "elys.perpetual.LegacyParams.enable_take_profit_custody_liabilities":
 		return protoreflect.ValueOfBool(false)
-	case "elys.perpetual.Params.weight_breaking_fee_factor":
+	case "elys.perpetual.LegacyParams.weight_breaking_fee_factor":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.Params.enabled_pools":
+	case "elys.perpetual.LegacyParams.enabled_pools":
 		list := []uint64{}
-		return protoreflect.ValueOfList(&_Params_22_list{list: &list})
+		return protoreflect.ValueOfList(&_LegacyParams_22_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyParams"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyParams does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Params) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_LegacyParams) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.Params", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.LegacyParams", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -728,7 +728,7 @@ func (x *fastReflection_Params) WhichOneof(d protoreflect.OneofDescriptor) proto
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Params) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_LegacyParams) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -739,7 +739,7 @@ func (x *fastReflection_Params) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Params) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_LegacyParams) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -751,7 +751,7 @@ func (x *fastReflection_Params) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Params) IsValid() bool {
+func (x *fastReflection_LegacyParams) IsValid() bool {
 	return x != nil
 }
 
@@ -761,9 +761,9 @@ func (x *fastReflection_Params) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Params)
+		x := input.Message.Interface().(*LegacyParams)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -871,7 +871,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Params)
+		x := input.Message.Interface().(*LegacyParams)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1087,7 +1087,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Params)
+		x := input.Message.Interface().(*LegacyParams)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1119,10 +1119,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyParams: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyParams: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1846,6 +1846,1782 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_Params_20_list)(nil)
+
+type _Params_20_list struct {
+	list *[]uint64
+}
+
+func (x *_Params_20_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Params_20_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_Params_20_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Params_20_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Params_20_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Params at list field EnabledPools as it is not of Message kind"))
+}
+
+func (x *_Params_20_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Params_20_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_Params_20_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_Params                                         protoreflect.MessageDescriptor
+	fd_Params_leverage_max                            protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_rate_max                protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_rate_min                protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_rate_increase           protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_rate_decrease           protoreflect.FieldDescriptor
+	fd_Params_health_gain_factor                      protoreflect.FieldDescriptor
+	fd_Params_max_open_positions                      protoreflect.FieldDescriptor
+	fd_Params_pool_max_liabilities_threshold          protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_payment_fund_percentage protoreflect.FieldDescriptor
+	fd_Params_safety_factor                           protoreflect.FieldDescriptor
+	fd_Params_borrow_interest_payment_enabled         protoreflect.FieldDescriptor
+	fd_Params_whitelisting_enabled                    protoreflect.FieldDescriptor
+	fd_Params_perpetual_swap_fee                      protoreflect.FieldDescriptor
+	fd_Params_max_limit_order                         protoreflect.FieldDescriptor
+	fd_Params_fixed_funding_rate                      protoreflect.FieldDescriptor
+	fd_Params_minimum_long_take_profit_price_ratio    protoreflect.FieldDescriptor
+	fd_Params_maximum_long_take_profit_price_ratio    protoreflect.FieldDescriptor
+	fd_Params_maximum_short_take_profit_price_ratio   protoreflect.FieldDescriptor
+	fd_Params_weight_breaking_fee_factor              protoreflect.FieldDescriptor
+	fd_Params_enabled_pools                           protoreflect.FieldDescriptor
+	fd_Params_minimum_notional_value                  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_perpetual_params_proto_init()
+	md_Params = File_elys_perpetual_params_proto.Messages().ByName("Params")
+	fd_Params_leverage_max = md_Params.Fields().ByName("leverage_max")
+	fd_Params_borrow_interest_rate_max = md_Params.Fields().ByName("borrow_interest_rate_max")
+	fd_Params_borrow_interest_rate_min = md_Params.Fields().ByName("borrow_interest_rate_min")
+	fd_Params_borrow_interest_rate_increase = md_Params.Fields().ByName("borrow_interest_rate_increase")
+	fd_Params_borrow_interest_rate_decrease = md_Params.Fields().ByName("borrow_interest_rate_decrease")
+	fd_Params_health_gain_factor = md_Params.Fields().ByName("health_gain_factor")
+	fd_Params_max_open_positions = md_Params.Fields().ByName("max_open_positions")
+	fd_Params_pool_max_liabilities_threshold = md_Params.Fields().ByName("pool_max_liabilities_threshold")
+	fd_Params_borrow_interest_payment_fund_percentage = md_Params.Fields().ByName("borrow_interest_payment_fund_percentage")
+	fd_Params_safety_factor = md_Params.Fields().ByName("safety_factor")
+	fd_Params_borrow_interest_payment_enabled = md_Params.Fields().ByName("borrow_interest_payment_enabled")
+	fd_Params_whitelisting_enabled = md_Params.Fields().ByName("whitelisting_enabled")
+	fd_Params_perpetual_swap_fee = md_Params.Fields().ByName("perpetual_swap_fee")
+	fd_Params_max_limit_order = md_Params.Fields().ByName("max_limit_order")
+	fd_Params_fixed_funding_rate = md_Params.Fields().ByName("fixed_funding_rate")
+	fd_Params_minimum_long_take_profit_price_ratio = md_Params.Fields().ByName("minimum_long_take_profit_price_ratio")
+	fd_Params_maximum_long_take_profit_price_ratio = md_Params.Fields().ByName("maximum_long_take_profit_price_ratio")
+	fd_Params_maximum_short_take_profit_price_ratio = md_Params.Fields().ByName("maximum_short_take_profit_price_ratio")
+	fd_Params_weight_breaking_fee_factor = md_Params.Fields().ByName("weight_breaking_fee_factor")
+	fd_Params_enabled_pools = md_Params.Fields().ByName("enabled_pools")
+	fd_Params_minimum_notional_value = md_Params.Fields().ByName("minimum_notional_value")
+}
+
+var _ protoreflect.Message = (*fastReflection_Params)(nil)
+
+type fastReflection_Params Params
+
+func (x *Params) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Params)(x)
+}
+
+func (x *Params) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_perpetual_params_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_Params_messageType fastReflection_Params_messageType
+var _ protoreflect.MessageType = fastReflection_Params_messageType{}
+
+type fastReflection_Params_messageType struct{}
+
+func (x fastReflection_Params_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Params)(nil)
+}
+func (x fastReflection_Params_messageType) New() protoreflect.Message {
+	return new(fastReflection_Params)
+}
+func (x fastReflection_Params_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Params
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_Params) Descriptor() protoreflect.MessageDescriptor {
+	return md_Params
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_Params) Type() protoreflect.MessageType {
+	return _fastReflection_Params_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_Params) New() protoreflect.Message {
+	return new(fastReflection_Params)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
+	return (*Params)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.LeverageMax != "" {
+		value := protoreflect.ValueOfString(x.LeverageMax)
+		if !f(fd_Params_leverage_max, value) {
+			return
+		}
+	}
+	if x.BorrowInterestRateMax != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestRateMax)
+		if !f(fd_Params_borrow_interest_rate_max, value) {
+			return
+		}
+	}
+	if x.BorrowInterestRateMin != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestRateMin)
+		if !f(fd_Params_borrow_interest_rate_min, value) {
+			return
+		}
+	}
+	if x.BorrowInterestRateIncrease != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestRateIncrease)
+		if !f(fd_Params_borrow_interest_rate_increase, value) {
+			return
+		}
+	}
+	if x.BorrowInterestRateDecrease != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestRateDecrease)
+		if !f(fd_Params_borrow_interest_rate_decrease, value) {
+			return
+		}
+	}
+	if x.HealthGainFactor != "" {
+		value := protoreflect.ValueOfString(x.HealthGainFactor)
+		if !f(fd_Params_health_gain_factor, value) {
+			return
+		}
+	}
+	if x.MaxOpenPositions != int64(0) {
+		value := protoreflect.ValueOfInt64(x.MaxOpenPositions)
+		if !f(fd_Params_max_open_positions, value) {
+			return
+		}
+	}
+	if x.PoolMaxLiabilitiesThreshold != "" {
+		value := protoreflect.ValueOfString(x.PoolMaxLiabilitiesThreshold)
+		if !f(fd_Params_pool_max_liabilities_threshold, value) {
+			return
+		}
+	}
+	if x.BorrowInterestPaymentFundPercentage != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestPaymentFundPercentage)
+		if !f(fd_Params_borrow_interest_payment_fund_percentage, value) {
+			return
+		}
+	}
+	if x.SafetyFactor != "" {
+		value := protoreflect.ValueOfString(x.SafetyFactor)
+		if !f(fd_Params_safety_factor, value) {
+			return
+		}
+	}
+	if x.BorrowInterestPaymentEnabled != false {
+		value := protoreflect.ValueOfBool(x.BorrowInterestPaymentEnabled)
+		if !f(fd_Params_borrow_interest_payment_enabled, value) {
+			return
+		}
+	}
+	if x.WhitelistingEnabled != false {
+		value := protoreflect.ValueOfBool(x.WhitelistingEnabled)
+		if !f(fd_Params_whitelisting_enabled, value) {
+			return
+		}
+	}
+	if x.PerpetualSwapFee != "" {
+		value := protoreflect.ValueOfString(x.PerpetualSwapFee)
+		if !f(fd_Params_perpetual_swap_fee, value) {
+			return
+		}
+	}
+	if x.MaxLimitOrder != int64(0) {
+		value := protoreflect.ValueOfInt64(x.MaxLimitOrder)
+		if !f(fd_Params_max_limit_order, value) {
+			return
+		}
+	}
+	if x.FixedFundingRate != "" {
+		value := protoreflect.ValueOfString(x.FixedFundingRate)
+		if !f(fd_Params_fixed_funding_rate, value) {
+			return
+		}
+	}
+	if x.MinimumLongTakeProfitPriceRatio != "" {
+		value := protoreflect.ValueOfString(x.MinimumLongTakeProfitPriceRatio)
+		if !f(fd_Params_minimum_long_take_profit_price_ratio, value) {
+			return
+		}
+	}
+	if x.MaximumLongTakeProfitPriceRatio != "" {
+		value := protoreflect.ValueOfString(x.MaximumLongTakeProfitPriceRatio)
+		if !f(fd_Params_maximum_long_take_profit_price_ratio, value) {
+			return
+		}
+	}
+	if x.MaximumShortTakeProfitPriceRatio != "" {
+		value := protoreflect.ValueOfString(x.MaximumShortTakeProfitPriceRatio)
+		if !f(fd_Params_maximum_short_take_profit_price_ratio, value) {
+			return
+		}
+	}
+	if x.WeightBreakingFeeFactor != "" {
+		value := protoreflect.ValueOfString(x.WeightBreakingFeeFactor)
+		if !f(fd_Params_weight_breaking_fee_factor, value) {
+			return
+		}
+	}
+	if len(x.EnabledPools) != 0 {
+		value := protoreflect.ValueOfList(&_Params_20_list{list: &x.EnabledPools})
+		if !f(fd_Params_enabled_pools, value) {
+			return
+		}
+	}
+	if x.MinimumNotionalValue != "" {
+		value := protoreflect.ValueOfString(x.MinimumNotionalValue)
+		if !f(fd_Params_minimum_notional_value, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.perpetual.Params.leverage_max":
+		return x.LeverageMax != ""
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		return x.BorrowInterestRateMax != ""
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		return x.BorrowInterestRateMin != ""
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		return x.BorrowInterestRateIncrease != ""
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		return x.BorrowInterestRateDecrease != ""
+	case "elys.perpetual.Params.health_gain_factor":
+		return x.HealthGainFactor != ""
+	case "elys.perpetual.Params.max_open_positions":
+		return x.MaxOpenPositions != int64(0)
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		return x.PoolMaxLiabilitiesThreshold != ""
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		return x.BorrowInterestPaymentFundPercentage != ""
+	case "elys.perpetual.Params.safety_factor":
+		return x.SafetyFactor != ""
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		return x.BorrowInterestPaymentEnabled != false
+	case "elys.perpetual.Params.whitelisting_enabled":
+		return x.WhitelistingEnabled != false
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		return x.PerpetualSwapFee != ""
+	case "elys.perpetual.Params.max_limit_order":
+		return x.MaxLimitOrder != int64(0)
+	case "elys.perpetual.Params.fixed_funding_rate":
+		return x.FixedFundingRate != ""
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		return x.MinimumLongTakeProfitPriceRatio != ""
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		return x.MaximumLongTakeProfitPriceRatio != ""
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		return x.MaximumShortTakeProfitPriceRatio != ""
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		return x.WeightBreakingFeeFactor != ""
+	case "elys.perpetual.Params.enabled_pools":
+		return len(x.EnabledPools) != 0
+	case "elys.perpetual.Params.minimum_notional_value":
+		return x.MinimumNotionalValue != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.perpetual.Params.leverage_max":
+		x.LeverageMax = ""
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		x.BorrowInterestRateMax = ""
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		x.BorrowInterestRateMin = ""
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		x.BorrowInterestRateIncrease = ""
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		x.BorrowInterestRateDecrease = ""
+	case "elys.perpetual.Params.health_gain_factor":
+		x.HealthGainFactor = ""
+	case "elys.perpetual.Params.max_open_positions":
+		x.MaxOpenPositions = int64(0)
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		x.PoolMaxLiabilitiesThreshold = ""
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		x.BorrowInterestPaymentFundPercentage = ""
+	case "elys.perpetual.Params.safety_factor":
+		x.SafetyFactor = ""
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		x.BorrowInterestPaymentEnabled = false
+	case "elys.perpetual.Params.whitelisting_enabled":
+		x.WhitelistingEnabled = false
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		x.PerpetualSwapFee = ""
+	case "elys.perpetual.Params.max_limit_order":
+		x.MaxLimitOrder = int64(0)
+	case "elys.perpetual.Params.fixed_funding_rate":
+		x.FixedFundingRate = ""
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		x.MinimumLongTakeProfitPriceRatio = ""
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		x.MaximumLongTakeProfitPriceRatio = ""
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		x.MaximumShortTakeProfitPriceRatio = ""
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		x.WeightBreakingFeeFactor = ""
+	case "elys.perpetual.Params.enabled_pools":
+		x.EnabledPools = nil
+	case "elys.perpetual.Params.minimum_notional_value":
+		x.MinimumNotionalValue = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.perpetual.Params.leverage_max":
+		value := x.LeverageMax
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		value := x.BorrowInterestRateMax
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		value := x.BorrowInterestRateMin
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		value := x.BorrowInterestRateIncrease
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		value := x.BorrowInterestRateDecrease
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.health_gain_factor":
+		value := x.HealthGainFactor
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.max_open_positions":
+		value := x.MaxOpenPositions
+		return protoreflect.ValueOfInt64(value)
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		value := x.PoolMaxLiabilitiesThreshold
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		value := x.BorrowInterestPaymentFundPercentage
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.safety_factor":
+		value := x.SafetyFactor
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		value := x.BorrowInterestPaymentEnabled
+		return protoreflect.ValueOfBool(value)
+	case "elys.perpetual.Params.whitelisting_enabled":
+		value := x.WhitelistingEnabled
+		return protoreflect.ValueOfBool(value)
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		value := x.PerpetualSwapFee
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.max_limit_order":
+		value := x.MaxLimitOrder
+		return protoreflect.ValueOfInt64(value)
+	case "elys.perpetual.Params.fixed_funding_rate":
+		value := x.FixedFundingRate
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		value := x.MinimumLongTakeProfitPriceRatio
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		value := x.MaximumLongTakeProfitPriceRatio
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		value := x.MaximumShortTakeProfitPriceRatio
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		value := x.WeightBreakingFeeFactor
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.Params.enabled_pools":
+		if len(x.EnabledPools) == 0 {
+			return protoreflect.ValueOfList(&_Params_20_list{})
+		}
+		listValue := &_Params_20_list{list: &x.EnabledPools}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.perpetual.Params.minimum_notional_value":
+		value := x.MinimumNotionalValue
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.perpetual.Params.leverage_max":
+		x.LeverageMax = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		x.BorrowInterestRateMax = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		x.BorrowInterestRateMin = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		x.BorrowInterestRateIncrease = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		x.BorrowInterestRateDecrease = value.Interface().(string)
+	case "elys.perpetual.Params.health_gain_factor":
+		x.HealthGainFactor = value.Interface().(string)
+	case "elys.perpetual.Params.max_open_positions":
+		x.MaxOpenPositions = value.Int()
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		x.PoolMaxLiabilitiesThreshold = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		x.BorrowInterestPaymentFundPercentage = value.Interface().(string)
+	case "elys.perpetual.Params.safety_factor":
+		x.SafetyFactor = value.Interface().(string)
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		x.BorrowInterestPaymentEnabled = value.Bool()
+	case "elys.perpetual.Params.whitelisting_enabled":
+		x.WhitelistingEnabled = value.Bool()
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		x.PerpetualSwapFee = value.Interface().(string)
+	case "elys.perpetual.Params.max_limit_order":
+		x.MaxLimitOrder = value.Int()
+	case "elys.perpetual.Params.fixed_funding_rate":
+		x.FixedFundingRate = value.Interface().(string)
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		x.MinimumLongTakeProfitPriceRatio = value.Interface().(string)
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		x.MaximumLongTakeProfitPriceRatio = value.Interface().(string)
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		x.MaximumShortTakeProfitPriceRatio = value.Interface().(string)
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		x.WeightBreakingFeeFactor = value.Interface().(string)
+	case "elys.perpetual.Params.enabled_pools":
+		lv := value.List()
+		clv := lv.(*_Params_20_list)
+		x.EnabledPools = *clv.list
+	case "elys.perpetual.Params.minimum_notional_value":
+		x.MinimumNotionalValue = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.Params.enabled_pools":
+		if x.EnabledPools == nil {
+			x.EnabledPools = []uint64{}
+		}
+		value := &_Params_20_list{list: &x.EnabledPools}
+		return protoreflect.ValueOfList(value)
+	case "elys.perpetual.Params.leverage_max":
+		panic(fmt.Errorf("field leverage_max of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		panic(fmt.Errorf("field borrow_interest_rate_max of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		panic(fmt.Errorf("field borrow_interest_rate_min of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		panic(fmt.Errorf("field borrow_interest_rate_increase of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		panic(fmt.Errorf("field borrow_interest_rate_decrease of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.health_gain_factor":
+		panic(fmt.Errorf("field health_gain_factor of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.max_open_positions":
+		panic(fmt.Errorf("field max_open_positions of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		panic(fmt.Errorf("field pool_max_liabilities_threshold of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		panic(fmt.Errorf("field borrow_interest_payment_fund_percentage of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.safety_factor":
+		panic(fmt.Errorf("field safety_factor of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		panic(fmt.Errorf("field borrow_interest_payment_enabled of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.whitelisting_enabled":
+		panic(fmt.Errorf("field whitelisting_enabled of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		panic(fmt.Errorf("field perpetual_swap_fee of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.max_limit_order":
+		panic(fmt.Errorf("field max_limit_order of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.fixed_funding_rate":
+		panic(fmt.Errorf("field fixed_funding_rate of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		panic(fmt.Errorf("field minimum_long_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		panic(fmt.Errorf("field maximum_long_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		panic(fmt.Errorf("field maximum_short_take_profit_price_ratio of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		panic(fmt.Errorf("field weight_breaking_fee_factor of message elys.perpetual.Params is not mutable"))
+	case "elys.perpetual.Params.minimum_notional_value":
+		panic(fmt.Errorf("field minimum_notional_value of message elys.perpetual.Params is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.Params.leverage_max":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_rate_max":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_rate_min":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_rate_increase":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_rate_decrease":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.health_gain_factor":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.max_open_positions":
+		return protoreflect.ValueOfInt64(int64(0))
+	case "elys.perpetual.Params.pool_max_liabilities_threshold":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_payment_fund_percentage":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.safety_factor":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.borrow_interest_payment_enabled":
+		return protoreflect.ValueOfBool(false)
+	case "elys.perpetual.Params.whitelisting_enabled":
+		return protoreflect.ValueOfBool(false)
+	case "elys.perpetual.Params.perpetual_swap_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.max_limit_order":
+		return protoreflect.ValueOfInt64(int64(0))
+	case "elys.perpetual.Params.fixed_funding_rate":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.minimum_long_take_profit_price_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.maximum_long_take_profit_price_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.maximum_short_take_profit_price_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.weight_breaking_fee_factor":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.Params.enabled_pools":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_Params_20_list{list: &list})
+	case "elys.perpetual.Params.minimum_notional_value":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.Params"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.Params does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_Params) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.Params", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_Params) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Params) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_Params) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*Params)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.LeverageMax)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestRateMax)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestRateMin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestRateIncrease)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestRateDecrease)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.HealthGainFactor)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.MaxOpenPositions != 0 {
+			n += 1 + runtime.Sov(uint64(x.MaxOpenPositions))
+		}
+		l = len(x.PoolMaxLiabilitiesThreshold)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestPaymentFundPercentage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.SafetyFactor)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.BorrowInterestPaymentEnabled {
+			n += 2
+		}
+		if x.WhitelistingEnabled {
+			n += 2
+		}
+		l = len(x.PerpetualSwapFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.MaxLimitOrder != 0 {
+			n += 1 + runtime.Sov(uint64(x.MaxLimitOrder))
+		}
+		l = len(x.FixedFundingRate)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MinimumLongTakeProfitPriceRatio)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaximumLongTakeProfitPriceRatio)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaximumShortTakeProfitPriceRatio)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightBreakingFeeFactor)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.EnabledPools) > 0 {
+			l = 0
+			for _, e := range x.EnabledPools {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 2 + runtime.Sov(uint64(l)) + l
+		}
+		l = len(x.MinimumNotionalValue)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*Params)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MinimumNotionalValue) > 0 {
+			i -= len(x.MinimumNotionalValue)
+			copy(dAtA[i:], x.MinimumNotionalValue)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinimumNotionalValue)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xaa
+		}
+		if len(x.EnabledPools) > 0 {
+			var pksize2 int
+			for _, num := range x.EnabledPools {
+				pksize2 += runtime.Sov(uint64(num))
+			}
+			i -= pksize2
+			j1 := i
+			for _, num := range x.EnabledPools {
+				for num >= 1<<7 {
+					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j1++
+				}
+				dAtA[j1] = uint8(num)
+				j1++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xa2
+		}
+		if len(x.WeightBreakingFeeFactor) > 0 {
+			i -= len(x.WeightBreakingFeeFactor)
+			copy(dAtA[i:], x.WeightBreakingFeeFactor)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeeFactor)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x9a
+		}
+		if len(x.MaximumShortTakeProfitPriceRatio) > 0 {
+			i -= len(x.MaximumShortTakeProfitPriceRatio)
+			copy(dAtA[i:], x.MaximumShortTakeProfitPriceRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaximumShortTakeProfitPriceRatio)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x92
+		}
+		if len(x.MaximumLongTakeProfitPriceRatio) > 0 {
+			i -= len(x.MaximumLongTakeProfitPriceRatio)
+			copy(dAtA[i:], x.MaximumLongTakeProfitPriceRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaximumLongTakeProfitPriceRatio)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x8a
+		}
+		if len(x.MinimumLongTakeProfitPriceRatio) > 0 {
+			i -= len(x.MinimumLongTakeProfitPriceRatio)
+			copy(dAtA[i:], x.MinimumLongTakeProfitPriceRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinimumLongTakeProfitPriceRatio)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x82
+		}
+		if len(x.FixedFundingRate) > 0 {
+			i -= len(x.FixedFundingRate)
+			copy(dAtA[i:], x.FixedFundingRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FixedFundingRate)))
+			i--
+			dAtA[i] = 0x7a
+		}
+		if x.MaxLimitOrder != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaxLimitOrder))
+			i--
+			dAtA[i] = 0x70
+		}
+		if len(x.PerpetualSwapFee) > 0 {
+			i -= len(x.PerpetualSwapFee)
+			copy(dAtA[i:], x.PerpetualSwapFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PerpetualSwapFee)))
+			i--
+			dAtA[i] = 0x6a
+		}
+		if x.WhitelistingEnabled {
+			i--
+			if x.WhitelistingEnabled {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x60
+		}
+		if x.BorrowInterestPaymentEnabled {
+			i--
+			if x.BorrowInterestPaymentEnabled {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x58
+		}
+		if len(x.SafetyFactor) > 0 {
+			i -= len(x.SafetyFactor)
+			copy(dAtA[i:], x.SafetyFactor)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SafetyFactor)))
+			i--
+			dAtA[i] = 0x52
+		}
+		if len(x.BorrowInterestPaymentFundPercentage) > 0 {
+			i -= len(x.BorrowInterestPaymentFundPercentage)
+			copy(dAtA[i:], x.BorrowInterestPaymentFundPercentage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestPaymentFundPercentage)))
+			i--
+			dAtA[i] = 0x4a
+		}
+		if len(x.PoolMaxLiabilitiesThreshold) > 0 {
+			i -= len(x.PoolMaxLiabilitiesThreshold)
+			copy(dAtA[i:], x.PoolMaxLiabilitiesThreshold)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PoolMaxLiabilitiesThreshold)))
+			i--
+			dAtA[i] = 0x42
+		}
+		if x.MaxOpenPositions != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaxOpenPositions))
+			i--
+			dAtA[i] = 0x38
+		}
+		if len(x.HealthGainFactor) > 0 {
+			i -= len(x.HealthGainFactor)
+			copy(dAtA[i:], x.HealthGainFactor)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.HealthGainFactor)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.BorrowInterestRateDecrease) > 0 {
+			i -= len(x.BorrowInterestRateDecrease)
+			copy(dAtA[i:], x.BorrowInterestRateDecrease)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRateDecrease)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.BorrowInterestRateIncrease) > 0 {
+			i -= len(x.BorrowInterestRateIncrease)
+			copy(dAtA[i:], x.BorrowInterestRateIncrease)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRateIncrease)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.BorrowInterestRateMin) > 0 {
+			i -= len(x.BorrowInterestRateMin)
+			copy(dAtA[i:], x.BorrowInterestRateMin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRateMin)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.BorrowInterestRateMax) > 0 {
+			i -= len(x.BorrowInterestRateMax)
+			copy(dAtA[i:], x.BorrowInterestRateMax)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRateMax)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.LeverageMax) > 0 {
+			i -= len(x.LeverageMax)
+			copy(dAtA[i:], x.LeverageMax)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LeverageMax)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*Params)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LeverageMax", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LeverageMax = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRateMax", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestRateMax = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRateMin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestRateMin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRateIncrease", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestRateIncrease = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRateDecrease", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestRateDecrease = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field HealthGainFactor", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.HealthGainFactor = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxOpenPositions", wireType)
+				}
+				x.MaxOpenPositions = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.MaxOpenPositions |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolMaxLiabilitiesThreshold", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolMaxLiabilitiesThreshold = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestPaymentFundPercentage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestPaymentFundPercentage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SafetyFactor", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SafetyFactor = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 11:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestPaymentEnabled", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.BorrowInterestPaymentEnabled = bool(v != 0)
+			case 12:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WhitelistingEnabled", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.WhitelistingEnabled = bool(v != 0)
+			case 13:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualSwapFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PerpetualSwapFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 14:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxLimitOrder", wireType)
+				}
+				x.MaxLimitOrder = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.MaxLimitOrder |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 15:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FixedFundingRate", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FixedFundingRate = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 16:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumLongTakeProfitPriceRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinimumLongTakeProfitPriceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 17:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaximumLongTakeProfitPriceRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaximumLongTakeProfitPriceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 18:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaximumShortTakeProfitPriceRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaximumShortTakeProfitPriceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 19:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeFactor", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBreakingFeeFactor = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 20:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.EnabledPools = append(x.EnabledPools, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.EnabledPools) == 0 {
+						x.EnabledPools = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.EnabledPools = append(x.EnabledPools, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnabledPools", wireType)
+				}
+			case 21:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumNotionalValue", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinimumNotionalValue = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -1859,7 +3635,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Params struct {
+type LegacyParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1905,10 +3681,227 @@ type Params struct {
 	EnabledPools            []uint64 `protobuf:"varint,22,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
 }
 
+func (x *LegacyParams) Reset() {
+	*x = LegacyParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_perpetual_params_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LegacyParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LegacyParams) ProtoMessage() {}
+
+// Deprecated: Use LegacyParams.ProtoReflect.Descriptor instead.
+func (*LegacyParams) Descriptor() ([]byte, []int) {
+	return file_elys_perpetual_params_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *LegacyParams) GetLeverageMax() string {
+	if x != nil {
+		return x.LeverageMax
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestRateMax() string {
+	if x != nil {
+		return x.BorrowInterestRateMax
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestRateMin() string {
+	if x != nil {
+		return x.BorrowInterestRateMin
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestRateIncrease() string {
+	if x != nil {
+		return x.BorrowInterestRateIncrease
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestRateDecrease() string {
+	if x != nil {
+		return x.BorrowInterestRateDecrease
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetHealthGainFactor() string {
+	if x != nil {
+		return x.HealthGainFactor
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetMaxOpenPositions() int64 {
+	if x != nil {
+		return x.MaxOpenPositions
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetPoolMaxLiabilitiesThreshold() string {
+	if x != nil {
+		return x.PoolMaxLiabilitiesThreshold
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestPaymentFundPercentage() string {
+	if x != nil {
+		return x.BorrowInterestPaymentFundPercentage
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetLegacyBorrowInterestPaymentFundAddress() string {
+	if x != nil {
+		return x.LegacyBorrowInterestPaymentFundAddress
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetSafetyFactor() string {
+	if x != nil {
+		return x.SafetyFactor
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetBorrowInterestPaymentEnabled() bool {
+	if x != nil {
+		return x.BorrowInterestPaymentEnabled
+	}
+	return false
+}
+
+func (x *LegacyParams) GetWhitelistingEnabled() bool {
+	if x != nil {
+		return x.WhitelistingEnabled
+	}
+	return false
+}
+
+func (x *LegacyParams) GetPerpetualSwapFee() string {
+	if x != nil {
+		return x.PerpetualSwapFee
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetMaxLimitOrder() int64 {
+	if x != nil {
+		return x.MaxLimitOrder
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetFixedFundingRate() string {
+	if x != nil {
+		return x.FixedFundingRate
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetMinimumLongTakeProfitPriceRatio() string {
+	if x != nil {
+		return x.MinimumLongTakeProfitPriceRatio
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetMaximumLongTakeProfitPriceRatio() string {
+	if x != nil {
+		return x.MaximumLongTakeProfitPriceRatio
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetMaximumShortTakeProfitPriceRatio() string {
+	if x != nil {
+		return x.MaximumShortTakeProfitPriceRatio
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetEnableTakeProfitCustodyLiabilities() bool {
+	if x != nil {
+		return x.EnableTakeProfitCustodyLiabilities
+	}
+	return false
+}
+
+func (x *LegacyParams) GetWeightBreakingFeeFactor() string {
+	if x != nil {
+		return x.WeightBreakingFeeFactor
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetEnabledPools() []uint64 {
+	if x != nil {
+		return x.EnabledPools
+	}
+	return nil
+}
+
+type Params struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	LeverageMax                         string `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3" json:"leverage_max,omitempty"`
+	BorrowInterestRateMax               string `protobuf:"bytes,2,opt,name=borrow_interest_rate_max,json=borrowInterestRateMax,proto3" json:"borrow_interest_rate_max,omitempty"`
+	BorrowInterestRateMin               string `protobuf:"bytes,3,opt,name=borrow_interest_rate_min,json=borrowInterestRateMin,proto3" json:"borrow_interest_rate_min,omitempty"`
+	BorrowInterestRateIncrease          string `protobuf:"bytes,4,opt,name=borrow_interest_rate_increase,json=borrowInterestRateIncrease,proto3" json:"borrow_interest_rate_increase,omitempty"`
+	BorrowInterestRateDecrease          string `protobuf:"bytes,5,opt,name=borrow_interest_rate_decrease,json=borrowInterestRateDecrease,proto3" json:"borrow_interest_rate_decrease,omitempty"`
+	HealthGainFactor                    string `protobuf:"bytes,6,opt,name=health_gain_factor,json=healthGainFactor,proto3" json:"health_gain_factor,omitempty"`
+	MaxOpenPositions                    int64  `protobuf:"varint,7,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
+	PoolMaxLiabilitiesThreshold         string `protobuf:"bytes,8,opt,name=pool_max_liabilities_threshold,json=poolMaxLiabilitiesThreshold,proto3" json:"pool_max_liabilities_threshold,omitempty"`
+	BorrowInterestPaymentFundPercentage string `protobuf:"bytes,9,opt,name=borrow_interest_payment_fund_percentage,json=borrowInterestPaymentFundPercentage,proto3" json:"borrow_interest_payment_fund_percentage,omitempty"`
+	SafetyFactor                        string `protobuf:"bytes,10,opt,name=safety_factor,json=safetyFactor,proto3" json:"safety_factor,omitempty"`
+	BorrowInterestPaymentEnabled        bool   `protobuf:"varint,11,opt,name=borrow_interest_payment_enabled,json=borrowInterestPaymentEnabled,proto3" json:"borrow_interest_payment_enabled,omitempty"`
+	WhitelistingEnabled                 bool   `protobuf:"varint,12,opt,name=whitelisting_enabled,json=whitelistingEnabled,proto3" json:"whitelisting_enabled,omitempty"`
+	PerpetualSwapFee                    string `protobuf:"bytes,13,opt,name=perpetual_swap_fee,json=perpetualSwapFee,proto3" json:"perpetual_swap_fee,omitempty"`
+	MaxLimitOrder                       int64  `protobuf:"varint,14,opt,name=max_limit_order,json=maxLimitOrder,proto3" json:"max_limit_order,omitempty"`
+	FixedFundingRate                    string `protobuf:"bytes,15,opt,name=fixed_funding_rate,json=fixedFundingRate,proto3" json:"fixed_funding_rate,omitempty"`
+	// minimum value for take_profit_price/current price for long, should be
+	// greater than 1
+	MinimumLongTakeProfitPriceRatio string `protobuf:"bytes,16,opt,name=minimum_long_take_profit_price_ratio,json=minimumLongTakeProfitPriceRatio,proto3" json:"minimum_long_take_profit_price_ratio,omitempty"`
+	// max value for take_profit_price/current price for long, should be greater
+	// than 1
+	MaximumLongTakeProfitPriceRatio string `protobuf:"bytes,17,opt,name=maximum_long_take_profit_price_ratio,json=maximumLongTakeProfitPriceRatio,proto3" json:"maximum_long_take_profit_price_ratio,omitempty"`
+	// max value for take_profit_price/current price for short, should be less
+	// than 1
+	MaximumShortTakeProfitPriceRatio string `protobuf:"bytes,18,opt,name=maximum_short_take_profit_price_ratio,json=maximumShortTakeProfitPriceRatio,proto3" json:"maximum_short_take_profit_price_ratio,omitempty"`
+	// We create this and send this value to estimate swap ONLY when opening and
+	// closing the position Ideally this value is set to half. When trader open a
+	// position if they receive a weight balance bonus (which is half of weight
+	// breaking fee, ideally) then while closing position they are charged weight
+	// breaking fee. So we just directly apply half weight breaking fee on
+	// perpetual swaps Question: does each need to have separate value of this
+	// because PoolParams.WeightRecoveryFeePortion can be different Also, if
+	// trader has no bonus only fee, then overall we are only applying the fee
+	// half time
+	WeightBreakingFeeFactor string   `protobuf:"bytes,19,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3" json:"weight_breaking_fee_factor,omitempty"`
+	EnabledPools            []uint64 `protobuf:"varint,20,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
+	MinimumNotionalValue    string   `protobuf:"bytes,21,opt,name=minimum_notional_value,json=minimumNotionalValue,proto3" json:"minimum_notional_value,omitempty"`
+}
+
 func (x *Params) Reset() {
 	*x = Params{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_perpetual_params_proto_msgTypes[0]
+		mi := &file_elys_perpetual_params_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1922,7 +3915,7 @@ func (*Params) ProtoMessage() {}
 
 // Deprecated: Use Params.ProtoReflect.Descriptor instead.
 func (*Params) Descriptor() ([]byte, []int) {
-	return file_elys_perpetual_params_proto_rawDescGZIP(), []int{0}
+	return file_elys_perpetual_params_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Params) GetLeverageMax() string {
@@ -1984,13 +3977,6 @@ func (x *Params) GetPoolMaxLiabilitiesThreshold() string {
 func (x *Params) GetBorrowInterestPaymentFundPercentage() string {
 	if x != nil {
 		return x.BorrowInterestPaymentFundPercentage
-	}
-	return ""
-}
-
-func (x *Params) GetLegacyBorrowInterestPaymentFundAddress() string {
-	if x != nil {
-		return x.LegacyBorrowInterestPaymentFundAddress
 	}
 	return ""
 }
@@ -2058,13 +4044,6 @@ func (x *Params) GetMaximumShortTakeProfitPriceRatio() string {
 	return ""
 }
 
-func (x *Params) GetEnableTakeProfitCustodyLiabilities() bool {
-	if x != nil {
-		return x.EnableTakeProfitCustodyLiabilities
-	}
-	return false
-}
-
 func (x *Params) GetWeightBreakingFeeFactor() string {
 	if x != nil {
 		return x.WeightBreakingFeeFactor
@@ -2079,6 +4058,13 @@ func (x *Params) GetEnabledPools() []uint64 {
 	return nil
 }
 
+func (x *Params) GetMinimumNotionalValue() string {
+	if x != nil {
+		return x.MinimumNotionalValue
+	}
+	return ""
+}
+
 var File_elys_perpetual_params_proto protoreflect.FileDescriptor
 
 var file_elys_perpetual_params_proto_rawDesc = []byte{
@@ -2087,151 +4073,279 @@ var file_elys_perpetual_params_proto_rawDesc = []byte{
 	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x1a, 0x14, 0x67,
 	0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc0,
-	0x10, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76,
-	0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x4d, 0x61, 0x78, 0x12,
-	0x6a, 0x0a, 0x18, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65,
-	0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65,
-	0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x78, 0x12, 0x6a, 0x0a, 0x18, 0x62,
-	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72,
-	0x61, 0x74, 0x65, 0x5f, 0x6d, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x15, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
-	0x52, 0x61, 0x74, 0x65, 0x4d, 0x69, 0x6e, 0x12, 0x74, 0x0a, 0x1d, 0x62, 0x6f, 0x72, 0x72, 0x6f,
-	0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f,
-	0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
-	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
-	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
-	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x1a, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
-	0x74, 0x52, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x74, 0x0a,
+	0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc6,
+	0x10, 0x0a, 0x0c, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
+	0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x4d, 0x61, 0x78, 0x12, 0x6a, 0x0a, 0x18, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61,
+	0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x62, 0x6f, 0x72, 0x72,
+	0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x4d, 0x61,
+	0x78, 0x12, 0x6a, 0x0a, 0x18, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x69, 0x6e, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e,
+	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x4d, 0x69, 0x6e, 0x12, 0x74, 0x0a,
 	0x1d, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
-	0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x05,
+	0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x04,
 	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
 	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49,
-	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x44, 0x65, 0x63, 0x72, 0x65,
-	0x61, 0x73, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x5f, 0x67, 0x61,
-	0x69, 0x6e, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x10, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x47, 0x61, 0x69, 0x6e, 0x46, 0x61,
-	0x63, 0x74, 0x6f, 0x72, 0x12, 0x2c, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x6f, 0x70, 0x65, 0x6e,
-	0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x10, 0x6d, 0x61, 0x78, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x12, 0x76, 0x0a, 0x1e, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x6c,
-	0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73,
-	0x68, 0x6f, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x63, 0x72, 0x65,
+	0x61, 0x73, 0x65, 0x12, 0x74, 0x0a, 0x1d, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x64, 0x65, 0x63, 0x72,
+	0x65, 0x61, 0x73, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
 	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
 	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x70,
-	0x6f, 0x6f, 0x6c, 0x4d, 0x61, 0x78, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65,
-	0x73, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x87, 0x01, 0x0a, 0x27, 0x62,
-	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x70,
-	0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x5f, 0x70, 0x65, 0x72, 0x63,
-	0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x23, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x50,
-	0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x46, 0x75, 0x6e, 0x64, 0x50, 0x65, 0x72, 0x63, 0x65, 0x6e,
-	0x74, 0x61, 0x67, 0x65, 0x12, 0x5b, 0x0a, 0x2b, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x62,
-	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x70,
-	0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x5f, 0x61, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x26, 0x6c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x50,
-	0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x46, 0x75, 0x6e, 0x64, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x12, 0x56, 0x0a, 0x0d, 0x73, 0x61, 0x66, 0x65, 0x74, 0x79, 0x5f, 0x66, 0x61, 0x63, 0x74,
-	0x6f, 0x72, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a, 0x62,
+	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
+	0x65, 0x44, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x68, 0x65, 0x61,
+	0x6c, 0x74, 0x68, 0x5f, 0x67, 0x61, 0x69, 0x6e, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68,
+	0x47, 0x61, 0x69, 0x6e, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x2c, 0x0a, 0x12, 0x6d, 0x61,
+	0x78, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x4f, 0x70, 0x65, 0x6e, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x76, 0x0a, 0x1e, 0x70, 0x6f, 0x6f, 0x6c,
+	0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73,
+	0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
+	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x44, 0x65, 0x63, 0x52, 0x1b, 0x70, 0x6f, 0x6f, 0x6c, 0x4d, 0x61, 0x78, 0x4c, 0x69, 0x61, 0x62,
+	0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64,
+	0x12, 0x87, 0x01, 0x0a, 0x27, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x66, 0x75, 0x6e,
+	0x64, 0x5f, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x18, 0x09, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x23, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74,
+	0x65, 0x72, 0x65, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x46, 0x75, 0x6e, 0x64,
+	0x50, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x12, 0x5b, 0x0a, 0x2b, 0x6c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x66, 0x75, 0x6e,
+	0x64, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x26, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74,
+	0x65, 0x72, 0x65, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x46, 0x75, 0x6e, 0x64,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x56, 0x0a, 0x0d, 0x73, 0x61, 0x66, 0x65, 0x74,
+	0x79, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x0c, 0x73, 0x61, 0x66, 0x65, 0x74, 0x79, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12,
+	0x45, 0x0a, 0x1f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65,
+	0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c,
+	0x65, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x08, 0x52, 0x1c, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
+	0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x45,
+	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x31, 0x0a, 0x14, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c,
+	0x69, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x0d,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x13, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x69,
+	0x6e, 0x67, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x5f, 0x0a, 0x12, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18,
+	0x0e, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x53, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x26, 0x0a, 0x0f, 0x6d, 0x61,
+	0x78, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x18, 0x0f, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x0d, 0x6d, 0x61, 0x78, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x4f, 0x72, 0x64,
+	0x65, 0x72, 0x12, 0x5f, 0x0a, 0x12, 0x66, 0x69, 0x78, 0x65, 0x64, 0x5f, 0x66, 0x75, 0x6e, 0x64,
+	0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x10, 0x66, 0x69, 0x78, 0x65, 0x64, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52,
+	0x61, 0x74, 0x65, 0x12, 0x80, 0x01, 0x0a, 0x24, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f,
+	0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74,
+	0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x11, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1f, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x6f,
+	0x6e, 0x67, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x80, 0x01, 0x0a, 0x24, 0x6d, 0x61, 0x78, 0x69, 0x6d,
+	0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f,
+	0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18,
+	0x12, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1f, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75,
+	0x6d, 0x4c, 0x6f, 0x6e, 0x67, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50,
+	0x72, 0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x82, 0x01, 0x0a, 0x25, 0x6d, 0x61,
+	0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x5f, 0x74, 0x61, 0x6b, 0x65,
+	0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x18, 0x13, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x20, 0x6d, 0x61,
+	0x78, 0x69, 0x6d, 0x75, 0x6d, 0x53, 0x68, 0x6f, 0x72, 0x74, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72,
+	0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x52,
+	0x0a, 0x26, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72,
+	0x6f, 0x66, 0x69, 0x74, 0x5f, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x5f, 0x6c, 0x69, 0x61,
+	0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x14, 0x20, 0x01, 0x28, 0x08, 0x52, 0x22,
+	0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74,
+	0x43, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69,
+	0x65, 0x73, 0x12, 0x6e, 0x0a, 0x1a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65,
+	0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72,
+	0x18, 0x15, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x17, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x46, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f,
+	0x6f, 0x6c, 0x73, 0x18, 0x16, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c,
+	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0xf8, 0x0f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x12, 0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d,
+	0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
 	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
 	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x73, 0x61, 0x66,
-	0x65, 0x74, 0x79, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x45, 0x0a, 0x1f, 0x62, 0x6f, 0x72,
-	0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79,
-	0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x0c, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x1c, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65,
-	0x73, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
-	0x12, 0x31, 0x0a, 0x14, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x69, 0x6e, 0x67,
-	0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x08, 0x52, 0x13,
-	0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x45, 0x6e, 0x61, 0x62,
-	0x6c, 0x65, 0x64, 0x12, 0x5f, 0x0a, 0x12, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x5f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x10, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x53, 0x77, 0x61,
-	0x70, 0x46, 0x65, 0x65, 0x12, 0x26, 0x0a, 0x0f, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x69, 0x6d, 0x69,
-	0x74, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0d, 0x6d,
-	0x61, 0x78, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x5f, 0x0a, 0x12,
-	0x66, 0x69, 0x78, 0x65, 0x64, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61,
-	0x74, 0x65, 0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76,
+	0x65, 0x72, 0x61, 0x67, 0x65, 0x4d, 0x61, 0x78, 0x12, 0x6a, 0x0a, 0x18, 0x62, 0x6f, 0x72, 0x72,
+	0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65,
+	0x5f, 0x6d, 0x61, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x62,
+	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
+	0x65, 0x4d, 0x61, 0x78, 0x12, 0x6a, 0x0a, 0x18, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x69, 0x6e,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x62, 0x6f, 0x72, 0x72, 0x6f,
+	0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x4d, 0x69, 0x6e,
+	0x12, 0x74, 0x0a, 0x1d, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72,
+	0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a, 0x62, 0x6f, 0x72, 0x72,
+	0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x49, 0x6e,
+	0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x74, 0x0a, 0x1d, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
+	0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x64,
+	0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x1a, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
+	0x52, 0x61, 0x74, 0x65, 0x44, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x5f, 0x0a, 0x12,
+	0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x5f, 0x67, 0x61, 0x69, 0x6e, 0x5f, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
 	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
 	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x66, 0x69, 0x78,
-	0x65, 0x64, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x80, 0x01,
-	0x0a, 0x24, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x74,
-	0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
-	0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x11, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x1f, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x6f, 0x6e, 0x67, 0x54, 0x61, 0x6b, 0x65,
-	0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f,
-	0x12, 0x80, 0x01, 0x0a, 0x24, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x6e,
-	0x67, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x68, 0x65, 0x61,
+	0x6c, 0x74, 0x68, 0x47, 0x61, 0x69, 0x6e, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x2c, 0x0a,
+	0x12, 0x6d, 0x61, 0x78, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x4f, 0x70,
+	0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x76, 0x0a, 0x1e, 0x70,
+	0x6f, 0x6f, 0x6c, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
+	0x69, 0x65, 0x73, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x70, 0x6f, 0x6f, 0x6c, 0x4d, 0x61, 0x78, 0x4c,
+	0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68,
+	0x6f, 0x6c, 0x64, 0x12, 0x87, 0x01, 0x0a, 0x27, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x5f,
+	0x66, 0x75, 0x6e, 0x64, 0x5f, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x23, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
+	0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x46,
+	0x75, 0x6e, 0x64, 0x50, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x12, 0x56, 0x0a,
+	0x0d, 0x73, 0x61, 0x66, 0x65, 0x74, 0x79, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x0a,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x73, 0x61, 0x66, 0x65, 0x74, 0x79, 0x46,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x45, 0x0a, 0x1f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74,
+	0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x08, 0x52, 0x1c,
+	0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x50, 0x61,
+	0x79, 0x6d, 0x65, 0x6e, 0x74, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x31, 0x0a, 0x14,
+	0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x65, 0x6e, 0x61,
+	0x62, 0x6c, 0x65, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x08, 0x52, 0x13, 0x77, 0x68, 0x69, 0x74,
+	0x65, 0x6c, 0x69, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12,
+	0x5f, 0x0a, 0x12, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x73, 0x77, 0x61,
+	0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x53, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65,
+	0x12, 0x26, 0x0a, 0x0f, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x5f, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0d, 0x6d, 0x61, 0x78, 0x4c, 0x69,
+	0x6d, 0x69, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x5f, 0x0a, 0x12, 0x66, 0x69, 0x78, 0x65,
+	0x64, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0f,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x66, 0x69, 0x78, 0x65, 0x64, 0x46, 0x75,
+	0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x80, 0x01, 0x0a, 0x24, 0x6d, 0x69,
+	0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f,
+	0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74,
+	0x69, 0x6f, 0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1f, 0x6d, 0x69, 0x6e,
+	0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x6f, 0x6e, 0x67, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66,
+	0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x80, 0x01, 0x0a,
+	0x24, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x6e, 0x67, 0x5f, 0x74, 0x61,
+	0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x11, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1f,
+	0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x6f, 0x6e, 0x67, 0x54, 0x61, 0x6b, 0x65, 0x50,
+	0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12,
+	0x82, 0x01, 0x0a, 0x25, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x73, 0x68, 0x6f, 0x72,
+	0x74, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72,
 	0x69, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x12, 0x20, 0x01, 0x28, 0x09, 0x42,
 	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
 	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
 	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x1f, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x6f, 0x6e, 0x67, 0x54,
-	0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x61,
-	0x74, 0x69, 0x6f, 0x12, 0x82, 0x01, 0x0a, 0x25, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f,
-	0x73, 0x68, 0x6f, 0x72, 0x74, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69,
-	0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x13, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x20, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x53,
-	0x68, 0x6f, 0x72, 0x74, 0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72,
-	0x69, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x52, 0x0a, 0x26, 0x65, 0x6e, 0x61, 0x62,
-	0x6c, 0x65, 0x5f, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x63,
-	0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69,
-	0x65, 0x73, 0x18, 0x14, 0x20, 0x01, 0x28, 0x08, 0x52, 0x22, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65,
-	0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x64,
-	0x79, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x12, 0x6e, 0x0a, 0x1a,
-	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f,
-	0x66, 0x65, 0x65, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x15, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x17, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b,
-	0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x23, 0x0a, 0x0d,
-	0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x16, 0x20,
-	0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c,
-	0x73, 0x42, 0xae, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50,
-	0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x63, 0x52, 0x20, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x53, 0x68, 0x6f, 0x72, 0x74,
+	0x54, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52,
+	0x61, 0x74, 0x69, 0x6f, 0x12, 0x6e, 0x0a, 0x1a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62,
+	0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x18, 0x13, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x17, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x46, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f,
+	0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x14, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61,
+	0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x67, 0x0a, 0x16, 0x6d, 0x69, 0x6e,
+	0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6e, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x5f, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x18, 0x15, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x14, 0x6d, 0x69,
+	0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x4e, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x42, 0xae, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
+	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45,
+	0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2246,9 +4360,10 @@ func file_elys_perpetual_params_proto_rawDescGZIP() []byte {
 	return file_elys_perpetual_params_proto_rawDescData
 }
 
-var file_elys_perpetual_params_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_elys_perpetual_params_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_elys_perpetual_params_proto_goTypes = []interface{}{
-	(*Params)(nil), // 0: elys.perpetual.Params
+	(*LegacyParams)(nil), // 0: elys.perpetual.LegacyParams
+	(*Params)(nil),       // 1: elys.perpetual.Params
 }
 var file_elys_perpetual_params_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -2265,6 +4380,18 @@ func file_elys_perpetual_params_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_elys_perpetual_params_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LegacyParams); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_perpetual_params_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Params); i {
 			case 0:
 				return &v.state
@@ -2283,7 +4410,7 @@ func file_elys_perpetual_params_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_perpetual_params_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

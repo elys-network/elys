@@ -26,7 +26,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_LONG,
 		PoolId:          poolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyOneDec().MulInt64(6),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -35,16 +34,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 		name                 string
 		expectErrMsg         string
 		prerequisiteFunction func()
-		postValidateFunction func(mtp *types.MTP)
 	}{
-		{
-			"pool not found",
-			types.ErrPoolDoesNotExist.Error(),
-			func() {
-			},
-			func(mtp *types.MTP) {
-			},
-		},
 		{
 			"amm pool not found",
 			"pool does not exist",
@@ -63,40 +53,18 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 
 				suite.app.AmmKeeper.RemovePool(suite.ctx, ammPool.PoolId)
 			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
-			"collateral asset neither base currency nor present in the pool",
-			"(uelys) does not exist in the pool",
-			func() {
-				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
-				msg.Collateral.Denom = ptypes.Elys
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
-			"collateral is same as trading asset but pool doesn't have enough depth",
-			"borrowed amount is higher than pool depth",
-			func() {
-				msg.Collateral.Denom = ptypes.ATOM
-				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.BorrowInterestRateMin = math.LegacyZeroDec()
-				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
-				suite.Require().NoError(err)
-			},
-			func(mtp *types.MTP) {
-			},
 		},
 		{
 			"collateral amount is too high",
 			"borrowed amount is higher than pool depth",
 			func() {
+				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = math.LegacyZeroDec()
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = msg.Collateral.Amount.MulRaw(1000_000_000)
-			},
-			func(mtp *types.MTP) {
 			},
 		},
 		{
@@ -111,8 +79,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 				err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, positionCreator, govtypes.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
 				suite.Require().NoError(err)
 			},
-			func(mtp *types.MTP) {
-			},
 		},
 		{
 			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
@@ -122,9 +88,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 				suite.Require().NoError(err)
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.ATOM
-			},
-			func(mtp *types.MTP) {
 			},
 		},
 		{
@@ -136,10 +99,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 				msg.Creator = addr[2].String()
 				msg.Collateral.Denom = ptypes.ATOM
 				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.ATOM
 				msg.Leverage = math.LegacyOneDec().MulInt64(2)
-			},
-			func(mtp *types.MTP) {
 			},
 		},
 		{
@@ -148,12 +108,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 			func() {
 
 				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
-
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.ATOM
-			},
-			func(mtp *types.MTP) {
 			},
 		},
 	}
@@ -163,14 +119,13 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 			tc.prerequisiteFunction()
 			err := msg.ValidateBasic()
 			suite.Require().NoError(err)
-			mtp, err := suite.app.PerpetualKeeper.OpenDefineAssets(suite.ctx, poolId, msg, ptypes.BaseCurrency)
+			_, err = suite.app.PerpetualKeeper.Open(suite.ctx, msg)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				suite.Require().NoError(err)
 			}
-			tc.postValidateFunction(mtp)
 		})
 	}
 }

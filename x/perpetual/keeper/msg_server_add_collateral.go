@@ -115,7 +115,6 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			Creator:         msg.Creator,
 			Position:        mtp.Position,
 			Leverage:        math.LegacyZeroDec(),
-			TradingAsset:    mtp.TradingAsset,
 			Collateral:      msg.AddCollateral,
 			TakeProfitPrice: math.LegacyZeroDec(),
 			StopLossPrice:   math.LegacyZeroDec(),

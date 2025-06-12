@@ -106,7 +106,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
@@ -226,7 +225,6 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
@@ -363,7 +361,6 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("10.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1_000_000000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
@@ -498,7 +495,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("4.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
@@ -618,51 +614,23 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.BaseCurrency,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
-		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
-	})
-
-	assert.Error(t, err)
-	assert.Equal(t, "invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset", err.Error())
-
-	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
-		PoolId:          1,
-		Position:        types.Position_LONG,
-		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.Eden, math.NewInt(10000000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 
 	assert.Error(t, err)
-	assert.Equal(t, "invalid collateral: collateral must either match the borrowed asset or be the base currency: invalid borrowing asset", err.Error())
+	assert.Equal(t, "invalid operation: collateral asset has to be either trading asset or base currency for long: invalid collateral asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.BaseCurrency,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 
 	assert.Error(t, err)
-	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error())
-
-	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
-		PoolId:          1,
-		Position:        types.Position_SHORT,
-		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
-		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
-	})
-
-	assert.Error(t, err)
-	assert.Equal(t, "invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset", err.Error())
+	assert.Equal(t, "invalid collateral: collateral asset for short position must be the base currency: invalid collateral asset", err.Error())
 }

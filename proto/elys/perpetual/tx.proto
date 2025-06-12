@@ -40,19 +40,18 @@ message MsgOpen {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string trading_asset = 4;
-  cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
-  string take_profit_price = 6 [
+  cosmos.base.v1beta1.Coin collateral = 4 [ (gogoproto.nullable) = false ];
+  string take_profit_price = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string stop_loss_price = 7 [
+  string stop_loss_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 pool_id = 8;
+  uint64 pool_id = 7;
 }
 
 message MsgOpenResponse { uint64 id = 1; }

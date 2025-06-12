@@ -108,11 +108,6 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			legacyBorrowInterestPaymentFundAddress, err := cmd.Flags().GetString(FlagBorrowInterestPaymentFundAddress)
-			if err != nil {
-				return err
-			}
-
 			safetyFactor, err := cmd.Flags().GetString(FlagSafetyFactor)
 			if err != nil {
 				return err
@@ -129,19 +124,18 @@ func CmdUpdateParams() *cobra.Command {
 			}
 
 			params := &types.Params{
-				LeverageMax:                            sdkmath.LegacyMustNewDecFromStr(leverageMax),
-				BorrowInterestRateMax:                  sdkmath.LegacyMustNewDecFromStr(borrowInterestRateMax),
-				BorrowInterestRateMin:                  sdkmath.LegacyMustNewDecFromStr(borrowInterestRateMin),
-				BorrowInterestRateIncrease:             sdkmath.LegacyMustNewDecFromStr(borrowInterestRateIncrease),
-				BorrowInterestRateDecrease:             sdkmath.LegacyMustNewDecFromStr(borrowInterestRateDecrease),
-				HealthGainFactor:                       sdkmath.LegacyMustNewDecFromStr(healthGainFactor),
-				MaxOpenPositions:                       maxOpenPositions,
-				PoolMaxLiabilitiesThreshold:            sdkmath.LegacyMustNewDecFromStr(poolMaxLiabilitiesThreshold),
-				BorrowInterestPaymentFundPercentage:    sdkmath.LegacyMustNewDecFromStr(borrowInterestPaymentFundPercentage),
-				LegacyBorrowInterestPaymentFundAddress: legacyBorrowInterestPaymentFundAddress,
-				SafetyFactor:                           sdkmath.LegacyMustNewDecFromStr(safetyFactor),
-				BorrowInterestPaymentEnabled:           borrowInterestPaymentEnabled,
-				WhitelistingEnabled:                    whitelistingEnabled,
+				LeverageMax:                         sdkmath.LegacyMustNewDecFromStr(leverageMax),
+				BorrowInterestRateMax:               sdkmath.LegacyMustNewDecFromStr(borrowInterestRateMax),
+				BorrowInterestRateMin:               sdkmath.LegacyMustNewDecFromStr(borrowInterestRateMin),
+				BorrowInterestRateIncrease:          sdkmath.LegacyMustNewDecFromStr(borrowInterestRateIncrease),
+				BorrowInterestRateDecrease:          sdkmath.LegacyMustNewDecFromStr(borrowInterestRateDecrease),
+				HealthGainFactor:                    sdkmath.LegacyMustNewDecFromStr(healthGainFactor),
+				MaxOpenPositions:                    maxOpenPositions,
+				PoolMaxLiabilitiesThreshold:         sdkmath.LegacyMustNewDecFromStr(poolMaxLiabilitiesThreshold),
+				BorrowInterestPaymentFundPercentage: sdkmath.LegacyMustNewDecFromStr(borrowInterestPaymentFundPercentage),
+				SafetyFactor:                        sdkmath.LegacyMustNewDecFromStr(safetyFactor),
+				BorrowInterestPaymentEnabled:        borrowInterestPaymentEnabled,
+				WhitelistingEnabled:                 whitelistingEnabled,
 			}
 
 			signer := clientCtx.GetFromAddress()
