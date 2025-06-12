@@ -41,13 +41,32 @@ func (m Migrator) V19Migration(ctx sdk.Context) error {
 
 	allLegacyPools := m.keeper.GetAllLegacyPools(ctx)
 	for _, legacyPool := range allLegacyPools {
+		var poolAssetLong []types.PoolAsset
+		for _, legacyPoolAsset := range legacyPool.PoolAssetsLong {
+			poolAssetLong = append(poolAssetLong, types.PoolAsset{
+				AssetDenom:  legacyPoolAsset.AssetDenom,
+				Liabilities: legacyPoolAsset.Liabilities,
+				Custody:     legacyPoolAsset.Custody,
+				Collateral:  legacyPoolAsset.Collateral,
+			})
+		}
+
+		var poolAssetShort []types.PoolAsset
+		for _, legacyPoolAsset := range legacyPool.PoolAssetsShort {
+			poolAssetShort = append(poolAssetShort, types.PoolAsset{
+				AssetDenom:  legacyPoolAsset.AssetDenom,
+				Liabilities: legacyPoolAsset.Liabilities,
+				Custody:     legacyPoolAsset.Custody,
+				Collateral:  legacyPoolAsset.Collateral,
+			})
+		}
 		pool := types.Pool{
 			AmmPoolId:                            legacyPool.AmmPoolId,
 			BaseAssetLiabilitiesRatio:            legacyPool.BaseAssetLiabilitiesRatio,
 			QuoteAssetLiabilitiesRatio:           legacyPool.QuoteAssetLiabilitiesRatio,
 			BorrowInterestRate:                   legacyPool.BorrowInterestRate,
-			PoolAssetsLong:                       legacyPool.PoolAssetsLong,
-			PoolAssetsShort:                      legacyPool.PoolAssetsShort,
+			PoolAssetsLong:                       poolAssetLong,
+			PoolAssetsShort:                      poolAssetShort,
 			LastHeightBorrowInterestRateComputed: legacyPool.LastHeightBorrowInterestRateComputed,
 			FundingRate:                          legacyPool.FundingRate,
 			FeesCollected:                        legacyPool.FeesCollected,

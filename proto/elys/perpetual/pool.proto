@@ -54,8 +54,10 @@ message LegacyPool {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets_long = 5 [ (gogoproto.nullable) = false ];
-  repeated PoolAsset pool_assets_short = 6 [ (gogoproto.nullable) = false ];
+  repeated LegacyPoolAsset pool_assets_long = 5
+      [ (gogoproto.nullable) = false ];
+  repeated LegacyPoolAsset pool_assets_short = 6
+      [ (gogoproto.nullable) = false ];
   int64 last_height_borrow_interest_rate_computed = 7;
   // funding rate, if positive longs pay shorts, if negative shorts pay longs
   string funding_rate = 8 [
