@@ -29,7 +29,7 @@ service Msg {
   rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc UpdateEnabledPools(MsgUpdateEnabledPools)
       returns (MsgUpdateEnabledPoolsResponse);
-  rpc ClaimAllRewards(MsgClaimAllRewards) returns (MsgClaimAllRewardsResponse);
+  rpc ClaimAllUserRewards(MsgClaimAllUserRewards) returns (MsgClaimAllUserRewardsResponse);
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
@@ -195,10 +195,10 @@ message MsgUpdateEnabledPools {
 
 message MsgUpdateEnabledPoolsResponse {}
 
-message MsgClaimAllRewards {
+message MsgClaimAllUserRewards {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "leveragelp/MsgClaimAllRewards";
+  option (amino.name) = "leveragelp/MsgClaimAllUserRewards";
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-message MsgClaimAllRewardsResponse {}
+message MsgClaimAllUserRewardsResponse {}
