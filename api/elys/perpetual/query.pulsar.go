@@ -16643,6 +16643,2511 @@ func (x *fastReflection_QueryCloseEstimationResponse) ProtoMethods() *protoiface
 	}
 }
 
+var (
+	md_QueryOpenEstimationByFinalRequest                   protoreflect.MessageDescriptor
+	fd_QueryOpenEstimationByFinalRequest_position          protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_leverage          protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_trading_asset     protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_final_amount      protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_address           protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_take_profit_price protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_poolId            protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalRequest_collateral_denom  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_perpetual_query_proto_init()
+	md_QueryOpenEstimationByFinalRequest = File_elys_perpetual_query_proto.Messages().ByName("QueryOpenEstimationByFinalRequest")
+	fd_QueryOpenEstimationByFinalRequest_position = md_QueryOpenEstimationByFinalRequest.Fields().ByName("position")
+	fd_QueryOpenEstimationByFinalRequest_leverage = md_QueryOpenEstimationByFinalRequest.Fields().ByName("leverage")
+	fd_QueryOpenEstimationByFinalRequest_trading_asset = md_QueryOpenEstimationByFinalRequest.Fields().ByName("trading_asset")
+	fd_QueryOpenEstimationByFinalRequest_final_amount = md_QueryOpenEstimationByFinalRequest.Fields().ByName("final_amount")
+	fd_QueryOpenEstimationByFinalRequest_address = md_QueryOpenEstimationByFinalRequest.Fields().ByName("address")
+	fd_QueryOpenEstimationByFinalRequest_take_profit_price = md_QueryOpenEstimationByFinalRequest.Fields().ByName("take_profit_price")
+	fd_QueryOpenEstimationByFinalRequest_poolId = md_QueryOpenEstimationByFinalRequest.Fields().ByName("poolId")
+	fd_QueryOpenEstimationByFinalRequest_collateral_denom = md_QueryOpenEstimationByFinalRequest.Fields().ByName("collateral_denom")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryOpenEstimationByFinalRequest)(nil)
+
+type fastReflection_QueryOpenEstimationByFinalRequest QueryOpenEstimationByFinalRequest
+
+func (x *QueryOpenEstimationByFinalRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryOpenEstimationByFinalRequest)(x)
+}
+
+func (x *QueryOpenEstimationByFinalRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_perpetual_query_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryOpenEstimationByFinalRequest_messageType fastReflection_QueryOpenEstimationByFinalRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryOpenEstimationByFinalRequest_messageType{}
+
+type fastReflection_QueryOpenEstimationByFinalRequest_messageType struct{}
+
+func (x fastReflection_QueryOpenEstimationByFinalRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryOpenEstimationByFinalRequest)(nil)
+}
+func (x fastReflection_QueryOpenEstimationByFinalRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryOpenEstimationByFinalRequest)
+}
+func (x fastReflection_QueryOpenEstimationByFinalRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryOpenEstimationByFinalRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryOpenEstimationByFinalRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryOpenEstimationByFinalRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryOpenEstimationByFinalRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryOpenEstimationByFinalRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Position != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Position))
+		if !f(fd_QueryOpenEstimationByFinalRequest_position, value) {
+			return
+		}
+	}
+	if x.Leverage != "" {
+		value := protoreflect.ValueOfString(x.Leverage)
+		if !f(fd_QueryOpenEstimationByFinalRequest_leverage, value) {
+			return
+		}
+	}
+	if x.TradingAsset != "" {
+		value := protoreflect.ValueOfString(x.TradingAsset)
+		if !f(fd_QueryOpenEstimationByFinalRequest_trading_asset, value) {
+			return
+		}
+	}
+	if x.FinalAmount != nil {
+		value := protoreflect.ValueOfMessage(x.FinalAmount.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalRequest_final_amount, value) {
+			return
+		}
+	}
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_QueryOpenEstimationByFinalRequest_address, value) {
+			return
+		}
+	}
+	if x.TakeProfitPrice != "" {
+		value := protoreflect.ValueOfString(x.TakeProfitPrice)
+		if !f(fd_QueryOpenEstimationByFinalRequest_take_profit_price, value) {
+			return
+		}
+	}
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_QueryOpenEstimationByFinalRequest_poolId, value) {
+			return
+		}
+	}
+	if x.CollateralDenom != "" {
+		value := protoreflect.ValueOfString(x.CollateralDenom)
+		if !f(fd_QueryOpenEstimationByFinalRequest_collateral_denom, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		return x.Position != 0
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		return x.Leverage != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		return x.TradingAsset != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		return x.FinalAmount != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		return x.Address != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		return x.TakeProfitPrice != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		return x.PoolId != uint64(0)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		return x.CollateralDenom != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		x.Position = 0
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		x.Leverage = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		x.TradingAsset = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		x.FinalAmount = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		x.Address = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		x.TakeProfitPrice = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		x.PoolId = uint64(0)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		x.CollateralDenom = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		value := x.Position
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		value := x.Leverage
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		value := x.TradingAsset
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		value := x.FinalAmount
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		value := x.TakeProfitPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		value := x.CollateralDenom
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		x.Position = (Position)(value.Enum())
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		x.Leverage = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		x.TradingAsset = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		x.FinalAmount = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		x.Address = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		x.TakeProfitPrice = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		x.PoolId = value.Uint()
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		x.CollateralDenom = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		if x.FinalAmount == nil {
+			x.FinalAmount = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.FinalAmount.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		panic(fmt.Errorf("field position of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		panic(fmt.Errorf("field leverage of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		panic(fmt.Errorf("field trading_asset of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		panic(fmt.Errorf("field address of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		panic(fmt.Errorf("field take_profit_price of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		panic(fmt.Errorf("field poolId of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		panic(fmt.Errorf("field collateral_denom of message elys.perpetual.QueryOpenEstimationByFinalRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.position":
+		return protoreflect.ValueOfEnum(0)
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.leverage":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.trading_asset":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.address":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.take_profit_price":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.poolId":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.perpetual.QueryOpenEstimationByFinalRequest.collateral_denom":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalRequest"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.QueryOpenEstimationByFinalRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryOpenEstimationByFinalRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Position != 0 {
+			n += 1 + runtime.Sov(uint64(x.Position))
+		}
+		l = len(x.Leverage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TradingAsset)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.FinalAmount != nil {
+			l = options.Size(x.FinalAmount)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TakeProfitPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		l = len(x.CollateralDenom)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.CollateralDenom) > 0 {
+			i -= len(x.CollateralDenom)
+			copy(dAtA[i:], x.CollateralDenom)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.CollateralDenom)))
+			i--
+			dAtA[i] = 0x42
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x38
+		}
+		if len(x.TakeProfitPrice) > 0 {
+			i -= len(x.TakeProfitPrice)
+			copy(dAtA[i:], x.TakeProfitPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakeProfitPrice)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if x.FinalAmount != nil {
+			encoded, err := options.Marshal(x.FinalAmount)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.TradingAsset) > 0 {
+			i -= len(x.TradingAsset)
+			copy(dAtA[i:], x.TradingAsset)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradingAsset)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Leverage) > 0 {
+			i -= len(x.Leverage)
+			copy(dAtA[i:], x.Leverage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Leverage)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Position != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Position))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryOpenEstimationByFinalRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryOpenEstimationByFinalRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+				}
+				x.Position = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Position |= Position(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Leverage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradingAsset", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TradingAsset = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FinalAmount", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.FinalAmount == nil {
+					x.FinalAmount = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FinalAmount); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakeProfitPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CollateralDenom", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.CollateralDenom = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryOpenEstimationByFinalResponse                      protoreflect.MessageDescriptor
+	fd_QueryOpenEstimationByFinalResponse_position             protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_effective_leverage   protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_trading_asset        protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_collateral           protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_hourly_interest_rate protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_position_size        protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_open_price           protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_take_profit_price    protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_liquidation_price    protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_estimated_pnl        protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_available_liquidity  protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_slippage             protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_borrow_interest_rate protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_funding_rate         protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_price_impact         protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_custody              protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_liabilities          protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_limit_price          protoreflect.FieldDescriptor
+	fd_QueryOpenEstimationByFinalResponse_weight_breaking_fee  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_perpetual_query_proto_init()
+	md_QueryOpenEstimationByFinalResponse = File_elys_perpetual_query_proto.Messages().ByName("QueryOpenEstimationByFinalResponse")
+	fd_QueryOpenEstimationByFinalResponse_position = md_QueryOpenEstimationByFinalResponse.Fields().ByName("position")
+	fd_QueryOpenEstimationByFinalResponse_effective_leverage = md_QueryOpenEstimationByFinalResponse.Fields().ByName("effective_leverage")
+	fd_QueryOpenEstimationByFinalResponse_trading_asset = md_QueryOpenEstimationByFinalResponse.Fields().ByName("trading_asset")
+	fd_QueryOpenEstimationByFinalResponse_collateral = md_QueryOpenEstimationByFinalResponse.Fields().ByName("collateral")
+	fd_QueryOpenEstimationByFinalResponse_hourly_interest_rate = md_QueryOpenEstimationByFinalResponse.Fields().ByName("hourly_interest_rate")
+	fd_QueryOpenEstimationByFinalResponse_position_size = md_QueryOpenEstimationByFinalResponse.Fields().ByName("position_size")
+	fd_QueryOpenEstimationByFinalResponse_open_price = md_QueryOpenEstimationByFinalResponse.Fields().ByName("open_price")
+	fd_QueryOpenEstimationByFinalResponse_take_profit_price = md_QueryOpenEstimationByFinalResponse.Fields().ByName("take_profit_price")
+	fd_QueryOpenEstimationByFinalResponse_liquidation_price = md_QueryOpenEstimationByFinalResponse.Fields().ByName("liquidation_price")
+	fd_QueryOpenEstimationByFinalResponse_estimated_pnl = md_QueryOpenEstimationByFinalResponse.Fields().ByName("estimated_pnl")
+	fd_QueryOpenEstimationByFinalResponse_available_liquidity = md_QueryOpenEstimationByFinalResponse.Fields().ByName("available_liquidity")
+	fd_QueryOpenEstimationByFinalResponse_slippage = md_QueryOpenEstimationByFinalResponse.Fields().ByName("slippage")
+	fd_QueryOpenEstimationByFinalResponse_borrow_interest_rate = md_QueryOpenEstimationByFinalResponse.Fields().ByName("borrow_interest_rate")
+	fd_QueryOpenEstimationByFinalResponse_funding_rate = md_QueryOpenEstimationByFinalResponse.Fields().ByName("funding_rate")
+	fd_QueryOpenEstimationByFinalResponse_price_impact = md_QueryOpenEstimationByFinalResponse.Fields().ByName("price_impact")
+	fd_QueryOpenEstimationByFinalResponse_custody = md_QueryOpenEstimationByFinalResponse.Fields().ByName("custody")
+	fd_QueryOpenEstimationByFinalResponse_liabilities = md_QueryOpenEstimationByFinalResponse.Fields().ByName("liabilities")
+	fd_QueryOpenEstimationByFinalResponse_limit_price = md_QueryOpenEstimationByFinalResponse.Fields().ByName("limit_price")
+	fd_QueryOpenEstimationByFinalResponse_weight_breaking_fee = md_QueryOpenEstimationByFinalResponse.Fields().ByName("weight_breaking_fee")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryOpenEstimationByFinalResponse)(nil)
+
+type fastReflection_QueryOpenEstimationByFinalResponse QueryOpenEstimationByFinalResponse
+
+func (x *QueryOpenEstimationByFinalResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryOpenEstimationByFinalResponse)(x)
+}
+
+func (x *QueryOpenEstimationByFinalResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_perpetual_query_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryOpenEstimationByFinalResponse_messageType fastReflection_QueryOpenEstimationByFinalResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryOpenEstimationByFinalResponse_messageType{}
+
+type fastReflection_QueryOpenEstimationByFinalResponse_messageType struct{}
+
+func (x fastReflection_QueryOpenEstimationByFinalResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryOpenEstimationByFinalResponse)(nil)
+}
+func (x fastReflection_QueryOpenEstimationByFinalResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryOpenEstimationByFinalResponse)
+}
+func (x fastReflection_QueryOpenEstimationByFinalResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryOpenEstimationByFinalResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryOpenEstimationByFinalResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryOpenEstimationByFinalResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryOpenEstimationByFinalResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryOpenEstimationByFinalResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Position != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Position))
+		if !f(fd_QueryOpenEstimationByFinalResponse_position, value) {
+			return
+		}
+	}
+	if x.EffectiveLeverage != "" {
+		value := protoreflect.ValueOfString(x.EffectiveLeverage)
+		if !f(fd_QueryOpenEstimationByFinalResponse_effective_leverage, value) {
+			return
+		}
+	}
+	if x.TradingAsset != "" {
+		value := protoreflect.ValueOfString(x.TradingAsset)
+		if !f(fd_QueryOpenEstimationByFinalResponse_trading_asset, value) {
+			return
+		}
+	}
+	if x.Collateral != nil {
+		value := protoreflect.ValueOfMessage(x.Collateral.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_collateral, value) {
+			return
+		}
+	}
+	if x.HourlyInterestRate != "" {
+		value := protoreflect.ValueOfString(x.HourlyInterestRate)
+		if !f(fd_QueryOpenEstimationByFinalResponse_hourly_interest_rate, value) {
+			return
+		}
+	}
+	if x.PositionSize != nil {
+		value := protoreflect.ValueOfMessage(x.PositionSize.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_position_size, value) {
+			return
+		}
+	}
+	if x.OpenPrice != "" {
+		value := protoreflect.ValueOfString(x.OpenPrice)
+		if !f(fd_QueryOpenEstimationByFinalResponse_open_price, value) {
+			return
+		}
+	}
+	if x.TakeProfitPrice != "" {
+		value := protoreflect.ValueOfString(x.TakeProfitPrice)
+		if !f(fd_QueryOpenEstimationByFinalResponse_take_profit_price, value) {
+			return
+		}
+	}
+	if x.LiquidationPrice != "" {
+		value := protoreflect.ValueOfString(x.LiquidationPrice)
+		if !f(fd_QueryOpenEstimationByFinalResponse_liquidation_price, value) {
+			return
+		}
+	}
+	if x.EstimatedPnl != nil {
+		value := protoreflect.ValueOfMessage(x.EstimatedPnl.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_estimated_pnl, value) {
+			return
+		}
+	}
+	if x.AvailableLiquidity != nil {
+		value := protoreflect.ValueOfMessage(x.AvailableLiquidity.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_available_liquidity, value) {
+			return
+		}
+	}
+	if x.Slippage != "" {
+		value := protoreflect.ValueOfString(x.Slippage)
+		if !f(fd_QueryOpenEstimationByFinalResponse_slippage, value) {
+			return
+		}
+	}
+	if x.BorrowInterestRate != "" {
+		value := protoreflect.ValueOfString(x.BorrowInterestRate)
+		if !f(fd_QueryOpenEstimationByFinalResponse_borrow_interest_rate, value) {
+			return
+		}
+	}
+	if x.FundingRate != "" {
+		value := protoreflect.ValueOfString(x.FundingRate)
+		if !f(fd_QueryOpenEstimationByFinalResponse_funding_rate, value) {
+			return
+		}
+	}
+	if x.PriceImpact != "" {
+		value := protoreflect.ValueOfString(x.PriceImpact)
+		if !f(fd_QueryOpenEstimationByFinalResponse_price_impact, value) {
+			return
+		}
+	}
+	if x.Custody != nil {
+		value := protoreflect.ValueOfMessage(x.Custody.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_custody, value) {
+			return
+		}
+	}
+	if x.Liabilities != nil {
+		value := protoreflect.ValueOfMessage(x.Liabilities.ProtoReflect())
+		if !f(fd_QueryOpenEstimationByFinalResponse_liabilities, value) {
+			return
+		}
+	}
+	if x.LimitPrice != "" {
+		value := protoreflect.ValueOfString(x.LimitPrice)
+		if !f(fd_QueryOpenEstimationByFinalResponse_limit_price, value) {
+			return
+		}
+	}
+	if x.WeightBreakingFee != "" {
+		value := protoreflect.ValueOfString(x.WeightBreakingFee)
+		if !f(fd_QueryOpenEstimationByFinalResponse_weight_breaking_fee, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		return x.Position != 0
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		return x.EffectiveLeverage != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		return x.TradingAsset != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		return x.Collateral != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		return x.HourlyInterestRate != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		return x.PositionSize != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		return x.OpenPrice != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		return x.TakeProfitPrice != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		return x.LiquidationPrice != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		return x.EstimatedPnl != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		return x.AvailableLiquidity != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		return x.Slippage != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		return x.BorrowInterestRate != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		return x.FundingRate != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		return x.PriceImpact != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		return x.Custody != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		return x.Liabilities != nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		return x.LimitPrice != ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		return x.WeightBreakingFee != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		x.Position = 0
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		x.EffectiveLeverage = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		x.TradingAsset = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		x.Collateral = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		x.HourlyInterestRate = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		x.PositionSize = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		x.OpenPrice = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		x.TakeProfitPrice = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		x.LiquidationPrice = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		x.EstimatedPnl = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		x.AvailableLiquidity = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		x.Slippage = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		x.BorrowInterestRate = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		x.FundingRate = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		x.PriceImpact = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		x.Custody = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		x.Liabilities = nil
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		x.LimitPrice = ""
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		x.WeightBreakingFee = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		value := x.Position
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		value := x.EffectiveLeverage
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		value := x.TradingAsset
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		value := x.Collateral
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		value := x.HourlyInterestRate
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		value := x.PositionSize
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		value := x.OpenPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		value := x.TakeProfitPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		value := x.LiquidationPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		value := x.EstimatedPnl
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		value := x.AvailableLiquidity
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		value := x.Slippage
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		value := x.BorrowInterestRate
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		value := x.FundingRate
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		value := x.PriceImpact
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		value := x.Custody
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		value := x.Liabilities
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		value := x.LimitPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		value := x.WeightBreakingFee
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		x.Position = (Position)(value.Enum())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		x.EffectiveLeverage = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		x.TradingAsset = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		x.Collateral = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		x.HourlyInterestRate = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		x.PositionSize = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		x.OpenPrice = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		x.TakeProfitPrice = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		x.LiquidationPrice = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		x.EstimatedPnl = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		x.AvailableLiquidity = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		x.Slippage = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		x.BorrowInterestRate = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		x.FundingRate = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		x.PriceImpact = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		x.Custody = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		x.Liabilities = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		x.LimitPrice = value.Interface().(string)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		x.WeightBreakingFee = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		if x.Collateral == nil {
+			x.Collateral = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.Collateral.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		if x.PositionSize == nil {
+			x.PositionSize = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.PositionSize.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		if x.EstimatedPnl == nil {
+			x.EstimatedPnl = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.EstimatedPnl.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		if x.AvailableLiquidity == nil {
+			x.AvailableLiquidity = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.AvailableLiquidity.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		if x.Custody == nil {
+			x.Custody = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.Custody.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		if x.Liabilities == nil {
+			x.Liabilities = new(v1beta1.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.Liabilities.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		panic(fmt.Errorf("field position of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		panic(fmt.Errorf("field effective_leverage of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		panic(fmt.Errorf("field trading_asset of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		panic(fmt.Errorf("field hourly_interest_rate of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		panic(fmt.Errorf("field open_price of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		panic(fmt.Errorf("field take_profit_price of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		panic(fmt.Errorf("field liquidation_price of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		panic(fmt.Errorf("field slippage of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		panic(fmt.Errorf("field borrow_interest_rate of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		panic(fmt.Errorf("field funding_rate of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		panic(fmt.Errorf("field price_impact of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		panic(fmt.Errorf("field limit_price of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		panic(fmt.Errorf("field weight_breaking_fee of message elys.perpetual.QueryOpenEstimationByFinalResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position":
+		return protoreflect.ValueOfEnum(0)
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.effective_leverage":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.trading_asset":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.collateral":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.hourly_interest_rate":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.position_size":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.open_price":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.take_profit_price":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liquidation_price":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.slippage":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.borrow_interest_rate":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.funding_rate":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.price_impact":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.custody":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities":
+		m := new(v1beta1.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.limit_price":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.QueryOpenEstimationByFinalResponse.weight_breaking_fee":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.QueryOpenEstimationByFinalResponse"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.QueryOpenEstimationByFinalResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.QueryOpenEstimationByFinalResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryOpenEstimationByFinalResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Position != 0 {
+			n += 1 + runtime.Sov(uint64(x.Position))
+		}
+		l = len(x.EffectiveLeverage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TradingAsset)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Collateral != nil {
+			l = options.Size(x.Collateral)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.HourlyInterestRate)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PositionSize != nil {
+			l = options.Size(x.PositionSize)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.OpenPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TakeProfitPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.LiquidationPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.EstimatedPnl != nil {
+			l = options.Size(x.EstimatedPnl)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.AvailableLiquidity != nil {
+			l = options.Size(x.AvailableLiquidity)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Slippage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BorrowInterestRate)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.FundingRate)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.PriceImpact)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Custody != nil {
+			l = options.Size(x.Custody)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.Liabilities != nil {
+			l = options.Size(x.Liabilities)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.LimitPrice)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightBreakingFee)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.WeightBreakingFee) > 0 {
+			i -= len(x.WeightBreakingFee)
+			copy(dAtA[i:], x.WeightBreakingFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFee)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x9a
+		}
+		if len(x.LimitPrice) > 0 {
+			i -= len(x.LimitPrice)
+			copy(dAtA[i:], x.LimitPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LimitPrice)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x92
+		}
+		if x.Liabilities != nil {
+			encoded, err := options.Marshal(x.Liabilities)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x8a
+		}
+		if x.Custody != nil {
+			encoded, err := options.Marshal(x.Custody)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x82
+		}
+		if len(x.PriceImpact) > 0 {
+			i -= len(x.PriceImpact)
+			copy(dAtA[i:], x.PriceImpact)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PriceImpact)))
+			i--
+			dAtA[i] = 0x7a
+		}
+		if len(x.FundingRate) > 0 {
+			i -= len(x.FundingRate)
+			copy(dAtA[i:], x.FundingRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FundingRate)))
+			i--
+			dAtA[i] = 0x72
+		}
+		if len(x.BorrowInterestRate) > 0 {
+			i -= len(x.BorrowInterestRate)
+			copy(dAtA[i:], x.BorrowInterestRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRate)))
+			i--
+			dAtA[i] = 0x6a
+		}
+		if len(x.Slippage) > 0 {
+			i -= len(x.Slippage)
+			copy(dAtA[i:], x.Slippage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Slippage)))
+			i--
+			dAtA[i] = 0x62
+		}
+		if x.AvailableLiquidity != nil {
+			encoded, err := options.Marshal(x.AvailableLiquidity)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x5a
+		}
+		if x.EstimatedPnl != nil {
+			encoded, err := options.Marshal(x.EstimatedPnl)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x52
+		}
+		if len(x.LiquidationPrice) > 0 {
+			i -= len(x.LiquidationPrice)
+			copy(dAtA[i:], x.LiquidationPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LiquidationPrice)))
+			i--
+			dAtA[i] = 0x4a
+		}
+		if len(x.TakeProfitPrice) > 0 {
+			i -= len(x.TakeProfitPrice)
+			copy(dAtA[i:], x.TakeProfitPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakeProfitPrice)))
+			i--
+			dAtA[i] = 0x42
+		}
+		if len(x.OpenPrice) > 0 {
+			i -= len(x.OpenPrice)
+			copy(dAtA[i:], x.OpenPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OpenPrice)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if x.PositionSize != nil {
+			encoded, err := options.Marshal(x.PositionSize)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.HourlyInterestRate) > 0 {
+			i -= len(x.HourlyInterestRate)
+			copy(dAtA[i:], x.HourlyInterestRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.HourlyInterestRate)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if x.Collateral != nil {
+			encoded, err := options.Marshal(x.Collateral)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.TradingAsset) > 0 {
+			i -= len(x.TradingAsset)
+			copy(dAtA[i:], x.TradingAsset)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradingAsset)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.EffectiveLeverage) > 0 {
+			i -= len(x.EffectiveLeverage)
+			copy(dAtA[i:], x.EffectiveLeverage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EffectiveLeverage)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Position != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Position))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryOpenEstimationByFinalResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryOpenEstimationByFinalResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryOpenEstimationByFinalResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+				}
+				x.Position = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Position |= Position(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EffectiveLeverage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EffectiveLeverage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradingAsset", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TradingAsset = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Collateral == nil {
+					x.Collateral = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Collateral); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field HourlyInterestRate", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.HourlyInterestRate = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionSize", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.PositionSize == nil {
+					x.PositionSize = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PositionSize); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OpenPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.OpenPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakeProfitPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidationPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LiquidationPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EstimatedPnl", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.EstimatedPnl == nil {
+					x.EstimatedPnl = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EstimatedPnl); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AvailableLiquidity", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.AvailableLiquidity == nil {
+					x.AvailableLiquidity = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AvailableLiquidity); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 12:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Slippage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Slippage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 13:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRate", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BorrowInterestRate = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 14:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FundingRate", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FundingRate = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 15:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PriceImpact", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PriceImpact = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 16:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Custody", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Custody == nil {
+					x.Custody = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Custody); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 17:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Liabilities", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Liabilities == nil {
+					x.Liabilities = &v1beta1.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Liabilities); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 18:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LimitPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LimitPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 19:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBreakingFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -18166,6 +20671,276 @@ func (x *QueryCloseEstimationResponse) GetSlippage() string {
 	return ""
 }
 
+type QueryOpenEstimationByFinalRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Position        Position      `protobuf:"varint,1,opt,name=position,proto3,enum=elys.perpetual.Position" json:"position,omitempty"`
+	Leverage        string        `protobuf:"bytes,2,opt,name=leverage,proto3" json:"leverage,omitempty"`
+	TradingAsset    string        `protobuf:"bytes,3,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
+	FinalAmount     *v1beta1.Coin `protobuf:"bytes,4,opt,name=final_amount,json=finalAmount,proto3" json:"final_amount,omitempty"`
+	Address         string        `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
+	TakeProfitPrice string        `protobuf:"bytes,6,opt,name=take_profit_price,json=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
+	PoolId          uint64        `protobuf:"varint,7,opt,name=poolId,proto3" json:"poolId,omitempty"`
+	CollateralDenom string        `protobuf:"bytes,8,opt,name=collateral_denom,json=collateralDenom,proto3" json:"collateral_denom,omitempty"`
+}
+
+func (x *QueryOpenEstimationByFinalRequest) Reset() {
+	*x = QueryOpenEstimationByFinalRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_perpetual_query_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryOpenEstimationByFinalRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryOpenEstimationByFinalRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryOpenEstimationByFinalRequest.ProtoReflect.Descriptor instead.
+func (*QueryOpenEstimationByFinalRequest) Descriptor() ([]byte, []int) {
+	return file_elys_perpetual_query_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetPosition() Position {
+	if x != nil {
+		return x.Position
+	}
+	return Position_UNSPECIFIED
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetLeverage() string {
+	if x != nil {
+		return x.Leverage
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetTradingAsset() string {
+	if x != nil {
+		return x.TradingAsset
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetFinalAmount() *v1beta1.Coin {
+	if x != nil {
+		return x.FinalAmount
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetTakeProfitPrice() string {
+	if x != nil {
+		return x.TakeProfitPrice
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *QueryOpenEstimationByFinalRequest) GetCollateralDenom() string {
+	if x != nil {
+		return x.CollateralDenom
+	}
+	return ""
+}
+
+type QueryOpenEstimationByFinalResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Position           Position      `protobuf:"varint,1,opt,name=position,proto3,enum=elys.perpetual.Position" json:"position,omitempty"`
+	EffectiveLeverage  string        `protobuf:"bytes,2,opt,name=effective_leverage,json=effectiveLeverage,proto3" json:"effective_leverage,omitempty"`
+	TradingAsset       string        `protobuf:"bytes,3,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
+	Collateral         *v1beta1.Coin `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral,omitempty"`
+	HourlyInterestRate string        `protobuf:"bytes,5,opt,name=hourly_interest_rate,json=hourlyInterestRate,proto3" json:"hourly_interest_rate,omitempty"`
+	PositionSize       *v1beta1.Coin `protobuf:"bytes,6,opt,name=position_size,json=positionSize,proto3" json:"position_size,omitempty"`
+	OpenPrice          string        `protobuf:"bytes,7,opt,name=open_price,json=openPrice,proto3" json:"open_price,omitempty"`
+	TakeProfitPrice    string        `protobuf:"bytes,8,opt,name=take_profit_price,json=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
+	LiquidationPrice   string        `protobuf:"bytes,9,opt,name=liquidation_price,json=liquidationPrice,proto3" json:"liquidation_price,omitempty"`
+	EstimatedPnl       *v1beta1.Coin `protobuf:"bytes,10,opt,name=estimated_pnl,json=estimatedPnl,proto3" json:"estimated_pnl,omitempty"`
+	AvailableLiquidity *v1beta1.Coin `protobuf:"bytes,11,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
+	Slippage           string        `protobuf:"bytes,12,opt,name=slippage,proto3" json:"slippage,omitempty"`
+	BorrowInterestRate string        `protobuf:"bytes,13,opt,name=borrow_interest_rate,json=borrowInterestRate,proto3" json:"borrow_interest_rate,omitempty"`
+	FundingRate        string        `protobuf:"bytes,14,opt,name=funding_rate,json=fundingRate,proto3" json:"funding_rate,omitempty"`
+	PriceImpact        string        `protobuf:"bytes,15,opt,name=price_impact,json=priceImpact,proto3" json:"price_impact,omitempty"`
+	Custody            *v1beta1.Coin `protobuf:"bytes,16,opt,name=custody,proto3" json:"custody,omitempty"`
+	Liabilities        *v1beta1.Coin `protobuf:"bytes,17,opt,name=liabilities,proto3" json:"liabilities,omitempty"`
+	LimitPrice         string        `protobuf:"bytes,18,opt,name=limit_price,json=limitPrice,proto3" json:"limit_price,omitempty"`
+	WeightBreakingFee  string        `protobuf:"bytes,19,opt,name=weight_breaking_fee,json=weightBreakingFee,proto3" json:"weight_breaking_fee,omitempty"`
+}
+
+func (x *QueryOpenEstimationByFinalResponse) Reset() {
+	*x = QueryOpenEstimationByFinalResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_perpetual_query_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryOpenEstimationByFinalResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryOpenEstimationByFinalResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryOpenEstimationByFinalResponse.ProtoReflect.Descriptor instead.
+func (*QueryOpenEstimationByFinalResponse) Descriptor() ([]byte, []int) {
+	return file_elys_perpetual_query_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetPosition() Position {
+	if x != nil {
+		return x.Position
+	}
+	return Position_UNSPECIFIED
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetEffectiveLeverage() string {
+	if x != nil {
+		return x.EffectiveLeverage
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetTradingAsset() string {
+	if x != nil {
+		return x.TradingAsset
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetCollateral() *v1beta1.Coin {
+	if x != nil {
+		return x.Collateral
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetHourlyInterestRate() string {
+	if x != nil {
+		return x.HourlyInterestRate
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetPositionSize() *v1beta1.Coin {
+	if x != nil {
+		return x.PositionSize
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetOpenPrice() string {
+	if x != nil {
+		return x.OpenPrice
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetTakeProfitPrice() string {
+	if x != nil {
+		return x.TakeProfitPrice
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetLiquidationPrice() string {
+	if x != nil {
+		return x.LiquidationPrice
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetEstimatedPnl() *v1beta1.Coin {
+	if x != nil {
+		return x.EstimatedPnl
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetAvailableLiquidity() *v1beta1.Coin {
+	if x != nil {
+		return x.AvailableLiquidity
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetSlippage() string {
+	if x != nil {
+		return x.Slippage
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetBorrowInterestRate() string {
+	if x != nil {
+		return x.BorrowInterestRate
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetFundingRate() string {
+	if x != nil {
+		return x.FundingRate
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetPriceImpact() string {
+	if x != nil {
+		return x.PriceImpact
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetCustody() *v1beta1.Coin {
+	if x != nil {
+		return x.Custody
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetLiabilities() *v1beta1.Coin {
+	if x != nil {
+		return x.Liabilities
+	}
+	return nil
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetLimitPrice() string {
+	if x != nil {
+		return x.LimitPrice
+	}
+	return ""
+}
+
+func (x *QueryOpenEstimationByFinalResponse) GetWeightBreakingFee() string {
+	if x != nil {
+		return x.WeightBreakingFee
+	}
+	return ""
+}
+
 var File_elys_perpetual_query_proto protoreflect.FileDescriptor
 
 var file_elys_perpetual_query_proto_rawDesc = []byte{
@@ -18657,135 +21432,273 @@ var file_elys_perpetual_query_proto_rawDesc = []byte{
 	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
 	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
 	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x32, 0xc1, 0x0e, 0x0a, 0x05, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x12, 0x74, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1d, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2b, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x25, 0x12, 0x23, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x94, 0x01, 0x0a, 0x0c, 0x47, 0x65,
-	0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79,
+	0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x22, 0xcd, 0x03, 0x0a, 0x21, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x42, 0x79, 0x46, 0x69, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x34, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x6c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x5f,
+	0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x74, 0x72, 0x61,
+	0x64, 0x69, 0x6e, 0x67, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x42, 0x0a, 0x0c, 0x66, 0x69, 0x6e,
+	0x61, 0x6c, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0b, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x18, 0x0a,
+	0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x5d, 0x0a, 0x11, 0x74, 0x61, 0x6b, 0x65, 0x5f,
+	0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0f, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69,
+	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
+	0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x29,
+	0x0a, 0x10, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
+	0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x8b, 0x0c, 0x0a, 0x22, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x42, 0x79, 0x46, 0x69, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x34, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x60, 0x0a, 0x12, 0x65, 0x66, 0x66, 0x65, 0x63, 0x74,
+	0x69, 0x76, 0x65, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x65, 0x66, 0x66, 0x65, 0x63, 0x74, 0x69, 0x76, 0x65,
+	0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x74, 0x72, 0x61, 0x64,
+	0x69, 0x6e, 0x67, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0c, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x3f, 0x0a,
+	0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x63,
+	0x0a, 0x14, 0x68, 0x6f, 0x75, 0x72, 0x6c, 0x79, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
+	0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
+	0x12, 0x68, 0x6f, 0x75, 0x72, 0x6c, 0x79, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52,
+	0x61, 0x74, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x73, 0x69, 0x7a, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x6f, 0x70, 0x65,
+	0x6e, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x09, 0x6f, 0x70, 0x65, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x5d, 0x0a, 0x11, 0x74,
+	0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0f, 0x74, 0x61, 0x6b, 0x65, 0x50,
+	0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x5e, 0x0a, 0x11, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x65, 0x73,
+	0x74, 0x69, 0x6d, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x70, 0x6e, 0x6c, 0x18, 0x0a, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x0c, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x65, 0x64, 0x50, 0x6e, 0x6c,
+	0x12, 0x50, 0x0a, 0x13, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
+	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12,
+	0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x0c,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67,
+	0x65, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x12, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65,
+	0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x54, 0x0a, 0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e,
+	0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
+	0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x54, 0x0a, 0x0c,
+	0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x69, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x18, 0x0f, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x70, 0x72, 0x69, 0x63, 0x65, 0x49, 0x6d, 0x70, 0x61,
+	0x63, 0x74, 0x12, 0x39, 0x0a, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x18, 0x10, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
+	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x12, 0x41, 0x0a,
+	0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x11, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
+	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73,
+	0x12, 0x52, 0x0a, 0x0b, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
+	0x12, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x50,
+	0x72, 0x69, 0x63, 0x65, 0x12, 0x61, 0x0a, 0x13, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62,
+	0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x13, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61,
+	0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x32, 0x81, 0x10, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x12, 0x74, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1d, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2b, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x25, 0x12, 0x23, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
+	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x94, 0x01, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79,
 	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f,
-	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3f, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x39, 0x12, 0x37, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0xb7,
+	0x01, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42,
+	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x42, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x4a, 0x12, 0x48,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70,
+	0x73, 0x2d, 0x62, 0x79, 0x2d, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x61, 0x6d, 0x6d, 0x5f, 0x70,
+	0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x98, 0x01, 0x0a, 0x10, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x27, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x31, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2b, 0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x2f, 0x7b,
+	0x69, 0x64, 0x7d, 0x12, 0xc3, 0x01, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x2a,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x4a, 0x12,
+	0x48, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74,
+	0x70, 0x73, 0x2d, 0x66, 0x6f, 0x72, 0x2d, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x2f, 0x7b,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x94, 0x01, 0x0a, 0x0c, 0x47, 0x65,
+	0x74, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x57, 0x68, 0x69, 0x74,
+	0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x57, 0x68,
+	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
 	0x3f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x39, 0x12, 0x37, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
 	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x2f,
 	0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d,
-	0x12, 0xb7, 0x01, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x42, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x42, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79, 0x50, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x4a,
-	0x12, 0x48, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d,
-	0x74, 0x70, 0x73, 0x2d, 0x62, 0x79, 0x2d, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x61, 0x6d, 0x6d,
-	0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x98, 0x01, 0x0a, 0x10, 0x50,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12,
-	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65,
-	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x31, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2b, 0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
-	0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0xc3, 0x01, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f,
-	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x46, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x50, 0x82, 0xd3, 0xe4, 0x93, 0x02,
-	0x4a, 0x12, 0x48, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f,
-	0x6d, 0x74, 0x70, 0x73, 0x2d, 0x66, 0x6f, 0x72, 0x2d, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69,
-	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x94, 0x01, 0x0a, 0x0c,
-	0x47, 0x65, 0x74, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x20, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x57, 0x68,
-	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e,
-	0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x3f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x39, 0x12, 0x37, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73,
-	0x74, 0x2f, 0x7b, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65,
-	0x79, 0x7d, 0x12, 0x91, 0x01, 0x0a, 0x0d, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
-	0x73, 0x74, 0x65, 0x64, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73,
-	0x74, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68,
-	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x69, 0x73, 0x2d, 0x77, 0x68, 0x69, 0x74, 0x65,
-	0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x84, 0x01, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c, 0x12,
-	0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f,
-	0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x31, 0x82, 0xd3, 0xe4, 0x93,
-	0x02, 0x2b, 0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
-	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x7d, 0x12, 0x8e, 0x01,
-	0x0a, 0x05, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c,
-	0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x70,
-	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x77,
-	0x0a, 0x03, 0x4d, 0x54, 0x50, 0x12, 0x1a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x37,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
-	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x7d, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9f, 0x01, 0x0a, 0x0e, 0x4f, 0x70, 0x65, 0x6e,
-	0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x70, 0x65,
-	0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x2d, 0x65,
-	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0xb1, 0x01, 0x0a, 0x0f, 0x43, 0x6c,
-	0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2b, 0x2e,
+	0x12, 0x91, 0x01, 0x0a, 0x0d, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74,
+	0x65, 0x64, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65,
+	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x49, 0x73, 0x57, 0x68, 0x69, 0x74,
+	0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x69, 0x73, 0x2d, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
+	0x73, 0x74, 0x65, 0x64, 0x12, 0x84, 0x01, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x23, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79,
+	0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x31, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2b,
+	0x12, 0x29, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70,
+	0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x7d, 0x12, 0x8e, 0x01, 0x0a, 0x05,
+	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50,
+	0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79,
 	0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x3d,
-	0x12, 0x3b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x63,
-	0x6c, 0x6f, 0x73, 0x65, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f,
-	0x7b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x7d, 0x42, 0xad, 0x01,
-	0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f,
-	0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45,
-	0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xca, 0x02, 0x0e,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xe2, 0x02,
-	0x1a, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c,
-	0x79, 0x73, 0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x70, 0x61, 0x67,
+	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x6b, 0x65, 0x79, 0x7d, 0x12, 0x77, 0x0a, 0x03,
+	0x4d, 0x54, 0x50, 0x12, 0x1a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x2e, 0x4d, 0x54, 0x50, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2f, 0x6d, 0x74, 0x70, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d,
+	0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9f, 0x01, 0x0a, 0x0e, 0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73,
+	0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f,
+	0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e, 0x45,
+	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f, 0x65, 0x6c, 0x79, 0x73,
+	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x2d, 0x65, 0x73, 0x74,
+	0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0xb1, 0x01, 0x0a, 0x0f, 0x43, 0x6c, 0x6f, 0x73,
+	0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2b, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43,
+	0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x3d, 0x12, 0x3b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2f, 0x63, 0x6c, 0x6f,
+	0x73, 0x65, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x7b, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0xbd, 0x01, 0x0a, 0x15,
+	0x4f, 0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79,
+	0x46, 0x69, 0x6e, 0x61, 0x6c, 0x12, 0x31, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x70, 0x65, 0x6e,
+	0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x46, 0x69, 0x6e, 0x61,
+	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x32, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f,
+	0x70, 0x65, 0x6e, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x46,
+	0x69, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3d, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x37, 0x12, 0x35, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x2d, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2d, 0x62, 0x79, 0x2d, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x42, 0xad, 0x01, 0x0a, 0x12,
+	0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76,
+	0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x70, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa, 0x02, 0x0e, 0x45, 0x6c, 0x79,
+	0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xca, 0x02, 0x0e, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xe2, 0x02, 0x1a, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73,
+	0x3a, 0x3a, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -18800,115 +21713,128 @@ func file_elys_perpetual_query_proto_rawDescGZIP() []byte {
 	return file_elys_perpetual_query_proto_rawDescData
 }
 
-var file_elys_perpetual_query_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_elys_perpetual_query_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_elys_perpetual_query_proto_goTypes = []interface{}{
-	(*Fees)(nil),                         // 0: elys.perpetual.Fees
-	(*MtpAndPrice)(nil),                  // 1: elys.perpetual.MtpAndPrice
-	(*ParamsRequest)(nil),                // 2: elys.perpetual.ParamsRequest
-	(*ParamsResponse)(nil),               // 3: elys.perpetual.ParamsResponse
-	(*PositionsRequest)(nil),             // 4: elys.perpetual.PositionsRequest
-	(*PositionsResponse)(nil),            // 5: elys.perpetual.PositionsResponse
-	(*PositionsByPoolRequest)(nil),       // 6: elys.perpetual.PositionsByPoolRequest
-	(*PositionsByPoolResponse)(nil),      // 7: elys.perpetual.PositionsByPoolResponse
-	(*PerpetualCounterRequest)(nil),      // 8: elys.perpetual.PerpetualCounterRequest
-	(*PerpetualCounterResponse)(nil),     // 9: elys.perpetual.PerpetualCounterResponse
-	(*PositionsForAddressRequest)(nil),   // 10: elys.perpetual.PositionsForAddressRequest
-	(*PositionsForAddressResponse)(nil),  // 11: elys.perpetual.PositionsForAddressResponse
-	(*WhitelistRequest)(nil),             // 12: elys.perpetual.WhitelistRequest
-	(*WhitelistResponse)(nil),            // 13: elys.perpetual.WhitelistResponse
-	(*IsWhitelistedRequest)(nil),         // 14: elys.perpetual.IsWhitelistedRequest
-	(*IsWhitelistedResponse)(nil),        // 15: elys.perpetual.IsWhitelistedResponse
-	(*QueryGetPoolRequest)(nil),          // 16: elys.perpetual.QueryGetPoolRequest
-	(*QueryGetPoolResponse)(nil),         // 17: elys.perpetual.QueryGetPoolResponse
-	(*QueryAllPoolRequest)(nil),          // 18: elys.perpetual.QueryAllPoolRequest
-	(*QueryAllPoolResponse)(nil),         // 19: elys.perpetual.QueryAllPoolResponse
-	(*MTPRequest)(nil),                   // 20: elys.perpetual.MTPRequest
-	(*MTPResponse)(nil),                  // 21: elys.perpetual.MTPResponse
-	(*QueryOpenEstimationRequest)(nil),   // 22: elys.perpetual.QueryOpenEstimationRequest
-	(*QueryOpenEstimationResponse)(nil),  // 23: elys.perpetual.QueryOpenEstimationResponse
-	(*PoolResponse)(nil),                 // 24: elys.perpetual.PoolResponse
-	(*QueryCloseEstimationRequest)(nil),  // 25: elys.perpetual.QueryCloseEstimationRequest
-	(*QueryCloseEstimationResponse)(nil), // 26: elys.perpetual.QueryCloseEstimationResponse
-	(*MTP)(nil),                          // 27: elys.perpetual.MTP
-	(*v1beta1.Coin)(nil),                 // 28: cosmos.base.v1beta1.Coin
-	(*Params)(nil),                       // 29: elys.perpetual.Params
-	(*v1beta11.PageRequest)(nil),         // 30: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta11.PageResponse)(nil),        // 31: cosmos.base.query.v1beta1.PageResponse
-	(*PerpetualCounter)(nil),             // 32: elys.perpetual.PerpetualCounter
-	(Position)(0),                        // 33: elys.perpetual.Position
-	(*PoolAsset)(nil),                    // 34: elys.perpetual.PoolAsset
+	(*Fees)(nil),                               // 0: elys.perpetual.Fees
+	(*MtpAndPrice)(nil),                        // 1: elys.perpetual.MtpAndPrice
+	(*ParamsRequest)(nil),                      // 2: elys.perpetual.ParamsRequest
+	(*ParamsResponse)(nil),                     // 3: elys.perpetual.ParamsResponse
+	(*PositionsRequest)(nil),                   // 4: elys.perpetual.PositionsRequest
+	(*PositionsResponse)(nil),                  // 5: elys.perpetual.PositionsResponse
+	(*PositionsByPoolRequest)(nil),             // 6: elys.perpetual.PositionsByPoolRequest
+	(*PositionsByPoolResponse)(nil),            // 7: elys.perpetual.PositionsByPoolResponse
+	(*PerpetualCounterRequest)(nil),            // 8: elys.perpetual.PerpetualCounterRequest
+	(*PerpetualCounterResponse)(nil),           // 9: elys.perpetual.PerpetualCounterResponse
+	(*PositionsForAddressRequest)(nil),         // 10: elys.perpetual.PositionsForAddressRequest
+	(*PositionsForAddressResponse)(nil),        // 11: elys.perpetual.PositionsForAddressResponse
+	(*WhitelistRequest)(nil),                   // 12: elys.perpetual.WhitelistRequest
+	(*WhitelistResponse)(nil),                  // 13: elys.perpetual.WhitelistResponse
+	(*IsWhitelistedRequest)(nil),               // 14: elys.perpetual.IsWhitelistedRequest
+	(*IsWhitelistedResponse)(nil),              // 15: elys.perpetual.IsWhitelistedResponse
+	(*QueryGetPoolRequest)(nil),                // 16: elys.perpetual.QueryGetPoolRequest
+	(*QueryGetPoolResponse)(nil),               // 17: elys.perpetual.QueryGetPoolResponse
+	(*QueryAllPoolRequest)(nil),                // 18: elys.perpetual.QueryAllPoolRequest
+	(*QueryAllPoolResponse)(nil),               // 19: elys.perpetual.QueryAllPoolResponse
+	(*MTPRequest)(nil),                         // 20: elys.perpetual.MTPRequest
+	(*MTPResponse)(nil),                        // 21: elys.perpetual.MTPResponse
+	(*QueryOpenEstimationRequest)(nil),         // 22: elys.perpetual.QueryOpenEstimationRequest
+	(*QueryOpenEstimationResponse)(nil),        // 23: elys.perpetual.QueryOpenEstimationResponse
+	(*PoolResponse)(nil),                       // 24: elys.perpetual.PoolResponse
+	(*QueryCloseEstimationRequest)(nil),        // 25: elys.perpetual.QueryCloseEstimationRequest
+	(*QueryCloseEstimationResponse)(nil),       // 26: elys.perpetual.QueryCloseEstimationResponse
+	(*QueryOpenEstimationByFinalRequest)(nil),  // 27: elys.perpetual.QueryOpenEstimationByFinalRequest
+	(*QueryOpenEstimationByFinalResponse)(nil), // 28: elys.perpetual.QueryOpenEstimationByFinalResponse
+	(*MTP)(nil),                                // 29: elys.perpetual.MTP
+	(*v1beta1.Coin)(nil),                       // 30: cosmos.base.v1beta1.Coin
+	(*Params)(nil),                             // 31: elys.perpetual.Params
+	(*v1beta11.PageRequest)(nil),               // 32: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta11.PageResponse)(nil),              // 33: cosmos.base.query.v1beta1.PageResponse
+	(*PerpetualCounter)(nil),                   // 34: elys.perpetual.PerpetualCounter
+	(Position)(0),                              // 35: elys.perpetual.Position
+	(*PoolAsset)(nil),                          // 36: elys.perpetual.PoolAsset
 }
 var file_elys_perpetual_query_proto_depIdxs = []int32{
-	27, // 0: elys.perpetual.MtpAndPrice.mtp:type_name -> elys.perpetual.MTP
-	28, // 1: elys.perpetual.MtpAndPrice.pnl:type_name -> cosmos.base.v1beta1.Coin
+	29, // 0: elys.perpetual.MtpAndPrice.mtp:type_name -> elys.perpetual.MTP
+	30, // 1: elys.perpetual.MtpAndPrice.pnl:type_name -> cosmos.base.v1beta1.Coin
 	0,  // 2: elys.perpetual.MtpAndPrice.fees:type_name -> elys.perpetual.Fees
-	29, // 3: elys.perpetual.ParamsResponse.params:type_name -> elys.perpetual.Params
-	30, // 4: elys.perpetual.PositionsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	31, // 3: elys.perpetual.ParamsResponse.params:type_name -> elys.perpetual.Params
+	32, // 4: elys.perpetual.PositionsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	1,  // 5: elys.perpetual.PositionsResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
-	31, // 6: elys.perpetual.PositionsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	30, // 7: elys.perpetual.PositionsByPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	33, // 6: elys.perpetual.PositionsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	32, // 7: elys.perpetual.PositionsByPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	1,  // 8: elys.perpetual.PositionsByPoolResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
-	31, // 9: elys.perpetual.PositionsByPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	32, // 10: elys.perpetual.PerpetualCounterResponse.result:type_name -> elys.perpetual.PerpetualCounter
-	30, // 11: elys.perpetual.PositionsForAddressRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	33, // 9: elys.perpetual.PositionsByPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	34, // 10: elys.perpetual.PerpetualCounterResponse.result:type_name -> elys.perpetual.PerpetualCounter
+	32, // 11: elys.perpetual.PositionsForAddressRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	1,  // 12: elys.perpetual.PositionsForAddressResponse.mtps:type_name -> elys.perpetual.MtpAndPrice
-	31, // 13: elys.perpetual.PositionsForAddressResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	30, // 14: elys.perpetual.WhitelistRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	31, // 15: elys.perpetual.WhitelistResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	33, // 13: elys.perpetual.PositionsForAddressResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	32, // 14: elys.perpetual.WhitelistRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	33, // 15: elys.perpetual.WhitelistResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
 	24, // 16: elys.perpetual.QueryGetPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
-	30, // 17: elys.perpetual.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	32, // 17: elys.perpetual.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	24, // 18: elys.perpetual.QueryAllPoolResponse.pool:type_name -> elys.perpetual.PoolResponse
-	31, // 19: elys.perpetual.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	33, // 19: elys.perpetual.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
 	1,  // 20: elys.perpetual.MTPResponse.mtp:type_name -> elys.perpetual.MtpAndPrice
-	33, // 21: elys.perpetual.QueryOpenEstimationRequest.position:type_name -> elys.perpetual.Position
-	28, // 22: elys.perpetual.QueryOpenEstimationRequest.collateral:type_name -> cosmos.base.v1beta1.Coin
-	33, // 23: elys.perpetual.QueryOpenEstimationResponse.position:type_name -> elys.perpetual.Position
-	28, // 24: elys.perpetual.QueryOpenEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
-	28, // 25: elys.perpetual.QueryOpenEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
-	28, // 26: elys.perpetual.QueryOpenEstimationResponse.estimated_pnl:type_name -> cosmos.base.v1beta1.Coin
-	28, // 27: elys.perpetual.QueryOpenEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
-	28, // 28: elys.perpetual.QueryOpenEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
-	28, // 29: elys.perpetual.QueryOpenEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
-	34, // 30: elys.perpetual.PoolResponse.pool_assets_long:type_name -> elys.perpetual.PoolAsset
-	34, // 31: elys.perpetual.PoolResponse.pool_assets_short:type_name -> elys.perpetual.PoolAsset
-	28, // 32: elys.perpetual.PoolResponse.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
-	33, // 33: elys.perpetual.QueryCloseEstimationResponse.position:type_name -> elys.perpetual.Position
-	28, // 34: elys.perpetual.QueryCloseEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
-	28, // 35: elys.perpetual.QueryCloseEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
-	28, // 36: elys.perpetual.QueryCloseEstimationResponse.borrow_interest_unpaid_liability:type_name -> cosmos.base.v1beta1.Coin
-	28, // 37: elys.perpetual.QueryCloseEstimationResponse.returning_amount:type_name -> cosmos.base.v1beta1.Coin
-	28, // 38: elys.perpetual.QueryCloseEstimationResponse.paying_liabilities:type_name -> cosmos.base.v1beta1.Coin
-	28, // 39: elys.perpetual.QueryCloseEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
-	28, // 40: elys.perpetual.QueryCloseEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
-	2,  // 41: elys.perpetual.Query.Params:input_type -> elys.perpetual.ParamsRequest
-	4,  // 42: elys.perpetual.Query.GetPositions:input_type -> elys.perpetual.PositionsRequest
-	6,  // 43: elys.perpetual.Query.GetPositionsByPool:input_type -> elys.perpetual.PositionsByPoolRequest
-	8,  // 44: elys.perpetual.Query.PerpetualCounter:input_type -> elys.perpetual.PerpetualCounterRequest
-	10, // 45: elys.perpetual.Query.GetPositionsForAddress:input_type -> elys.perpetual.PositionsForAddressRequest
-	12, // 46: elys.perpetual.Query.GetWhitelist:input_type -> elys.perpetual.WhitelistRequest
-	14, // 47: elys.perpetual.Query.IsWhitelisted:input_type -> elys.perpetual.IsWhitelistedRequest
-	16, // 48: elys.perpetual.Query.Pool:input_type -> elys.perpetual.QueryGetPoolRequest
-	18, // 49: elys.perpetual.Query.Pools:input_type -> elys.perpetual.QueryAllPoolRequest
-	20, // 50: elys.perpetual.Query.MTP:input_type -> elys.perpetual.MTPRequest
-	22, // 51: elys.perpetual.Query.OpenEstimation:input_type -> elys.perpetual.QueryOpenEstimationRequest
-	25, // 52: elys.perpetual.Query.CloseEstimation:input_type -> elys.perpetual.QueryCloseEstimationRequest
-	3,  // 53: elys.perpetual.Query.Params:output_type -> elys.perpetual.ParamsResponse
-	5,  // 54: elys.perpetual.Query.GetPositions:output_type -> elys.perpetual.PositionsResponse
-	7,  // 55: elys.perpetual.Query.GetPositionsByPool:output_type -> elys.perpetual.PositionsByPoolResponse
-	9,  // 56: elys.perpetual.Query.PerpetualCounter:output_type -> elys.perpetual.PerpetualCounterResponse
-	11, // 57: elys.perpetual.Query.GetPositionsForAddress:output_type -> elys.perpetual.PositionsForAddressResponse
-	13, // 58: elys.perpetual.Query.GetWhitelist:output_type -> elys.perpetual.WhitelistResponse
-	15, // 59: elys.perpetual.Query.IsWhitelisted:output_type -> elys.perpetual.IsWhitelistedResponse
-	17, // 60: elys.perpetual.Query.Pool:output_type -> elys.perpetual.QueryGetPoolResponse
-	19, // 61: elys.perpetual.Query.Pools:output_type -> elys.perpetual.QueryAllPoolResponse
-	21, // 62: elys.perpetual.Query.MTP:output_type -> elys.perpetual.MTPResponse
-	23, // 63: elys.perpetual.Query.OpenEstimation:output_type -> elys.perpetual.QueryOpenEstimationResponse
-	26, // 64: elys.perpetual.Query.CloseEstimation:output_type -> elys.perpetual.QueryCloseEstimationResponse
-	53, // [53:65] is the sub-list for method output_type
-	41, // [41:53] is the sub-list for method input_type
-	41, // [41:41] is the sub-list for extension type_name
-	41, // [41:41] is the sub-list for extension extendee
-	0,  // [0:41] is the sub-list for field type_name
+	35, // 21: elys.perpetual.QueryOpenEstimationRequest.position:type_name -> elys.perpetual.Position
+	30, // 22: elys.perpetual.QueryOpenEstimationRequest.collateral:type_name -> cosmos.base.v1beta1.Coin
+	35, // 23: elys.perpetual.QueryOpenEstimationResponse.position:type_name -> elys.perpetual.Position
+	30, // 24: elys.perpetual.QueryOpenEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
+	30, // 25: elys.perpetual.QueryOpenEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
+	30, // 26: elys.perpetual.QueryOpenEstimationResponse.estimated_pnl:type_name -> cosmos.base.v1beta1.Coin
+	30, // 27: elys.perpetual.QueryOpenEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	30, // 28: elys.perpetual.QueryOpenEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
+	30, // 29: elys.perpetual.QueryOpenEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
+	36, // 30: elys.perpetual.PoolResponse.pool_assets_long:type_name -> elys.perpetual.PoolAsset
+	36, // 31: elys.perpetual.PoolResponse.pool_assets_short:type_name -> elys.perpetual.PoolAsset
+	30, // 32: elys.perpetual.PoolResponse.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
+	35, // 33: elys.perpetual.QueryCloseEstimationResponse.position:type_name -> elys.perpetual.Position
+	30, // 34: elys.perpetual.QueryCloseEstimationResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
+	30, // 35: elys.perpetual.QueryCloseEstimationResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
+	30, // 36: elys.perpetual.QueryCloseEstimationResponse.borrow_interest_unpaid_liability:type_name -> cosmos.base.v1beta1.Coin
+	30, // 37: elys.perpetual.QueryCloseEstimationResponse.returning_amount:type_name -> cosmos.base.v1beta1.Coin
+	30, // 38: elys.perpetual.QueryCloseEstimationResponse.paying_liabilities:type_name -> cosmos.base.v1beta1.Coin
+	30, // 39: elys.perpetual.QueryCloseEstimationResponse.custody:type_name -> cosmos.base.v1beta1.Coin
+	30, // 40: elys.perpetual.QueryCloseEstimationResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
+	35, // 41: elys.perpetual.QueryOpenEstimationByFinalRequest.position:type_name -> elys.perpetual.Position
+	30, // 42: elys.perpetual.QueryOpenEstimationByFinalRequest.final_amount:type_name -> cosmos.base.v1beta1.Coin
+	35, // 43: elys.perpetual.QueryOpenEstimationByFinalResponse.position:type_name -> elys.perpetual.Position
+	30, // 44: elys.perpetual.QueryOpenEstimationByFinalResponse.collateral:type_name -> cosmos.base.v1beta1.Coin
+	30, // 45: elys.perpetual.QueryOpenEstimationByFinalResponse.position_size:type_name -> cosmos.base.v1beta1.Coin
+	30, // 46: elys.perpetual.QueryOpenEstimationByFinalResponse.estimated_pnl:type_name -> cosmos.base.v1beta1.Coin
+	30, // 47: elys.perpetual.QueryOpenEstimationByFinalResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	30, // 48: elys.perpetual.QueryOpenEstimationByFinalResponse.custody:type_name -> cosmos.base.v1beta1.Coin
+	30, // 49: elys.perpetual.QueryOpenEstimationByFinalResponse.liabilities:type_name -> cosmos.base.v1beta1.Coin
+	2,  // 50: elys.perpetual.Query.Params:input_type -> elys.perpetual.ParamsRequest
+	4,  // 51: elys.perpetual.Query.GetPositions:input_type -> elys.perpetual.PositionsRequest
+	6,  // 52: elys.perpetual.Query.GetPositionsByPool:input_type -> elys.perpetual.PositionsByPoolRequest
+	8,  // 53: elys.perpetual.Query.PerpetualCounter:input_type -> elys.perpetual.PerpetualCounterRequest
+	10, // 54: elys.perpetual.Query.GetPositionsForAddress:input_type -> elys.perpetual.PositionsForAddressRequest
+	12, // 55: elys.perpetual.Query.GetWhitelist:input_type -> elys.perpetual.WhitelistRequest
+	14, // 56: elys.perpetual.Query.IsWhitelisted:input_type -> elys.perpetual.IsWhitelistedRequest
+	16, // 57: elys.perpetual.Query.Pool:input_type -> elys.perpetual.QueryGetPoolRequest
+	18, // 58: elys.perpetual.Query.Pools:input_type -> elys.perpetual.QueryAllPoolRequest
+	20, // 59: elys.perpetual.Query.MTP:input_type -> elys.perpetual.MTPRequest
+	22, // 60: elys.perpetual.Query.OpenEstimation:input_type -> elys.perpetual.QueryOpenEstimationRequest
+	25, // 61: elys.perpetual.Query.CloseEstimation:input_type -> elys.perpetual.QueryCloseEstimationRequest
+	27, // 62: elys.perpetual.Query.OpenEstimationByFinal:input_type -> elys.perpetual.QueryOpenEstimationByFinalRequest
+	3,  // 63: elys.perpetual.Query.Params:output_type -> elys.perpetual.ParamsResponse
+	5,  // 64: elys.perpetual.Query.GetPositions:output_type -> elys.perpetual.PositionsResponse
+	7,  // 65: elys.perpetual.Query.GetPositionsByPool:output_type -> elys.perpetual.PositionsByPoolResponse
+	9,  // 66: elys.perpetual.Query.PerpetualCounter:output_type -> elys.perpetual.PerpetualCounterResponse
+	11, // 67: elys.perpetual.Query.GetPositionsForAddress:output_type -> elys.perpetual.PositionsForAddressResponse
+	13, // 68: elys.perpetual.Query.GetWhitelist:output_type -> elys.perpetual.WhitelistResponse
+	15, // 69: elys.perpetual.Query.IsWhitelisted:output_type -> elys.perpetual.IsWhitelistedResponse
+	17, // 70: elys.perpetual.Query.Pool:output_type -> elys.perpetual.QueryGetPoolResponse
+	19, // 71: elys.perpetual.Query.Pools:output_type -> elys.perpetual.QueryAllPoolResponse
+	21, // 72: elys.perpetual.Query.MTP:output_type -> elys.perpetual.MTPResponse
+	23, // 73: elys.perpetual.Query.OpenEstimation:output_type -> elys.perpetual.QueryOpenEstimationResponse
+	26, // 74: elys.perpetual.Query.CloseEstimation:output_type -> elys.perpetual.QueryCloseEstimationResponse
+	28, // 75: elys.perpetual.Query.OpenEstimationByFinal:output_type -> elys.perpetual.QueryOpenEstimationByFinalResponse
+	63, // [63:76] is the sub-list for method output_type
+	50, // [50:63] is the sub-list for method input_type
+	50, // [50:50] is the sub-list for extension type_name
+	50, // [50:50] is the sub-list for extension extendee
+	0,  // [0:50] is the sub-list for field type_name
 }
 
 func init() { file_elys_perpetual_query_proto_init() }
@@ -19244,6 +22170,30 @@ func file_elys_perpetual_query_proto_init() {
 				return nil
 			}
 		}
+		file_elys_perpetual_query_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryOpenEstimationByFinalRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_perpetual_query_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryOpenEstimationByFinalResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -19251,7 +22201,7 @@ func file_elys_perpetual_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_perpetual_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   27,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
