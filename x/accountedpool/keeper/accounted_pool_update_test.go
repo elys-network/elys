@@ -61,39 +61,31 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		BorrowInterestRate:         sdkmath.LegacyNewDec(1),
 		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           sdkmath.NewInt(400),
-				Custody:               sdkmath.NewInt(50),
-				TakeProfitCustody:     sdkmath.NewInt(10),
-				TakeProfitLiabilities: sdkmath.NewInt(20),
-				AssetDenom:            ptypes.BaseCurrency,
+				Liabilities: sdkmath.NewInt(400),
+				Custody:     sdkmath.NewInt(50),
+				AssetDenom:  ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           sdkmath.NewInt(0),
-				Custody:               sdkmath.NewInt(50),
-				TakeProfitCustody:     sdkmath.ZeroInt(),
-				TakeProfitLiabilities: sdkmath.ZeroInt(),
-				AssetDenom:            ptypes.ATOM,
+				Liabilities: sdkmath.NewInt(0),
+				Custody:     sdkmath.NewInt(50),
+				AssetDenom:  ptypes.ATOM,
 			},
 		},
 		PoolAssetsShort: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           sdkmath.NewInt(400),
-				Custody:               sdkmath.NewInt(70),
-				TakeProfitCustody:     sdkmath.ZeroInt(),
-				TakeProfitLiabilities: sdkmath.ZeroInt(),
-				AssetDenom:            ptypes.BaseCurrency,
+				Liabilities: sdkmath.NewInt(400),
+				Custody:     sdkmath.NewInt(70),
+				AssetDenom:  ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           sdkmath.NewInt(0),
-				Custody:               sdkmath.NewInt(50),
-				TakeProfitCustody:     sdkmath.ZeroInt(),
-				TakeProfitLiabilities: sdkmath.ZeroInt(),
-				AssetDenom:            ptypes.ATOM,
+				Liabilities: sdkmath.NewInt(0),
+				Custody:     sdkmath.NewInt(50),
+				AssetDenom:  ptypes.ATOM,
 			},
 		},
 	}
 	// Update accounted pool
-	err = apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
+	err = apk.PerpetualUpdates(ctx, ammPool, perpetualPool)
 	require.NoError(t, err)
 
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))

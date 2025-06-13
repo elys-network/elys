@@ -1,9 +1,11 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
@@ -59,6 +61,21 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -347,4 +364,22 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 	}
 
 	return math.LegacyZeroDec(), math.LegacyZeroDec()
+}
+
+func (k Keeper) GetTradingAsset(ctx sdk.Context, poolId uint64) (string, error) {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return "", errors.New("pool not found")
+	}
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return "", errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	tradingAsset, err := pool.GetTradingAsset(baseCurrency)
+	if err != nil {
+		return "", err
+	}
+	return tradingAsset, nil
 }

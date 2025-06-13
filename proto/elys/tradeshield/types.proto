@@ -58,25 +58,24 @@ message PerpetualOrder {
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
-  string trading_asset = 7;
-  string leverage = 8 [
+  string leverage = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string take_profit_price = 9 [
+  string take_profit_price = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 position_id = 10;
-  Status status = 11;
-  string stop_loss_price = 12 [
+  uint64 position_id = 9;
+  Status status = 10;
+  string stop_loss_price = 11 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 13;
+  uint64 poolId = 12;
 }
 
 message PerpetualOrderExtraInfo {

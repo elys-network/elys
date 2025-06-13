@@ -20,8 +20,6 @@ func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesA
 		BorrowInterestPaidCustody:     sdkmath.ZeroInt(),
 		BorrowInterestUnpaidLiability: sdkmath.ZeroInt(),
 		Custody:                       sdkmath.ZeroInt(),
-		TakeProfitLiabilities:         sdkmath.ZeroInt(),
-		TakeProfitCustody:             sdkmath.ZeroInt(),
 		MtpHealth:                     sdkmath.LegacyZeroDec(),
 		Position:                      position,
 		Id:                            0,
@@ -106,14 +104,6 @@ func (mtp MTP) CheckForTakeProfit(tradingAssetPrice sdkmath.LegacyDec) bool {
 	return takeProfitReached
 }
 
-func (mtp MTP) GetBigDecTakeProfitLiabilities() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(mtp.TakeProfitLiabilities)
-}
-
-func (mtp MTP) GetBigDecTakeProfitCustody() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(mtp.TakeProfitCustody)
-}
-
 func (mtp MTP) GetBigDecTakeProfitBorrowFactor() osmomath.BigDec {
 	return osmomath.BigDecFromDec(mtp.TakeProfitBorrowFactor)
 }
@@ -156,4 +146,12 @@ func (mtp MTP) IsLong() bool {
 
 func (mtp MTP) IsShort() bool {
 	return mtp.Position == Position_SHORT
+}
+
+func (mtp MTP) GetMTPValue(tradingAssetDenomPrice osmomath.BigDec) sdkmath.LegacyDec {
+	if mtp.IsLong() {
+		return tradingAssetDenomPrice.MulDec(mtp.Custody.ToLegacyDec()).Dec()
+	} else {
+		return tradingAssetDenomPrice.MulDec(mtp.Liabilities.ToLegacyDec()).Dec()
+	}
 }
