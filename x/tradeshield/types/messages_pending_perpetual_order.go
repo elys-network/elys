@@ -158,6 +158,22 @@ func (msg *MsgCancelPerpetualOrder) ValidateBasic() error {
 	return nil
 }
 
+var _ sdk.Msg = &MsgCancelAllPerpetualOrders{}
+
+func NewMsgCancelAllPerpetualOrders(ownerAddress string) *MsgCancelAllPerpetualOrders {
+	return &MsgCancelAllPerpetualOrders{
+		OwnerAddress: ownerAddress,
+	}
+}
+
+func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
+	}
+	return nil
+}
+
 var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
 func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {

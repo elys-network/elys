@@ -30,7 +30,7 @@ type MsgClient interface {
 	ClosePositions(ctx context.Context, in *MsgClosePositions, opts ...grpc.CallOption) (*MsgClosePositionsResponse, error)
 	UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error)
 	UpdateEnabledPools(ctx context.Context, in *MsgUpdateEnabledPools, opts ...grpc.CallOption) (*MsgUpdateEnabledPoolsResponse, error)
-	ClaimAllRewards(ctx context.Context, in *MsgClaimAllRewards, opts ...grpc.CallOption) (*MsgClaimAllRewardsResponse, error)
+	ClaimAllUserRewards(ctx context.Context, in *MsgClaimAllUserRewards, opts ...grpc.CallOption) (*MsgClaimAllUserRewardsResponse, error)
 }
 
 type msgClient struct {
@@ -149,9 +149,9 @@ func (c *msgClient) UpdateEnabledPools(ctx context.Context, in *MsgUpdateEnabled
 	return out, nil
 }
 
-func (c *msgClient) ClaimAllRewards(ctx context.Context, in *MsgClaimAllRewards, opts ...grpc.CallOption) (*MsgClaimAllRewardsResponse, error) {
-	out := new(MsgClaimAllRewardsResponse)
-	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/ClaimAllRewards", in, out, opts...)
+func (c *msgClient) ClaimAllUserRewards(ctx context.Context, in *MsgClaimAllUserRewards, opts ...grpc.CallOption) (*MsgClaimAllUserRewardsResponse, error) {
+	out := new(MsgClaimAllUserRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/ClaimAllUserRewards", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +174,7 @@ type MsgServer interface {
 	ClosePositions(context.Context, *MsgClosePositions) (*MsgClosePositionsResponse, error)
 	UpdatePool(context.Context, *MsgUpdatePool) (*MsgUpdatePoolResponse, error)
 	UpdateEnabledPools(context.Context, *MsgUpdateEnabledPools) (*MsgUpdateEnabledPoolsResponse, error)
-	ClaimAllRewards(context.Context, *MsgClaimAllRewards) (*MsgClaimAllRewardsResponse, error)
+	ClaimAllUserRewards(context.Context, *MsgClaimAllUserRewards) (*MsgClaimAllUserRewardsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -218,8 +218,8 @@ func (UnimplementedMsgServer) UpdatePool(context.Context, *MsgUpdatePool) (*MsgU
 func (UnimplementedMsgServer) UpdateEnabledPools(context.Context, *MsgUpdateEnabledPools) (*MsgUpdateEnabledPoolsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnabledPools not implemented")
 }
-func (UnimplementedMsgServer) ClaimAllRewards(context.Context, *MsgClaimAllRewards) (*MsgClaimAllRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClaimAllRewards not implemented")
+func (UnimplementedMsgServer) ClaimAllUserRewards(context.Context, *MsgClaimAllUserRewards) (*MsgClaimAllUserRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimAllUserRewards not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -450,20 +450,20 @@ func _Msg_UpdateEnabledPools_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_ClaimAllRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgClaimAllRewards)
+func _Msg_ClaimAllUserRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimAllUserRewards)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).ClaimAllRewards(ctx, in)
+		return srv.(MsgServer).ClaimAllUserRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.leveragelp.Msg/ClaimAllRewards",
+		FullMethod: "/elys.leveragelp.Msg/ClaimAllUserRewards",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ClaimAllRewards(ctx, req.(*MsgClaimAllRewards))
+		return srv.(MsgServer).ClaimAllUserRewards(ctx, req.(*MsgClaimAllUserRewards))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -524,8 +524,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateEnabledPools_Handler,
 		},
 		{
-			MethodName: "ClaimAllRewards",
-			Handler:    _Msg_ClaimAllRewards_Handler,
+			MethodName: "ClaimAllUserRewards",
+			Handler:    _Msg_ClaimAllUserRewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
