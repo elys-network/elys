@@ -13,7 +13,7 @@ func (k Keeper) EndBlock(ctx sdk.Context) {
 		allAssetPrice := k.GetAllAssetPrice(ctx, info.Display)
 		total := len(allAssetPrice)
 
-		// Need to sort it because order fetched from will not be ascending order depending on source
+		// Need to sort it because order fetched from GetAllAssetPrice will not be in ascending order - depending on source
 		// If we remove the source then this should not be needed
 		sort.Slice(allAssetPrice, func(i, j int) bool {
 			return allAssetPrice[i].Timestamp < allAssetPrice[j].Timestamp
