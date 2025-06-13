@@ -99,6 +99,19 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			return nil, err
 		}
 
+		err = k.SetMTP(ctx, &mtp)
+		if err != nil {
+			return nil, err
+		}
+		k.SetPool(ctx, pool)
+
+		if k.hooks != nil {
+			err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAddCollateral,
 			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 			sdk.NewAttribute("owner", mtp.Address),
