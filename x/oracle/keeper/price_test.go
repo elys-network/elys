@@ -120,6 +120,46 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 	suite.Require().Equal(price, prices[0])
 }
 
+func (suite *KeeperTestSuite) TestGetAllAssetPrice() {
+	priceData := []types.Price{
+		{
+			Asset:     "BTC",
+			Price:     sdkmath.LegacyNewDec(23),
+			Source:    "elys",
+			Timestamp: 20,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdkmath.LegacyNewDec(12),
+			Source:    "band",
+			Timestamp: 10,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdkmath.LegacyNewDec(76),
+			Source:    "band",
+			Timestamp: 40,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdkmath.LegacyNewDec(55),
+			Source:    "band",
+			Timestamp: 30,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdkmath.LegacyNewDec(89),
+			Source:    "band",
+			Timestamp: 25,
+		},
+	}
+	for _, price := range priceData {
+		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
+	}
+	allPrices := suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "BTC")
+	suite.Require().Equal(len(priceData), len(allPrices))
+}
+
 func (suite *KeeperTestSuite) TestGetAssetPriceAndGetDenomPrice() {
 	type Data struct {
 		Asset   string

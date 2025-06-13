@@ -81,6 +81,21 @@ func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
 	return
 }
 
+func (k Keeper) GetAllAssetPrice(ctx sdk.Context, asset string) (list []types.Price) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PriceKeyPrefixAsset(asset))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Price
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool) {
 	// try out elys source
 	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)
