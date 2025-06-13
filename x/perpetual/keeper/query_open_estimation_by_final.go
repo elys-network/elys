@@ -26,11 +26,22 @@ func (k Keeper) OpenEstimationByFinal(goCtx context.Context, req *types.QueryOpe
 }
 
 func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpenEstimationByFinalRequest) (*types.QueryOpenEstimationByFinalResponse, error) {
-	_, found := k.GetPool(ctx, req.PoolId)
+	pool, found := k.GetPool(ctx, req.PoolId)
 	if !found {
 		return nil, status.Error(codes.NotFound, "pool not found")
 	}
 
+	// retrieve base currency denom
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	tradingAsset, err := pool.GetTradingAsset(baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 	ammPool, err := k.GetAmmPool(ctx, req.PoolId)
 	if err != nil {
 		return nil, err
@@ -40,32 +51,27 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	}
 
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, req.PoolId)
-	tradingAssetLiquidity, err := snapshot.GetAmmPoolBalance(req.TradingAsset)
+	tradingAssetLiquidity, err := snapshot.GetAmmPoolBalance(tradingAsset)
 	if err != nil {
 		return nil, err
 	}
-	availableLiquidity := sdk.NewCoin(req.TradingAsset, tradingAssetLiquidity)
-	// retrieve base currency denom
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
+	availableLiquidity := sdk.NewCoin(tradingAsset, tradingAssetLiquidity)
 
 	switch req.Position {
 	case types.Position_LONG:
-		if err := types.CheckLongAssets(req.CollateralDenom, req.TradingAsset, baseCurrency); err != nil {
-			return nil, err
+		if req.CollateralDenom != tradingAsset && req.CollateralDenom != baseCurrency {
+			return nil, errorsmod.Wrap(types.ErrInvalidCollateralAsset, "invalid operation: collateral asset has to be either trading asset or base currency for long")
 		}
 	case types.Position_SHORT:
-		if err := types.CheckShortAssets(req.CollateralDenom, req.TradingAsset, baseCurrency); err != nil {
-			return nil, err
+		// The collateral for a short must be the base currency.
+		if req.CollateralDenom != baseCurrency {
+			return nil, errorsmod.Wrap(types.ErrInvalidCollateralAsset, "invalid collateral: collateral asset for short position must be the base currency")
 		}
 	default:
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, req.Position.String())
 	}
 
-	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, req.TradingAsset)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -87,13 +93,13 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.CollateralDenom)
 	}
 
-	custodyAsset := req.TradingAsset
+	custodyAsset := tradingAsset
 	liabilitiesAsset := baseCurrency
 	if req.Position == types.Position_SHORT {
-		liabilitiesAsset = req.TradingAsset
+		liabilitiesAsset = tradingAsset
 		custodyAsset = baseCurrency
 	}
-	mtp := types.NewMTP(ctx, "", req.CollateralDenom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
+	mtp := types.NewMTP(ctx, "", req.CollateralDenom, tradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
@@ -143,14 +149,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, *mtp)
-	if err != nil {
-		return nil, err
-	}
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
-	if err != nil {
-		return nil, err
-	}
 	mtp.TakeProfitPrice = req.TakeProfitPrice
 	err = k.GetAndSetOpenPrice(ctx, mtp, req.Leverage.IsZero())
 	if err != nil {
@@ -207,7 +205,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	return &types.QueryOpenEstimationByFinalResponse{
 		Position:           req.Position,
 		EffectiveLeverage:  effectiveLeverage,
-		TradingAsset:       req.TradingAsset,
 		Collateral:         sdk.NewCoin(req.CollateralDenom, mtp.Collateral),
 		HourlyInterestRate: hourlyInterestRate,
 		PositionSize:       sdk.NewCoin(positionAsset, positionSize),

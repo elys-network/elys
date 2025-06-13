@@ -95,7 +95,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom100Us
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
@@ -107,7 +106,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom100Us
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		CollateralDenom: ptypes.BaseCurrency,
 		FinalAmount:     regularRes.Custody,
 		Address:         "",
@@ -117,7 +115,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom100Us
 
 	// Compare results
 	require.Equal(suite.T(), regularRes.Position, finalRes.Position)
-	require.Equal(suite.T(), regularRes.TradingAsset, finalRes.TradingAsset)
 	require.Equal(suite.T(), regularRes.Custody, finalRes.Custody)
 	// Allow small difference in custody amount due to rounding
 	diff := regularRes.Collateral.Amount.Sub(finalRes.Collateral.Amount)
@@ -225,7 +222,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Short5XAtom100U
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
@@ -237,7 +233,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Short5XAtom100U
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		CollateralDenom: ptypes.BaseCurrency,
 		FinalAmount:     regularRes.Liabilities,
 		Address:         "",
@@ -247,7 +242,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Short5XAtom100U
 
 	// Compare results
 	require.Equal(suite.T(), regularRes.Position, finalRes.Position)
-	require.Equal(suite.T(), regularRes.TradingAsset, finalRes.TradingAsset)
 	diff := regularRes.Collateral.Amount.Sub(finalRes.Collateral.Amount)
 	if diff.IsNegative() {
 		diff = diff.Neg()
@@ -343,7 +337,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom10Ato
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10_000_000)),
 		Address:         "",
 		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
@@ -355,7 +348,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom10Ato
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		CollateralDenom: ptypes.ATOM,
 		FinalAmount:     regularRes.Custody,
 		Address:         "",
@@ -365,7 +357,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom10Ato
 
 	// Compare results
 	require.Equal(suite.T(), regularRes.Position, finalRes.Position)
-	require.Equal(suite.T(), regularRes.TradingAsset, finalRes.TradingAsset)
 	// Allow small difference in custody amount due to rounding
 	diff := regularRes.Custody.Amount.Sub(finalRes.Custody.Amount)
 	if diff.IsNegative() {
