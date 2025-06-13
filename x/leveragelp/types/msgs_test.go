@@ -395,7 +395,7 @@ func TestMsgClaimRewards(t *testing.T) {
 }
 
 func TestMsgClaimAllRewards(t *testing.T) {
-	msg := types.NewMsgClaimAllRewards(sample.AccAddress())
+	msg := types.NewMsgClaimAllUserRewards(sample.AccAddress())
 
 	tests := []struct {
 		name   string

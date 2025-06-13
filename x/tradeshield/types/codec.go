@@ -13,6 +13,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateSpotOrder{}, "tradeshield/MsgUpdateSpotOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrder{}, "tradeshield/MsgCancelSpotOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/MsgCancelSpotOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelAllSpotOrders{}, "tradeshield/MsgCancelAllSpotOrders")
 
 	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualOpenOrder{}, "tradeshield/MsgCreatePerpetualOpenOrder")
 	// TODO: Use Msg... Structure with v2, when close perpetual position is implemented
@@ -20,6 +21,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdatePerpetualOrder{}, "tradeshield/MsgUpdatePerpetualOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrder{}, "tradeshield/MsgCancelPerpetualOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrders{}, "tradeshield/MsgCancelPerpetualOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelAllPerpetualOrders{}, "tradeshield/MsgCancelAllPerpetualOrders")
 
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgExecuteOrders{}, "tradeshield/MsgExecuteOrders")
@@ -32,12 +34,14 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateSpotOrder{},
 		&MsgCancelSpotOrder{},
 		&MsgCancelSpotOrders{},
+		&MsgCancelAllSpotOrders{},
 
 		&MsgCreatePerpetualOpenOrder{},
 		&MsgCreatePerpetualCloseOrder{},
 		&MsgUpdatePerpetualOrder{},
 		&MsgCancelPerpetualOrder{},
 		&MsgCancelPerpetualOrders{},
+		&MsgCancelAllPerpetualOrders{},
 
 		&MsgUpdateParams{},
 		&MsgExecuteOrders{},

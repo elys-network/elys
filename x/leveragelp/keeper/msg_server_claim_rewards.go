@@ -36,7 +36,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	return &types.MsgClaimRewardsResponse{}, nil
 }
 
-func (k msgServer) ClaimAllRewards(goCtx context.Context, msg *types.MsgClaimAllRewards) (*types.MsgClaimAllRewardsResponse, error) {
+func (k msgServer) ClaimAllUserRewards(goCtx context.Context, msg *types.MsgClaimAllUserRewards) (*types.MsgClaimAllUserRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
@@ -62,5 +62,5 @@ func (k msgServer) ClaimAllRewards(goCtx context.Context, msg *types.MsgClaimAll
 		}
 	}
 
-	return &types.MsgClaimAllRewardsResponse{}, nil
+	return &types.MsgClaimAllUserRewardsResponse{}, nil
 }

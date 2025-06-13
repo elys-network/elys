@@ -11831,25 +11831,25 @@ func (x *fastReflection_MsgUpdateEnabledPoolsResponse) ProtoMethods() *protoifac
 }
 
 var (
-	md_MsgClaimAllRewards        protoreflect.MessageDescriptor
-	fd_MsgClaimAllRewards_sender protoreflect.FieldDescriptor
+	md_MsgClaimAllUserRewards        protoreflect.MessageDescriptor
+	fd_MsgClaimAllUserRewards_sender protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_leveragelp_tx_proto_init()
-	md_MsgClaimAllRewards = File_elys_leveragelp_tx_proto.Messages().ByName("MsgClaimAllRewards")
-	fd_MsgClaimAllRewards_sender = md_MsgClaimAllRewards.Fields().ByName("sender")
+	md_MsgClaimAllUserRewards = File_elys_leveragelp_tx_proto.Messages().ByName("MsgClaimAllUserRewards")
+	fd_MsgClaimAllUserRewards_sender = md_MsgClaimAllUserRewards.Fields().ByName("sender")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgClaimAllRewards)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgClaimAllUserRewards)(nil)
 
-type fastReflection_MsgClaimAllRewards MsgClaimAllRewards
+type fastReflection_MsgClaimAllUserRewards MsgClaimAllUserRewards
 
-func (x *MsgClaimAllRewards) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgClaimAllRewards)(x)
+func (x *MsgClaimAllUserRewards) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgClaimAllUserRewards)(x)
 }
 
-func (x *MsgClaimAllRewards) slowProtoReflect() protoreflect.Message {
+func (x *MsgClaimAllUserRewards) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_leveragelp_tx_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -11861,43 +11861,43 @@ func (x *MsgClaimAllRewards) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgClaimAllRewards_messageType fastReflection_MsgClaimAllRewards_messageType
-var _ protoreflect.MessageType = fastReflection_MsgClaimAllRewards_messageType{}
+var _fastReflection_MsgClaimAllUserRewards_messageType fastReflection_MsgClaimAllUserRewards_messageType
+var _ protoreflect.MessageType = fastReflection_MsgClaimAllUserRewards_messageType{}
 
-type fastReflection_MsgClaimAllRewards_messageType struct{}
+type fastReflection_MsgClaimAllUserRewards_messageType struct{}
 
-func (x fastReflection_MsgClaimAllRewards_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgClaimAllRewards)(nil)
+func (x fastReflection_MsgClaimAllUserRewards_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgClaimAllUserRewards)(nil)
 }
-func (x fastReflection_MsgClaimAllRewards_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgClaimAllRewards)
+func (x fastReflection_MsgClaimAllUserRewards_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgClaimAllUserRewards)
 }
-func (x fastReflection_MsgClaimAllRewards_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgClaimAllRewards
+func (x fastReflection_MsgClaimAllUserRewards_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgClaimAllUserRewards
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgClaimAllRewards) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgClaimAllRewards
+func (x *fastReflection_MsgClaimAllUserRewards) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgClaimAllUserRewards
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgClaimAllRewards) Type() protoreflect.MessageType {
-	return _fastReflection_MsgClaimAllRewards_messageType
+func (x *fastReflection_MsgClaimAllUserRewards) Type() protoreflect.MessageType {
+	return _fastReflection_MsgClaimAllUserRewards_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgClaimAllRewards) New() protoreflect.Message {
-	return new(fastReflection_MsgClaimAllRewards)
+func (x *fastReflection_MsgClaimAllUserRewards) New() protoreflect.Message {
+	return new(fastReflection_MsgClaimAllUserRewards)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgClaimAllRewards) Interface() protoreflect.ProtoMessage {
-	return (*MsgClaimAllRewards)(x)
+func (x *fastReflection_MsgClaimAllUserRewards) Interface() protoreflect.ProtoMessage {
+	return (*MsgClaimAllUserRewards)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -11905,10 +11905,10 @@ func (x *fastReflection_MsgClaimAllRewards) Interface() protoreflect.ProtoMessag
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgClaimAllRewards) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgClaimAllUserRewards) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Sender != "" {
 		value := protoreflect.ValueOfString(x.Sender)
-		if !f(fd_MsgClaimAllRewards_sender, value) {
+		if !f(fd_MsgClaimAllUserRewards_sender, value) {
 			return
 		}
 	}
@@ -11925,15 +11925,15 @@ func (x *fastReflection_MsgClaimAllRewards) Range(f func(protoreflect.FieldDescr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgClaimAllRewards) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgClaimAllUserRewards) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
 		return x.Sender != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -11943,15 +11943,15 @@ func (x *fastReflection_MsgClaimAllRewards) Has(fd protoreflect.FieldDescriptor)
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewards) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgClaimAllUserRewards) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
 		x.Sender = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -11961,16 +11961,16 @@ func (x *fastReflection_MsgClaimAllRewards) Clear(fd protoreflect.FieldDescripto
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgClaimAllRewards) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewards) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
 		value := x.Sender
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -11984,15 +11984,15 @@ func (x *fastReflection_MsgClaimAllRewards) Get(descriptor protoreflect.FieldDes
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewards) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgClaimAllUserRewards) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
 		x.Sender = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -12006,40 +12006,40 @@ func (x *fastReflection_MsgClaimAllRewards) Set(fd protoreflect.FieldDescriptor,
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewards) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewards) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
-		panic(fmt.Errorf("field sender of message elys.leveragelp.MsgClaimAllRewards is not mutable"))
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
+		panic(fmt.Errorf("field sender of message elys.leveragelp.MsgClaimAllUserRewards is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgClaimAllRewards) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewards) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.leveragelp.MsgClaimAllRewards.sender":
+	case "elys.leveragelp.MsgClaimAllUserRewards.sender":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewards"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewards"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewards does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewards does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgClaimAllRewards) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgClaimAllUserRewards) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgClaimAllRewards", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgClaimAllUserRewards", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -12047,7 +12047,7 @@ func (x *fastReflection_MsgClaimAllRewards) WhichOneof(d protoreflect.OneofDescr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgClaimAllRewards) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgClaimAllUserRewards) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -12058,7 +12058,7 @@ func (x *fastReflection_MsgClaimAllRewards) GetUnknown() protoreflect.RawFields 
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewards) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgClaimAllUserRewards) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -12070,7 +12070,7 @@ func (x *fastReflection_MsgClaimAllRewards) SetUnknown(fields protoreflect.RawFi
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgClaimAllRewards) IsValid() bool {
+func (x *fastReflection_MsgClaimAllUserRewards) IsValid() bool {
 	return x != nil
 }
 
@@ -12080,9 +12080,9 @@ func (x *fastReflection_MsgClaimAllRewards) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgClaimAllRewards) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgClaimAllUserRewards) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgClaimAllRewards)
+		x := input.Message.Interface().(*MsgClaimAllUserRewards)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12108,7 +12108,7 @@ func (x *fastReflection_MsgClaimAllRewards) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgClaimAllRewards)
+		x := input.Message.Interface().(*MsgClaimAllUserRewards)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12145,7 +12145,7 @@ func (x *fastReflection_MsgClaimAllRewards) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgClaimAllRewards)
+		x := input.Message.Interface().(*MsgClaimAllUserRewards)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12177,10 +12177,10 @@ func (x *fastReflection_MsgClaimAllRewards) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllRewards: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllUserRewards: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllRewards: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllUserRewards: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -12251,23 +12251,23 @@ func (x *fastReflection_MsgClaimAllRewards) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_MsgClaimAllRewardsResponse protoreflect.MessageDescriptor
+	md_MsgClaimAllUserRewardsResponse protoreflect.MessageDescriptor
 )
 
 func init() {
 	file_elys_leveragelp_tx_proto_init()
-	md_MsgClaimAllRewardsResponse = File_elys_leveragelp_tx_proto.Messages().ByName("MsgClaimAllRewardsResponse")
+	md_MsgClaimAllUserRewardsResponse = File_elys_leveragelp_tx_proto.Messages().ByName("MsgClaimAllUserRewardsResponse")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgClaimAllRewardsResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgClaimAllUserRewardsResponse)(nil)
 
-type fastReflection_MsgClaimAllRewardsResponse MsgClaimAllRewardsResponse
+type fastReflection_MsgClaimAllUserRewardsResponse MsgClaimAllUserRewardsResponse
 
-func (x *MsgClaimAllRewardsResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgClaimAllRewardsResponse)(x)
+func (x *MsgClaimAllUserRewardsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgClaimAllUserRewardsResponse)(x)
 }
 
-func (x *MsgClaimAllRewardsResponse) slowProtoReflect() protoreflect.Message {
+func (x *MsgClaimAllUserRewardsResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_leveragelp_tx_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -12279,43 +12279,43 @@ func (x *MsgClaimAllRewardsResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgClaimAllRewardsResponse_messageType fastReflection_MsgClaimAllRewardsResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgClaimAllRewardsResponse_messageType{}
+var _fastReflection_MsgClaimAllUserRewardsResponse_messageType fastReflection_MsgClaimAllUserRewardsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgClaimAllUserRewardsResponse_messageType{}
 
-type fastReflection_MsgClaimAllRewardsResponse_messageType struct{}
+type fastReflection_MsgClaimAllUserRewardsResponse_messageType struct{}
 
-func (x fastReflection_MsgClaimAllRewardsResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgClaimAllRewardsResponse)(nil)
+func (x fastReflection_MsgClaimAllUserRewardsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgClaimAllUserRewardsResponse)(nil)
 }
-func (x fastReflection_MsgClaimAllRewardsResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgClaimAllRewardsResponse)
+func (x fastReflection_MsgClaimAllUserRewardsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgClaimAllUserRewardsResponse)
 }
-func (x fastReflection_MsgClaimAllRewardsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgClaimAllRewardsResponse
+func (x fastReflection_MsgClaimAllUserRewardsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgClaimAllUserRewardsResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgClaimAllRewardsResponse
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgClaimAllUserRewardsResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Type() protoreflect.MessageType {
-	return _fastReflection_MsgClaimAllRewardsResponse_messageType
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgClaimAllUserRewardsResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgClaimAllRewardsResponse) New() protoreflect.Message {
-	return new(fastReflection_MsgClaimAllRewardsResponse)
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgClaimAllUserRewardsResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Interface() protoreflect.ProtoMessage {
-	return (*MsgClaimAllRewardsResponse)(x)
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgClaimAllUserRewardsResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -12323,7 +12323,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Interface() protoreflect.Pro
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 }
 
 // Has reports whether a field is populated.
@@ -12337,13 +12337,13 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Range(f func(protoreflect.Fi
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -12353,13 +12353,13 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Has(fd protoreflect.FieldDes
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -12369,13 +12369,13 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Clear(fd protoreflect.FieldD
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -12389,13 +12389,13 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Get(descriptor protoreflect.
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -12409,36 +12409,36 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) Set(fd protoreflect.FieldDes
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewardsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgClaimAllRewardsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllRewardsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgClaimAllUserRewardsResponse"))
 		}
-		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllRewardsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.leveragelp.MsgClaimAllUserRewardsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgClaimAllRewardsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgClaimAllRewardsResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgClaimAllUserRewardsResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -12446,7 +12446,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) WhichOneof(d protoreflect.On
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgClaimAllRewardsResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -12457,7 +12457,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) GetUnknown() protoreflect.Ra
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgClaimAllRewardsResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -12469,7 +12469,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) SetUnknown(fields protorefle
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgClaimAllRewardsResponse) IsValid() bool {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -12479,9 +12479,9 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgClaimAllRewardsResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgClaimAllUserRewardsResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgClaimAllRewardsResponse)
+		x := input.Message.Interface().(*MsgClaimAllUserRewardsResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12503,7 +12503,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) ProtoMethods() *protoiface.M
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgClaimAllRewardsResponse)
+		x := input.Message.Interface().(*MsgClaimAllUserRewardsResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12533,7 +12533,7 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) ProtoMethods() *protoiface.M
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgClaimAllRewardsResponse)
+		x := input.Message.Interface().(*MsgClaimAllUserRewardsResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -12565,10 +12565,10 @@ func (x *fastReflection_MsgClaimAllRewardsResponse) ProtoMethods() *protoiface.M
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllRewardsResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllUserRewardsResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgClaimAllUserRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			default:
@@ -13585,7 +13585,7 @@ func (*MsgUpdateEnabledPoolsResponse) Descriptor() ([]byte, []int) {
 	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{24}
 }
 
-type MsgClaimAllRewards struct {
+type MsgClaimAllUserRewards struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -13593,8 +13593,8 @@ type MsgClaimAllRewards struct {
 	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
-func (x *MsgClaimAllRewards) Reset() {
-	*x = MsgClaimAllRewards{}
+func (x *MsgClaimAllUserRewards) Reset() {
+	*x = MsgClaimAllUserRewards{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_leveragelp_tx_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -13602,32 +13602,32 @@ func (x *MsgClaimAllRewards) Reset() {
 	}
 }
 
-func (x *MsgClaimAllRewards) String() string {
+func (x *MsgClaimAllUserRewards) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgClaimAllRewards) ProtoMessage() {}
+func (*MsgClaimAllUserRewards) ProtoMessage() {}
 
-// Deprecated: Use MsgClaimAllRewards.ProtoReflect.Descriptor instead.
-func (*MsgClaimAllRewards) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgClaimAllUserRewards.ProtoReflect.Descriptor instead.
+func (*MsgClaimAllUserRewards) Descriptor() ([]byte, []int) {
 	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{25}
 }
 
-func (x *MsgClaimAllRewards) GetSender() string {
+func (x *MsgClaimAllUserRewards) GetSender() string {
 	if x != nil {
 		return x.Sender
 	}
 	return ""
 }
 
-type MsgClaimAllRewardsResponse struct {
+type MsgClaimAllUserRewardsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *MsgClaimAllRewardsResponse) Reset() {
-	*x = MsgClaimAllRewardsResponse{}
+func (x *MsgClaimAllUserRewardsResponse) Reset() {
+	*x = MsgClaimAllUserRewardsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_leveragelp_tx_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -13635,14 +13635,14 @@ func (x *MsgClaimAllRewardsResponse) Reset() {
 	}
 }
 
-func (x *MsgClaimAllRewardsResponse) String() string {
+func (x *MsgClaimAllUserRewardsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgClaimAllRewardsResponse) ProtoMessage() {}
+func (*MsgClaimAllUserRewardsResponse) ProtoMessage() {}
 
-// Deprecated: Use MsgClaimAllRewardsResponse.ProtoReflect.Descriptor instead.
-func (*MsgClaimAllRewardsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgClaimAllUserRewardsResponse.ProtoReflect.Descriptor instead.
+func (*MsgClaimAllUserRewardsResponse) Descriptor() ([]byte, []int) {
 	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{26}
 }
 
@@ -13854,101 +13854,103 @@ var file_elys_leveragelp_tx_proto_rawDesc = []byte{
 	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
 	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0x1f, 0x0a, 0x1d,
 	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
-	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x75, 0x0a,
-	0x12, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x73,
-	0x65, 0x6e, 0x64, 0x65, 0x72, 0x3a, 0x2d, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x73, 0x65, 0x6e, 0x64,
-	0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1d, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x73, 0x22, 0x1c, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d,
-	0x41, 0x6c, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x32, 0x8b, 0x09, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x42, 0x0a, 0x04, 0x4f, 0x70,
-	0x65, 0x6e, 0x12, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e, 0x1a, 0x20, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x45,
-	0x0a, 0x05, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x12, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f,
-	0x73, 0x65, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76,
-	0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61,
-	0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x7d, 0x0a,
+	0x16, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72,
+	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x3a, 0x31, 0x82, 0xe7, 0xb0, 0x2a, 0x06,
+	0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x21, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c,
+	0x6c, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x20, 0x0a, 0x1e,
+	0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x97,
+	0x09, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x42, 0x0a, 0x04, 0x4f, 0x70, 0x65, 0x6e, 0x12, 0x18,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0x2e, 0x4d, 0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x4f, 0x70,
+	0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x45, 0x0a, 0x05, 0x43, 0x6c,
+	0x6f, 0x73, 0x65, 0x12, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x1a, 0x21,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
 	0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
-	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a,
-	0x07, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64,
-	0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76,
-	0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f,
-	0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a, 0x52, 0x65,
-	0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65,
-	0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65,
-	0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x51, 0x0a, 0x09, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1d, 0x2e,
+	0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a,
+	0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x20, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e,
-	0x4d, 0x73, 0x67, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x57, 0x0a, 0x0b, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
-	0x73, 0x74, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c,
-	0x69, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
-	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65,
-	0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x12, 0x22,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a,
+	0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
+	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x07, 0x41, 0x64, 0x64,
+	0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f,
+	0x6c, 0x1a, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
+	0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x09,
+	0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57,
+	0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x68,
+	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x57, 0x0a, 0x0b, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1f,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a,
+	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
+	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x1a, 0x2a,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
 	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f,
-	0x73, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74,
-	0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60,
-	0x0a, 0x0e, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x43, 0x6c,
+	0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x22, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
+	0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
 	0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50,
-	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x54, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
-	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x26,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
-	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6c, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x26, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50,
-	0x6f, 0x6f, 0x6c, 0x73, 0x1a, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x63, 0x0a, 0x0f, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
+	0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x6c, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62,
+	0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73,
+	0x1a, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62,
+	0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x6f, 0x0a, 0x13, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72,
+	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
 	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61,
-	0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x2b, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01,
-	0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65,
-	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65,
-	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xa2, 0x02, 0x03, 0x45, 0x4c, 0x58, 0xaa, 0x02,
-	0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
-	0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x6c, 0x70, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x6c, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
+	0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6c, 0x6c, 0x55, 0x73,
+	0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0xa2, 0x02, 0x03, 0x45, 0x4c, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65,
+	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c,
+	0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79,
+	0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a,
+	0x3a, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -13965,35 +13967,35 @@ func file_elys_leveragelp_tx_proto_rawDescGZIP() []byte {
 
 var file_elys_leveragelp_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_elys_leveragelp_tx_proto_goTypes = []interface{}{
-	(*MsgOpen)(nil),                       // 0: elys.leveragelp.MsgOpen
-	(*MsgOpenResponse)(nil),               // 1: elys.leveragelp.MsgOpenResponse
-	(*MsgClose)(nil),                      // 2: elys.leveragelp.MsgClose
-	(*MsgCloseResponse)(nil),              // 3: elys.leveragelp.MsgCloseResponse
-	(*MsgClaimRewards)(nil),               // 4: elys.leveragelp.MsgClaimRewards
-	(*MsgClaimRewardsResponse)(nil),       // 5: elys.leveragelp.MsgClaimRewardsResponse
-	(*MsgUpdateParams)(nil),               // 6: elys.leveragelp.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),       // 7: elys.leveragelp.MsgUpdateParamsResponse
-	(*MsgWhitelist)(nil),                  // 8: elys.leveragelp.MsgWhitelist
-	(*MsgWhitelistResponse)(nil),          // 9: elys.leveragelp.MsgWhitelistResponse
-	(*MsgDewhitelist)(nil),                // 10: elys.leveragelp.MsgDewhitelist
-	(*MsgDewhitelistResponse)(nil),        // 11: elys.leveragelp.MsgDewhitelistResponse
-	(*MsgUpdateStopLoss)(nil),             // 12: elys.leveragelp.MsgUpdateStopLoss
-	(*MsgUpdateStopLossResponse)(nil),     // 13: elys.leveragelp.MsgUpdateStopLossResponse
-	(*AddPool)(nil),                       // 14: elys.leveragelp.AddPool
-	(*MsgAddPool)(nil),                    // 15: elys.leveragelp.MsgAddPool
-	(*MsgAddPoolResponse)(nil),            // 16: elys.leveragelp.MsgAddPoolResponse
-	(*MsgRemovePool)(nil),                 // 17: elys.leveragelp.MsgRemovePool
-	(*MsgRemovePoolResponse)(nil),         // 18: elys.leveragelp.MsgRemovePoolResponse
-	(*MsgClosePositions)(nil),             // 19: elys.leveragelp.MsgClosePositions
-	(*MsgClosePositionsResponse)(nil),     // 20: elys.leveragelp.MsgClosePositionsResponse
-	(*MsgUpdatePool)(nil),                 // 21: elys.leveragelp.MsgUpdatePool
-	(*MsgUpdatePoolResponse)(nil),         // 22: elys.leveragelp.MsgUpdatePoolResponse
-	(*MsgUpdateEnabledPools)(nil),         // 23: elys.leveragelp.MsgUpdateEnabledPools
-	(*MsgUpdateEnabledPoolsResponse)(nil), // 24: elys.leveragelp.MsgUpdateEnabledPoolsResponse
-	(*MsgClaimAllRewards)(nil),            // 25: elys.leveragelp.MsgClaimAllRewards
-	(*MsgClaimAllRewardsResponse)(nil),    // 26: elys.leveragelp.MsgClaimAllRewardsResponse
-	(*Params)(nil),                        // 27: elys.leveragelp.Params
-	(*PositionRequest)(nil),               // 28: elys.leveragelp.PositionRequest
+	(*MsgOpen)(nil),                        // 0: elys.leveragelp.MsgOpen
+	(*MsgOpenResponse)(nil),                // 1: elys.leveragelp.MsgOpenResponse
+	(*MsgClose)(nil),                       // 2: elys.leveragelp.MsgClose
+	(*MsgCloseResponse)(nil),               // 3: elys.leveragelp.MsgCloseResponse
+	(*MsgClaimRewards)(nil),                // 4: elys.leveragelp.MsgClaimRewards
+	(*MsgClaimRewardsResponse)(nil),        // 5: elys.leveragelp.MsgClaimRewardsResponse
+	(*MsgUpdateParams)(nil),                // 6: elys.leveragelp.MsgUpdateParams
+	(*MsgUpdateParamsResponse)(nil),        // 7: elys.leveragelp.MsgUpdateParamsResponse
+	(*MsgWhitelist)(nil),                   // 8: elys.leveragelp.MsgWhitelist
+	(*MsgWhitelistResponse)(nil),           // 9: elys.leveragelp.MsgWhitelistResponse
+	(*MsgDewhitelist)(nil),                 // 10: elys.leveragelp.MsgDewhitelist
+	(*MsgDewhitelistResponse)(nil),         // 11: elys.leveragelp.MsgDewhitelistResponse
+	(*MsgUpdateStopLoss)(nil),              // 12: elys.leveragelp.MsgUpdateStopLoss
+	(*MsgUpdateStopLossResponse)(nil),      // 13: elys.leveragelp.MsgUpdateStopLossResponse
+	(*AddPool)(nil),                        // 14: elys.leveragelp.AddPool
+	(*MsgAddPool)(nil),                     // 15: elys.leveragelp.MsgAddPool
+	(*MsgAddPoolResponse)(nil),             // 16: elys.leveragelp.MsgAddPoolResponse
+	(*MsgRemovePool)(nil),                  // 17: elys.leveragelp.MsgRemovePool
+	(*MsgRemovePoolResponse)(nil),          // 18: elys.leveragelp.MsgRemovePoolResponse
+	(*MsgClosePositions)(nil),              // 19: elys.leveragelp.MsgClosePositions
+	(*MsgClosePositionsResponse)(nil),      // 20: elys.leveragelp.MsgClosePositionsResponse
+	(*MsgUpdatePool)(nil),                  // 21: elys.leveragelp.MsgUpdatePool
+	(*MsgUpdatePoolResponse)(nil),          // 22: elys.leveragelp.MsgUpdatePoolResponse
+	(*MsgUpdateEnabledPools)(nil),          // 23: elys.leveragelp.MsgUpdateEnabledPools
+	(*MsgUpdateEnabledPoolsResponse)(nil),  // 24: elys.leveragelp.MsgUpdateEnabledPoolsResponse
+	(*MsgClaimAllUserRewards)(nil),         // 25: elys.leveragelp.MsgClaimAllUserRewards
+	(*MsgClaimAllUserRewardsResponse)(nil), // 26: elys.leveragelp.MsgClaimAllUserRewardsResponse
+	(*Params)(nil),                         // 27: elys.leveragelp.Params
+	(*PositionRequest)(nil),                // 28: elys.leveragelp.PositionRequest
 }
 var file_elys_leveragelp_tx_proto_depIdxs = []int32{
 	27, // 0: elys.leveragelp.MsgUpdateParams.params:type_name -> elys.leveragelp.Params
@@ -14012,7 +14014,7 @@ var file_elys_leveragelp_tx_proto_depIdxs = []int32{
 	19, // 13: elys.leveragelp.Msg.ClosePositions:input_type -> elys.leveragelp.MsgClosePositions
 	21, // 14: elys.leveragelp.Msg.UpdatePool:input_type -> elys.leveragelp.MsgUpdatePool
 	23, // 15: elys.leveragelp.Msg.UpdateEnabledPools:input_type -> elys.leveragelp.MsgUpdateEnabledPools
-	25, // 16: elys.leveragelp.Msg.ClaimAllRewards:input_type -> elys.leveragelp.MsgClaimAllRewards
+	25, // 16: elys.leveragelp.Msg.ClaimAllUserRewards:input_type -> elys.leveragelp.MsgClaimAllUserRewards
 	1,  // 17: elys.leveragelp.Msg.Open:output_type -> elys.leveragelp.MsgOpenResponse
 	3,  // 18: elys.leveragelp.Msg.Close:output_type -> elys.leveragelp.MsgCloseResponse
 	5,  // 19: elys.leveragelp.Msg.ClaimRewards:output_type -> elys.leveragelp.MsgClaimRewardsResponse
@@ -14025,7 +14027,7 @@ var file_elys_leveragelp_tx_proto_depIdxs = []int32{
 	20, // 26: elys.leveragelp.Msg.ClosePositions:output_type -> elys.leveragelp.MsgClosePositionsResponse
 	22, // 27: elys.leveragelp.Msg.UpdatePool:output_type -> elys.leveragelp.MsgUpdatePoolResponse
 	24, // 28: elys.leveragelp.Msg.UpdateEnabledPools:output_type -> elys.leveragelp.MsgUpdateEnabledPoolsResponse
-	26, // 29: elys.leveragelp.Msg.ClaimAllRewards:output_type -> elys.leveragelp.MsgClaimAllRewardsResponse
+	26, // 29: elys.leveragelp.Msg.ClaimAllUserRewards:output_type -> elys.leveragelp.MsgClaimAllUserRewardsResponse
 	17, // [17:30] is the sub-list for method output_type
 	4,  // [4:17] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
@@ -14344,7 +14346,7 @@ func file_elys_leveragelp_tx_proto_init() {
 			}
 		}
 		file_elys_leveragelp_tx_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgClaimAllRewards); i {
+			switch v := v.(*MsgClaimAllUserRewards); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -14356,7 +14358,7 @@ func file_elys_leveragelp_tx_proto_init() {
 			}
 		}
 		file_elys_leveragelp_tx_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgClaimAllRewardsResponse); i {
+			switch v := v.(*MsgClaimAllUserRewardsResponse); i {
 			case 0:
 				return &v.state
 			case 1:

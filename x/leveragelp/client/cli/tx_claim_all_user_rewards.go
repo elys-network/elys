@@ -10,11 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdClaimAllRewards() *cobra.Command {
+func CmdClaimAllUserRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "claim-all-rewards [flags]",
-		Short:   "Claim rewards from leveragelp positions, capped to maxPageLimit positions",
-		Example: `elysd tx leveragelp claim-all-rewards --from=bob --yes --gas=1000000`,
+		Use:     "claim-all-user-rewards [flags]",
+		Short:   "Claims rewards from all leveragelp positions, capped to maxPageLimit positions",
+		Example: `elysd tx leveragelp claim-all-user-rewards --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -26,7 +26,7 @@ func CmdClaimAllRewards() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			msg := &types.MsgClaimAllRewards{
+			msg := &types.MsgClaimAllUserRewards{
 				Sender: signer.String(),
 			}
 

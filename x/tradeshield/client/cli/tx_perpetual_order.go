@@ -208,7 +208,7 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "cancel-perpetual-orders [ids.json]",
 		Short:   "Cancel a perpetual orders by ids",
-		Example: "elysd tx perpetual cancel-perpetual-orders ids.json --from=bob --yes --gas=1000000",
+		Example: "elysd tx tradeshield cancel-perpetual-orders ids.json --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])
@@ -222,6 +222,32 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 			}
 
 			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), ids)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCancelAllPerpetualOrders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "cancel-all-perpetual-orders",
+		Short:   "Cancel all pending perpetual orders for the user",
+		Example: "elysd tx tradeshield cancel-all-perpetual-orders --from=bob --yes --gas=1000000",
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelAllPerpetualOrders(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

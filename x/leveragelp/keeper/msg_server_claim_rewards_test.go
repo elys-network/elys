@@ -198,13 +198,13 @@ func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
 	collateralAmount := sdkmath.NewInt(10000000)
 	testCases := []struct {
 		name                 string
-		input                *types.MsgClaimAllRewards
+		input                *types.MsgClaimAllUserRewards
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
 		{"module is out of funds",
-			&types.MsgClaimAllRewards{
+			&types.MsgClaimAllUserRewards{
 				Sender: addresses[0].String(),
 			},
 			true,
@@ -230,7 +230,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
 			},
 		},
 		{"positive case",
-			&types.MsgClaimAllRewards{
+			&types.MsgClaimAllUserRewards{
 				Sender: addresses[0].String(),
 			},
 			false,
@@ -248,7 +248,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
-			_, err := msgServer.ClaimAllRewards(suite.ctx, tc.input)
+			_, err := msgServer.ClaimAllUserRewards(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
