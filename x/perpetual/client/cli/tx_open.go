@@ -22,7 +22,7 @@ func CmdOpen() *cobra.Command {
 elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=bob --yes --gas=1000000
 Finite profitability:
 elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=bob --yes --gas=1000000`,
-		Args: cobra.ExactArgs(5),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -46,9 +46,7 @@ elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-
 				return err
 			}
 
-			argTradingAsset := args[3]
-
-			argCollateral, err := sdk.ParseCoinNormalized(args[4])
+			argCollateral, err := sdk.ParseCoinNormalized(args[3])
 			if err != nil {
 				return err
 			}
@@ -88,7 +86,6 @@ elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-
 				argPosition,
 				argLeverage,
 				argPoolId,
-				argTradingAsset,
 				argCollateral,
 				takeProfitPrice,
 				stopLossPrice,

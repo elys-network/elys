@@ -343,21 +343,6 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.Legacy
 	return liquidationPrice, nil
 }
 
-func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
-	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
-		return math.ZeroInt(), nil
-	}
-	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
-	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
-	}
-	if mtp.Position == types.Position_LONG {
-		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Quo(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
-	} else {
-		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Mul(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
-	}
-}
-
 func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
 	// Ensure mtp.Custody is not zero to avoid division by zero
 	if mtp.Custody.IsZero() {
@@ -384,5 +369,15 @@ func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP)
 	}
 
 	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor.Dec()
+	return nil
+}
+
+func (k Keeper) GetExistingPosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
+	mtps := k.GetAllMTPsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+	for _, mtp := range mtps {
+		if mtp.Position == msg.Position && mtp.CollateralAsset == msg.Collateral.Denom && mtp.AmmPoolId == msg.PoolId {
+			return mtp
+		}
+	}
 	return nil
 }

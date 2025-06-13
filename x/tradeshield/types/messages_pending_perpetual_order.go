@@ -16,7 +16,6 @@ func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
 	triggerPrice math.LegacyDec,
 	collateral sdk.Coin,
-	tradingAsset string,
 	position PerpetualPosition,
 	leverage math.LegacyDec,
 	takeProfitPrice math.LegacyDec,
@@ -27,7 +26,6 @@ func NewMsgCreatePerpetualOpenOrder(
 		TriggerPrice:    triggerPrice,
 		Collateral:      collateral,
 		OwnerAddress:    ownerAddress,
-		TradingAsset:    tradingAsset,
 		Position:        position,
 		Leverage:        leverage,
 		TakeProfitPrice: takeProfitPrice,
@@ -49,10 +47,6 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 	// Validate collateral
 	if !msg.Collateral.IsValid() {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
-	}
-
-	if err = sdk.ValidateDenom(msg.TradingAsset); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	if msg.Position != PerpetualPosition_LONG && msg.Position != PerpetualPosition_SHORT {

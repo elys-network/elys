@@ -3,6 +3,7 @@ package types_test
 import (
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -68,4 +69,19 @@ func TestCheckForTakeProfit(t *testing.T) {
 
 	mtp.TakeProfitPrice = math.LegacyNewDec(-1e6) // Unrealistically low take profit price
 	assert.True(t, mtp.CheckForTakeProfit(math.LegacyNewDec(10)))
+}
+
+func TestGetMTPValue(t *testing.T) {
+	mtp := types.MTP{}
+	tradingAssetDenomPrice, _ := osmomath.NewBigDecFromStr("0.000005") // price of atom is 5
+	// Test LONG position
+	mtp.Position = types.Position_LONG
+	mtp.Custody = math.NewInt(10_000_000) // ex 10 ATOM
+
+	value := mtp.GetMTPValue(tradingAssetDenomPrice)
+	assert.True(t, math.LegacyNewDec(50).Equal(value))
+
+	mtp.Position = types.Position_SHORT
+	mtp.Liabilities = math.NewInt(10_000_000)
+	assert.True(t, math.LegacyNewDec(50).Equal(value))
 }

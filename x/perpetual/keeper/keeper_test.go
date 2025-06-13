@@ -127,6 +127,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
 	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
 	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
@@ -316,6 +317,15 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 
 	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11"))
 	k.SetPool(ctx, pool)
+
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
+	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
+	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
+	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
+	err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
 
 	return pool, poolCreator, ammPool
 }

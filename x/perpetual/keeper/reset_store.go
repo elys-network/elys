@@ -17,6 +17,7 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 		types.LegacyMTPCountPrefix,
 		types.LegacyOpenMTPCountPrefix,
 		types.WhitelistPrefix,
+		types.PerpetualCounterPrefix,
 	}
 
 	for _, prefix := range prefixes {
@@ -28,5 +29,15 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 		}
 	}
 
+	params := k.GetParams(ctx)
+	allPools := k.GetAllPools(ctx)
+	for _, pool := range allPools {
+		ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+		if err != nil {
+			return err
+		}
+		resetPool := types.NewPool(ammPool, params.LeverageMax)
+		k.SetPool(ctx, resetPool)
+	}
 	return nil
 }
