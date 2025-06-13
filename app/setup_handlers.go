@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -65,6 +66,18 @@ func (app *ElysApp) setUpgradeHandler() {
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			app.OracleKeeper.EndBlock(ctx)
+
+			allPerpetualPools := app.PerpetualKeeper.GetAllPools(ctx)
+			for _, pool := range allPerpetualPools {
+				ammPool, found := app.AmmKeeper.GetPool(ctx, pool.AmmPoolId)
+				if !found {
+					return vm, errors.New("amm pool not found during migration")
+				}
+				err := app.AccountedPoolKeeper.PerpetualUpdates(ctx, ammPool, pool)
+				if err != nil {
+					return vm, err
+				}
+			}
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
 			//if len(oracleParams.MandatoryList) == 0 {
