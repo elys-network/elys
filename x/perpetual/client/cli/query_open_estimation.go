@@ -15,9 +15,9 @@ import (
 
 func CmdOpenEstimation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral] [pool-id]",
+		Use:     "open-estimation [position] [leverage] [collateral] [pool-id]",
 		Short:   "Query open-estimation",
-		Example: "elysd q perpetual open-estimation long 5 uatom 100000000uusdc 1",
+		Example: "elysd q perpetual open-estimation long 5 100000000uusdc 1",
 		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
