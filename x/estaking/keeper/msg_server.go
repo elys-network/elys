@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"errors"
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -140,9 +143,33 @@ func (k msgServer) UnjailGovernor(goCtx context.Context, msg *types.MsgUnjailGov
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	validator, err := k.Validator(ctx, sdk.ValAddress(sender))
+	validatorAddr := sdk.ValAddress(sender)
+
+	validator, err := k.Validator(ctx, validatorAddr)
 	if err != nil {
 		return nil, err
+	}
+
+	// cannot be unjailed if no self-delegation exists
+	// k.Delegation sends err as nil if no delegations are found
+	selfDel, err := k.Keeper.Keeper.Delegation(ctx, sender, validatorAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	if selfDel == nil {
+		return nil, errors.New("governor has no self-delegation; cannot be unjailed")
+	}
+
+	tokens := validator.TokensFromShares(selfDel.GetShares()).TruncateInt()
+	minSelfBond := validator.GetMinSelfDelegation()
+	if tokens.LT(minSelfBond) {
+		return nil, fmt.Errorf("governor's self delegation less than minimum; cannot be unjailed: %s less than %s", tokens.String(), minSelfBond.String())
+	}
+
+	// cannot be unjailed if not jailed
+	if !validator.IsJailed() {
+		return nil, errors.New("governor not jailed; cannot be unjailed")
 	}
 
 	consAddr, err := validator.GetConsAddr()

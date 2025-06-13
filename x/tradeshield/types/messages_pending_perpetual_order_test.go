@@ -29,7 +29,6 @@ func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 				OwnerAddress:    sample.AccAddress(),
 				TriggerPrice:    math.LegacyNewDec(100),
 				Collateral:      sdk.NewCoin("token", math.NewInt(1000)),
-				TradingAsset:    "asset",
 				Position:        PerpetualPosition_LONG,
 				Leverage:        math.LegacyNewDec(2),
 				TakeProfitPrice: math.LegacyNewDec(150),
