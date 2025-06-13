@@ -87,6 +87,18 @@ var (
 			price:   osmomath.MustNewBigDecFromStr("100000.0"),
 			decimal: 8,
 		},
+		"afet": {
+			denom:   "afet",
+			display: "FET",
+			price:   osmomath.MustNewBigDecFromStr("0.5"),
+			decimal: 18,
+		},
+		"ameme": {
+			denom:   "ameme",
+			display: "MEME",
+			price:   osmomath.MustNewBigDecFromStr("0.0000000253"),
+			decimal: 18,
+		},
 	}
 )
 
@@ -224,7 +236,7 @@ func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, p
 	})
 	priceUpdated, found := suite.app.OracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	suite.Require().True(found)
-	suite.Require().Equal(priceUpdated.Dec(), price)
+	suite.Require().Equal(priceUpdated, price)
 }
 
 func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() math.Int {

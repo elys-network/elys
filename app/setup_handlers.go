@@ -13,12 +13,8 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999999"
-	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
+	NewMaxBytes = 5 * 1024 * 1024 // 5MB
 )
-
-// make sure to update these when you upgrade the version
-var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
@@ -67,6 +63,8 @@ func (app *ElysApp) setUpgradeHandler() {
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
+
+			app.OracleKeeper.EndBlock(ctx)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
 			//if len(oracleParams.MandatoryList) == 0 {
