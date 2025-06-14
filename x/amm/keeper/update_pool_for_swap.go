@@ -221,6 +221,11 @@ func (k Keeper) UpdatePoolForSwap(
 		)
 	}
 
+	if !pool.PoolParams.UseOracle {
+		tokenInPrice, tokenOutPrice := k.GetEstimatedTokensPriceFromBestPool(ctx, tokenIn.Denom, tokenOut.Denom)
+		types.EmitSwapPriceChangeEvent(ctx, pool.PoolId, tokenIn.Denom, tokenInPrice.String(), tokenOut.Denom, tokenOutPrice.String())
+	}
+
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
