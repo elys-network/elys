@@ -4,7 +4,10 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
@@ -219,6 +222,16 @@ func (k Keeper) UpdatePoolForSwap(
 			bonusTokenAmountInUSD.String(),
 			takerFeesAmountInUSD.String(),
 		)
+	}
+
+	if !pool.PoolParams.UseOracle {
+		baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if !found {
+			return sdk.Coin{}, status.Error(codes.NotFound, "asset profile not found")
+		}
+		tokenInUsdcRate := k.EstimatePrice(ctx, tokenIn.Denom, baseCurrencyEntry.Denom)
+		tokenOutUsdcRate := k.EstimatePrice(ctx, tokenOut.Denom, baseCurrencyEntry.Denom)
+		types.EmitSwapPriceChangeEvent(ctx, tokenIn.Denom, tokenInUsdcRate.String(), tokenOut.Denom, tokenOutUsdcRate.String())
 	}
 
 	// emit swap event
