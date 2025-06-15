@@ -14,6 +14,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(req.Withdrawer)
+	vaultAddress := types.NewVaultAddress(req.VaultId)
 
 	_, found := k.GetVault(ctx, req.VaultId)
 	if !found {
@@ -21,6 +22,12 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	}
 
 	k.DeductPerformanceFee(ctx)
+
+	// claim pending rewards
+	k.ClaimRewards(ctx, &types.MsgClaimRewards{
+		Sender:   creator.String(),
+		VaultIds: k.GetAllPoolIds(ctx, vaultAddress),
+	})
 
 	shareDenom := types.GetShareDenomForVault(req.VaultId)
 	shareCoin := sdk.NewCoin(shareDenom, req.Shares)
@@ -49,7 +56,6 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 
 	shareRatio := req.Shares.ToLegacyDec().Quo(totalShares.ToLegacyDec())
 
-	vaultAddress := types.NewVaultAddress(req.VaultId)
 	toSendCoins := sdk.NewCoins()
 	vault, found := k.GetVault(ctx, req.VaultId)
 	if !found {

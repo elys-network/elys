@@ -165,17 +165,20 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			usdcDenom := k.GetBaseCurrencyDenom(ctx)
 
 			beforeBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
-			// TODO: get all pools ids
-			err := k.masterchef.ClaimRewards(ctx, vaultAddress, []uint64{1, 2, 3, 4}, vaultRewardCollectorAddress)
+			poolIds := k.GetAllPoolIds(ctx, vaultAddress)
+			err := k.masterchef.ClaimRewards(ctx, vaultAddress, poolIds, vaultRewardCollectorAddress)
 			if err != nil {
 				k.Logger(ctx).Error("error claiming rewards", "error", err)
 			}
 			afterBalance := k.commitment.GetAllBalances(ctx, vaultRewardCollectorAddress)
 			usdcAmount := afterBalance.AmountOf(usdcDenom).Sub(beforeBalance.AmountOf(usdcDenom))
 
-			// Update reward USDC share
+			// Send usdc to vault address
 			if usdcAmount.IsPositive() {
-				k.UpdateAccPerShare(ctx, vault.Id, usdcDenom, usdcAmount)
+				err = k.bk.SendCoins(ctx, vaultRewardCollectorAddress, vaultAddress, sdk.NewCoins(sdk.NewCoin(usdcDenom, usdcAmount)))
+				if err != nil {
+					k.Logger(ctx).Error("error sending usdc to vault address", "error", err)
+				}
 			}
 
 			// Update reward EDEN share

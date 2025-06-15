@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) TestRewardMechanism() {
 		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		DepositDenom:  "uusdc",
 		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom"},
+		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
 		RewardCoins:   []string{"uelys"},
 		BenchmarkCoin: "uatom",
 		Manager:       manager.String(),
@@ -52,6 +52,15 @@ func (suite *KeeperTestSuite) TestRewardMechanism() {
 	}
 	_, err = msgServer.Deposit(suite.ctx, &depositMsg)
 	suite.Require().NoError(err)
+
+	coinsToSend = coinsToSend.Add(sdk.NewCoin("uatom", sdkmath.NewInt(100000)))
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, "mint", coinsToSend)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", manager, coinsToSend)
+	suite.Require().NoError(err)
+
+	// Add eden to vault reward collector
+	suite.app.CommitmentKeeper.AddEdenEdenBOnModule(suite.ctx, types.NewVaultRewardCollectorAddressString(1), sdk.NewCoins(sdk.NewCoin("ueden", sdkmath.NewInt(100000))))
 
 	// Create a pool for the vault to join
 	suite.CreateNewAmmPool(
@@ -115,8 +124,8 @@ func (suite *KeeperTestSuite) TestRewardMechanism() {
 	suite.Require().True(userRewardInfo.RewardPending.IsZero())
 
 	// Verify depositor received the rewards
-	balance := suite.app.BankKeeper.GetBalance(suite.ctx, depositor, rewardDenom)
-	suite.Require().True(balance.Amount.IsPositive())
+	balance := suite.app.CommitmentKeeper.GetAllBalances(suite.ctx, depositor)
+	suite.Require().True(balance.AmountOf(rewardDenom).IsPositive())
 }
 
 func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
@@ -131,7 +140,7 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		DepositDenom:  "uusdc",
 		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom"},
+		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
 		RewardCoins:   []string{"uelys"},
 		BenchmarkCoin: "uatom",
 		Manager:       manager.String(),
@@ -169,6 +178,16 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 	_, err = msgServer.Deposit(suite.ctx, &depositMsg2)
 	suite.Require().NoError(err)
 
+	// Add uatom to manager's balance
+	coinsToSend = coinsToSend.Add(sdk.NewCoin("uatom", sdkmath.NewInt(100000)))
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, "mint", coinsToSend)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", manager, coinsToSend)
+	suite.Require().NoError(err)
+
+	// Add eden to vault reward collector (enough for both users)
+	suite.app.CommitmentKeeper.AddEdenEdenBOnModule(suite.ctx, types.NewVaultRewardCollectorAddressString(1), sdk.NewCoins(sdk.NewCoin("ueden", sdkmath.NewInt(200000))))
+
 	// Create a pool and join it
 	suite.CreateNewAmmPool(
 		manager,
@@ -197,7 +216,10 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 
 	// Update rewards for both users
 	suite.app.VaultsKeeper.UpdateUserRewardPending(suite.ctx, 1, rewardDenom, depositor1, false, sdkmath.ZeroInt())
+	suite.app.VaultsKeeper.UpdateUserRewardDebt(suite.ctx, 1, rewardDenom, depositor1)
+
 	suite.app.VaultsKeeper.UpdateUserRewardPending(suite.ctx, 1, rewardDenom, depositor2, false, sdkmath.ZeroInt())
+	suite.app.VaultsKeeper.UpdateUserRewardDebt(suite.ctx, 1, rewardDenom, depositor2)
 
 	// Verify both users have pending rewards
 	user1RewardInfo, found := suite.app.VaultsKeeper.GetUserRewardInfo(suite.ctx, depositor1, 1, rewardDenom)
@@ -224,8 +246,8 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 	suite.Require().NoError(err)
 
 	// Verify both users received their rewards
-	balance1 := suite.app.BankKeeper.GetBalance(suite.ctx, depositor1, rewardDenom)
-	balance2 := suite.app.BankKeeper.GetBalance(suite.ctx, depositor2, rewardDenom)
-	suite.Require().True(balance1.Amount.IsPositive())
-	suite.Require().True(balance2.Amount.IsPositive())
+	balance1 := suite.app.CommitmentKeeper.GetAllBalances(suite.ctx, depositor1)
+	balance2 := suite.app.CommitmentKeeper.GetAllBalances(suite.ctx, depositor2)
+	suite.Require().True(balance1.AmountOf(rewardDenom).IsPositive())
+	suite.Require().True(balance2.AmountOf(rewardDenom).IsPositive())
 }
