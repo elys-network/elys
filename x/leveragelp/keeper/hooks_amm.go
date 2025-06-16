@@ -20,7 +20,8 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 
 	for _, asset := range ammPool.PoolAssets {
 		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
-			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+			amountInPool := asset.Token.Amount.Mul(params.LiabilitiesFactor.TruncateInt())
+			if asset.Token.Denom == liabilties.Denom && amountInPool.LT(liabilties.Amount) {
 				return fmt.Errorf("insufficient amount of %s after the operation for leveragelp", asset.Token.Denom)
 			}
 		}

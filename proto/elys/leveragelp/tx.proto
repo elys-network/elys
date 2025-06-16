@@ -29,7 +29,8 @@ service Msg {
   rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc UpdateEnabledPools(MsgUpdateEnabledPools)
       returns (MsgUpdateEnabledPoolsResponse);
-  rpc ClaimAllUserRewards(MsgClaimAllUserRewards) returns (MsgClaimAllUserRewardsResponse);
+  rpc ClaimAllUserRewards(MsgClaimAllUserRewards)
+      returns (MsgClaimAllUserRewardsResponse);
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
