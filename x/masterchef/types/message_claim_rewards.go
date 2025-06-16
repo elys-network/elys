@@ -14,9 +14,7 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
-	if len(msg.PoolIds) == 0 {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "pool ids cannot be empty")
-	}
+	// We don't check for len(msg.PoolIds) == 0 because in this case rewards are claimed from all pools
 
 	return nil
 }
