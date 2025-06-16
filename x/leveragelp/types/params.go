@@ -21,6 +21,7 @@ func NewParams() Params {
 		EnabledPools:        []uint64(nil),
 		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
 		StopLossEnabled:     true,
+		LiabilitiesFactor:   sdkmath.LegacyMustNewDecFromStr("1.0"),
 	}
 }
 
