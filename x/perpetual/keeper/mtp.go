@@ -360,7 +360,7 @@ func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP)
 	if err != nil {
 		return err
 	}
-	takeProfitBorrowFactor := osmomath.OneBigDec()
+	var takeProfitBorrowFactor osmomath.BigDec
 	if mtp.Position == types.Position_LONG {
 		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
 		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().Mul(takeProfitPriceDenomRatio)))
