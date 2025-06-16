@@ -19,12 +19,13 @@ const (
 )
 
 var (
-	ParamKeyPrefix          = []byte{0x01}
-	VaultKeyPrefix          = []byte{0x02}
-	UserDataKeyPrefix       = []byte{0x03}
-	PoolInfoKeyPrefix       = []byte{0x04}
-	PoolRewardInfoKeyPrefix = []byte{0x05}
-	UserRewardInfoKeyPrefix = []byte{0x06}
+	ParamKeyPrefix            = []byte{0x01}
+	VaultKeyPrefix            = []byte{0x02}
+	UserDataKeyPrefix         = []byte{0x03}
+	PoolInfoKeyPrefix         = []byte{0x04}
+	PoolRewardInfoKeyPrefix   = []byte{0x05}
+	UserRewardInfoKeyPrefix   = []byte{0x06}
+	PoolRewardsAccumKeyPrefix = []byte{0x07}
 )
 
 func GetVaultKey(key uint64) []byte {
@@ -62,4 +63,16 @@ func GetUserRewardInfoKey(user sdk.AccAddress, poolId uint64, rewardDenom string
 	key = append(key, rewardDenom...)
 
 	return key
+}
+
+func GetPoolRewardsAccumPrefix(poolId uint64) []byte {
+	key := PoolRewardsAccumKeyPrefix
+	key = append(key, []byte("/")...)
+	return append(key, sdk.Uint64ToBigEndian(poolId)...)
+}
+
+func GetPoolRewardsAccumKey(poolId uint64, timestamp uint64) []byte {
+	key := GetPoolRewardsAccumPrefix(poolId)
+	key = append(key, []byte("/")...)
+	return append(key, sdk.Uint64ToBigEndian(timestamp)...)
 }
