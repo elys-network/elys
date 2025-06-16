@@ -67,6 +67,14 @@ func (p Params) Validate() error {
 	if p.ExitBuffer.IsNil() {
 		return fmt.Errorf("exit buffer must be not nil")
 	}
+
+	if p.LiabilitiesFactor.IsNil() {
+		return fmt.Errorf("liabilities factor must be not nil")
+	}
+
+	if !p.LiabilitiesFactor.IsPositive() {
+		return fmt.Errorf("liabilities factor must be positive: %s", p.LiabilitiesFactor.String())
+	}
 	return nil
 }
 
