@@ -171,39 +171,6 @@ message MsgAddVaultResponse {
   uint64 vault_id = 1;
 }
 
-// message MsgPerformAction {
-//   option (cosmos.msg.v1.signer) = "creator";
-//   option (amino.name) = "vaults/MsgPerformAction";
-
-//   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-//   uint64 vault_id = 2;
-
-//   Action action = 3;
-// }
-
-// message Action {
-//   oneof action {
-//     // AMM
-//     elys.amm.MsgJoinPool join_pool = 3;
-//     elys.amm.MsgExitPool exit_pool = 4;
-//     elys.amm.MsgSwapByDenom swap_by_denom = 5;
-//     // Commitment (Rewards management)
-//     elys.commitment.MsgCommitClaimedRewards commit_claimed_rewards = 6;
-//     elys.commitment.MsgUncommitTokens uncommit_tokens = 7;
-//     elys.commitment.MsgVest vest = 8;
-//     elys.commitment.MsgCancelVest cancel_vest = 9;
-//     elys.commitment.MsgClaimVesting claim_vesting = 10;
-//     // Staking
-//     elys.commitment.MsgStake stake = 11;
-//     elys.commitment.MsgUnstake unstake = 12;
-//     // Stablestake
-//     elys.stablestake.MsgBond bond = 13;
-//     elys.stablestake.MsgUnbond unbond = 14;
-//     // Masterchef
-//     elys.masterchef.MsgClaimRewards claim_rewards = 15;
-//   }
-// }
-
 message MsgPerformActionResponse { uint64 vault_id = 1; }
 
 message MsgPerformActionJoinPool {
