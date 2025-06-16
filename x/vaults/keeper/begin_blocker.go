@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/vaults/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -185,6 +186,24 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			edenAmount := afterBalance.AmountOf(ptypes.Eden).Sub(beforeBalance.AmountOf(ptypes.Eden))
 			if edenAmount.IsPositive() {
 				k.UpdateAccPerShare(ctx, vault.Id, ptypes.Eden, edenAmount)
+			}
+
+			k.AddPoolRewardsAccum(
+				ctx,
+				vault.Id,
+				uint64(ctx.BlockTime().Unix()),
+				ctx.BlockHeight(),
+				osmomath.NewBigDecFromInt(usdcAmount),
+				osmomath.NewBigDecFromInt(edenAmount),
+			)
+			params := k.parameterKeeper.GetParams(ctx)
+			dataLifetime := params.RewardsDataLifetime
+			for {
+				firstAccum := k.FirstPoolRewardsAccum(ctx, vault.Id)
+				if firstAccum.Timestamp == 0 || int64(firstAccum.Timestamp+dataLifetime) >= ctx.BlockTime().Unix() {
+					break
+				}
+				k.DeletePoolRewardsAccum(ctx, firstAccum)
 			}
 		}
 	}
