@@ -18,12 +18,14 @@ func TestMsgTogglePoolEdenRewards_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgTogglePoolEdenRewards{
 				Authority: "invalid_address",
+				PoolId:    1,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgTogglePoolEdenRewards{
 				Authority: sample.AccAddress(),
+				PoolId:    1,
 			},
 		},
 	}
