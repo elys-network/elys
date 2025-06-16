@@ -13,5 +13,10 @@ func (msg *MsgTogglePoolEdenRewards) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.PoolId == 0 {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "pool id cannot be zero")
+	}
+
 	return nil
 }

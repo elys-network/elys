@@ -15,7 +15,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetStatus_Successful() {
 	k := suite.app.PerpetualKeeper
 	ctx := suite.ctx
 
-	_, err := k.PerpetualCounter(ctx, &types.PerpetualCounterRequest{1})
+	_, err := k.PerpetualCounter(ctx, &types.PerpetualCounterRequest{Id: 1})
 
 	suite.Require().Nil(err)
 }

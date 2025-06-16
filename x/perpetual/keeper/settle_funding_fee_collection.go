@@ -10,7 +10,7 @@ import (
 func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (bool, math.Int, error) {
 
 	fullFundingFeePayment := true
-	takeAmountCustodyAmount := math.ZeroInt()
+	var takeAmountCustodyAmount math.Int
 	// get funding rate
 	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 

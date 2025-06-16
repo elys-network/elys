@@ -14,7 +14,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 	suite.ResetSuite()
 	addr := suite.AddAccounts(1, nil)
 	positionCreator := addr[0]
-	pool, _, ammPool := suite.SetPerpetualPool(1)
+	_, _, ammPool := suite.SetPerpetualPool(1)
 	tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	openPositionMsg := &types.MsgOpen{
@@ -43,7 +43,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 	suite.Require().NoError(err)
 	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, mtpOpenResponse.Id)
 	suite.Require().NoError(err)
-	pool, _ = suite.app.PerpetualKeeper.GetPool(suite.ctx, mtp.Id)
+	pool, _ := suite.app.PerpetualKeeper.GetPool(suite.ctx, mtp.Id)
 	ammPool, _ = suite.app.PerpetualKeeper.GetAmmPool(suite.ctx, mtp.AmmPoolId)
 	return mtp, pool, ammPool, addr[0]
 }

@@ -63,6 +63,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateParams_Pools() {
 		},
 	}
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
 	msg := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
 	params := types.DefaultGenesis().Params
 	params.LeverageMax = math.LegacyNewDec(int64(200000))
