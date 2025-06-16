@@ -222,8 +222,15 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	if !pool.PoolParams.UseOracle {
-		tokenInPrice, tokenOutPrice := k.GetEstimatedTokensPriceFromBestPool(ctx, tokenIn.Denom, tokenOut.Denom)
-		types.EmitSwapPriceChangeEvent(ctx, pool.PoolId, tokenIn.Denom, tokenInPrice.String(), tokenOut.Denom, tokenOutPrice.String())
+		tokenInAsset, tokenOutAsset, err := pool.ParsePoolAssetsByDenoms(tokenIn.Denom, tokenOut.Denom)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		tokenInRatewWrtTokenOut := types.CalculateTokenARate(
+			osmomath.BigDecFromSDKInt(tokenInAsset.Token.Amount), osmomath.BigDecFromSDKInt(tokenInAsset.Weight),
+			osmomath.BigDecFromSDKInt(tokenOutAsset.Token.Amount), osmomath.BigDecFromSDKInt(tokenOutAsset.Weight),
+		)
+		types.EmitSwapPriceChangeEvent(ctx, pool.PoolId, tokenIn.Denom, tokenInRatewWrtTokenOut.String(), tokenOut.Denom)
 	}
 
 	// emit swap event

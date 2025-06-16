@@ -27,10 +27,9 @@ const (
 	AttributeKeyProvidedBonusFee  = "provided_bonus_fee"
 	AttributeTakerFees            = "taker_fees"
 
-	AttributeKeyTokenIn       = "token_in"
-	AttributeKeyTokenOut      = "token_out"
-	AttributeKeyTokenInPrice  = "token_in_price"
-	AttributeKeyTokenOutPrice = "token_out_price"
+	AttributeKeyTokenIn      = "token_in"
+	AttributeKeyTokenOut     = "token_out"
+	AttributeKeyTokenInPrice = "token_in_rate_wrt_token_out"
 )
 
 func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
@@ -39,9 +38,9 @@ func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uin
 	})
 }
 
-func EmitSwapPriceChangeEvent(ctx sdk.Context, poolId uint64, tokenInDenom, tokenInPrice, tokenOutDenom, tokenOutPrice string) {
+func EmitSwapPriceChangeEvent(ctx sdk.Context, poolId uint64, tokenInDenom, tokenInPrice, tokenOutDenom string) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		NewSwapPriceChangeEvent(poolId, tokenInDenom, tokenInPrice, tokenOutDenom, tokenOutPrice),
+		NewSwapPriceChangeEvent(poolId, tokenInDenom, tokenInPrice, tokenOutDenom),
 	})
 }
 
@@ -81,14 +80,13 @@ func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coi
 	)
 }
 
-func NewSwapPriceChangeEvent(poolId uint64, tokenInDenom, tokenInPrice, tokenOutDenom, tokenOutPrice string) sdk.Event {
+func NewSwapPriceChangeEvent(poolId uint64, tokenInDenom, tokenInPrice, tokenOutDenom string) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtSwapTokenPriceChange,
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokenIn, tokenInDenom),
-		sdk.NewAttribute(AttributeKeyTokenInPrice, tokenInPrice),
 		sdk.NewAttribute(AttributeKeyTokenOut, tokenOutDenom),
-		sdk.NewAttribute(AttributeKeyTokenOutPrice, tokenOutPrice),
+		sdk.NewAttribute(AttributeKeyTokenInPrice, tokenInPrice),
 	)
 }
 
