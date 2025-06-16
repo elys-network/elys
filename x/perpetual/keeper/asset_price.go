@@ -21,11 +21,11 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
 	}
 
-	price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+	assetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 	if !found {
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s not found", asset)
 	}
-	if price.IsZero() {
+	if assetPrice.IsZero() {
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s is zero", asset)
 	}
 	USDCPrice, found := k.oracleKeeper.GetAssetPrice(ctx, USDCInfo.DisplayName)
@@ -38,10 +38,10 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 
 	if info.Decimal < USDCInfo.Decimals {
 		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
-		return price.Dec(), price.Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
+		return assetPrice, osmomath.BigDecFromDec(assetPrice.Quo(USDCPrice)).MulInt64(baseUnitMultiplier), nil
 	} else {
 		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
-		return price.Dec(), price.Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
+		return assetPrice, osmomath.BigDecFromDec(assetPrice.Quo(USDCPrice)).QuoInt64(baseUnitMultiplier), nil
 	}
 }
 
@@ -61,10 +61,10 @@ func (k Keeper) ConvertPriceToAssetUsdcDenomRatio(ctx sdk.Context, asset string,
 	}
 	if info.Decimal < USDCInfo.Decimals {
 		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
-		return osmomath.BigDecFromDec(price).Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
+		return osmomath.BigDecFromDec(price.Quo(USDCPrice)).MulInt64(baseUnitMultiplier), nil
 	} else {
 		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
-		return osmomath.BigDecFromDec(price).Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
+		return osmomath.BigDecFromDec(price.Quo(USDCPrice)).QuoInt64(baseUnitMultiplier), nil
 	}
 }
 
@@ -86,26 +86,26 @@ func (k Keeper) GetDenomDecimal(ctx sdk.Context, denom string) (uint64, error) {
 
 // ConvertDenomRatioPriceToUSDPrice price -  units are uusdc per uatom, uusdc per wei, usd per sat
 // gets converted to usd per atom, usd per eth and usd per btc
-func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, price osmomath.BigDec, tradingAssetDenom string) (osmomath.BigDec, error) {
+func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, denomRatioPrice osmomath.BigDec, tradingAssetDenom string) (math.LegacyDec, error) {
 	// units are uusdc per uatom, uusdc per wei, usd per sat
 	USDCInfo, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return osmomath.ZeroBigDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
+		return math.LegacyZeroDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrencyDenomPrice, err := k.GetDenomPrice(ctx, USDCInfo.Denom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 
 	// Now the units are usd per uatom, usd per wei, usd per sat
-	price = price.Mul(baseCurrencyDenomPrice) // Now the units are usd per uatom, usd per wei, usd per sat
+	denomRatioPrice = denomRatioPrice.Mul(baseCurrencyDenomPrice)
 
 	decimal, err := k.GetDenomDecimal(ctx, tradingAssetDenom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 
 	// Multiply by 10^decimal of taring asset
-	price = price.MulInt64(utils.Pow10Int64(decimal))
-	return price, nil
+	denomRatioPrice = denomRatioPrice.MulInt64(utils.Pow10Int64(decimal))
+	return denomRatioPrice.Dec(), nil
 }

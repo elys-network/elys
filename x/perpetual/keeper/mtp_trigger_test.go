@@ -22,7 +22,6 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_LONG,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -33,7 +32,6 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_SHORT,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -64,7 +62,7 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 			func() {
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 			},
-			"unable to find base currency entry",
+			"asset info uusdc not found",
 			math.NewInt(0),
 		},
 		{

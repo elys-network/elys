@@ -45,7 +45,6 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_SHORT,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),

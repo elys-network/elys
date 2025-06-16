@@ -25,12 +25,6 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	reducingCollateralAmt := closingRatio.MulInt(mtp.Collateral).TruncateInt()
 	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
 
-	oldTakeProfitCustody := mtp.TakeProfitCustody
-	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(closingRatio.MulInt(mtp.TakeProfitCustody).TruncateInt())
-
-	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
-	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(closingRatio.MulInt(mtp.TakeProfitLiabilities).TruncateInt())
-
 	err := pool.UpdateCustody(mtp.CustodyAsset, closingCustodyAmount, false, mtp.Position)
 	if err != nil {
 		return err
@@ -46,26 +40,15 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
-	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, oldTakeProfitCustody.Sub(mtp.TakeProfitCustody), false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
 	// This is for accounting purposes, mtp.Custody gets reduced by borrowInterestPaymentCustody and funding fee. so msg.Amount is greater than mtp.Custody here. So if it's negative it should be closed
 	if mtp.Custody.IsZero() || mtp.Custody.IsNegative() {
 		k.DestroyMTP(ctx, *mtp)
 	} else {
 		// update mtp health
-		mtpHealth, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+		mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 		if err != nil {
 			return err
 		}
-		mtp.MtpHealth = mtpHealth.Dec()
 		err = k.SetMTP(ctx, mtp)
 		if err != nil {
 			return err

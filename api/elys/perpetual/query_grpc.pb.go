@@ -41,6 +41,7 @@ type QueryClient interface {
 	OpenEstimation(ctx context.Context, in *QueryOpenEstimationRequest, opts ...grpc.CallOption) (*QueryOpenEstimationResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(ctx context.Context, in *QueryCloseEstimationRequest, opts ...grpc.CallOption) (*QueryCloseEstimationResponse, error)
+	OpenEstimationByFinal(ctx context.Context, in *QueryOpenEstimationByFinalRequest, opts ...grpc.CallOption) (*QueryOpenEstimationByFinalResponse, error)
 }
 
 type queryClient struct {
@@ -159,6 +160,15 @@ func (c *queryClient) CloseEstimation(ctx context.Context, in *QueryCloseEstimat
 	return out, nil
 }
 
+func (c *queryClient) OpenEstimationByFinal(ctx context.Context, in *QueryOpenEstimationByFinalRequest, opts ...grpc.CallOption) (*QueryOpenEstimationByFinalResponse, error) {
+	out := new(QueryOpenEstimationByFinalResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/OpenEstimationByFinal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -186,6 +196,7 @@ type QueryServer interface {
 	OpenEstimation(context.Context, *QueryOpenEstimationRequest) (*QueryOpenEstimationResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error)
+	OpenEstimationByFinal(context.Context, *QueryOpenEstimationByFinalRequest) (*QueryOpenEstimationByFinalResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -228,6 +239,9 @@ func (UnimplementedQueryServer) OpenEstimation(context.Context, *QueryOpenEstima
 }
 func (UnimplementedQueryServer) CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CloseEstimation not implemented")
+}
+func (UnimplementedQueryServer) OpenEstimationByFinal(context.Context, *QueryOpenEstimationByFinalRequest) (*QueryOpenEstimationByFinalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpenEstimationByFinal not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -458,6 +472,24 @@ func _Query_CloseEstimation_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_OpenEstimationByFinal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOpenEstimationByFinalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OpenEstimationByFinal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.perpetual.Query/OpenEstimationByFinal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OpenEstimationByFinal(ctx, req.(*QueryOpenEstimationByFinalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -512,6 +544,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CloseEstimation",
 			Handler:    _Query_CloseEstimation_Handler,
+		},
+		{
+			MethodName: "OpenEstimationByFinal",
+			Handler:    _Query_OpenEstimationByFinal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

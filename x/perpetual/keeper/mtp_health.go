@@ -5,19 +5,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // GetMTPHealth Health = custody / liabilities
 // It's responsibility of outer function to update mtp.BorrowInterestUnpaidLiability using UpdateMTPBorrowInterestUnpaidLiability
-func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (osmomath.BigDec, error) {
+func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
 
 	if mtp.Custody.LTE(math.ZeroInt()) {
-		return osmomath.ZeroBigDec(), nil
+		return math.LegacyZeroDec(), nil
 	}
 
 	if mtp.Liabilities.IsZero() {
-		maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
+		maxDec := math.LegacyOneDec().Quo(math.LegacySmallestDec())
 		return maxDec, nil
 	}
 
@@ -31,11 +30,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		totalLiabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesTokenOut, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
-			return osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), err
 		}
 
 		if totalLiabilities.IsZero() {
-			return osmomath.ZeroBigDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 	}
 
@@ -45,7 +44,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	custodyAmtInBaseCurrency := mtp.Custody
 
 	if !custodyAmtInBaseCurrency.IsPositive() {
-		return osmomath.ZeroBigDec(), nil
+		return math.LegacyZeroDec(), nil
 	}
 
 	if mtp.Position == types.Position_LONG {
@@ -53,11 +52,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		custodyAmtInBaseCurrency, _, _, err = k.EstimateSwapGivenOut(ctx, custodyAmtTokenOut, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
-			return osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), err
 		}
 	}
 
 	// health = custody / liabilities
-	lr := osmomath.BigDecFromSDKInt(custodyAmtInBaseCurrency).Quo(osmomath.BigDecFromSDKInt(totalLiabilities))
+	lr := custodyAmtInBaseCurrency.ToLegacyDec().Quo(totalLiabilities.ToLegacyDec())
 	return lr, nil
 }

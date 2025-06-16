@@ -20,8 +20,6 @@ func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesA
 		BorrowInterestPaidCustody:     sdkmath.ZeroInt(),
 		BorrowInterestUnpaidLiability: sdkmath.ZeroInt(),
 		Custody:                       sdkmath.ZeroInt(),
-		TakeProfitLiabilities:         sdkmath.ZeroInt(),
-		TakeProfitCustody:             sdkmath.ZeroInt(),
 		MtpHealth:                     sdkmath.LegacyZeroDec(),
 		Position:                      position,
 		Id:                            0,
@@ -106,14 +104,6 @@ func (mtp MTP) CheckForTakeProfit(tradingAssetPrice sdkmath.LegacyDec) bool {
 	return takeProfitReached
 }
 
-func (mtp MTP) GetBigDecTakeProfitLiabilities() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(mtp.TakeProfitLiabilities)
-}
-
-func (mtp MTP) GetBigDecTakeProfitCustody() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(mtp.TakeProfitCustody)
-}
-
 func (mtp MTP) GetBigDecTakeProfitBorrowFactor() osmomath.BigDec {
 	return osmomath.BigDecFromDec(mtp.TakeProfitBorrowFactor)
 }
@@ -146,38 +136,6 @@ func (mtp MTP) GetBigDecOpenPrice() osmomath.BigDec {
 	return osmomath.BigDecFromDec(mtp.OpenPrice)
 }
 
-func (mtp *MTP) UpdateMTPTakeProfitBorrowFactor() error {
-	takeProfitBorrowFactor, err := mtp.CalcMTPTakeProfitBorrowFactor()
-	if err != nil {
-		return err
-	}
-	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor.Dec()
-	return nil
-}
-
-func (mtp MTP) CalcMTPTakeProfitBorrowFactor() (osmomath.BigDec, error) {
-	// Ensure mtp.Custody is not zero to avoid division by zero
-	if mtp.Custody.IsZero() {
-		return osmomath.ZeroBigDec(), ErrZeroCustodyAmount
-	}
-
-	// infinite for long, 0 for short
-	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
-		return osmomath.OneBigDec(), nil
-	}
-
-	takeProfitBorrowFactor := osmomath.OneBigDec()
-	if mtp.Position == Position_LONG {
-		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
-		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().MulDec(mtp.TakeProfitPrice)))
-	} else {
-		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
-		takeProfitBorrowFactor = osmomath.OneBigDec().Sub((mtp.GetBigDecLiabilities().MulDec(mtp.TakeProfitPrice)).Quo(mtp.GetBigDecCustody()))
-	}
-
-	return takeProfitBorrowFactor, nil
-}
-
 func (mtp MTP) IsTakeProfitPriceInfinite() bool {
 	return mtp.TakeProfitPrice.Equal(TakeProfitPriceDefault)
 }
@@ -188,4 +146,12 @@ func (mtp MTP) IsLong() bool {
 
 func (mtp MTP) IsShort() bool {
 	return mtp.Position == Position_SHORT
+}
+
+func (mtp MTP) GetMTPValue(tradingAssetDenomPrice osmomath.BigDec) sdkmath.LegacyDec {
+	if mtp.IsLong() {
+		return tradingAssetDenomPrice.MulDec(mtp.Custody.ToLegacyDec()).Dec()
+	} else {
+		return tradingAssetDenomPrice.MulDec(mtp.Liabilities.ToLegacyDec()).Dec()
+	}
 }

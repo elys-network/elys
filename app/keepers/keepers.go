@@ -342,6 +342,7 @@ func NewAppKeeper(
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
 		app.TokenomicsKeeper,
+		&app.ConsumerKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
