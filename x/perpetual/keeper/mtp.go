@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -203,7 +204,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
 		TradingAssetPrice: tradingAssetPrice,
-		Pnl:               sdk.Coin{baseCurrency, pnl},
+		Pnl:               sdk.Coin{Denom: baseCurrency, Amount: pnl},
 		LiquidationPrice:  liquidationPrice,
 		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
