@@ -28,15 +28,15 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 }
 
 // GetEstimatedTokensPriceFromBestPool returns the estimated price of tokens in USD from the best pool
-func (k Keeper) GetEstimatedTokensPriceFromBestPool(ctx sdk.Context, tokenInDenom, tokenOutDenom string) (tokenInPrice, tokenOutPrice osmomath.BigDec) {
+func (k Keeper) GetEstimatedTokensPriceFromBestPool(ctx sdk.Context, tokenInDenom, tokenOutDenom string) (tokenInPrice, tokenOutPrice math.LegacyDec) {
 
 	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 	baseCurrencyPrice, found := k.oracleKeeper.GetAssetPrice(ctx, baseCurrencyEntry.DisplayName)
-	if baseCurrencyPrice.IsZero() || !found {
-		baseCurrencyPrice = osmomath.OneBigDec()
+	if !found || baseCurrencyPrice.IsZero() {
+		baseCurrencyPrice = math.LegacyOneDec()
 	}
 
 	if tokenInDenom == baseCurrencyEntry.Denom {
@@ -44,13 +44,13 @@ func (k Keeper) GetEstimatedTokensPriceFromBestPool(ctx sdk.Context, tokenInDeno
 	} else {
 		tokenInInfo, found := k.assetProfileKeeper.GetEntryByDenom(ctx, tokenInDenom)
 		if !found {
-			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+			return math.LegacyZeroDec(), math.LegacyZeroDec()
 		}
 		tokenInDenomPrice := k.EstimatePrice(ctx, tokenInDenom, baseCurrencyEntry.Denom)
 		if tokenInInfo.Decimals >= baseCurrencyEntry.Decimals {
-			tokenInPrice = tokenInDenomPrice.Mul(utils.Pow10(tokenInInfo.Decimals - baseCurrencyEntry.Decimals)).Mul(baseCurrencyPrice)
+			tokenInPrice = tokenInDenomPrice.Mul(utils.Pow10(tokenInInfo.Decimals - baseCurrencyEntry.Decimals)).MulDec(baseCurrencyPrice).Dec()
 		} else {
-			tokenInPrice = tokenInDenomPrice.Quo(utils.Pow10(baseCurrencyEntry.Decimals - tokenInInfo.Decimals)).Mul(baseCurrencyPrice)
+			tokenInPrice = tokenInDenomPrice.Quo(utils.Pow10(baseCurrencyEntry.Decimals - tokenInInfo.Decimals)).MulDec(baseCurrencyPrice).Dec()
 		}
 	}
 
@@ -59,13 +59,13 @@ func (k Keeper) GetEstimatedTokensPriceFromBestPool(ctx sdk.Context, tokenInDeno
 	} else {
 		tokenOutInfo, found := k.assetProfileKeeper.GetEntryByDenom(ctx, tokenOutDenom)
 		if !found {
-			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+			return math.LegacyZeroDec(), math.LegacyZeroDec()
 		}
 		tokenOutDenomPrice := k.EstimatePrice(ctx, tokenOutDenom, baseCurrencyEntry.Denom)
 		if tokenOutInfo.Decimals >= baseCurrencyEntry.Decimals {
-			tokenOutPrice = tokenOutDenomPrice.Mul(utils.Pow10(tokenOutInfo.Decimals - baseCurrencyEntry.Decimals)).Mul(baseCurrencyPrice)
+			tokenOutPrice = tokenOutDenomPrice.Mul(utils.Pow10(tokenOutInfo.Decimals - baseCurrencyEntry.Decimals)).MulDec(baseCurrencyPrice).Dec()
 		} else {
-			tokenOutPrice = tokenOutDenomPrice.Quo(utils.Pow10(baseCurrencyEntry.Decimals - tokenOutInfo.Decimals)).Mul(baseCurrencyPrice)
+			tokenOutPrice = tokenOutDenomPrice.Quo(utils.Pow10(baseCurrencyEntry.Decimals - tokenOutInfo.Decimals)).MulDec(baseCurrencyPrice).Dec()
 		}
 	}
 
