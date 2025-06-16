@@ -21,11 +21,11 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
 	}
 
-	price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+	assetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 	if !found {
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s not found", asset)
 	}
-	if price.IsZero() {
+	if assetPrice.IsZero() {
 		return math.LegacyZeroDec(), osmomath.ZeroBigDec(), fmt.Errorf("asset price %s is zero", asset)
 	}
 	USDCPrice, found := k.oracleKeeper.GetAssetPrice(ctx, USDCInfo.DisplayName)
@@ -38,10 +38,10 @@ func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset strin
 
 	if info.Decimal < USDCInfo.Decimals {
 		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
-		return price.Dec(), price.Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
+		return assetPrice, osmomath.BigDecFromDec(assetPrice.Quo(USDCPrice)).MulInt64(baseUnitMultiplier), nil
 	} else {
 		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
-		return price.Dec(), price.Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
+		return assetPrice, osmomath.BigDecFromDec(assetPrice.Quo(USDCPrice)).QuoInt64(baseUnitMultiplier), nil
 	}
 }
 
@@ -61,10 +61,10 @@ func (k Keeper) ConvertPriceToAssetUsdcDenomRatio(ctx sdk.Context, asset string,
 	}
 	if info.Decimal < USDCInfo.Decimals {
 		baseUnitMultiplier := utils.Pow10Int64(USDCInfo.Decimals - info.Decimal)
-		return osmomath.BigDecFromDec(price).Quo(USDCPrice).MulInt64(baseUnitMultiplier), nil
+		return osmomath.BigDecFromDec(price.Quo(USDCPrice)).MulInt64(baseUnitMultiplier), nil
 	} else {
 		baseUnitMultiplier := utils.Pow10Int64(info.Decimal - USDCInfo.Decimals)
-		return osmomath.BigDecFromDec(price).Quo(USDCPrice).QuoInt64(baseUnitMultiplier), nil
+		return osmomath.BigDecFromDec(price.Quo(USDCPrice)).QuoInt64(baseUnitMultiplier), nil
 	}
 }
 

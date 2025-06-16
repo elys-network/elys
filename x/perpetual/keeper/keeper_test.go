@@ -87,6 +87,18 @@ var (
 			price:   osmomath.MustNewBigDecFromStr("100000.0"),
 			decimal: 8,
 		},
+		"afet": {
+			denom:   "afet",
+			display: "FET",
+			price:   osmomath.MustNewBigDecFromStr("0.5"),
+			decimal: 18,
+		},
+		"ameme": {
+			denom:   "ameme",
+			display: "MEME",
+			price:   osmomath.MustNewBigDecFromStr("0.0000000253"),
+			decimal: 18,
+		},
 	}
 )
 
@@ -127,6 +139,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
 	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
 	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
@@ -223,7 +236,7 @@ func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, p
 	})
 	priceUpdated, found := suite.app.OracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	suite.Require().True(found)
-	suite.Require().Equal(priceUpdated.Dec(), price)
+	suite.Require().Equal(priceUpdated, price)
 }
 
 func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() math.Int {
@@ -316,6 +329,15 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 
 	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11"))
 	k.SetPool(ctx, pool)
+
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
+	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
+	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
+	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
+	err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
 
 	return pool, poolCreator, ammPool
 }

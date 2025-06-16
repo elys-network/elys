@@ -16,7 +16,6 @@ func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
 	triggerPrice math.LegacyDec,
 	collateral sdk.Coin,
-	tradingAsset string,
 	position PerpetualPosition,
 	leverage math.LegacyDec,
 	takeProfitPrice math.LegacyDec,
@@ -27,7 +26,6 @@ func NewMsgCreatePerpetualOpenOrder(
 		TriggerPrice:    triggerPrice,
 		Collateral:      collateral,
 		OwnerAddress:    ownerAddress,
-		TradingAsset:    tradingAsset,
 		Position:        position,
 		Leverage:        leverage,
 		TakeProfitPrice: takeProfitPrice,
@@ -49,10 +47,6 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 	// Validate collateral
 	if !msg.Collateral.IsValid() {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
-	}
-
-	if err = sdk.ValidateDenom(msg.TradingAsset); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	if msg.Position != PerpetualPosition_LONG && msg.Position != PerpetualPosition_SHORT {
@@ -160,6 +154,22 @@ func (msg *MsgCancelPerpetualOrder) ValidateBasic() error {
 	// Validate order ID
 	if msg.OrderId == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be 0")
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgCancelAllPerpetualOrders{}
+
+func NewMsgCancelAllPerpetualOrders(ownerAddress string) *MsgCancelAllPerpetualOrders {
+	return &MsgCancelAllPerpetualOrders{
+		OwnerAddress: ownerAddress,
+	}
+}
+
+func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
 	return nil
 }

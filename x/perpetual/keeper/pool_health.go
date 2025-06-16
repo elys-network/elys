@@ -83,7 +83,7 @@ func (k Keeper) CheckMinimumCustodyAmt(ctx sdk.Context, poolId uint64) error {
 		return err
 	}
 	for _, ammPoolAsset := range ammPool.PoolAssets {
-		_, totalCustody, _, _ := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
+		_, totalCustody := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
 		if ammPoolAsset.Token.Amount.LT(totalCustody) {
 			return fmt.Errorf("real amm pool (id: %d) balance (%s) is less than total custody (%s)", poolId, ammPoolAsset.Token.String(), totalCustody.String())
 		}

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
@@ -30,7 +31,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -65,7 +65,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -101,7 +100,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -119,7 +117,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg, existingMtp, newMtp := tc.setup()
-			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.BaseCurrency)
+			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.ATOM, ptypes.BaseCurrency)
 
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)
@@ -132,42 +130,55 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 }
 
 func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
+	var initialPoolBankBalance sdk.Coins
+	var initialAccountedPoolBalance sdk.Coins
+
+	var finalPoolBankBalance sdk.Coins
+	var finalAccountedPoolBalance sdk.Coins
+
+	var ammPool ammtypes.Pool
+	var msg types.MsgOpen
+
 	testCases := []struct {
 		name            string
 		setup           func() *types.MsgOpen
 		expectedErrMsg  string
 		consolidatedMtp *types.MTP
+		postValidate    func(msg *types.MsgOpen)
 	}{
 		{
-			"Sucess: Consolidate two position with different leverage and take profit price",
+			"Success: Consolidate two position with different leverage and take profit price",
 			func() *types.MsgOpen {
 				suite.ResetSuite()
 
 				firstPool := uint64(1)
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
-				suite.SetPerpetualPool(1)
+				_, _, ammPool = suite.SetPerpetualPool(1)
 				_, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)
-				openPositionMsg := &types.MsgOpen{
+				msg = types.MsgOpen{
 					Creator:         positionCreator.String(),
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
 
-				openPositionMsg.Leverage = math.LegacyNewDec(3)
-				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("1.5")
+				msg.Leverage = math.LegacyNewDec(3)
+				msg.TakeProfitPrice = math.LegacyMustNewDecFromStr("1.5")
 
-				return openPositionMsg
+				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				initialAccountedPoolBalance = accountedPool.TotalTokens
+				return &msg
 			},
 			"",
 			&types.MTP{
@@ -175,6 +186,17 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				Liabilities:     math.NewInt(653),
 				Custody:         math.NewInt(4000),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("1.5"),
+			},
+			func(msg *types.MsgOpen) {
+				finalPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				finalAccountedPoolBalance = accountedPool.TotalTokens
+
+				suite.Require().Equal(initialPoolBankBalance.Add(msg.Collateral), finalPoolBankBalance)
+				atleastExpected := initialAccountedPoolBalance.Add(msg.Collateral).Add(sdk.NewCoin(msg.Collateral.Denom, msg.Leverage.Sub(math.LegacyOneDec()).MulInt(msg.Collateral.Amount).TruncateInt()))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).GTE(atleastExpected.AmountOf(ptypes.ATOM)))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.BaseCurrency).LTE(atleastExpected.AmountOf(ptypes.BaseCurrency)))
 			},
 		},
 		{
@@ -190,23 +212,22 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				suite.Require().NoError(err)
 
 				amount := math.NewInt(400)
-				openPositionMsg := &types.MsgOpen{
+				msg = types.MsgOpen{
 					Creator:         positionCreator.String(),
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
 
 				// make new Positon leverage 0 to add collateral
-				openPositionMsg.Leverage = math.LegacyNewDec(0)
+				msg.Leverage = math.LegacyNewDec(0)
 
-				return openPositionMsg
+				return &msg
 			},
 			"",
 			&types.MTP{
@@ -215,11 +236,23 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				Custody:         math.NewInt(2800),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 			},
+			func(msg *types.MsgOpen) {
+				finalPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				accountedPool, found := suite.app.AccountedPoolKeeper.GetAccountedPool(suite.ctx, ammPool.PoolId)
+				suite.Require().True(found)
+				finalAccountedPoolBalance = accountedPool.TotalTokens
+
+				atleastExpected := initialAccountedPoolBalance.Add(msg.Collateral)
+				suite.Require().Equal(initialPoolBankBalance.Add(msg.Collateral), finalPoolBankBalance)
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.ATOM).GTE(atleastExpected.AmountOf(ptypes.ATOM)))
+				suite.Require().True(finalAccountedPoolBalance.AmountOf(ptypes.BaseCurrency).LTE(atleastExpected.AmountOf(ptypes.BaseCurrency)))
+			},
 		},
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg := tc.setup()
+			ammPool, _ = suite.app.AmmKeeper.GetPool(suite.ctx, ammPool.PoolId)
 			position, err := suite.app.PerpetualKeeper.Open(suite.ctx, msg)
 			suite.Require().NoError(err)
 
@@ -235,6 +268,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				suite.Require().Equal(tc.consolidatedMtp.Custody, consolidateMtp.Custody)
 				suite.Require().Equal(tc.consolidatedMtp.TakeProfitPrice, consolidateMtp.TakeProfitPrice)
 			}
+			tc.postValidate(msg)
 		})
 	}
 }

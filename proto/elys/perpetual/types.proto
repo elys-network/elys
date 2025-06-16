@@ -44,58 +44,48 @@ message MTP {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string take_profit_liabilities = 12 [
+  string mtp_health = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  Position position = 13;
+  uint64 id = 14;
+  uint64 amm_pool_id = 15;
+  string take_profit_price = 16 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_borrow_factor = 17 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string funding_fee_paid_custody = 18 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string take_profit_custody = 13 [
+  string funding_fee_received_custody = 19 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string mtp_health = 14 [
+  string open_price = 20 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  Position position = 15;
-  uint64 id = 16;
-  uint64 amm_pool_id = 17;
-  string take_profit_price = 18 [
+  string stop_loss_price = 21 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string take_profit_borrow_factor = 19 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_paid_custody = 20 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_received_custody = 21 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string open_price = 22 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string stop_loss_price = 23 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 last_interest_calc_time = 24;
-  uint64 last_interest_calc_block = 25;
-  uint64 last_funding_calc_time = 26;
-  uint64 last_funding_calc_block = 27;
+  uint64 last_interest_calc_time = 22;
+  uint64 last_interest_calc_block = 23;
+  uint64 last_funding_calc_time = 24;
+  uint64 last_funding_calc_block = 25;
 }
 
 message InterestBlock {
