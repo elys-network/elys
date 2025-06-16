@@ -5,9 +5,9 @@ import (
 )
 
 func (m Migrator) V18Migration(ctx sdk.Context) error {
-	//err := m.keeper.ResetStore(ctx)
-	//if err != nil {
-	//	return err
-	//}
+	err := m.keeper.ResetStore(ctx)
+	if err != nil {
+		return err
+	}
 	return nil
 }
