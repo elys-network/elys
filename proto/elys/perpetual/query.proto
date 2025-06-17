@@ -225,6 +225,7 @@ message QueryAllPoolResponse {
 message MTPRequest {
   string address = 1;
   uint64 id = 2;
+  uint64 pool_id = 3;
 }
 
 message MTPResponse { MtpAndPrice mtp = 1; }
@@ -388,6 +389,7 @@ message QueryCloseEstimationRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message QueryCloseEstimationResponse {

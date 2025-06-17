@@ -35,6 +35,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_Successful() {
 	response, err := k.MTP(ctx, &types.MTPRequest{
 		Address: firstPositionCreator.String(),
 		Id:      firstPosition.Id,
+		PoolId:  firstPool,
 	})
 
 	suite.Require().Nil(err)
@@ -104,6 +105,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_BaseCurrencyNotFound() {
 	_, err = k.MTP(ctx, &types.MTPRequest{
 		Address: firstPositionCreator.String(),
 		Id:      firstPosition.Id,
+		PoolId:  firstPool,
 	})
 
 	suite.Require().ErrorContains(err, "base currency not found")

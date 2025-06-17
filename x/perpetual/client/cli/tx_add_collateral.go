@@ -14,11 +14,11 @@ import (
 
 func CmdAddCollateral() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-collateral [mtp-id] [collateral] [flags]",
+		Use:   "add-collateral [mtp-id] [collateral] [pool-id]",
 		Short: "Add collateral perpetual position",
 		Example: `
-elysd tx add-collateral 11 100000000uusdc --from=bob --yes --gas=1000000`,
-		Args: cobra.ExactArgs(2),
+elysd tx add-collateral 11 100000000uusdc 1 --from=bob --yes --gas=1000000`,
+		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -40,10 +40,16 @@ elysd tx add-collateral 11 100000000uusdc --from=bob --yes --gas=1000000`,
 				return err
 			}
 
+			poolId, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgAddCollateral{
 				Creator:       signer.String(),
 				Id:            mtpID,
 				AddCollateral: collateral,
+				PoolId:        poolId,
 			}
 
 			if err = msg.ValidateBasic(); err != nil {

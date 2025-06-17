@@ -66,6 +66,7 @@ message MsgClose {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message MsgCloseResponse {
@@ -128,6 +129,7 @@ message MsgUpdateStopLoss {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message MsgUpdateStopLossResponse {}
@@ -142,6 +144,7 @@ message MsgUpdateTakeProfitPrice {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message MsgUpdateTakeProfitPriceResponse {}
@@ -181,6 +184,7 @@ message MsgAddCollateral {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   cosmos.base.v1beta1.Coin add_collateral = 3 [ (gogoproto.nullable) = false ];
+  uint64 pool_id = 4;
 }
 
 message MsgAddCollateralResponse {}

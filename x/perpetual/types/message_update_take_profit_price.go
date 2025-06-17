@@ -3,17 +3,19 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgUpdateTakeProfitPrice{}
 
-func NewMsgUpdateTakeProfitPrice(creator string, id uint64, price sdkmath.LegacyDec) *MsgUpdateTakeProfitPrice {
+func NewMsgUpdateTakeProfitPrice(creator string, id uint64, price sdkmath.LegacyDec, poolId uint64) *MsgUpdateTakeProfitPrice {
 	return &MsgUpdateTakeProfitPrice{
 		Creator: creator,
 		Id:      id,
 		Price:   price,
+		PoolId:  poolId,
 	}
 }
 
@@ -24,6 +26,9 @@ func (msg *MsgUpdateTakeProfitPrice) ValidateBasic() error {
 	}
 	if err = CheckLegacyDecNilAndNegative(msg.Price, "price"); err != nil {
 		return err
+	}
+	if msg.PoolId == 0 {
+		return errors.New("invalid pool id")
 	}
 	return nil
 }

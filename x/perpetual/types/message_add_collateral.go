@@ -26,5 +26,9 @@ func (msg *MsgAddCollateral) ValidateBasic() error {
 	if msg.Id == 0 {
 		return errors.New("id cannot be zero")
 	}
+
+	if msg.PoolId == 0 {
+		return errors.New("invalid pool id")
+	}
 	return nil
 }

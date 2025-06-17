@@ -20,6 +20,7 @@ func TestClosePosition(t *testing.T) {
 	args := []string{
 		"1",
 		"10000000",
+		"1",
 		"--from=" + val.Address.String(),
 		"-y",
 	}

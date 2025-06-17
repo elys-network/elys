@@ -76,9 +76,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "CloseEstimation",
-					Use:            "close-estimation [address] [position-id] [closing-amount]",
+					Use:            "close-estimation [address] [position-id] [closing-amount] [pool-id]",
 					Short:          "Query close-estimation",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}, {ProtoField: "close_amount"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}, {ProtoField: "close_amount"}, {ProtoField: "pool_id"}},
 				},
 			},
 		},

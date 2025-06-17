@@ -18,16 +18,13 @@ func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []t
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			LegacyTriggerPriceV1: types.LegacyTriggerPriceV1{
-				Rate: math.LegacyNewDec(1),
-			},
-			TriggerPrice:    math.LegacyNewDec(1),
-			Collateral:      sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
-			Leverage:        math.LegacyNewDec(int64(i)),
-			TakeProfitPrice: math.LegacyNewDec(1),
-			PositionId:      uint64(i),
-			Status:          types.Status_PENDING,
-			StopLossPrice:   math.LegacyNewDec(1),
+			TriggerPrice:       math.LegacyNewDec(1),
+			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
+			Leverage:           math.LegacyNewDec(int64(i)),
+			TakeProfitPrice:    math.LegacyNewDec(1),
+			PositionId:         uint64(i),
+			Status:             types.Status_PENDING,
+			StopLossPrice:      math.LegacyNewDec(1),
 		}
 		items[i].OrderId = suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, items[i])
 	}

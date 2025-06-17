@@ -32,13 +32,13 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	if err := mtp.Validate(); err != nil {
 		return err
 	}
-	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
+	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.AmmPoolId, mtp.Id)
 	store.Set(key, k.cdc.MustMarshal(mtp))
 	return nil
 }
 
 func (k Keeper) DestroyMTP(ctx sdk.Context, mtp types.MTP) {
-	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
+	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.AmmPoolId, mtp.Id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(key)
 
@@ -48,9 +48,9 @@ func (k Keeper) DestroyMTP(ctx sdk.Context, mtp types.MTP) {
 	k.SetPerpetualCounter(ctx, perpetualCounter)
 }
 
-func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
+func (k Keeper) GetMTP(ctx sdk.Context, poolId uint64, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
 	var mtp types.MTP
-	key := types.GetMTPKey(mtpAddress, id)
+	key := types.GetMTPKey(mtpAddress, poolId, id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return mtp, types.ErrMTPDoesNotExist
@@ -58,12 +58,6 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &mtp)
 	return mtp, nil
-}
-
-func (k Keeper) CheckMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
-	key := types.GetMTPKey(mtpAddress, id)
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return store.Has(key)
 }
 
 func (k Keeper) GetMTPIterator(ctx sdk.Context) storetypes.Iterator {

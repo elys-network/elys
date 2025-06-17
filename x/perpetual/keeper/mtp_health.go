@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // GetMTPHealth Health = custody / liabilities
@@ -20,19 +21,18 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		return maxDec, nil
 	}
 
+	_, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
 	// For long this unit is base currency, for short this is in trading asset
 	// We do not consider here funding fee because it has been / should be already subtracted from mtp.Custody, the custody amt can be <= 0, then above it returns 0
-	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
+	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability).ToLegacyDec()
 
 	// if short position, convert liabilities to base currency
 	if mtp.Position == types.Position_SHORT {
-		liabilitiesTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiabilities)
-		var err error
-		totalLiabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesTokenOut, baseCurrency, ammPool, mtp.Address)
-		if err != nil {
-			return math.LegacyZeroDec(), err
-		}
-
+		totalLiabilities = tradingAssetPriceDenomRatio.Mul(osmomath.BigDecFromDec(totalLiabilities)).Dec()
 		if totalLiabilities.IsZero() {
 			return math.LegacyZeroDec(), nil
 		}
@@ -41,22 +41,16 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	// Funding rate is removed as it's subtracted from custody at every epoch
 
 	// For Long this is in trading asset (not base currency, so will have to swap), for Short this is in base currency
-	custodyAmtInBaseCurrency := mtp.Custody
+	custodyAmtInBaseCurrency := mtp.Custody.ToLegacyDec()
 
 	if !custodyAmtInBaseCurrency.IsPositive() {
 		return math.LegacyZeroDec(), nil
 	}
 
 	if mtp.Position == types.Position_LONG {
-		custodyAmtTokenOut := sdk.NewCoin(mtp.CustodyAsset, custodyAmtInBaseCurrency)
-		var err error
-		custodyAmtInBaseCurrency, _, _, err = k.EstimateSwapGivenOut(ctx, custodyAmtTokenOut, baseCurrency, ammPool, mtp.Address)
-		if err != nil {
-			return math.LegacyZeroDec(), err
-		}
+		custodyAmtInBaseCurrency = tradingAssetPriceDenomRatio.Mul(osmomath.BigDecFromDec(custodyAmtInBaseCurrency)).Dec()
 	}
 
 	// health = custody / liabilities
-	lr := custodyAmtInBaseCurrency.ToLegacyDec().Quo(totalLiabilities.ToLegacyDec())
-	return lr, nil
+	return custodyAmtInBaseCurrency.Quo(totalLiabilities), nil
 }

@@ -42,7 +42,7 @@ type AmmKeeper interface {
 type PerpetualKeeper interface {
 	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)
 	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
-	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
+	GetMTP(ctx sdk.Context, poolId uint64, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
 	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)
 	GetParams(ctx sdk.Context) perpetualtypes.Params
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
