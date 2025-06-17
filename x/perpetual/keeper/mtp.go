@@ -227,6 +227,23 @@ func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress)
 	return mtps
 }
 
+func (k Keeper) GetAllMTPsForAddressAndByPool(ctx sdk.Context, mtpAddress sdk.AccAddress, poolId uint64) []*types.MTP {
+	var mtps []*types.MTP
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetMTPPrefixForAddressAndPoolId(mtpAddress, poolId))
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.MTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		mtps = append(mtps, &mtp)
+	}
+	return mtps
+}
+
 func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	return k.GetMTPData(ctx, pagination, nil, nil)
 }
@@ -367,9 +384,9 @@ func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP)
 }
 
 func (k Keeper) GetExistingPosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
-	mtps := k.GetAllMTPsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+	mtps := k.GetAllMTPsForAddressAndByPool(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.PoolId)
 	for _, mtp := range mtps {
-		if mtp.Position == msg.Position && mtp.CollateralAsset == msg.Collateral.Denom && mtp.AmmPoolId == msg.PoolId {
+		if mtp.Position == msg.Position && mtp.CollateralAsset == msg.Collateral.Denom {
 			return mtp
 		}
 	}
