@@ -21,10 +21,6 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	// Pay pool creation fee
 	params := k.GetParams(ctx)
 
-	// if !params.IsCreatorAllowed(msg.Sender) {
-	// 	return nil, errors.New("sender is not allowed to create pool")
-	// }
-
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	baseAssetExists := false
@@ -38,7 +34,12 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 		return nil, errorsmod.Wrapf(types.ErrOnlyBaseAssetsPoolAllowed, "one of the asset must be from %s", strings.Join(params.BaseAssets, ", "))
 	}
 
+	// gov module is allowed to create pools
 	if !params.IsCreatorAllowed(msg.Sender) {
+		if msg.PoolParams.UseOracle {
+			return nil, errorsmod.Wrapf(types.ErrPoolCreationNotAllowed, "oracle pool is not allowed to be created by %s", msg.Sender)
+		}
+
 		poolExistForSameAssets := k.Keeper.CheckExistingPoolWithSameAssets(ctx, msg.PoolAssets)
 		if poolExistForSameAssets {
 			return nil, types.ErrPoolExistsWithSameAssets

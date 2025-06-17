@@ -43,6 +43,7 @@ var (
 	ErrUnauthorizedUpFrontSwap = errors.Register(ModuleName, 116, "sender is not allowed to make upfront swaps")
 
 	ErrPoolExistsWithSameAssets = errors.Register(ModuleName, 117, "pool already exists with the same assets")
+	ErrPoolCreationNotAllowed   = errors.Register(ModuleName, 118, "sender is not allowed to create pool")
 )
 
 const (
