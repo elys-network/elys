@@ -76,6 +76,11 @@ func (p Params) Validate() error {
 	if !p.LiabilitiesFactor.IsPositive() {
 		return fmt.Errorf("liabilities factor must be positive: %s", p.LiabilitiesFactor.String())
 	}
+
+	if p.LiabilitiesFactor.GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("liabilities factor must be less than or equal to 1: %s", p.LiabilitiesFactor.String())
+	}
+
 	return nil
 }
 
