@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/testutil/sample"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/keeper"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
@@ -51,7 +51,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -65,7 +64,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          secondPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -138,7 +136,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_LONG,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -187,7 +184,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_LONG,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
@@ -239,7 +235,6 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_LONG,
 					PoolId:          firstPool,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),

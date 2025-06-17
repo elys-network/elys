@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 const (
@@ -34,6 +34,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdClosePositions())
 	cmd.AddCommand(CmdUpdateStopLoss())
 	cmd.AddCommand(CmdUpdateTakeProfitPrice())
+	cmd.AddCommand(CmdAddCollateral())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

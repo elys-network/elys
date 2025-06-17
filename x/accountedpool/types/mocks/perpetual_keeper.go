@@ -4,7 +4,7 @@ package mocks
 
 import (
 	types "github.com/cosmos/cosmos-sdk/types"
-	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	mock "github.com/stretchr/testify/mock"
 )
 

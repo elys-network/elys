@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	epochstypes "github.com/elys-network/elys/v5/x/epochs/types"
+	epochstypes "github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 // BeforeEpochStart performs a no-op
@@ -16,7 +16,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 
 	if err := k.BurnTokensForAllDenoms(ctx); err != nil {
 		k.Logger(ctx).Error("Error burning tokens", "error", err)
-		panic(err)
+		return err
 	}
 	return nil
 }

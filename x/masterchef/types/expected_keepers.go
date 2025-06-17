@@ -6,13 +6,13 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ctypes "github.com/elys-network/elys/v5/x/commitment/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	parametertypes "github.com/elys-network/elys/v5/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/v5/x/stablestake/types"
-	tokenomictypes "github.com/elys-network/elys/v5/x/tokenomics/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ctypes "github.com/elys-network/elys/v6/x/commitment/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tokenomictypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -99,7 +99,7 @@ type AmmKeeper interface {
 
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	//SetPool(ctx sdk.Context, pool oracletypes.Pool)

@@ -6,25 +6,25 @@ import (
 	"testing"
 	"time"
 
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v5/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v5/app"
-	oraclekeeper "github.com/elys-network/elys/v5/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -87,6 +87,18 @@ var (
 			price:   osmomath.MustNewBigDecFromStr("100000.0"),
 			decimal: 8,
 		},
+		"afet": {
+			denom:   "afet",
+			display: "FET",
+			price:   osmomath.MustNewBigDecFromStr("0.5"),
+			decimal: 18,
+		},
+		"ameme": {
+			denom:   "ameme",
+			display: "MEME",
+			price:   osmomath.MustNewBigDecFromStr("0.0000000253"),
+			decimal: 18,
+		},
 	}
 )
 
@@ -127,6 +139,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
 	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
 	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
@@ -223,7 +236,7 @@ func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, p
 	})
 	priceUpdated, found := suite.app.OracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	suite.Require().True(found)
-	suite.Require().Equal(priceUpdated.Dec(), price)
+	suite.Require().Equal(priceUpdated, price)
 }
 
 func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() math.Int {
@@ -317,6 +330,15 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11"))
 	k.SetPool(ctx, pool)
 
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
+	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
+	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
+	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
+	params.EnabledPools = []uint64{1}
+	err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	return pool, poolCreator, ammPool
 }
 
@@ -357,13 +379,15 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                     math.LegacyNewDec(0),
 			Position:                      types.Position_LONG,
 			Id:                            0,
+			AmmPoolId:                     1,
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
 	}
 
-	mtpCount := perpetual.GetMTPCount(ctx)
-	require.Equal(t, mtpCount, (uint64)(2))
+	mtpCount := perpetual.GetPerpetualCounter(ctx, 1)
+	require.Equal(t, mtpCount.Counter, (uint64)(2))
+	require.Equal(t, mtpCount.TotalOpen, (uint64)(2))
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {

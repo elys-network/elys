@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 type msgServer struct {
@@ -82,6 +82,8 @@ func (k msgServer) UpdateTakerFees(goCtx context.Context, msg *types.MsgUpdateTa
 
 	params := k.GetParams(ctx)
 	params.TakerFees = msg.TakerFees
+	params.EnableTakerFeeSwap = msg.EnableTakerFeeSwap
+	params.TakerFeeCollectionInterval = msg.TakerFeeCollectionInterval
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateTakerFeesResponse{}, nil
 }

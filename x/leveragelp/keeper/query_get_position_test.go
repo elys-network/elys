@@ -5,10 +5,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v5/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryGetPosition() {
@@ -76,6 +76,11 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
+	suite.Require().NoError(err)
+
+	leverageParams := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	leverageParams.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &leverageParams)
 	suite.Require().NoError(err)
 
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)

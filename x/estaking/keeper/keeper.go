@@ -16,8 +16,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/v5/x/estaking/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 type (
@@ -30,6 +30,7 @@ type (
 		distrKeeper        types.DistrKeeper
 		tokenomicsKeeper   types.TokenomicsKeeper
 		assetProfileKeeper types.AssetProfileKeeper
+		ConsumerKeeper     types.ConsumerKeeper
 		authority          string
 	}
 )
@@ -67,6 +68,7 @@ func NewKeeper(
 	distrKeeper types.DistrKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	tokenomicsKeeper types.TokenomicsKeeper,
+	ConsumerKeeper types.ConsumerKeeper,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -79,6 +81,7 @@ func NewKeeper(
 		distrKeeper:        distrKeeper,
 		assetProfileKeeper: assetProfileKeeper,
 		tokenomicsKeeper:   tokenomicsKeeper,
+		ConsumerKeeper:     ConsumerKeeper,
 	}
 }
 

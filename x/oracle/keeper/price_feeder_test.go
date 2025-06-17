@@ -6,9 +6,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/testutil/nullify"
-	"github.com/elys-network/elys/v5/x/oracle/keeper"
-	"github.com/elys-network/elys/v5/x/oracle/types"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/oracle/keeper"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 func createNPriceFeeder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PriceFeeder {

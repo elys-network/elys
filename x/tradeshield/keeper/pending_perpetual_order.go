@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 // GetPendingPerpetualOrderCount get the total number of pendingPerpetualOrder
@@ -197,7 +197,12 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
+	tradingAsset, err := k.perpetual.GetTradingAsset(ctx, order.PoolId)
+	if err != nil {
+		return err
+	}
+
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 	if err != nil {
 		return err
 	}
@@ -226,7 +231,6 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
-		TradingAsset:    order.TradingAsset,
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
@@ -246,7 +250,12 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
+	tradingAsset, err := k.perpetual.GetTradingAsset(ctx, order.PoolId)
+	if err != nil {
+		return err
+	}
+
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 	if err != nil {
 		return err
 	}
@@ -285,7 +294,6 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
-		TradingAsset:    order.TradingAsset,
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
@@ -325,7 +333,6 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 		res, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 			Position:        perpetualtypes.Position(order.Position),
 			Leverage:        order.Leverage,
-			TradingAsset:    order.TradingAsset,
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
 			PoolId:          order.PoolId,

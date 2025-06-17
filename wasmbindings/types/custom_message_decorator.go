@@ -4,7 +4,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
+	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
 )
 
 func CustomMessageDecorator(

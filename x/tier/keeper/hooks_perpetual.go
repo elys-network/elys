@@ -2,8 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // Hooks wrapper struct for tvl keeper
@@ -18,21 +18,21 @@ func (k Keeper) PerpetualHooks() PerpetualHooks {
 	return PerpetualHooks{k}
 }
 
-func (h PerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, EnableTakeProfitCustodyLiabilities bool) error {
+func (h PerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) error {
 	return nil
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
+func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
+func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
+func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }

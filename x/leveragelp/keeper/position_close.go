@@ -1,12 +1,10 @@
 package keeper
 
 import (
-	"errors"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammkeeper "github.com/elys-network/elys/v5/x/amm/keeper"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
+	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -39,7 +37,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	}
 
 	if closingRatio.IsNil() || closingRatio.IsNegative() || closingRatio.IsZero() || closingRatio.GT(osmomath.OneBigDec()) {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errors.New("invalid closing ratio for leverage lp")
+		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrInvalidClosingRatio
 	}
 
 	// This will be the net amount that will be closed

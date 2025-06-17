@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,17 +17,15 @@ import (
 
 func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	count := k.GetMTPCount(ctx)
-	openCount := k.GetOpenMTPCount(ctx)
 
 	if mtp.Id == 0 {
+		perpetualCounter := k.GetPerpetualCounter(ctx, mtp.AmmPoolId)
 		// increment global id count
-		count++
-		mtp.Id = count
-		k.SetMTPCount(ctx, count)
+		perpetualCounter.Counter++
+		mtp.Id = perpetualCounter.Counter
 		// increment open mtp count
-		openCount++
-		k.SetOpenMTPCount(ctx, openCount)
+		perpetualCounter.TotalOpen++
+		k.SetPerpetualCounter(ctx, perpetualCounter)
 	}
 
 	// TODO Do we need validate MTP every single time we set it?
@@ -39,21 +37,15 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	return nil
 }
 
-func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) error {
-	key := types.GetMTPKey(mtpAddress, id)
+func (k Keeper) DestroyMTP(ctx sdk.Context, mtp types.MTP) {
+	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	if !store.Has(key) {
-		return types.ErrMTPDoesNotExist
-	}
 	store.Delete(key)
+
 	// decrement open mtp count
-	openCount := k.GetOpenMTPCount(ctx)
-	openCount--
-
-	// Set open MTP count
-	k.SetOpenMTPCount(ctx, openCount)
-
-	return nil
+	perpetualCounter := k.GetPerpetualCounter(ctx, mtp.AmmPoolId)
+	perpetualCounter.TotalOpen--
+	k.SetPerpetualCounter(ctx, perpetualCounter)
 }
 
 func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
@@ -161,15 +153,18 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	}
 
 	// Update interest first and then calculate health
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	_, _, _, err := k.UpdateFundingFee(ctx, &mtp, &pool)
+	err := k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	if err != nil {
+		return &types.MtpAndPrice{}, err
+	}
+	_, _, _, err = k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
 	}
 
-	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-	if err == nil {
-		mtp.MtpHealth = mtpHealth.Dec()
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
 	}
 	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 	if err != nil {
@@ -250,40 +245,6 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 	return k.GetMTPData(ctx, pagination, mtpAddress, nil)
 }
 
-// Set MTP count
-func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
-}
-
-func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
-	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.MTPCountPrefix)
-	if countBz == nil {
-		count = 0
-	} else {
-		count = types.GetUint64FromBytes(countBz)
-	}
-	return count
-}
-
-// Set Open MTP count
-func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.OpenMTPCountPrefix, types.GetUint64Bytes(count))
-}
-
-func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
-	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.OpenMTPCountPrefix)
-	if countBz == nil {
-		count = 0
-	} else {
-		count = types.GetUint64FromBytes(countBz)
-	}
-	return count
-}
-
 // Delete all to pay if any
 func (k Keeper) DeleteAllToPay(ctx sdk.Context) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -358,41 +319,65 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 }
 
 func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
-	liquidationPrice := osmomath.ZeroBigDec()
+	liquidationPriceDenomRatio := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
 		if !mtp.Custody.IsZero() {
-			liquidationPrice = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
+			liquidationPriceDenomRatio = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)
 		if !mtp.Liabilities.IsZero() {
-			liquidationPrice = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
+			liquidationPriceDenomRatio = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
 		}
 	}
 
-	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPrice, mtp.TradingAsset)
+	liquidationPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, liquidationPriceDenomRatio, mtp.TradingAsset)
 	if err != nil {
 		return math.LegacyZeroDec(), err
 	}
 
-	return liquidationPrice.Dec(), nil
+	return liquidationPrice, nil
 }
 
-func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
+func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
+	// Ensure mtp.Custody is not zero to avoid division by zero
+	if mtp.Custody.IsZero() {
+		return types.ErrZeroCustodyAmount
+	}
+
+	// infinite for long, 0 for short
 	if mtp.IsTakeProfitPriceInfinite() || mtp.TakeProfitPrice.IsZero() {
-		return math.ZeroInt(), nil
+		mtp.TakeProfitBorrowFactor = math.LegacyOneDec()
+		return nil
 	}
-	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
+
+	takeProfitPriceDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
 	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
+		return err
 	}
+	takeProfitBorrowFactor := osmomath.OneBigDec()
 	if mtp.Position == types.Position_LONG {
-		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Quo(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
+		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().Mul(takeProfitPriceDenomRatio)))
 	} else {
-		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Mul(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
+		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub((mtp.GetBigDecLiabilities().Mul(takeProfitPriceDenomRatio)).Quo(mtp.GetBigDecCustody()))
 	}
+
+	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor.Dec()
+	return nil
+}
+
+func (k Keeper) GetExistingPosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
+	mtps := k.GetAllMTPsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+	for _, mtp := range mtps {
+		if mtp.Position == msg.Position && mtp.CollateralAsset == msg.Collateral.Denom && mtp.AmmPoolId == msg.PoolId {
+			return mtp
+		}
+	}
+	return nil
 }

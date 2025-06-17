@@ -7,7 +7,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v5/x/parameter/types";
+option go_package = "github.com/elys-network/elys/v6/x/parameter/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -90,6 +90,8 @@ message MsgUpdateTakerFees {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  bool enable_taker_fee_swap = 3;
+  uint64 taker_fee_collection_interval = 4;
 }
 
 message MsgUpdateTakerFeesResponse {}

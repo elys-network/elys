@@ -10,7 +10,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v5/x/tradeshield/types";
+option go_package = "github.com/elys-network/elys/v6/x/tradeshield/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -20,6 +20,8 @@ service Msg {
   rpc CancelSpotOrder(MsgCancelSpotOrder) returns (MsgCancelSpotOrderResponse);
   rpc CancelSpotOrders(MsgCancelSpotOrders)
       returns (MsgCancelSpotOrdersResponse);
+  rpc CancelAllSpotOrders(MsgCancelAllSpotOrders)
+      returns (MsgCancelAllSpotOrdersResponse);
   rpc CreatePerpetualOpenOrder(MsgCreatePerpetualOpenOrder)
       returns (MsgCreatePerpetualOpenOrderResponse);
   rpc CreatePerpetualCloseOrder(MsgCreatePerpetualCloseOrder)
@@ -30,6 +32,8 @@ service Msg {
       returns (MsgCancelPerpetualOrderResponse);
   rpc CancelPerpetualOrders(MsgCancelPerpetualOrders)
       returns (MsgCancelPerpetualOrdersResponse);
+  rpc CancelAllPerpetualOrders(MsgCancelAllPerpetualOrders)
+      returns (MsgCancelAllPerpetualOrdersResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc ExecuteOrders(MsgExecuteOrders) returns (MsgExecuteOrdersResponse);
 }
@@ -84,6 +88,14 @@ message MsgCancelSpotOrders {
 
 message MsgCancelSpotOrdersResponse {}
 
+message MsgCancelAllSpotOrders {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tradeshield/MsgCancelAllSpotOrders";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgCancelAllSpotOrdersResponse {}
+
 message MsgCreatePerpetualOpenOrder {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCreatePerpetualOpenOrder";
@@ -96,24 +108,23 @@ message MsgCreatePerpetualOpenOrder {
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 3 [ (gogoproto.nullable) = false ];
-  string trading_asset = 4;
-  PerpetualPosition position = 5;
-  string leverage = 6 [
+  PerpetualPosition position = 4;
+  string leverage = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string take_profit_price = 7 [
+  string take_profit_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string stop_loss_price = 8 [
+  string stop_loss_price = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 pool_id = 9;
+  uint64 pool_id = 8;
 }
 
 message MsgCreatePerpetualOpenOrderResponse { uint64 order_id = 1; }
@@ -167,6 +178,14 @@ message MsgCancelPerpetualOrders {
 }
 
 message MsgCancelPerpetualOrdersResponse {}
+
+message MsgCancelAllPerpetualOrders {
+  option (cosmos.msg.v1.signer) = "owner_address";
+  option (amino.name) = "tradeshield/MsgCancelAllPerpetualOrders";
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgCancelAllPerpetualOrdersResponse {}
 
 message MsgUpdateParams {
   option (cosmos.msg.v1.signer) = "authority";

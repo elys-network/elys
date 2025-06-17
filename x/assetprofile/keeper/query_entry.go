@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v5/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,7 +18,7 @@ func (k Keeper) EntryAll(goCtx context.Context, req *types.QueryAllEntryRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var entrys []types.Entry
+	var entries []types.Entry
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -30,14 +30,14 @@ func (k Keeper) EntryAll(goCtx context.Context, req *types.QueryAllEntryRequest)
 			return err
 		}
 
-		entrys = append(entrys, entry)
+		entries = append(entries, entry)
 		return nil
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllEntryResponse{Entry: entrys, Pagination: pageRes}, nil
+	return &types.QueryAllEntryResponse{Entry: entries, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Entry(goCtx context.Context, req *types.QueryEntryRequest) (*types.QueryEntryResponse, error) {

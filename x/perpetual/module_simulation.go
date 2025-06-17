@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v5/testutil/sample"
-	perpetualsimulation "github.com/elys-network/elys/v5/x/perpetual/simulation"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	perpetualsimulation "github.com/elys-network/elys/v6/x/perpetual/simulation"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // avoid unused import issue

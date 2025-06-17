@@ -15,7 +15,7 @@ import "cosmos_proto/cosmos.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
-option go_package = "github.com/elys-network/elys/v5/x/oracle/types";
+option go_package = "github.com/elys-network/elys/v6/x/oracle/types";
 
 // Msg defines the Msg service.
 service Msg {

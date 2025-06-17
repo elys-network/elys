@@ -10,18 +10,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	perpcli "github.com/elys-network/elys/v5/x/perpetual/client/cli"
-	perptypes "github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	perpcli "github.com/elys-network/elys/v6/x/perpetual/client/cli"
+	perptypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
 func CmdCreatePerpetualOpenOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-perpetual-open-order [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
+		Use:   "create-perpetual-open-order [position] [leverage] [pool-id] [collateral] [trigger-price]",
 		Short: "Create a new perpetual open order",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -45,14 +45,12 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			tradingAsset := args[3]
-
-			collateral, err := sdk.ParseCoinNormalized(args[4])
+			collateral, err := sdk.ParseCoinNormalized(args[3])
 			if err != nil {
 				return err
 			}
 
-			triggerPrice := math.LegacyMustNewDecFromStr(args[5])
+			triggerPrice := math.LegacyMustNewDecFromStr(args[4])
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
 			if err != nil {
@@ -88,7 +86,6 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				signer.String(),
 				triggerPrice,
 				collateral,
-				tradingAsset,
 				position,
 				leverage,
 				takeProfitPrice,
@@ -211,7 +208,7 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "cancel-perpetual-orders [ids.json]",
 		Short:   "Cancel a perpetual orders by ids",
-		Example: "elysd tx perpetual cancel-perpetual-orders ids.json --from=bob --yes --gas=1000000",
+		Example: "elysd tx tradeshield cancel-perpetual-orders ids.json --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])
@@ -225,6 +222,32 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 			}
 
 			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), ids)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCancelAllPerpetualOrders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "cancel-all-perpetual-orders",
+		Short:   "Cancel all pending perpetual orders for the user",
+		Example: "elysd tx tradeshield cancel-all-perpetual-orders --from=bob --yes --gas=1000000",
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelAllPerpetualOrders(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

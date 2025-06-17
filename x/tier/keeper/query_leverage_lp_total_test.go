@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v5/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v5/x/stablestake/types"
-	ttypes "github.com/elys-network/elys/v5/x/tier/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ttypes "github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,8 +36,13 @@ func (suite *TierKeeperTestSuite) TestQueryLeverageLpTotalSuccessful() {
 		PoolId:  1,
 	}
 
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{ammPool.PoolId}
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
-	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)
+	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	suite.Require().NoError(err)
 
 	collateralAmount := sdkmath.NewInt(10_000_000)

@@ -1,11 +1,12 @@
 package types
 
 import (
+	"slices"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"slices"
 )
 
 var _ sdk.Msg = &MsgCreateSpotOrder{}
@@ -127,6 +128,22 @@ func (msg *MsgCancelSpotOrders) ValidateBasic() error {
 	}
 	if slices.Contains(msg.SpotOrderIds, 0) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgCancelAllSpotOrders{}
+
+func NewMsgCancelAllSpotOrders(creator string) *MsgCancelAllSpotOrders {
+	return &MsgCancelAllSpotOrders{
+		Creator: creator,
+	}
+}
+
+func (msg *MsgCancelAllSpotOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }

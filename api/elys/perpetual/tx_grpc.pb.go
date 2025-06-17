@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	Open(ctx context.Context, in *MsgOpen, opts ...grpc.CallOption) (*MsgOpenResponse, error)
+	AddCollateral(ctx context.Context, in *MsgAddCollateral, opts ...grpc.CallOption) (*MsgAddCollateralResponse, error)
 	Close(ctx context.Context, in *MsgClose, opts ...grpc.CallOption) (*MsgCloseResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	Whitelist(ctx context.Context, in *MsgWhitelist, opts ...grpc.CallOption) (*MsgWhitelistResponse, error)
@@ -41,6 +42,15 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 func (c *msgClient) Open(ctx context.Context, in *MsgOpen, opts ...grpc.CallOption) (*MsgOpenResponse, error) {
 	out := new(MsgOpenResponse)
 	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/Open", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddCollateral(ctx context.Context, in *MsgAddCollateral, opts ...grpc.CallOption) (*MsgAddCollateralResponse, error) {
+	out := new(MsgAddCollateralResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/AddCollateral", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -133,6 +143,7 @@ func (c *msgClient) UpdateEnabledPools(ctx context.Context, in *MsgUpdateEnabled
 // for forward compatibility
 type MsgServer interface {
 	Open(context.Context, *MsgOpen) (*MsgOpenResponse, error)
+	AddCollateral(context.Context, *MsgAddCollateral) (*MsgAddCollateralResponse, error)
 	Close(context.Context, *MsgClose) (*MsgCloseResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	Whitelist(context.Context, *MsgWhitelist) (*MsgWhitelistResponse, error)
@@ -151,6 +162,9 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) Open(context.Context, *MsgOpen) (*MsgOpenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Open not implemented")
+}
+func (UnimplementedMsgServer) AddCollateral(context.Context, *MsgAddCollateral) (*MsgAddCollateralResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCollateral not implemented")
 }
 func (UnimplementedMsgServer) Close(context.Context, *MsgClose) (*MsgCloseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
@@ -206,6 +220,24 @@ func _Msg_Open_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Open(ctx, req.(*MsgOpen))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddCollateral_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddCollateral)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddCollateral(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.perpetual.Msg/AddCollateral",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddCollateral(ctx, req.(*MsgAddCollateral))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -382,6 +414,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Open",
 			Handler:    _Msg_Open_Handler,
+		},
+		{
+			MethodName: "AddCollateral",
+			Handler:    _Msg_AddCollateral_Handler,
 		},
 		{
 			MethodName: "Close",

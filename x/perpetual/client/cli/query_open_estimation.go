@@ -9,16 +9,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
 
 func CmdOpenEstimation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral] [pool-id]",
+		Use:     "open-estimation [position] [leverage] [collateral] [pool-id]",
 		Short:   "Query open-estimation",
-		Example: "elysd q perpetual open-estimation long 5 uatom 100000000uusdc 1",
-		Args:    cobra.ExactArgs(5),
+		Example: "elysd q perpetual open-estimation long 5 100000000uusdc 1",
+		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
 
@@ -27,14 +27,12 @@ func CmdOpenEstimation() *cobra.Command {
 				return err
 			}
 
-			reqTradingAsset := args[2]
-
-			reqCollateral, err := sdk.ParseCoinNormalized(args[3])
+			reqCollateral, err := sdk.ParseCoinNormalized(args[2])
 			if err != nil {
 				return err
 			}
 
-			reqPoolId, err := strconv.ParseUint(args[4], 10, 64)
+			reqPoolId, err := strconv.ParseUint(args[3], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -79,7 +77,6 @@ func CmdOpenEstimation() *cobra.Command {
 			params := &types.QueryOpenEstimationRequest{
 				Position:        reqPosition,
 				Leverage:        reqLeverage,
-				TradingAsset:    reqTradingAsset,
 				Collateral:      reqCollateral,
 				TakeProfitPrice: takeProfitPrice,
 				PoolId:          reqPoolId,

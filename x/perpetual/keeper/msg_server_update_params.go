@@ -7,7 +7,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // Update params through gov proposal
@@ -31,7 +31,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 				return nil, fmt.Errorf("amm pool %d not found", pool.AmmPoolId)
 			}
 
-			err = k.hooks.AfterParamsChange(ctx, ammPool, pool, msg.Params.EnableTakeProfitCustodyLiabilities)
+			err = k.hooks.AfterParamsChange(ctx, ammPool, pool)
 			if err != nil {
 				return nil, err
 			}

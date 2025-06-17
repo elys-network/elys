@@ -16,35 +16,35 @@ import (
 )
 
 var (
-	md_PoolAsset                         protoreflect.MessageDescriptor
-	fd_PoolAsset_liabilities             protoreflect.FieldDescriptor
-	fd_PoolAsset_custody                 protoreflect.FieldDescriptor
-	fd_PoolAsset_take_profit_liabilities protoreflect.FieldDescriptor
-	fd_PoolAsset_take_profit_custody     protoreflect.FieldDescriptor
-	fd_PoolAsset_asset_denom             protoreflect.FieldDescriptor
-	fd_PoolAsset_collateral              protoreflect.FieldDescriptor
+	md_LegacyPoolAsset                         protoreflect.MessageDescriptor
+	fd_LegacyPoolAsset_liabilities             protoreflect.FieldDescriptor
+	fd_LegacyPoolAsset_custody                 protoreflect.FieldDescriptor
+	fd_LegacyPoolAsset_take_profit_liabilities protoreflect.FieldDescriptor
+	fd_LegacyPoolAsset_take_profit_custody     protoreflect.FieldDescriptor
+	fd_LegacyPoolAsset_asset_denom             protoreflect.FieldDescriptor
+	fd_LegacyPoolAsset_collateral              protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_perpetual_pool_proto_init()
-	md_PoolAsset = File_elys_perpetual_pool_proto.Messages().ByName("PoolAsset")
-	fd_PoolAsset_liabilities = md_PoolAsset.Fields().ByName("liabilities")
-	fd_PoolAsset_custody = md_PoolAsset.Fields().ByName("custody")
-	fd_PoolAsset_take_profit_liabilities = md_PoolAsset.Fields().ByName("take_profit_liabilities")
-	fd_PoolAsset_take_profit_custody = md_PoolAsset.Fields().ByName("take_profit_custody")
-	fd_PoolAsset_asset_denom = md_PoolAsset.Fields().ByName("asset_denom")
-	fd_PoolAsset_collateral = md_PoolAsset.Fields().ByName("collateral")
+	md_LegacyPoolAsset = File_elys_perpetual_pool_proto.Messages().ByName("LegacyPoolAsset")
+	fd_LegacyPoolAsset_liabilities = md_LegacyPoolAsset.Fields().ByName("liabilities")
+	fd_LegacyPoolAsset_custody = md_LegacyPoolAsset.Fields().ByName("custody")
+	fd_LegacyPoolAsset_take_profit_liabilities = md_LegacyPoolAsset.Fields().ByName("take_profit_liabilities")
+	fd_LegacyPoolAsset_take_profit_custody = md_LegacyPoolAsset.Fields().ByName("take_profit_custody")
+	fd_LegacyPoolAsset_asset_denom = md_LegacyPoolAsset.Fields().ByName("asset_denom")
+	fd_LegacyPoolAsset_collateral = md_LegacyPoolAsset.Fields().ByName("collateral")
 }
 
-var _ protoreflect.Message = (*fastReflection_PoolAsset)(nil)
+var _ protoreflect.Message = (*fastReflection_LegacyPoolAsset)(nil)
 
-type fastReflection_PoolAsset PoolAsset
+type fastReflection_LegacyPoolAsset LegacyPoolAsset
 
-func (x *PoolAsset) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_PoolAsset)(x)
+func (x *LegacyPoolAsset) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LegacyPoolAsset)(x)
 }
 
-func (x *PoolAsset) slowProtoReflect() protoreflect.Message {
+func (x *LegacyPoolAsset) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_perpetual_pool_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,43 +56,43 @@ func (x *PoolAsset) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_PoolAsset_messageType fastReflection_PoolAsset_messageType
-var _ protoreflect.MessageType = fastReflection_PoolAsset_messageType{}
+var _fastReflection_LegacyPoolAsset_messageType fastReflection_LegacyPoolAsset_messageType
+var _ protoreflect.MessageType = fastReflection_LegacyPoolAsset_messageType{}
 
-type fastReflection_PoolAsset_messageType struct{}
+type fastReflection_LegacyPoolAsset_messageType struct{}
 
-func (x fastReflection_PoolAsset_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_PoolAsset)(nil)
+func (x fastReflection_LegacyPoolAsset_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LegacyPoolAsset)(nil)
 }
-func (x fastReflection_PoolAsset_messageType) New() protoreflect.Message {
-	return new(fastReflection_PoolAsset)
+func (x fastReflection_LegacyPoolAsset_messageType) New() protoreflect.Message {
+	return new(fastReflection_LegacyPoolAsset)
 }
-func (x fastReflection_PoolAsset_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_PoolAsset
+func (x fastReflection_LegacyPoolAsset_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyPoolAsset
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_PoolAsset) Descriptor() protoreflect.MessageDescriptor {
-	return md_PoolAsset
+func (x *fastReflection_LegacyPoolAsset) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyPoolAsset
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_PoolAsset) Type() protoreflect.MessageType {
-	return _fastReflection_PoolAsset_messageType
+func (x *fastReflection_LegacyPoolAsset) Type() protoreflect.MessageType {
+	return _fastReflection_LegacyPoolAsset_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_PoolAsset) New() protoreflect.Message {
-	return new(fastReflection_PoolAsset)
+func (x *fastReflection_LegacyPoolAsset) New() protoreflect.Message {
+	return new(fastReflection_LegacyPoolAsset)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_PoolAsset) Interface() protoreflect.ProtoMessage {
-	return (*PoolAsset)(x)
+func (x *fastReflection_LegacyPoolAsset) Interface() protoreflect.ProtoMessage {
+	return (*LegacyPoolAsset)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -100,40 +100,40 @@ func (x *fastReflection_PoolAsset) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_PoolAsset) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_LegacyPoolAsset) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Liabilities != "" {
 		value := protoreflect.ValueOfString(x.Liabilities)
-		if !f(fd_PoolAsset_liabilities, value) {
+		if !f(fd_LegacyPoolAsset_liabilities, value) {
 			return
 		}
 	}
 	if x.Custody != "" {
 		value := protoreflect.ValueOfString(x.Custody)
-		if !f(fd_PoolAsset_custody, value) {
+		if !f(fd_LegacyPoolAsset_custody, value) {
 			return
 		}
 	}
 	if x.TakeProfitLiabilities != "" {
 		value := protoreflect.ValueOfString(x.TakeProfitLiabilities)
-		if !f(fd_PoolAsset_take_profit_liabilities, value) {
+		if !f(fd_LegacyPoolAsset_take_profit_liabilities, value) {
 			return
 		}
 	}
 	if x.TakeProfitCustody != "" {
 		value := protoreflect.ValueOfString(x.TakeProfitCustody)
-		if !f(fd_PoolAsset_take_profit_custody, value) {
+		if !f(fd_LegacyPoolAsset_take_profit_custody, value) {
 			return
 		}
 	}
 	if x.AssetDenom != "" {
 		value := protoreflect.ValueOfString(x.AssetDenom)
-		if !f(fd_PoolAsset_asset_denom, value) {
+		if !f(fd_LegacyPoolAsset_asset_denom, value) {
 			return
 		}
 	}
 	if x.Collateral != "" {
 		value := protoreflect.ValueOfString(x.Collateral)
-		if !f(fd_PoolAsset_collateral, value) {
+		if !f(fd_LegacyPoolAsset_collateral, value) {
 			return
 		}
 	}
@@ -150,25 +150,25 @@ func (x *fastReflection_PoolAsset) Range(f func(protoreflect.FieldDescriptor, pr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_PoolAsset) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_LegacyPoolAsset) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
 		return x.Liabilities != ""
-	case "elys.perpetual.PoolAsset.custody":
+	case "elys.perpetual.LegacyPoolAsset.custody":
 		return x.Custody != ""
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
 		return x.TakeProfitLiabilities != ""
-	case "elys.perpetual.PoolAsset.take_profit_custody":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
 		return x.TakeProfitCustody != ""
-	case "elys.perpetual.PoolAsset.asset_denom":
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
 		return x.AssetDenom != ""
-	case "elys.perpetual.PoolAsset.collateral":
+	case "elys.perpetual.LegacyPoolAsset.collateral":
 		return x.Collateral != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -178,25 +178,25 @@ func (x *fastReflection_PoolAsset) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PoolAsset) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_LegacyPoolAsset) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
 		x.Liabilities = ""
-	case "elys.perpetual.PoolAsset.custody":
+	case "elys.perpetual.LegacyPoolAsset.custody":
 		x.Custody = ""
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
 		x.TakeProfitLiabilities = ""
-	case "elys.perpetual.PoolAsset.take_profit_custody":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
 		x.TakeProfitCustody = ""
-	case "elys.perpetual.PoolAsset.asset_denom":
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
 		x.AssetDenom = ""
-	case "elys.perpetual.PoolAsset.collateral":
+	case "elys.perpetual.LegacyPoolAsset.collateral":
 		x.Collateral = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -206,31 +206,31 @@ func (x *fastReflection_PoolAsset) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_PoolAsset) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyPoolAsset) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
 		value := x.Liabilities
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.PoolAsset.custody":
+	case "elys.perpetual.LegacyPoolAsset.custody":
 		value := x.Custody
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
 		value := x.TakeProfitLiabilities
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.PoolAsset.take_profit_custody":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
 		value := x.TakeProfitCustody
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.PoolAsset.asset_denom":
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
 		value := x.AssetDenom
 		return protoreflect.ValueOfString(value)
-	case "elys.perpetual.PoolAsset.collateral":
+	case "elys.perpetual.LegacyPoolAsset.collateral":
 		value := x.Collateral
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -244,25 +244,25 @@ func (x *fastReflection_PoolAsset) Get(descriptor protoreflect.FieldDescriptor) 
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PoolAsset) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_LegacyPoolAsset) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
 		x.Liabilities = value.Interface().(string)
-	case "elys.perpetual.PoolAsset.custody":
+	case "elys.perpetual.LegacyPoolAsset.custody":
 		x.Custody = value.Interface().(string)
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
 		x.TakeProfitLiabilities = value.Interface().(string)
-	case "elys.perpetual.PoolAsset.take_profit_custody":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
 		x.TakeProfitCustody = value.Interface().(string)
-	case "elys.perpetual.PoolAsset.asset_denom":
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
 		x.AssetDenom = value.Interface().(string)
-	case "elys.perpetual.PoolAsset.collateral":
+	case "elys.perpetual.LegacyPoolAsset.collateral":
 		x.Collateral = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -276,60 +276,60 @@ func (x *fastReflection_PoolAsset) Set(fd protoreflect.FieldDescriptor, value pr
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PoolAsset) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyPoolAsset) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
-		panic(fmt.Errorf("field liabilities of message elys.perpetual.PoolAsset is not mutable"))
-	case "elys.perpetual.PoolAsset.custody":
-		panic(fmt.Errorf("field custody of message elys.perpetual.PoolAsset is not mutable"))
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
-		panic(fmt.Errorf("field take_profit_liabilities of message elys.perpetual.PoolAsset is not mutable"))
-	case "elys.perpetual.PoolAsset.take_profit_custody":
-		panic(fmt.Errorf("field take_profit_custody of message elys.perpetual.PoolAsset is not mutable"))
-	case "elys.perpetual.PoolAsset.asset_denom":
-		panic(fmt.Errorf("field asset_denom of message elys.perpetual.PoolAsset is not mutable"))
-	case "elys.perpetual.PoolAsset.collateral":
-		panic(fmt.Errorf("field collateral of message elys.perpetual.PoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
+		panic(fmt.Errorf("field liabilities of message elys.perpetual.LegacyPoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.custody":
+		panic(fmt.Errorf("field custody of message elys.perpetual.LegacyPoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
+		panic(fmt.Errorf("field take_profit_liabilities of message elys.perpetual.LegacyPoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
+		panic(fmt.Errorf("field take_profit_custody of message elys.perpetual.LegacyPoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
+		panic(fmt.Errorf("field asset_denom of message elys.perpetual.LegacyPoolAsset is not mutable"))
+	case "elys.perpetual.LegacyPoolAsset.collateral":
+		panic(fmt.Errorf("field collateral of message elys.perpetual.LegacyPoolAsset is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_PoolAsset) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyPoolAsset) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.perpetual.PoolAsset.liabilities":
+	case "elys.perpetual.LegacyPoolAsset.liabilities":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.PoolAsset.custody":
+	case "elys.perpetual.LegacyPoolAsset.custody":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.PoolAsset.take_profit_liabilities":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_liabilities":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.PoolAsset.take_profit_custody":
+	case "elys.perpetual.LegacyPoolAsset.take_profit_custody":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.PoolAsset.asset_denom":
+	case "elys.perpetual.LegacyPoolAsset.asset_denom":
 		return protoreflect.ValueOfString("")
-	case "elys.perpetual.PoolAsset.collateral":
+	case "elys.perpetual.LegacyPoolAsset.collateral":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.LegacyPoolAsset"))
 		}
-		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.perpetual.LegacyPoolAsset does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_PoolAsset) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_LegacyPoolAsset) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.PoolAsset", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.LegacyPoolAsset", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -337,7 +337,7 @@ func (x *fastReflection_PoolAsset) WhichOneof(d protoreflect.OneofDescriptor) pr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_PoolAsset) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_LegacyPoolAsset) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -348,7 +348,7 @@ func (x *fastReflection_PoolAsset) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PoolAsset) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_LegacyPoolAsset) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -360,7 +360,7 @@ func (x *fastReflection_PoolAsset) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_PoolAsset) IsValid() bool {
+func (x *fastReflection_LegacyPoolAsset) IsValid() bool {
 	return x != nil
 }
 
@@ -370,9 +370,9 @@ func (x *fastReflection_PoolAsset) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_LegacyPoolAsset) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*PoolAsset)
+		x := input.Message.Interface().(*LegacyPoolAsset)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -418,7 +418,7 @@ func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*PoolAsset)
+		x := input.Message.Interface().(*LegacyPoolAsset)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -490,7 +490,7 @@ func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*PoolAsset)
+		x := input.Message.Interface().(*LegacyPoolAsset)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -522,10 +522,10 @@ func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolAsset: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyPoolAsset: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolAsset: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyPoolAsset: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -755,61 +755,10 @@ func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_LegacyPool_4_list)(nil)
-
-type _LegacyPool_4_list struct {
-	list *[]*PoolAsset
-}
-
-func (x *_LegacyPool_4_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_LegacyPool_4_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_LegacyPool_4_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*PoolAsset)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_LegacyPool_4_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*PoolAsset)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_LegacyPool_4_list) AppendMutable() protoreflect.Value {
-	v := new(PoolAsset)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_LegacyPool_4_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_LegacyPool_4_list) NewElement() protoreflect.Value {
-	v := new(PoolAsset)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_LegacyPool_4_list) IsValid() bool {
-	return x.list != nil
-}
-
 var _ protoreflect.List = (*_LegacyPool_5_list)(nil)
 
 type _LegacyPool_5_list struct {
-	list *[]*PoolAsset
+	list *[]*LegacyPoolAsset
 }
 
 func (x *_LegacyPool_5_list) Len() int {
@@ -825,18 +774,18 @@ func (x *_LegacyPool_5_list) Get(i int) protoreflect.Value {
 
 func (x *_LegacyPool_5_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*PoolAsset)
+	concreteValue := valueUnwrapped.Interface().(*LegacyPoolAsset)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_LegacyPool_5_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*PoolAsset)
+	concreteValue := valueUnwrapped.Interface().(*LegacyPoolAsset)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_LegacyPool_5_list) AppendMutable() protoreflect.Value {
-	v := new(PoolAsset)
+	v := new(LegacyPoolAsset)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -849,7 +798,7 @@ func (x *_LegacyPool_5_list) Truncate(n int) {
 }
 
 func (x *_LegacyPool_5_list) NewElement() protoreflect.Value {
-	v := new(PoolAsset)
+	v := new(LegacyPoolAsset)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -857,61 +806,113 @@ func (x *_LegacyPool_5_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_LegacyPool_8_list)(nil)
+var _ protoreflect.List = (*_LegacyPool_6_list)(nil)
 
-type _LegacyPool_8_list struct {
-	list *[]*v1beta1.Coin
+type _LegacyPool_6_list struct {
+	list *[]*LegacyPoolAsset
 }
 
-func (x *_LegacyPool_8_list) Len() int {
+func (x *_LegacyPool_6_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_LegacyPool_8_list) Get(i int) protoreflect.Value {
+func (x *_LegacyPool_6_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_LegacyPool_8_list) Set(i int, value protoreflect.Value) {
+func (x *_LegacyPool_6_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	concreteValue := valueUnwrapped.Interface().(*LegacyPoolAsset)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_LegacyPool_8_list) Append(value protoreflect.Value) {
+func (x *_LegacyPool_6_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	concreteValue := valueUnwrapped.Interface().(*LegacyPoolAsset)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_LegacyPool_8_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta1.Coin)
+func (x *_LegacyPool_6_list) AppendMutable() protoreflect.Value {
+	v := new(LegacyPoolAsset)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_LegacyPool_8_list) Truncate(n int) {
+func (x *_LegacyPool_6_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_LegacyPool_8_list) NewElement() protoreflect.Value {
+func (x *_LegacyPool_6_list) NewElement() protoreflect.Value {
+	v := new(LegacyPoolAsset)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_LegacyPool_6_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_LegacyPool_9_list)(nil)
+
+type _LegacyPool_9_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_LegacyPool_9_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_LegacyPool_9_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_LegacyPool_9_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_LegacyPool_9_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_LegacyPool_9_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_LegacyPool_9_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_LegacyPool_9_list) NewElement() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_LegacyPool_8_list) IsValid() bool {
+func (x *_LegacyPool_9_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
 	md_LegacyPool                                           protoreflect.MessageDescriptor
 	fd_LegacyPool_amm_pool_id                               protoreflect.FieldDescriptor
-	fd_LegacyPool_health                                    protoreflect.FieldDescriptor
+	fd_LegacyPool_base_asset_liabilities_ratio              protoreflect.FieldDescriptor
+	fd_LegacyPool_quote_asset_liabilities_ratio             protoreflect.FieldDescriptor
 	fd_LegacyPool_borrow_interest_rate                      protoreflect.FieldDescriptor
 	fd_LegacyPool_pool_assets_long                          protoreflect.FieldDescriptor
 	fd_LegacyPool_pool_assets_short                         protoreflect.FieldDescriptor
@@ -925,7 +926,8 @@ func init() {
 	file_elys_perpetual_pool_proto_init()
 	md_LegacyPool = File_elys_perpetual_pool_proto.Messages().ByName("LegacyPool")
 	fd_LegacyPool_amm_pool_id = md_LegacyPool.Fields().ByName("amm_pool_id")
-	fd_LegacyPool_health = md_LegacyPool.Fields().ByName("health")
+	fd_LegacyPool_base_asset_liabilities_ratio = md_LegacyPool.Fields().ByName("base_asset_liabilities_ratio")
+	fd_LegacyPool_quote_asset_liabilities_ratio = md_LegacyPool.Fields().ByName("quote_asset_liabilities_ratio")
 	fd_LegacyPool_borrow_interest_rate = md_LegacyPool.Fields().ByName("borrow_interest_rate")
 	fd_LegacyPool_pool_assets_long = md_LegacyPool.Fields().ByName("pool_assets_long")
 	fd_LegacyPool_pool_assets_short = md_LegacyPool.Fields().ByName("pool_assets_short")
@@ -1006,9 +1008,15 @@ func (x *fastReflection_LegacyPool) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.Health != "" {
-		value := protoreflect.ValueOfString(x.Health)
-		if !f(fd_LegacyPool_health, value) {
+	if x.BaseAssetLiabilitiesRatio != "" {
+		value := protoreflect.ValueOfString(x.BaseAssetLiabilitiesRatio)
+		if !f(fd_LegacyPool_base_asset_liabilities_ratio, value) {
+			return
+		}
+	}
+	if x.QuoteAssetLiabilitiesRatio != "" {
+		value := protoreflect.ValueOfString(x.QuoteAssetLiabilitiesRatio)
+		if !f(fd_LegacyPool_quote_asset_liabilities_ratio, value) {
 			return
 		}
 	}
@@ -1019,13 +1027,13 @@ func (x *fastReflection_LegacyPool) Range(f func(protoreflect.FieldDescriptor, p
 		}
 	}
 	if len(x.PoolAssetsLong) != 0 {
-		value := protoreflect.ValueOfList(&_LegacyPool_4_list{list: &x.PoolAssetsLong})
+		value := protoreflect.ValueOfList(&_LegacyPool_5_list{list: &x.PoolAssetsLong})
 		if !f(fd_LegacyPool_pool_assets_long, value) {
 			return
 		}
 	}
 	if len(x.PoolAssetsShort) != 0 {
-		value := protoreflect.ValueOfList(&_LegacyPool_5_list{list: &x.PoolAssetsShort})
+		value := protoreflect.ValueOfList(&_LegacyPool_6_list{list: &x.PoolAssetsShort})
 		if !f(fd_LegacyPool_pool_assets_short, value) {
 			return
 		}
@@ -1043,7 +1051,7 @@ func (x *fastReflection_LegacyPool) Range(f func(protoreflect.FieldDescriptor, p
 		}
 	}
 	if len(x.FeesCollected) != 0 {
-		value := protoreflect.ValueOfList(&_LegacyPool_8_list{list: &x.FeesCollected})
+		value := protoreflect.ValueOfList(&_LegacyPool_9_list{list: &x.FeesCollected})
 		if !f(fd_LegacyPool_fees_collected, value) {
 			return
 		}
@@ -1071,8 +1079,10 @@ func (x *fastReflection_LegacyPool) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		return x.AmmPoolId != uint64(0)
-	case "elys.perpetual.LegacyPool.health":
-		return x.Health != ""
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		return x.BaseAssetLiabilitiesRatio != ""
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
+		return x.QuoteAssetLiabilitiesRatio != ""
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		return x.BorrowInterestRate != ""
 	case "elys.perpetual.LegacyPool.pool_assets_long":
@@ -1105,8 +1115,10 @@ func (x *fastReflection_LegacyPool) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		x.AmmPoolId = uint64(0)
-	case "elys.perpetual.LegacyPool.health":
-		x.Health = ""
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		x.BaseAssetLiabilitiesRatio = ""
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
+		x.QuoteAssetLiabilitiesRatio = ""
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		x.BorrowInterestRate = ""
 	case "elys.perpetual.LegacyPool.pool_assets_long":
@@ -1140,23 +1152,26 @@ func (x *fastReflection_LegacyPool) Get(descriptor protoreflect.FieldDescriptor)
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		value := x.AmmPoolId
 		return protoreflect.ValueOfUint64(value)
-	case "elys.perpetual.LegacyPool.health":
-		value := x.Health
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		value := x.BaseAssetLiabilitiesRatio
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
+		value := x.QuoteAssetLiabilitiesRatio
 		return protoreflect.ValueOfString(value)
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		value := x.BorrowInterestRate
 		return protoreflect.ValueOfString(value)
 	case "elys.perpetual.LegacyPool.pool_assets_long":
 		if len(x.PoolAssetsLong) == 0 {
-			return protoreflect.ValueOfList(&_LegacyPool_4_list{})
+			return protoreflect.ValueOfList(&_LegacyPool_5_list{})
 		}
-		listValue := &_LegacyPool_4_list{list: &x.PoolAssetsLong}
+		listValue := &_LegacyPool_5_list{list: &x.PoolAssetsLong}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.perpetual.LegacyPool.pool_assets_short":
 		if len(x.PoolAssetsShort) == 0 {
-			return protoreflect.ValueOfList(&_LegacyPool_5_list{})
+			return protoreflect.ValueOfList(&_LegacyPool_6_list{})
 		}
-		listValue := &_LegacyPool_5_list{list: &x.PoolAssetsShort}
+		listValue := &_LegacyPool_6_list{list: &x.PoolAssetsShort}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.perpetual.LegacyPool.last_height_borrow_interest_rate_computed":
 		value := x.LastHeightBorrowInterestRateComputed
@@ -1166,9 +1181,9 @@ func (x *fastReflection_LegacyPool) Get(descriptor protoreflect.FieldDescriptor)
 		return protoreflect.ValueOfString(value)
 	case "elys.perpetual.LegacyPool.fees_collected":
 		if len(x.FeesCollected) == 0 {
-			return protoreflect.ValueOfList(&_LegacyPool_8_list{})
+			return protoreflect.ValueOfList(&_LegacyPool_9_list{})
 		}
-		listValue := &_LegacyPool_8_list{list: &x.FeesCollected}
+		listValue := &_LegacyPool_9_list{list: &x.FeesCollected}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.perpetual.LegacyPool.leverage_max":
 		value := x.LeverageMax
@@ -1195,17 +1210,19 @@ func (x *fastReflection_LegacyPool) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		x.AmmPoolId = value.Uint()
-	case "elys.perpetual.LegacyPool.health":
-		x.Health = value.Interface().(string)
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		x.BaseAssetLiabilitiesRatio = value.Interface().(string)
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
+		x.QuoteAssetLiabilitiesRatio = value.Interface().(string)
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		x.BorrowInterestRate = value.Interface().(string)
 	case "elys.perpetual.LegacyPool.pool_assets_long":
 		lv := value.List()
-		clv := lv.(*_LegacyPool_4_list)
+		clv := lv.(*_LegacyPool_5_list)
 		x.PoolAssetsLong = *clv.list
 	case "elys.perpetual.LegacyPool.pool_assets_short":
 		lv := value.List()
-		clv := lv.(*_LegacyPool_5_list)
+		clv := lv.(*_LegacyPool_6_list)
 		x.PoolAssetsShort = *clv.list
 	case "elys.perpetual.LegacyPool.last_height_borrow_interest_rate_computed":
 		x.LastHeightBorrowInterestRateComputed = value.Int()
@@ -1213,7 +1230,7 @@ func (x *fastReflection_LegacyPool) Set(fd protoreflect.FieldDescriptor, value p
 		x.FundingRate = value.Interface().(string)
 	case "elys.perpetual.LegacyPool.fees_collected":
 		lv := value.List()
-		clv := lv.(*_LegacyPool_8_list)
+		clv := lv.(*_LegacyPool_9_list)
 		x.FeesCollected = *clv.list
 	case "elys.perpetual.LegacyPool.leverage_max":
 		x.LeverageMax = value.Interface().(string)
@@ -1239,26 +1256,28 @@ func (x *fastReflection_LegacyPool) Mutable(fd protoreflect.FieldDescriptor) pro
 	switch fd.FullName() {
 	case "elys.perpetual.LegacyPool.pool_assets_long":
 		if x.PoolAssetsLong == nil {
-			x.PoolAssetsLong = []*PoolAsset{}
+			x.PoolAssetsLong = []*LegacyPoolAsset{}
 		}
-		value := &_LegacyPool_4_list{list: &x.PoolAssetsLong}
+		value := &_LegacyPool_5_list{list: &x.PoolAssetsLong}
 		return protoreflect.ValueOfList(value)
 	case "elys.perpetual.LegacyPool.pool_assets_short":
 		if x.PoolAssetsShort == nil {
-			x.PoolAssetsShort = []*PoolAsset{}
+			x.PoolAssetsShort = []*LegacyPoolAsset{}
 		}
-		value := &_LegacyPool_5_list{list: &x.PoolAssetsShort}
+		value := &_LegacyPool_6_list{list: &x.PoolAssetsShort}
 		return protoreflect.ValueOfList(value)
 	case "elys.perpetual.LegacyPool.fees_collected":
 		if x.FeesCollected == nil {
 			x.FeesCollected = []*v1beta1.Coin{}
 		}
-		value := &_LegacyPool_8_list{list: &x.FeesCollected}
+		value := &_LegacyPool_9_list{list: &x.FeesCollected}
 		return protoreflect.ValueOfList(value)
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		panic(fmt.Errorf("field amm_pool_id of message elys.perpetual.LegacyPool is not mutable"))
-	case "elys.perpetual.LegacyPool.health":
-		panic(fmt.Errorf("field health of message elys.perpetual.LegacyPool is not mutable"))
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		panic(fmt.Errorf("field base_asset_liabilities_ratio of message elys.perpetual.LegacyPool is not mutable"))
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
+		panic(fmt.Errorf("field quote_asset_liabilities_ratio of message elys.perpetual.LegacyPool is not mutable"))
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		panic(fmt.Errorf("field borrow_interest_rate of message elys.perpetual.LegacyPool is not mutable"))
 	case "elys.perpetual.LegacyPool.last_height_borrow_interest_rate_computed":
@@ -1282,23 +1301,25 @@ func (x *fastReflection_LegacyPool) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "elys.perpetual.LegacyPool.amm_pool_id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.perpetual.LegacyPool.health":
+	case "elys.perpetual.LegacyPool.base_asset_liabilities_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.LegacyPool.quote_asset_liabilities_ratio":
 		return protoreflect.ValueOfString("")
 	case "elys.perpetual.LegacyPool.borrow_interest_rate":
 		return protoreflect.ValueOfString("")
 	case "elys.perpetual.LegacyPool.pool_assets_long":
-		list := []*PoolAsset{}
-		return protoreflect.ValueOfList(&_LegacyPool_4_list{list: &list})
-	case "elys.perpetual.LegacyPool.pool_assets_short":
-		list := []*PoolAsset{}
+		list := []*LegacyPoolAsset{}
 		return protoreflect.ValueOfList(&_LegacyPool_5_list{list: &list})
+	case "elys.perpetual.LegacyPool.pool_assets_short":
+		list := []*LegacyPoolAsset{}
+		return protoreflect.ValueOfList(&_LegacyPool_6_list{list: &list})
 	case "elys.perpetual.LegacyPool.last_height_borrow_interest_rate_computed":
 		return protoreflect.ValueOfInt64(int64(0))
 	case "elys.perpetual.LegacyPool.funding_rate":
 		return protoreflect.ValueOfString("")
 	case "elys.perpetual.LegacyPool.fees_collected":
 		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_LegacyPool_8_list{list: &list})
+		return protoreflect.ValueOfList(&_LegacyPool_9_list{list: &list})
 	case "elys.perpetual.LegacyPool.leverage_max":
 		return protoreflect.ValueOfString("")
 	default:
@@ -1373,7 +1394,11 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 		if x.AmmPoolId != 0 {
 			n += 1 + runtime.Sov(uint64(x.AmmPoolId))
 		}
-		l = len(x.Health)
+		l = len(x.BaseAssetLiabilitiesRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.QuoteAssetLiabilitiesRatio)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1444,7 +1469,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.LeverageMax)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LeverageMax)))
 			i--
-			dAtA[i] = 0x4a
+			dAtA[i] = 0x52
 		}
 		if len(x.FeesCollected) > 0 {
 			for iNdEx := len(x.FeesCollected) - 1; iNdEx >= 0; iNdEx-- {
@@ -1459,7 +1484,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x42
+				dAtA[i] = 0x4a
 			}
 		}
 		if len(x.FundingRate) > 0 {
@@ -1467,12 +1492,12 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.FundingRate)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FundingRate)))
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x42
 		}
 		if x.LastHeightBorrowInterestRateComputed != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.LastHeightBorrowInterestRateComputed))
 			i--
-			dAtA[i] = 0x30
+			dAtA[i] = 0x38
 		}
 		if len(x.PoolAssetsShort) > 0 {
 			for iNdEx := len(x.PoolAssetsShort) - 1; iNdEx >= 0; iNdEx-- {
@@ -1487,7 +1512,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x2a
+				dAtA[i] = 0x32
 			}
 		}
 		if len(x.PoolAssetsLong) > 0 {
@@ -1503,7 +1528,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x22
+				dAtA[i] = 0x2a
 			}
 		}
 		if len(x.BorrowInterestRate) > 0 {
@@ -1511,12 +1536,19 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.BorrowInterestRate)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRate)))
 			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.QuoteAssetLiabilitiesRatio) > 0 {
+			i -= len(x.QuoteAssetLiabilitiesRatio)
+			copy(dAtA[i:], x.QuoteAssetLiabilitiesRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.QuoteAssetLiabilitiesRatio)))
+			i--
 			dAtA[i] = 0x1a
 		}
-		if len(x.Health) > 0 {
-			i -= len(x.Health)
-			copy(dAtA[i:], x.Health)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Health)))
+		if len(x.BaseAssetLiabilitiesRatio) > 0 {
+			i -= len(x.BaseAssetLiabilitiesRatio)
+			copy(dAtA[i:], x.BaseAssetLiabilitiesRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BaseAssetLiabilitiesRatio)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -1595,7 +1627,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				}
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Health", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BaseAssetLiabilitiesRatio", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1623,9 +1655,41 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Health = string(dAtA[iNdEx:postIndex])
+				x.BaseAssetLiabilitiesRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field QuoteAssetLiabilitiesRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.QuoteAssetLiabilitiesRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRate", wireType)
 				}
@@ -1657,7 +1721,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				}
 				x.BorrowInterestRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 4:
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolAssetsLong", wireType)
 				}
@@ -1686,12 +1750,12 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.PoolAssetsLong = append(x.PoolAssetsLong, &PoolAsset{})
+				x.PoolAssetsLong = append(x.PoolAssetsLong, &LegacyPoolAsset{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PoolAssetsLong[len(x.PoolAssetsLong)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 5:
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolAssetsShort", wireType)
 				}
@@ -1720,12 +1784,12 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.PoolAssetsShort = append(x.PoolAssetsShort, &PoolAsset{})
+				x.PoolAssetsShort = append(x.PoolAssetsShort, &LegacyPoolAsset{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PoolAssetsShort[len(x.PoolAssetsShort)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 6:
+			case 7:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastHeightBorrowInterestRateComputed", wireType)
 				}
@@ -1744,7 +1808,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 7:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FundingRate", wireType)
 				}
@@ -1776,7 +1840,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 				}
 				x.FundingRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 8:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeesCollected", wireType)
 				}
@@ -1810,7 +1874,7 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 9:
+			case 10:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LeverageMax", wireType)
 				}
@@ -1841,6 +1905,618 @@ func (x *fastReflection_LegacyPool) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.LeverageMax = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_PoolAsset             protoreflect.MessageDescriptor
+	fd_PoolAsset_asset_denom protoreflect.FieldDescriptor
+	fd_PoolAsset_liabilities protoreflect.FieldDescriptor
+	fd_PoolAsset_custody     protoreflect.FieldDescriptor
+	fd_PoolAsset_collateral  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_perpetual_pool_proto_init()
+	md_PoolAsset = File_elys_perpetual_pool_proto.Messages().ByName("PoolAsset")
+	fd_PoolAsset_asset_denom = md_PoolAsset.Fields().ByName("asset_denom")
+	fd_PoolAsset_liabilities = md_PoolAsset.Fields().ByName("liabilities")
+	fd_PoolAsset_custody = md_PoolAsset.Fields().ByName("custody")
+	fd_PoolAsset_collateral = md_PoolAsset.Fields().ByName("collateral")
+}
+
+var _ protoreflect.Message = (*fastReflection_PoolAsset)(nil)
+
+type fastReflection_PoolAsset PoolAsset
+
+func (x *PoolAsset) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PoolAsset)(x)
+}
+
+func (x *PoolAsset) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_perpetual_pool_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PoolAsset_messageType fastReflection_PoolAsset_messageType
+var _ protoreflect.MessageType = fastReflection_PoolAsset_messageType{}
+
+type fastReflection_PoolAsset_messageType struct{}
+
+func (x fastReflection_PoolAsset_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PoolAsset)(nil)
+}
+func (x fastReflection_PoolAsset_messageType) New() protoreflect.Message {
+	return new(fastReflection_PoolAsset)
+}
+func (x fastReflection_PoolAsset_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PoolAsset
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PoolAsset) Descriptor() protoreflect.MessageDescriptor {
+	return md_PoolAsset
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PoolAsset) Type() protoreflect.MessageType {
+	return _fastReflection_PoolAsset_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PoolAsset) New() protoreflect.Message {
+	return new(fastReflection_PoolAsset)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PoolAsset) Interface() protoreflect.ProtoMessage {
+	return (*PoolAsset)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PoolAsset) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.AssetDenom != "" {
+		value := protoreflect.ValueOfString(x.AssetDenom)
+		if !f(fd_PoolAsset_asset_denom, value) {
+			return
+		}
+	}
+	if x.Liabilities != "" {
+		value := protoreflect.ValueOfString(x.Liabilities)
+		if !f(fd_PoolAsset_liabilities, value) {
+			return
+		}
+	}
+	if x.Custody != "" {
+		value := protoreflect.ValueOfString(x.Custody)
+		if !f(fd_PoolAsset_custody, value) {
+			return
+		}
+	}
+	if x.Collateral != "" {
+		value := protoreflect.ValueOfString(x.Collateral)
+		if !f(fd_PoolAsset_collateral, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PoolAsset) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		return x.AssetDenom != ""
+	case "elys.perpetual.PoolAsset.liabilities":
+		return x.Liabilities != ""
+	case "elys.perpetual.PoolAsset.custody":
+		return x.Custody != ""
+	case "elys.perpetual.PoolAsset.collateral":
+		return x.Collateral != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolAsset) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		x.AssetDenom = ""
+	case "elys.perpetual.PoolAsset.liabilities":
+		x.Liabilities = ""
+	case "elys.perpetual.PoolAsset.custody":
+		x.Custody = ""
+	case "elys.perpetual.PoolAsset.collateral":
+		x.Collateral = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PoolAsset) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		value := x.AssetDenom
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.PoolAsset.liabilities":
+		value := x.Liabilities
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.PoolAsset.custody":
+		value := x.Custody
+		return protoreflect.ValueOfString(value)
+	case "elys.perpetual.PoolAsset.collateral":
+		value := x.Collateral
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolAsset) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		x.AssetDenom = value.Interface().(string)
+	case "elys.perpetual.PoolAsset.liabilities":
+		x.Liabilities = value.Interface().(string)
+	case "elys.perpetual.PoolAsset.custody":
+		x.Custody = value.Interface().(string)
+	case "elys.perpetual.PoolAsset.collateral":
+		x.Collateral = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolAsset) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		panic(fmt.Errorf("field asset_denom of message elys.perpetual.PoolAsset is not mutable"))
+	case "elys.perpetual.PoolAsset.liabilities":
+		panic(fmt.Errorf("field liabilities of message elys.perpetual.PoolAsset is not mutable"))
+	case "elys.perpetual.PoolAsset.custody":
+		panic(fmt.Errorf("field custody of message elys.perpetual.PoolAsset is not mutable"))
+	case "elys.perpetual.PoolAsset.collateral":
+		panic(fmt.Errorf("field collateral of message elys.perpetual.PoolAsset is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PoolAsset) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.PoolAsset.asset_denom":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.PoolAsset.liabilities":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.PoolAsset.custody":
+		return protoreflect.ValueOfString("")
+	case "elys.perpetual.PoolAsset.collateral":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PoolAsset"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PoolAsset does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PoolAsset) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.PoolAsset", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PoolAsset) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolAsset) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PoolAsset) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PoolAsset) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PoolAsset)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.AssetDenom)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Liabilities)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Custody)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Collateral)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PoolAsset)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Collateral) > 0 {
+			i -= len(x.Collateral)
+			copy(dAtA[i:], x.Collateral)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Collateral)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.Custody) > 0 {
+			i -= len(x.Custody)
+			copy(dAtA[i:], x.Custody)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Custody)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Liabilities) > 0 {
+			i -= len(x.Liabilities)
+			copy(dAtA[i:], x.Liabilities)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Liabilities)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.AssetDenom) > 0 {
+			i -= len(x.AssetDenom)
+			copy(dAtA[i:], x.AssetDenom)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AssetDenom)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PoolAsset)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolAsset: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolAsset: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AssetDenom", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AssetDenom = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Liabilities", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Liabilities = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Custody", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Custody = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Collateral = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2068,7 +2744,7 @@ func (x *Pool) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Pool) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_perpetual_pool_proto_msgTypes[2]
+	mi := &file_elys_perpetual_pool_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3063,6 +3739,506 @@ func (x *fastReflection_Pool) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var (
+	md_PerpetualCounter             protoreflect.MessageDescriptor
+	fd_PerpetualCounter_amm_pool_id protoreflect.FieldDescriptor
+	fd_PerpetualCounter_counter     protoreflect.FieldDescriptor
+	fd_PerpetualCounter_total_open  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_perpetual_pool_proto_init()
+	md_PerpetualCounter = File_elys_perpetual_pool_proto.Messages().ByName("PerpetualCounter")
+	fd_PerpetualCounter_amm_pool_id = md_PerpetualCounter.Fields().ByName("amm_pool_id")
+	fd_PerpetualCounter_counter = md_PerpetualCounter.Fields().ByName("counter")
+	fd_PerpetualCounter_total_open = md_PerpetualCounter.Fields().ByName("total_open")
+}
+
+var _ protoreflect.Message = (*fastReflection_PerpetualCounter)(nil)
+
+type fastReflection_PerpetualCounter PerpetualCounter
+
+func (x *PerpetualCounter) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualCounter)(x)
+}
+
+func (x *PerpetualCounter) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_perpetual_pool_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PerpetualCounter_messageType fastReflection_PerpetualCounter_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualCounter_messageType{}
+
+type fastReflection_PerpetualCounter_messageType struct{}
+
+func (x fastReflection_PerpetualCounter_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualCounter)(nil)
+}
+func (x fastReflection_PerpetualCounter_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounter)
+}
+func (x fastReflection_PerpetualCounter_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounter
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PerpetualCounter) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualCounter
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PerpetualCounter) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualCounter_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PerpetualCounter) New() protoreflect.Message {
+	return new(fastReflection_PerpetualCounter)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PerpetualCounter) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualCounter)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PerpetualCounter) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.AmmPoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.AmmPoolId)
+		if !f(fd_PerpetualCounter_amm_pool_id, value) {
+			return
+		}
+	}
+	if x.Counter != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Counter)
+		if !f(fd_PerpetualCounter_counter, value) {
+			return
+		}
+	}
+	if x.TotalOpen != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TotalOpen)
+		if !f(fd_PerpetualCounter_total_open, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PerpetualCounter) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		return x.AmmPoolId != uint64(0)
+	case "elys.perpetual.PerpetualCounter.counter":
+		return x.Counter != uint64(0)
+	case "elys.perpetual.PerpetualCounter.total_open":
+		return x.TotalOpen != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualCounter) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		x.AmmPoolId = uint64(0)
+	case "elys.perpetual.PerpetualCounter.counter":
+		x.Counter = uint64(0)
+	case "elys.perpetual.PerpetualCounter.total_open":
+		x.TotalOpen = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PerpetualCounter) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		value := x.AmmPoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.perpetual.PerpetualCounter.counter":
+		value := x.Counter
+		return protoreflect.ValueOfUint64(value)
+	case "elys.perpetual.PerpetualCounter.total_open":
+		value := x.TotalOpen
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualCounter) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		x.AmmPoolId = value.Uint()
+	case "elys.perpetual.PerpetualCounter.counter":
+		x.Counter = value.Uint()
+	case "elys.perpetual.PerpetualCounter.total_open":
+		x.TotalOpen = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualCounter) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		panic(fmt.Errorf("field amm_pool_id of message elys.perpetual.PerpetualCounter is not mutable"))
+	case "elys.perpetual.PerpetualCounter.counter":
+		panic(fmt.Errorf("field counter of message elys.perpetual.PerpetualCounter is not mutable"))
+	case "elys.perpetual.PerpetualCounter.total_open":
+		panic(fmt.Errorf("field total_open of message elys.perpetual.PerpetualCounter is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PerpetualCounter) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.perpetual.PerpetualCounter.amm_pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.perpetual.PerpetualCounter.counter":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.perpetual.PerpetualCounter.total_open":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.perpetual.PerpetualCounter"))
+		}
+		panic(fmt.Errorf("message elys.perpetual.PerpetualCounter does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PerpetualCounter) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.perpetual.PerpetualCounter", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PerpetualCounter) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualCounter) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PerpetualCounter) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PerpetualCounter) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PerpetualCounter)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.AmmPoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.AmmPoolId))
+		}
+		if x.Counter != 0 {
+			n += 1 + runtime.Sov(uint64(x.Counter))
+		}
+		if x.TotalOpen != 0 {
+			n += 1 + runtime.Sov(uint64(x.TotalOpen))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualCounter)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.TotalOpen != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TotalOpen))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.Counter != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Counter))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.AmmPoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmmPoolId))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualCounter)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounter: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualCounter: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmmPoolId", wireType)
+				}
+				x.AmmPoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.AmmPoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Counter", wireType)
+				}
+				x.Counter = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Counter |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalOpen", wireType)
+				}
+				x.TotalOpen = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TotalOpen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -3076,7 +4252,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PoolAsset struct {
+type LegacyPoolAsset struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3089,8 +4265,8 @@ type PoolAsset struct {
 	Collateral            string `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral,omitempty"`
 }
 
-func (x *PoolAsset) Reset() {
-	*x = PoolAsset{}
+func (x *LegacyPoolAsset) Reset() {
+	*x = LegacyPoolAsset{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_perpetual_pool_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3098,53 +4274,53 @@ func (x *PoolAsset) Reset() {
 	}
 }
 
-func (x *PoolAsset) String() string {
+func (x *LegacyPoolAsset) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PoolAsset) ProtoMessage() {}
+func (*LegacyPoolAsset) ProtoMessage() {}
 
-// Deprecated: Use PoolAsset.ProtoReflect.Descriptor instead.
-func (*PoolAsset) Descriptor() ([]byte, []int) {
+// Deprecated: Use LegacyPoolAsset.ProtoReflect.Descriptor instead.
+func (*LegacyPoolAsset) Descriptor() ([]byte, []int) {
 	return file_elys_perpetual_pool_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PoolAsset) GetLiabilities() string {
+func (x *LegacyPoolAsset) GetLiabilities() string {
 	if x != nil {
 		return x.Liabilities
 	}
 	return ""
 }
 
-func (x *PoolAsset) GetCustody() string {
+func (x *LegacyPoolAsset) GetCustody() string {
 	if x != nil {
 		return x.Custody
 	}
 	return ""
 }
 
-func (x *PoolAsset) GetTakeProfitLiabilities() string {
+func (x *LegacyPoolAsset) GetTakeProfitLiabilities() string {
 	if x != nil {
 		return x.TakeProfitLiabilities
 	}
 	return ""
 }
 
-func (x *PoolAsset) GetTakeProfitCustody() string {
+func (x *LegacyPoolAsset) GetTakeProfitCustody() string {
 	if x != nil {
 		return x.TakeProfitCustody
 	}
 	return ""
 }
 
-func (x *PoolAsset) GetAssetDenom() string {
+func (x *LegacyPoolAsset) GetAssetDenom() string {
 	if x != nil {
 		return x.AssetDenom
 	}
 	return ""
 }
 
-func (x *PoolAsset) GetCollateral() string {
+func (x *LegacyPoolAsset) GetCollateral() string {
 	if x != nil {
 		return x.Collateral
 	}
@@ -3156,16 +4332,17 @@ type LegacyPool struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AmmPoolId                            uint64       `protobuf:"varint,1,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	Health                               string       `protobuf:"bytes,2,opt,name=health,proto3" json:"health,omitempty"`
-	BorrowInterestRate                   string       `protobuf:"bytes,3,opt,name=borrow_interest_rate,json=borrowInterestRate,proto3" json:"borrow_interest_rate,omitempty"`
-	PoolAssetsLong                       []*PoolAsset `protobuf:"bytes,4,rep,name=pool_assets_long,json=poolAssetsLong,proto3" json:"pool_assets_long,omitempty"`
-	PoolAssetsShort                      []*PoolAsset `protobuf:"bytes,5,rep,name=pool_assets_short,json=poolAssetsShort,proto3" json:"pool_assets_short,omitempty"`
-	LastHeightBorrowInterestRateComputed int64        `protobuf:"varint,6,opt,name=last_height_borrow_interest_rate_computed,json=lastHeightBorrowInterestRateComputed,proto3" json:"last_height_borrow_interest_rate_computed,omitempty"`
+	AmmPoolId                            uint64             `protobuf:"varint,1,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	BaseAssetLiabilitiesRatio            string             `protobuf:"bytes,2,opt,name=base_asset_liabilities_ratio,json=baseAssetLiabilitiesRatio,proto3" json:"base_asset_liabilities_ratio,omitempty"`
+	QuoteAssetLiabilitiesRatio           string             `protobuf:"bytes,3,opt,name=quote_asset_liabilities_ratio,json=quoteAssetLiabilitiesRatio,proto3" json:"quote_asset_liabilities_ratio,omitempty"`
+	BorrowInterestRate                   string             `protobuf:"bytes,4,opt,name=borrow_interest_rate,json=borrowInterestRate,proto3" json:"borrow_interest_rate,omitempty"`
+	PoolAssetsLong                       []*LegacyPoolAsset `protobuf:"bytes,5,rep,name=pool_assets_long,json=poolAssetsLong,proto3" json:"pool_assets_long,omitempty"`
+	PoolAssetsShort                      []*LegacyPoolAsset `protobuf:"bytes,6,rep,name=pool_assets_short,json=poolAssetsShort,proto3" json:"pool_assets_short,omitempty"`
+	LastHeightBorrowInterestRateComputed int64              `protobuf:"varint,7,opt,name=last_height_borrow_interest_rate_computed,json=lastHeightBorrowInterestRateComputed,proto3" json:"last_height_borrow_interest_rate_computed,omitempty"`
 	// funding rate, if positive longs pay shorts, if negative shorts pay longs
-	FundingRate   string          `protobuf:"bytes,7,opt,name=funding_rate,json=fundingRate,proto3" json:"funding_rate,omitempty"`
-	FeesCollected []*v1beta1.Coin `protobuf:"bytes,8,rep,name=fees_collected,json=feesCollected,proto3" json:"fees_collected,omitempty"`
-	LeverageMax   string          `protobuf:"bytes,9,opt,name=leverage_max,json=leverageMax,proto3" json:"leverage_max,omitempty"`
+	FundingRate   string          `protobuf:"bytes,8,opt,name=funding_rate,json=fundingRate,proto3" json:"funding_rate,omitempty"`
+	FeesCollected []*v1beta1.Coin `protobuf:"bytes,9,rep,name=fees_collected,json=feesCollected,proto3" json:"fees_collected,omitempty"`
+	LeverageMax   string          `protobuf:"bytes,10,opt,name=leverage_max,json=leverageMax,proto3" json:"leverage_max,omitempty"`
 }
 
 func (x *LegacyPool) Reset() {
@@ -3195,9 +4372,16 @@ func (x *LegacyPool) GetAmmPoolId() uint64 {
 	return 0
 }
 
-func (x *LegacyPool) GetHealth() string {
+func (x *LegacyPool) GetBaseAssetLiabilitiesRatio() string {
 	if x != nil {
-		return x.Health
+		return x.BaseAssetLiabilitiesRatio
+	}
+	return ""
+}
+
+func (x *LegacyPool) GetQuoteAssetLiabilitiesRatio() string {
+	if x != nil {
+		return x.QuoteAssetLiabilitiesRatio
 	}
 	return ""
 }
@@ -3209,14 +4393,14 @@ func (x *LegacyPool) GetBorrowInterestRate() string {
 	return ""
 }
 
-func (x *LegacyPool) GetPoolAssetsLong() []*PoolAsset {
+func (x *LegacyPool) GetPoolAssetsLong() []*LegacyPoolAsset {
 	if x != nil {
 		return x.PoolAssetsLong
 	}
 	return nil
 }
 
-func (x *LegacyPool) GetPoolAssetsShort() []*PoolAsset {
+func (x *LegacyPool) GetPoolAssetsShort() []*LegacyPoolAsset {
 	if x != nil {
 		return x.PoolAssetsShort
 	}
@@ -3251,6 +4435,65 @@ func (x *LegacyPool) GetLeverageMax() string {
 	return ""
 }
 
+type PoolAsset struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AssetDenom  string `protobuf:"bytes,1,opt,name=asset_denom,json=assetDenom,proto3" json:"asset_denom,omitempty"`
+	Liabilities string `protobuf:"bytes,2,opt,name=liabilities,proto3" json:"liabilities,omitempty"`
+	Custody     string `protobuf:"bytes,3,opt,name=custody,proto3" json:"custody,omitempty"`
+	Collateral  string `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral,omitempty"`
+}
+
+func (x *PoolAsset) Reset() {
+	*x = PoolAsset{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_perpetual_pool_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PoolAsset) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PoolAsset) ProtoMessage() {}
+
+// Deprecated: Use PoolAsset.ProtoReflect.Descriptor instead.
+func (*PoolAsset) Descriptor() ([]byte, []int) {
+	return file_elys_perpetual_pool_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PoolAsset) GetAssetDenom() string {
+	if x != nil {
+		return x.AssetDenom
+	}
+	return ""
+}
+
+func (x *PoolAsset) GetLiabilities() string {
+	if x != nil {
+		return x.Liabilities
+	}
+	return ""
+}
+
+func (x *PoolAsset) GetCustody() string {
+	if x != nil {
+		return x.Custody
+	}
+	return ""
+}
+
+func (x *PoolAsset) GetCollateral() string {
+	if x != nil {
+		return x.Collateral
+	}
+	return ""
+}
+
 type Pool struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -3272,7 +4515,7 @@ type Pool struct {
 func (x *Pool) Reset() {
 	*x = Pool{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_perpetual_pool_proto_msgTypes[2]
+		mi := &file_elys_perpetual_pool_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3286,7 +4529,7 @@ func (*Pool) ProtoMessage() {}
 
 // Deprecated: Use Pool.ProtoReflect.Descriptor instead.
 func (*Pool) Descriptor() ([]byte, []int) {
-	return file_elys_perpetual_pool_proto_rawDescGZIP(), []int{2}
+	return file_elys_perpetual_pool_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Pool) GetAmmPoolId() uint64 {
@@ -3359,6 +4602,57 @@ func (x *Pool) GetLeverageMax() string {
 	return ""
 }
 
+type PerpetualCounter struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AmmPoolId uint64 `protobuf:"varint,1,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	Counter   uint64 `protobuf:"varint,2,opt,name=counter,proto3" json:"counter,omitempty"`
+	TotalOpen uint64 `protobuf:"varint,3,opt,name=total_open,json=totalOpen,proto3" json:"total_open,omitempty"`
+}
+
+func (x *PerpetualCounter) Reset() {
+	*x = PerpetualCounter{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_perpetual_pool_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PerpetualCounter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PerpetualCounter) ProtoMessage() {}
+
+// Deprecated: Use PerpetualCounter.ProtoReflect.Descriptor instead.
+func (*PerpetualCounter) Descriptor() ([]byte, []int) {
+	return file_elys_perpetual_pool_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PerpetualCounter) GetAmmPoolId() uint64 {
+	if x != nil {
+		return x.AmmPoolId
+	}
+	return 0
+}
+
+func (x *PerpetualCounter) GetCounter() uint64 {
+	if x != nil {
+		return x.Counter
+	}
+	return 0
+}
+
+func (x *PerpetualCounter) GetTotalOpen() uint64 {
+	if x != nil {
+		return x.TotalOpen
+	}
+	return 0
+}
+
 var File_elys_perpetual_pool_proto protoreflect.FileDescriptor
 
 var file_elys_perpetual_pool_proto_rawDesc = []byte{
@@ -3369,139 +4663,174 @@ var file_elys_perpetual_pool_proto_rawDesc = []byte{
 	0x6f, 0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76,
 	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd1, 0x03, 0x0a,
-	0x09, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x4d, 0x0a, 0x0b, 0x6c, 0x69,
-	0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4,
-	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x6c, 0x69,
-	0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x12, 0x45, 0x0a, 0x07, 0x63, 0x75, 0x73,
-	0x74, 0x6f, 0x64, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00,
-	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
-	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79,
-	0x12, 0x63, 0x0a, 0x17, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f,
-	0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x15,
-	0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c,
-	0x69, 0x74, 0x69, 0x65, 0x73, 0x12, 0x5b, 0x0a, 0x13, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72,
-	0x6f, 0x66, 0x69, 0x74, 0x5f, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e,
-	0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52,
-	0x11, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x43, 0x75, 0x73, 0x74, 0x6f,
-	0x64, 0x79, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x73, 0x73, 0x65, 0x74, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x12, 0x4b, 0x0a, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61,
-	0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd7, 0x03, 0x0a,
+	0x0f, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74,
+	0x12, 0x4d, 0x0a, 0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x12,
+	0x45, 0x0a, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x07, 0x63,
+	0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x12, 0x63, 0x0a, 0x17, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70,
+	0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65,
+	0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
 	0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
 	0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c,
-	0x22, 0xc1, 0x05, 0x0a, 0x0a, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x12,
-	0x1e, 0x0a, 0x0b, 0x61, 0x6d, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x61, 0x6d, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12,
-	0x49, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x06, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f,
+	0x2e, 0x49, 0x6e, 0x74, 0x52, 0x15, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74,
+	0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x12, 0x5b, 0x0a, 0x13, 0x74,
+	0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x63, 0x75, 0x73, 0x74, 0x6f,
+	0x64, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x11, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69,
+	0x74, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x73, 0x73, 0x65,
+	0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61,
+	0x73, 0x73, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x4b, 0x0a, 0x0a, 0x63, 0x6f, 0x6c,
+	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c,
+	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x22, 0xec, 0x06, 0x0a, 0x0a, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x0a, 0x0b, 0x61, 0x6d, 0x6d, 0x5f, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x61, 0x6d, 0x6d, 0x50,
+	0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x72, 0x0a, 0x1c, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19,
+	0x62, 0x61, 0x73, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69,
+	0x74, 0x69, 0x65, 0x73, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x74, 0x0a, 0x1d, 0x71, 0x75, 0x6f,
+	0x74, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69,
+	0x74, 0x69, 0x65, 0x73, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
+	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x44, 0x65, 0x63, 0x52, 0x1a, 0x71, 0x75, 0x6f, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x4c,
+	0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12,
+	0x63, 0x0a, 0x14, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65,
+	0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x12, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
+	0x52, 0x61, 0x74, 0x65, 0x12, 0x4f, 0x0a, 0x10, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x73, 0x5f, 0x6c, 0x6f, 0x6e, 0x67, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x70, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74,
+	0x73, 0x4c, 0x6f, 0x6e, 0x67, 0x12, 0x51, 0x0a, 0x11, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x73, 0x5f, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65,
+	0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73,
+	0x65, 0x74, 0x73, 0x53, 0x68, 0x6f, 0x72, 0x74, 0x12, 0x57, 0x0a, 0x29, 0x6c, 0x61, 0x73, 0x74,
+	0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x6d,
+	0x70, 0x75, 0x74, 0x65, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x24, 0x6c, 0x61, 0x73,
+	0x74, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74,
+	0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65,
+	0x64, 0x12, 0x54, 0x0a, 0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74,
+	0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x66, 0x75, 0x6e, 0x64,
+	0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x46, 0x0a, 0x0e, 0x66, 0x65, 0x65, 0x73, 0x5f,
+	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0d, 0x66, 0x65, 0x65, 0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12,
+	0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18,
+	0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x4d, 0x61, 0x78, 0x22, 0x8f, 0x02, 0x0a, 0x09, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73,
+	0x73, 0x65, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x73, 0x73, 0x65, 0x74, 0x44,
+	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x4d, 0x0a, 0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
+	0x69, 0x65, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
+	0x69, 0x65, 0x73, 0x12, 0x45, 0x0a, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e,
+	0x74, 0x52, 0x07, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x64, 0x79, 0x12, 0x4b, 0x0a, 0x0a, 0x63, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x63, 0x6f, 0x6c,
+	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x22, 0xda, 0x06, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c,
+	0x12, 0x1e, 0x0a, 0x0b, 0x61, 0x6d, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x61, 0x6d, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
+	0x12, 0x72, 0x0a, 0x1c, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x6c,
+	0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x62, 0x61, 0x73, 0x65, 0x41,
+	0x73, 0x73, 0x65, 0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x52,
+	0x61, 0x74, 0x69, 0x6f, 0x12, 0x74, 0x0a, 0x1d, 0x71, 0x75, 0x6f, 0x74, 0x65, 0x5f, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a,
+	0x71, 0x75, 0x6f, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c,
+	0x69, 0x74, 0x69, 0x65, 0x73, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f,
 	0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61,
-	0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
 	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
 	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
 	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x62, 0x6f, 0x72,
 	0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12,
 	0x49, 0x0a, 0x10, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x5f, 0x6c,
-	0x6f, 0x6e, 0x67, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x6f, 0x6e, 0x67, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73,
 	0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x41,
 	0x73, 0x73, 0x65, 0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x70, 0x6f, 0x6f, 0x6c,
 	0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x4c, 0x6f, 0x6e, 0x67, 0x12, 0x4b, 0x0a, 0x11, 0x70, 0x6f,
 	0x6f, 0x6c, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x5f, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x18,
-	0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
+	0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72,
 	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74,
 	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65,
 	0x74, 0x73, 0x53, 0x68, 0x6f, 0x72, 0x74, 0x12, 0x57, 0x0a, 0x29, 0x6c, 0x61, 0x73, 0x74, 0x5f,
 	0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e,
 	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x6d, 0x70,
-	0x75, 0x74, 0x65, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x24, 0x6c, 0x61, 0x73, 0x74,
+	0x75, 0x74, 0x65, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x24, 0x6c, 0x61, 0x73, 0x74,
 	0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65,
 	0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x64,
 	0x12, 0x54, 0x0a, 0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65,
-	0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
 	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69,
 	0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x46, 0x0a, 0x0e, 0x66, 0x65, 0x65, 0x73, 0x5f, 0x63,
-	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19,
+	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19,
 	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
 	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
 	0x0d, 0x66, 0x65, 0x65, 0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x54,
-	0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x09,
+	0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x0a,
 	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
 	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x4d, 0x61, 0x78, 0x22, 0xda, 0x06, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x0a,
-	0x0b, 0x61, 0x6d, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x04, 0x52, 0x09, 0x61, 0x6d, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x72, 0x0a,
-	0x1c, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x6c, 0x69, 0x61, 0x62,
-	0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x62, 0x61, 0x73, 0x65, 0x41, 0x73, 0x73, 0x65,
-	0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x52, 0x61, 0x74, 0x69,
-	0x6f, 0x12, 0x74, 0x0a, 0x1d, 0x71, 0x75, 0x6f, 0x74, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74,
-	0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x5f, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
-	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
-	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a, 0x71, 0x75, 0x6f,
-	0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69,
-	0x65, 0x73, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f, 0x72, 0x72, 0x6f,
-	0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
-	0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x49, 0x0a, 0x10,
-	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x5f, 0x6c, 0x6f, 0x6e, 0x67,
-	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65,
-	0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x70, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73,
-	0x65, 0x74, 0x73, 0x4c, 0x6f, 0x6e, 0x67, 0x12, 0x4b, 0x0a, 0x11, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
-	0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x5f, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x18, 0x06, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x6f, 0x6f, 0x6c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x53,
-	0x68, 0x6f, 0x72, 0x74, 0x12, 0x57, 0x0a, 0x29, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x68, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72,
-	0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65,
-	0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x24, 0x6c, 0x61, 0x73, 0x74, 0x48, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
-	0x74, 0x52, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x64, 0x12, 0x54, 0x0a,
-	0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x08, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52,
-	0x61, 0x74, 0x65, 0x12, 0x46, 0x0a, 0x0e, 0x66, 0x65, 0x65, 0x73, 0x5f, 0x63, 0x6f, 0x6c, 0x6c,
-	0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0d, 0x66, 0x65,
-	0x65, 0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x54, 0x0a, 0x0c, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x0a, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x4d, 0x61,
-	0x78, 0x42, 0xac, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
+	0x65, 0x4d, 0x61, 0x78, 0x22, 0x6b, 0x0a, 0x10, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x1e, 0x0a, 0x0b, 0x61, 0x6d, 0x6d, 0x5f,
+	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x61,
+	0x6d, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x65, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x6f, 0x70, 0x65, 0x6e,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4f, 0x70, 0x65,
+	0x6e, 0x42, 0xac, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x70,
 	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x42, 0x09, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x72,
 	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
 	0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2f, 0x76, 0x35, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
 	0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0xa2, 0x02, 0x03, 0x45, 0x50, 0x58, 0xaa,
 	0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
 	0xca, 0x02, 0x0e, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
@@ -3523,20 +4852,22 @@ func file_elys_perpetual_pool_proto_rawDescGZIP() []byte {
 	return file_elys_perpetual_pool_proto_rawDescData
 }
 
-var file_elys_perpetual_pool_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_elys_perpetual_pool_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_elys_perpetual_pool_proto_goTypes = []interface{}{
-	(*PoolAsset)(nil),    // 0: elys.perpetual.PoolAsset
-	(*LegacyPool)(nil),   // 1: elys.perpetual.LegacyPool
-	(*Pool)(nil),         // 2: elys.perpetual.Pool
-	(*v1beta1.Coin)(nil), // 3: cosmos.base.v1beta1.Coin
+	(*LegacyPoolAsset)(nil),  // 0: elys.perpetual.LegacyPoolAsset
+	(*LegacyPool)(nil),       // 1: elys.perpetual.LegacyPool
+	(*PoolAsset)(nil),        // 2: elys.perpetual.PoolAsset
+	(*Pool)(nil),             // 3: elys.perpetual.Pool
+	(*PerpetualCounter)(nil), // 4: elys.perpetual.PerpetualCounter
+	(*v1beta1.Coin)(nil),     // 5: cosmos.base.v1beta1.Coin
 }
 var file_elys_perpetual_pool_proto_depIdxs = []int32{
-	0, // 0: elys.perpetual.LegacyPool.pool_assets_long:type_name -> elys.perpetual.PoolAsset
-	0, // 1: elys.perpetual.LegacyPool.pool_assets_short:type_name -> elys.perpetual.PoolAsset
-	3, // 2: elys.perpetual.LegacyPool.fees_collected:type_name -> cosmos.base.v1beta1.Coin
-	0, // 3: elys.perpetual.Pool.pool_assets_long:type_name -> elys.perpetual.PoolAsset
-	0, // 4: elys.perpetual.Pool.pool_assets_short:type_name -> elys.perpetual.PoolAsset
-	3, // 5: elys.perpetual.Pool.fees_collected:type_name -> cosmos.base.v1beta1.Coin
+	0, // 0: elys.perpetual.LegacyPool.pool_assets_long:type_name -> elys.perpetual.LegacyPoolAsset
+	0, // 1: elys.perpetual.LegacyPool.pool_assets_short:type_name -> elys.perpetual.LegacyPoolAsset
+	5, // 2: elys.perpetual.LegacyPool.fees_collected:type_name -> cosmos.base.v1beta1.Coin
+	2, // 3: elys.perpetual.Pool.pool_assets_long:type_name -> elys.perpetual.PoolAsset
+	2, // 4: elys.perpetual.Pool.pool_assets_short:type_name -> elys.perpetual.PoolAsset
+	5, // 5: elys.perpetual.Pool.fees_collected:type_name -> cosmos.base.v1beta1.Coin
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
@@ -3551,7 +4882,7 @@ func file_elys_perpetual_pool_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_elys_perpetual_pool_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PoolAsset); i {
+			switch v := v.(*LegacyPoolAsset); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3575,7 +4906,31 @@ func file_elys_perpetual_pool_proto_init() {
 			}
 		}
 		file_elys_perpetual_pool_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PoolAsset); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_perpetual_pool_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Pool); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_perpetual_pool_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PerpetualCounter); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3593,7 +4948,7 @@ func file_elys_perpetual_pool_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_perpetual_pool_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

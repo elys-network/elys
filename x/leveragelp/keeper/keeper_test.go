@@ -10,13 +10,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	simapp "github.com/elys-network/elys/v5/app"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	atypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	"github.com/elys-network/elys/v5/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -89,6 +89,19 @@ func (suite *KeeperTestSuite) SetupTest() {
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
+	})
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		NetAmount:            math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		Id:                   2,
+		DepositDenom:         ptypes.ATOM,
 	})
 }
 

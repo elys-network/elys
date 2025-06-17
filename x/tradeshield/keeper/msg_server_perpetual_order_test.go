@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 // TODO: Add test for CreatePerpetualCloseOrder after enabling the code
@@ -36,7 +36,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -54,7 +53,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -89,7 +87,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -106,7 +103,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 					OwnerAddress:    addr[0].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(2),
@@ -163,7 +159,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -238,7 +233,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -317,7 +311,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
@@ -346,6 +339,83 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelAllPerpetualOrders() {
+	addr := suite.AddAccounts(3, nil)
+
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func() *types.MsgCancelAllPerpetualOrders
+	}{
+		{
+			"No order for cancelling",
+			"perpetual order not found",
+			func() *types.MsgCancelAllPerpetualOrders {
+				return &types.MsgCancelAllPerpetualOrders{
+					OwnerAddress: addr[2].String(),
+				}
+			},
+		},
+		{
+			"Success: close All orders",
+			"",
+			func() *types.MsgCancelAllPerpetualOrders {
+				_, _, _ = suite.SetPerpetualPool(1)
+				_, _, _ = suite.SetPerpetualPool(2)
+
+				openOrderMsg := &types.MsgCreatePerpetualOpenOrder{
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
+					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
+					Position:        types.PerpetualPosition_LONG,
+					Leverage:        math.LegacyNewDec(5),
+					TakeProfitPrice: math.LegacyNewDec(15),
+					StopLossPrice:   math.LegacyNewDec(8),
+					PoolId:          1,
+				}
+
+				openOrderMsg2 := &types.MsgCreatePerpetualOpenOrder{
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(5),
+					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
+					Position:        types.PerpetualPosition_LONG,
+					Leverage:        math.LegacyNewDec(5),
+					TakeProfitPrice: math.LegacyNewDec(15),
+					StopLossPrice:   math.LegacyNewDec(1),
+					PoolId:          2,
+				}
+				msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
+				_, err := msgSrvr.CreatePerpetualOpenOrder(suite.ctx, openOrderMsg)
+				suite.Require().NoError(err)
+				_, err = msgSrvr.CreatePerpetualOpenOrder(suite.ctx, openOrderMsg2)
+				suite.Require().NoError(err)
+
+				return &types.MsgCancelAllPerpetualOrders{
+					OwnerAddress: addr[2].String(),
+				}
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			msg := tc.prerequisiteFunction()
+			msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
+			_, err := msgSrvr.CancelAllPerpetualOrders(suite.ctx, msg)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				status := types.Status_PENDING
+				orders, _, err := suite.app.TradeshieldKeeper.GetPendingPerpetualOrdersForAddress(suite.ctx, msg.OwnerAddress, &status, nil)
+				suite.Require().NoError(err)
+				suite.Require().Empty(orders, "All orders should be cancelled")
 			}
 		})
 	}

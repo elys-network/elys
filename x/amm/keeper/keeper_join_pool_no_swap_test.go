@@ -3,7 +3,7 @@ package keeper_test
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

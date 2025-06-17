@@ -56,41 +56,40 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	ccvgov "github.com/cosmos/interchain-security/v6/x/ccv/democracy/governance"
-	accountedpoolmodule "github.com/elys-network/elys/v5/x/accountedpool"
-	accountedpoolmoduletypes "github.com/elys-network/elys/v5/x/accountedpool/types"
-	ammmodule "github.com/elys-network/elys/v5/x/amm"
-	ammmoduletypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofilemodule "github.com/elys-network/elys/v5/x/assetprofile"
-	assetprofilemoduletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	burnermodule "github.com/elys-network/elys/v5/x/burner"
-	burnermoduletypes "github.com/elys-network/elys/v5/x/burner/types"
-	commitmentmodule "github.com/elys-network/elys/v5/x/commitment"
-	commitmentmoduletypes "github.com/elys-network/elys/v5/x/commitment/types"
-	epochsmodule "github.com/elys-network/elys/v5/x/epochs"
-	epochsmoduletypes "github.com/elys-network/elys/v5/x/epochs/types"
-	estakingmodule "github.com/elys-network/elys/v5/x/estaking"
-	exdistr "github.com/elys-network/elys/v5/x/estaking/modules/distribution"
-	exstaking "github.com/elys-network/elys/v5/x/estaking/modules/staking"
-	estakingmoduletypes "github.com/elys-network/elys/v5/x/estaking/types"
-	leveragelpmodule "github.com/elys-network/elys/v5/x/leveragelp"
-	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
-	masterchefmodule "github.com/elys-network/elys/v5/x/masterchef"
-	masterchefmoduletypes "github.com/elys-network/elys/v5/x/masterchef/types"
-	oraclemodule "github.com/elys-network/elys/v5/x/oracle"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	parametermodule "github.com/elys-network/elys/v5/x/parameter"
-	parametermoduletypes "github.com/elys-network/elys/v5/x/parameter/types"
-	perpetualmodule "github.com/elys-network/elys/v5/x/perpetual"
-	perpetualmoduletypes "github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/elys-network/elys/v5/x/stablestake"
-	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
-	tiermodule "github.com/elys-network/elys/v5/x/tier"
-	tiermoduletypes "github.com/elys-network/elys/v5/x/tier/types"
-	tokenomicsmodule "github.com/elys-network/elys/v5/x/tokenomics"
-	tokenomicsmoduletypes "github.com/elys-network/elys/v5/x/tokenomics/types"
-	tradeshieldmodule "github.com/elys-network/elys/v5/x/tradeshield"
-	tradeshieldmoduletypes "github.com/elys-network/elys/v5/x/tradeshield/types"
+	ccvstaking "github.com/cosmos/interchain-security/v6/x/ccv/democracy/staking"
+	accountedpoolmodule "github.com/elys-network/elys/v6/x/accountedpool"
+	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
+	ammmodule "github.com/elys-network/elys/v6/x/amm"
+	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofilemodule "github.com/elys-network/elys/v6/x/assetprofile"
+	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	burnermodule "github.com/elys-network/elys/v6/x/burner"
+	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	commitmentmodule "github.com/elys-network/elys/v6/x/commitment"
+	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
+	epochsmodule "github.com/elys-network/elys/v6/x/epochs"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	estakingmodule "github.com/elys-network/elys/v6/x/estaking"
+	exdistr "github.com/elys-network/elys/v6/x/estaking/modules/distribution"
+	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
+	leveragelpmodule "github.com/elys-network/elys/v6/x/leveragelp"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	masterchefmodule "github.com/elys-network/elys/v6/x/masterchef"
+	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	oraclemodule "github.com/elys-network/elys/v6/x/oracle"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametermodule "github.com/elys-network/elys/v6/x/parameter"
+	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualmodule "github.com/elys-network/elys/v6/x/perpetual"
+	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/stablestake"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tiermodule "github.com/elys-network/elys/v6/x/tier"
+	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
+	tokenomicsmodule "github.com/elys-network/elys/v6/x/tokenomics"
+	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	tradeshieldmodule "github.com/elys-network/elys/v6/x/tradeshield"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 // module account permissions
@@ -138,14 +137,14 @@ func appModules(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
-		ccvgov.NewAppModule(appCodec, *app.GovKeeper, app.AccountKeeper, app.BankKeeper, IsProposalWhitelisted, app.GetSubspace(govtypes.ModuleName), IsModuleWhiteList),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsumerKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		// Important: The idea is that the rewards that needs to be sent to provider we will do so in estaking and masterchef EndBlocker by sending it to ConsumerToSendToProviderName.
 		// And the one that needs to be distributed on Consumer we will do there only by sending it to ConsumerRedistributeName. This requires that our distribution module uses ConsumerRedistributeName
 		// This needs consumer_redistribution_fraction MUST be 1 as we are totally controlling the rewards. Also, this needs  ccvconsumer EndBlocker to be run after estaking and masterchef as it will move funds from
 		// FeeCollector to ConsumerRedistributeName
 		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, ccvconsumertypes.ConsumerRedistributeName, app.GetSubspace(distrtypes.ModuleName)),
-		exstaking.NewAppModule(appCodec, app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		ccvstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -206,7 +205,7 @@ func simulationModules(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, nil, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		params.NewAppModule(app.ParamsKeeper),

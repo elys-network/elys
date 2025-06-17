@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v5/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

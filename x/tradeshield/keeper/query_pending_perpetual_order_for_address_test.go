@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/testutil/sample"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -41,7 +41,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 			},
 			TriggerPrice:    math.LegacyNewDec(1),
 			Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-			TradingAsset:    "ATOM",
 			Leverage:        math.LegacyNewDec(int64(2)),
 			TakeProfitPrice: math.LegacyNewDec(10),
 			PositionId:      positionId,
@@ -65,7 +64,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 				Rate: math.LegacyZeroDec(),
 			},
 			Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-			TradingAsset:    "uatom",
 			Leverage:        math.LegacyNewDec(int64(2)),
 			TakeProfitPrice: math.LegacyNewDec(10),
 			PositionId:      positionId,

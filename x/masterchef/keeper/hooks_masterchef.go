@@ -3,9 +3,9 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	"github.com/elys-network/elys/v5/x/masterchef/types"
-	stablestaketypes "github.com/elys-network/elys/v5/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

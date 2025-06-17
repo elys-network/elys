@@ -9,14 +9,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/v5/app"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v5/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v5/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -119,7 +119,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		types.TakeProfitPriceDefault,
 		sdkmath.LegacyZeroDec(),
@@ -145,7 +144,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	// Set params
 	params = mk.GetParams(ctx)
-	params.LegacyBorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	err = mk.SetParams(ctx, &params)
 	suite.Require().NoError(err)
@@ -172,8 +170,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		BorrowInterestPaidCustody:     sdkmath.NewInt(4998625),
 		BorrowInterestUnpaidLiability: sdkmath.NewInt(0),
 		Custody:                       sdkmath.NewInt(481521968),
-		TakeProfitLiabilities:         sdkmath.NewInt(473929244),
-		TakeProfitCustody:             sdkmath.NewInt(486520593),
 		MtpHealth:                     sdkmath.LegacyMustNewDecFromStr("1.221533382716049383"),
 		Position:                      types.Position_LONG,
 		Id:                            uint64(1),
@@ -306,7 +302,6 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		sdkmath.LegacyMustNewDecFromStr("8"),
 		sdkmath.LegacyZeroDec(),
@@ -467,7 +462,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		tradingAssetPrice.MulInt64(10),
 		tradingAssetPrice.QuoInt64(2),

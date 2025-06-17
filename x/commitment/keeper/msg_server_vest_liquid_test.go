@@ -9,11 +9,11 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	simapp "github.com/elys-network/elys/v5/app"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/v5/x/commitment/keeper"
-	"github.com/elys-network/elys/v5/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -102,7 +102,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.Equal(t, edenCoin.Amount, sdkmath.ZeroInt())
 
 	_, err = msgServer.VestLiquid(ctx, vestMsg)
-	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())
+	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v, sender: %s", edenToken, creator.String())).Error())
 }
 
 // TestKeeper_VestLiquid tests the VestLiquid function with invalid denom

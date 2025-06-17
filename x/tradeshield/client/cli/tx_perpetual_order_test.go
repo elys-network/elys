@@ -12,9 +12,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v5/testutil/network"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/tradeshield/client/cli"
+	"github.com/elys-network/elys/v6/testutil/network"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/client/cli"
 )
 
 func TestCreatePerpetualOpenOrder(t *testing.T) {
@@ -39,7 +39,6 @@ func TestCreatePerpetualOpenOrder(t *testing.T) {
 				"long",                          // position
 				"10",                            // leverage
 				"1",                             // pool id
-				ptypes.ATOM,                     // trading asset
 				"1000000" + ptypes.BaseCurrency, // collateral
 				"0.5",                           // trigger price
 			},

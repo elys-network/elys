@@ -7,11 +7,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v5/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
@@ -84,7 +83,7 @@ func (k Keeper) CheckMinimumCustodyAmt(ctx sdk.Context, poolId uint64) error {
 		return err
 	}
 	for _, ammPoolAsset := range ammPool.PoolAssets {
-		_, totalCustody, _, _ := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
+		_, totalCustody := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
 		if ammPoolAsset.Token.Amount.LT(totalCustody) {
 			return fmt.Errorf("real amm pool (id: %d) balance (%s) is less than total custody (%s)", poolId, ammPoolAsset.Token.String(), totalCustody.String())
 		}
@@ -100,10 +99,10 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 	}
 	baseCurrency := entry.Denom
 
-	totalLiabilities := osmomath.ZeroBigDec()
+	totalLiabilities := math.ZeroInt()
 	for _, poolAsset := range pool.PoolAssetsLong {
 		// for long, liabilities will always be in base currency
-		totalLiabilities = totalLiabilities.Add(poolAsset.GetBigDecLiabilities())
+		totalLiabilities = totalLiabilities.Add(poolAsset.Liabilities)
 	}
 
 	tradingAsset := ""
@@ -121,8 +120,8 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits)
+		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits).Dec().TruncateInt()
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
-	return sdk.NewCoin(baseCurrency, totalLiabilities.Dec().TruncateInt()), nil
+	return sdk.NewCoin(baseCurrency, totalLiabilities), nil
 }

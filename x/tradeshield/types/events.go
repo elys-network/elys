@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 )
 
 const (
@@ -52,7 +52,6 @@ func NewCancelPerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 		sdk.NewAttribute("position", order.Position.String()),
 		sdk.NewAttribute("trigger_price", order.TriggerPrice.String()),
 		sdk.NewAttribute("collateral", order.Collateral.String()),
-		sdk.NewAttribute("trading_asset", order.TradingAsset),
 		sdk.NewAttribute("leverage", order.Leverage.String()),
 		sdk.NewAttribute("take_profit_price", order.TakeProfitPrice.String()),
 		sdk.NewAttribute("position_id", strconv.FormatInt(int64(order.PositionId), 10)),

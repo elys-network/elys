@@ -8,10 +8,10 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	testkeeper "github.com/elys-network/elys/v5/testutil/keeper"
-	"github.com/elys-network/elys/v5/x/amm/keeper"
-	"github.com/elys-network/elys/v5/x/amm/types"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
+	testkeeper "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

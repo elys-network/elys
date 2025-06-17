@@ -4,9 +4,9 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v5/x/amm/types"
-	oracletypes "github.com/elys-network/elys/v5/x/oracle/types"
-	perpetualtypes "github.com/elys-network/elys/v5/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

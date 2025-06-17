@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ptypes "github.com/elys-network/elys/v5/x/parameter/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_InvalidRequest() {
@@ -46,7 +46,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Successful() 
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -57,7 +56,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Successful() 
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),

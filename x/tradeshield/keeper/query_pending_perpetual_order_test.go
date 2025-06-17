@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v5/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,7 +21,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 		TriggerPrice:    math.LegacyMustNewDecFromStr("10"),
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
 		Leverage:        math.LegacyNewDec(10),
 		TakeProfitPrice: math.LegacyNewDec(10),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -84,7 +83,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderAll() {
 		TriggerPrice:    math.LegacyMustNewDecFromStr("10"),
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
 		Leverage:        math.LegacyNewDec(10),
 		TakeProfitPrice: math.LegacyNewDec(10),
 		StopLossPrice:   math.LegacyZeroDec(),

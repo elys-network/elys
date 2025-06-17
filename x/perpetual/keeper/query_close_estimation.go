@@ -6,7 +6,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v5/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -46,7 +46,10 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	err = k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
+	}
 	_, _, _, err = k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
@@ -93,15 +96,20 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
-	executionPrice := sdkmath.LegacyZeroDec()
+	executionPriceDenomRatio := osmomath.ZeroBigDec()
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// executionPrice = payingLiabilities / repayAmount
-		executionPrice = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount)).Dec()
+		executionPriceDenomRatio = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount))
 	}
 	if mtp.Position == types.Position_SHORT {
 		// executionPrice = repayAmount / payingLiabilities
-		executionPrice = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities)).Dec()
+		executionPriceDenomRatio = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities))
+	}
+
+	executionPrice, err := k.ConvertDenomRatioPriceToUSDPrice(ctx, executionPriceDenomRatio, mtp.TradingAsset)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
 	}
 
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
