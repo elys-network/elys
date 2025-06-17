@@ -193,10 +193,10 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				vault.Id,
 				uint64(ctx.BlockTime().Unix()),
 				ctx.BlockHeight(),
-				osmomath.NewBigDecFromInt(usdcAmount),
-				osmomath.NewBigDecFromInt(edenAmount),
+				osmomath.BigDecFromDec(math.LegacyNewDecFromInt(usdcAmount)),
+				osmomath.BigDecFromDec(math.LegacyNewDecFromInt(edenAmount)),
 			)
-			params := k.parameterKeeper.GetParams(ctx)
+			params := k.pk.GetParams(ctx)
 			dataLifetime := params.RewardsDataLifetime
 			for {
 				firstAccum := k.FirstPoolRewardsAccum(ctx, vault.Id)
