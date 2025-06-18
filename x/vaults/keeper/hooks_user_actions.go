@@ -52,7 +52,7 @@ func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user sdk.AccAddres
 	}
 }
 
-// TODO: Extend this to support external reward denoms
+// TODO: Make this extensible/configurable from params or config.
 func (k Keeper) GetRewardDenoms(ctx sdk.Context) []string {
 	return []string{ptypes.Eden, k.GetBaseCurrencyDenom(ctx)}
 }

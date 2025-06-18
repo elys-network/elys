@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -62,27 +63,32 @@ func (k Keeper) VaultPositions(goCtx context.Context, req *types.QueryVaultPosit
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryVaultPositionsResponse{Positions: k.GetVaultPositions(ctx, req.VaultId)}, nil
+	positions, err := k.GetVaultPositions(ctx, req.VaultId)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &types.QueryVaultPositionsResponse{Positions: positions}, nil
 }
 
-func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) []types.PositionToken {
+func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) ([]types.PositionToken, error) {
 	vaultAddress := types.NewVaultAddress(vaultId)
 	positions := []types.PositionToken{}
 	commitments := k.commitment.GetCommitments(ctx, vaultAddress)
-	// TODO: Handle zero values for denom, we should issue shares if price is not available
 	for _, commitment := range commitments.CommittedTokens {
-		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
 			poolId, err := ammtypes.GetPoolIdFromShareDenom(commitment.Denom)
 			if err != nil {
-				continue
+				return nil, fmt.Errorf("invalid pool denom: %s", commitment.Denom)
 			}
 			pool, found := k.amm.GetPool(ctx, poolId)
 			if !found {
-				continue
+				return nil, fmt.Errorf("pool not found for denom: %s", commitment.Denom)
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool, tiertypes.OneDay)
 			amount := osmomath.BigDecFromSDKInt(commitment.Amount)
+			if info.LpTokenPrice.IsZero() {
+				return nil, fmt.Errorf("no price available for pool denom: %s", commitment.Denom)
+			}
 			token := types.PositionToken{
 				TokenDenom:    commitment.Denom,
 				TokenAmount:   amount.Dec(),
@@ -91,16 +97,18 @@ func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) []types.Posit
 			positions = append(positions, token)
 		}
 	}
-	// Get all balances of vault
 	balances := k.bk.GetAllBalances(ctx, vaultAddress)
 	for _, balance := range balances {
+		usdVal := k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount)
+		if usdVal.IsZero() {
+			return nil, fmt.Errorf("no price available for denom: %s", balance.Denom)
+		}
 		token := types.PositionToken{
 			TokenDenom:    balance.Denom,
 			TokenAmount:   osmomath.BigDecFromSDKInt(balance.Amount).Dec(),
-			TokenUsdValue: k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount).Dec(),
+			TokenUsdValue: usdVal.Dec(),
 		}
 		positions = append(positions, token)
 	}
-
-	return positions
+	return positions, nil
 }

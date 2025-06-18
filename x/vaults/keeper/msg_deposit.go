@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -56,32 +57,10 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 		return nil, err
 	}
 
-	_, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
-	if !found {
-		// Set an entity to assetprofile
-		entry := atypes.Entry{
-			Authority:                vaultAddress.String(),
-			BaseDenom:                shareDenom,
-			Decimals:                 6, // TODO: Get from assetprofile of deposit denom or keep it as 6
-			Denom:                    shareDenom,
-			Path:                     "",
-			IbcChannelId:             "",
-			IbcCounterpartyChannelId: "",
-			DisplayName:              shareDenom,
-			DisplaySymbol:            "",
-			Network:                  "",
-			Address:                  "",
-			ExternalSymbol:           "",
-			TransferLimit:            "",
-			Permissions:              make([]string, 0),
-			UnitDenom:                "",
-			IbcCounterpartyDenom:     "",
-			IbcCounterpartyChainId:   "",
-			CommitEnabled:            true,
-			WithdrawEnabled:          true,
-		}
-
-		k.assetProfileKeeper.SetEntry(ctx, entry)
+	// Ensure asset profile entry exists for share denom
+	err = k.Keeper.EnsureAssetProfileEntry(ctx, shareDenom, vaultAddress.String())
+	if err != nil {
+		return nil, err
 	}
 
 	// Commit LP token
@@ -111,29 +90,32 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec,
 	vaultAddress := types.NewVaultAddress(vaultId)
 	totalValue := osmomath.ZeroBigDec()
 	commitments := k.commitment.GetCommitments(ctx, vaultAddress)
-	// TODO: Handle zero values for denom, we should issue shares if price is not available
 	for _, commitment := range commitments.CommittedTokens {
-		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
 			poolId, err := ammtypes.GetPoolIdFromShareDenom(commitment.Denom)
 			if err != nil {
-				continue
+				return osmomath.ZeroBigDec(), fmt.Errorf("invalid pool denom: %s", commitment.Denom)
 			}
 			pool, found := k.amm.GetPool(ctx, poolId)
 			if !found {
-				continue
+				return osmomath.ZeroBigDec(), fmt.Errorf("pool not found for denom: %s", commitment.Denom)
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool, tiertypes.OneDay)
 			amount := osmomath.BigDecFromSDKInt(commitment.Amount)
+			if info.LpTokenPrice.IsZero() {
+				return osmomath.ZeroBigDec(), fmt.Errorf("no price available for pool denom: %s", commitment.Denom)
+			}
 			totalValue = totalValue.Add(amount.Mul(osmomath.BigDecFromDec(info.LpTokenPrice)).Quo(osmomath.BigDecFromSDKInt(ammtypes.OneShare)))
 		}
 	}
-	// Get all balances of vault
 	balances := k.bk.GetAllBalances(ctx, vaultAddress)
 	for _, balance := range balances {
-		totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
+		usdVal := k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount)
+		if usdVal.IsZero() {
+			return osmomath.ZeroBigDec(), fmt.Errorf("no price available for denom: %s", balance.Denom)
+		}
+		totalValue = totalValue.Add(usdVal)
 	}
-
 	return totalValue, nil
 }
 
@@ -144,17 +126,40 @@ func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64)
 		return osmomath.ZeroBigDec()
 	}
 
-	// TODO: Handle zero values for denom, we should not issue shares if price is not available
-	// TODO: Should it be based on deposit denom value ?
 	usdValue, err := k.VaultUsdValue(ctx, vaultId)
-	if err != nil {
+	if err != nil || usdValue.IsZero() {
 		return osmomath.ZeroBigDec()
 	}
-	// TODO: Make sure performance is charged on profit only not deposits
-	// 100$ , 1 , 110$ , 210$, 50$, 160$
-	// 1 -> 1.1
-	// vaultusdValue - sum of deposits + withdraw_usd_value
-	// 160 - 200 + 50 = 10$
-
 	return usdValue.Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
+}
+
+// EnsureAssetProfileEntry creates an asset profile entry if it does not exist
+func (k Keeper) EnsureAssetProfileEntry(ctx sdk.Context, denom string, authority string) error {
+	_, found := k.assetProfileKeeper.GetEntry(ctx, denom)
+	if found {
+		return nil
+	}
+	entry := atypes.Entry{
+		Authority:                authority,
+		BaseDenom:                denom,
+		Decimals:                 6, // TODO: Get from assetprofile of deposit denom or keep it as 6
+		Denom:                    denom,
+		Path:                     "",
+		IbcChannelId:             "",
+		IbcCounterpartyChannelId: "",
+		DisplayName:              denom,
+		DisplaySymbol:            "",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "",
+		TransferLimit:            "",
+		Permissions:              make([]string, 0),
+		UnitDenom:                "",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	}
+	k.assetProfileKeeper.SetEntry(ctx, entry)
+	return nil
 }

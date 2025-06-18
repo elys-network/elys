@@ -102,6 +102,7 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	// Set withdrawal usd value
 	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
 	if err != nil {
+		// Return error if unable to get vault USD value
 		return nil, err
 	}
 	usdValue = osmomath.BigDecFromDec(usdValue.Dec().Mul(shareRatio))
