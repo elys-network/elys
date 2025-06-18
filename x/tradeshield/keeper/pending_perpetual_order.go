@@ -327,7 +327,7 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
-		Amount:  sdkmath.ZeroInt(),
+		Amount:  sdkmath.OneInt(),
 		PoolId:  order.PoolId,
 	}
 
