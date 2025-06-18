@@ -224,7 +224,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		return err
 	}
 
-	res, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+	openMsg := perpetualtypes.MsgOpen{
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
@@ -232,7 +232,12 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
 		PoolId:          order.PoolId,
-	})
+	}
+
+	if err = openMsg.ValidateBasic(); err != nil {
+		return err
+	}
+	res, err := k.perpetual.Open(ctx, &openMsg)
 	if err != nil {
 		return err
 	}
@@ -270,12 +275,18 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 		}
 	}
 
-	_, err = k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
 		Amount:  sdkmath.ZeroInt(),
 		PoolId:  order.PoolId,
-	})
+	}
+
+	if err = closeMsg.ValidateBasic(); err != nil {
+		return err
+	}
+
+	_, err = k.perpetual.Close(ctx, &closeMsg)
 	if err != nil {
 		return err
 	}
@@ -288,7 +299,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 // ExecuteMarketOpenOrder executes a market open order
 func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+	openMsg := perpetualtypes.MsgOpen{
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
@@ -296,7 +307,11 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
 		PoolId:          order.PoolId,
-	})
+	}
+	if err := openMsg.ValidateBasic(); err != nil {
+		return err
+	}
+	_, err := k.perpetual.Open(ctx, &openMsg)
 	if err != nil {
 		return err
 	}
@@ -309,12 +324,18 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 
 // ExecuteMarketCloseOrder executes a market close order
 func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
 		Amount:  sdkmath.ZeroInt(),
 		PoolId:  order.PoolId,
-	})
+	}
+
+	if err := closeMsg.ValidateBasic(); err != nil {
+		return err
+	}
+
+	_, err := k.perpetual.Close(ctx, &closeMsg)
 	if err != nil {
 		return err
 	}
