@@ -90,6 +90,8 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmodule "github.com/elys-network/elys/v6/x/tradeshield"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	vaultsmodule "github.com/elys-network/elys/v6/x/vaults"
+	vaultsmoduletypes "github.com/elys-network/elys/v6/x/vaults/types"
 )
 
 // module account permissions
@@ -114,6 +116,7 @@ var maccPerms = map[string][]string{
 	stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	wasmTypes.ModuleName:             {authtypes.Burner},
+	vaultsmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
 func appModules(
@@ -173,6 +176,7 @@ func appModules(
 		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, *app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
+		vaultsmodule.NewAppModule(appCodec, app.VaultsKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -232,6 +236,7 @@ func simulationModules(
 		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, *app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
+		vaultsmodule.NewAppModule(appCodec, app.VaultsKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -285,6 +290,7 @@ func orderBeginBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
@@ -338,6 +344,7 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		wasmTypes.ModuleName,
 		ibchookstypes.ModuleName,
 		packetforwardtypes.ModuleName,
@@ -393,6 +400,7 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		vaultsmoduletypes.ModuleName,
 		// wasm after ibc transfer
 		wasmTypes.ModuleName,
 		// ibc_hooks after auth keeper

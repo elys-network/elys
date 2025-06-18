@@ -7,6 +7,7 @@ import (
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
+
 	currentHeight := ctx.BlockHeight()
 	pools := k.GetAllPools(ctx)
 
