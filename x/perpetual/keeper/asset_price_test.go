@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	aptypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -20,7 +20,6 @@ func (suite *PerpetualKeeperTestSuite) TestGetAssetPriceAndAssetUsdcDenomRatio()
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -58,7 +57,6 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("0.98"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -74,7 +72,6 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",
 		Price:     osmomath.MustNewDecFromStr("1"),
-		Source:    "elys",
 		Provider:  oracleProvider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

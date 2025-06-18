@@ -9,10 +9,10 @@ import (
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/v6/x/commitment/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -102,10 +102,10 @@ type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
-	//SetPool(ctx sdk.Context, pool oracletypes.Pool)
-	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
-	//CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
-	//SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 

@@ -14,9 +14,9 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -332,7 +332,6 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     sdkmath.LegacyMustNewDecFromStr("8.1"),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
@@ -477,7 +476,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     tradingAssetPrice.QuoInt64(4),
-		Source:    "elys",
 		Provider:  authtypes.NewModuleAddress("provider").String(),
 		Timestamp: uint64(ctx.BlockTime().Unix() + 6),
 	})

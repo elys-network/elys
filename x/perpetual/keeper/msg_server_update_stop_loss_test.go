@@ -4,10 +4,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/testutil/sample"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/keeper"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
@@ -148,7 +148,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(25),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -185,7 +184,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(3),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -210,7 +208,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyMustNewDecFromStr("2"),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -230,7 +227,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyMustNewDecFromStr("0.00001"),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
