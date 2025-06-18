@@ -49,4 +49,14 @@ message Vault {
     (gogoproto.nullable) = false
   ];
   string address = 14 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string cumulative_management_fee = 15 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string cumulative_performance_fee = 16 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

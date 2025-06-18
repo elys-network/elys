@@ -17,7 +17,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
 	protocolAddress := k.masterchef.GetParams(ctx).ProtocolRevenueAddress
 	for _, vault := range vaults {
-		k.distributeVaultFees(ctx, vault, vault.ManagementFee, totalBlocksPerYear, protocolAddress)
+		feeUsdValue := k.distributeVaultFees(ctx, vault, vault.ManagementFee, totalBlocksPerYear, protocolAddress)
+		vault.CumulativeManagementFee = vault.CumulativeManagementFee.Add(feeUsdValue.Dec())
+		k.SetVault(ctx, vault)
 	}
 
 	if k.GetEpochPosition(ctx, k.GetParams(ctx).PerformanceFeeEpochLength) == 0 {
@@ -49,8 +51,9 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 			if profit.IsPositive() {
 				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
 				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
-				k.distributeVaultFees(ctx, vault, shares, totalBlocksPerYear, protocolAddress)
-				// TODO: track performance and management fee in state
+				feeUsdValue := k.distributeVaultFees(ctx, vault, shares, totalBlocksPerYear, protocolAddress)
+				vault.CumulativePerformanceFee = vault.CumulativePerformanceFee.Add(feeUsdValue.Dec())
+				k.SetVault(ctx, vault)
 			}
 		}
 	}
@@ -117,7 +120,7 @@ func (k Keeper) distributeVaultFees(
 	feeRate math.LegacyDec, // can be vault.ManagementFee or shares
 	totalBlocksPerYear uint64,
 	protocolAddress string,
-) {
+) osmomath.BigDec {
 	var protocolCoins sdk.Coins
 	var managerCoins sdk.Coins
 
@@ -167,4 +170,9 @@ func (k Keeper) distributeVaultFees(
 	if err != nil {
 		k.Logger(ctx).Error("error sending coins to protocol address", "error", err)
 	}
+
+	// Calculate USD value of all distributed fees
+	feeCoins := managerCoins.Add(protocolCoins...)
+	usdValue := k.amm.CalculateCoinsUSDValue(ctx, feeCoins)
+	return usdValue
 }
