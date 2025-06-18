@@ -278,7 +278,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
-		Amount:  sdkmath.ZeroInt(),
+		Amount:  sdkmath.OneInt(),
 		PoolId:  order.PoolId,
 	}
 
