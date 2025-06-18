@@ -312,8 +312,6 @@ func NewAppKeeper(
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
-	icsValidatorKeeper := NewICSValidatorKeeper(app.ConsumerKeeper)
-
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[assetprofilemoduletypes.StoreKey]),
@@ -379,6 +377,17 @@ func NewAppKeeper(
 		homePath,
 		bApp,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// ... other modules keepers
+	// pre-initialize ConsumerKeeper to satisfy ibckeeper.NewKeeper
+	// which would panic on nil or zero keeper
+	// ConsumerKeeper implements StakingKeeper but all function calls result in no-ops so this is safe
+	// communication over IBC is not affected by these changes
+	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
+		appCodec,
+		app.keys[ccvconsumertypes.StoreKey],
+		app.GetSubspace(ccvconsumertypes.ModuleName),
 	)
 
 	// UpgradeKeeper must be created before IBCKeeper
@@ -531,6 +540,9 @@ func NewAppKeeper(
 	)
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+
+	icsValidatorKeeper := NewICSValidatorKeeper(app.ConsumerKeeper)
+
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
