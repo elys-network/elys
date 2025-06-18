@@ -31,9 +31,9 @@ func getWeightBreakingFee(weightBalanceBonus osmomath.BigDec) osmomath.BigDec {
 }
 
 // Swap estimation using amm CalcOutAmtGivenIn function
-func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool, owner string) (math.Int, osmomath.BigDec, osmomath.BigDec, error) {
+func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool, owner string) (math.Int, osmomath.BigDec, osmomath.BigDec, math.LegacyDec, math.LegacyDec, error) {
 	if tokenInAmount.IsZero() {
-		return math.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, fmt.Errorf("tokenInAmount is zero for EstimateSwapGivenIn")
+		return math.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenInAmount is zero for EstimateSwapGivenIn")
 	}
 	params := k.GetParams(ctx)
 
@@ -49,19 +49,19 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	tokensIn := sdk.Coins{tokenInAmount}
 	tokenOut, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensIn, tokenOutDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
 	if err != nil {
-		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
+		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
 
 	if tokenOut.IsZero() {
-		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
+		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
-	return tokenOut.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
+	return tokenOut.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), perpetualFees.Dec(), takersFee.Dec(), nil
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool, owner string) (math.Int, osmomath.BigDec, osmomath.BigDec, error) {
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool, owner string) (math.Int, osmomath.BigDec, osmomath.BigDec, math.LegacyDec, math.LegacyDec, error) {
 	if tokenOutAmount.IsZero() {
-		return math.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, fmt.Errorf("tokenOutAmount is zero for EstimateSwapGivenOut")
+		return math.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenOutAmount is zero for EstimateSwapGivenOut")
 	}
 	params := k.GetParams(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
@@ -78,11 +78,11 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
 	tokenIn, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensOut, tokenInDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
 	if err != nil {
-		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
+		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
 
 	if tokenIn.IsZero() {
-		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
+		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
-	return tokenIn.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
+	return tokenIn.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), perpetualFees.Dec(), takersFee.Dec(), nil
 }

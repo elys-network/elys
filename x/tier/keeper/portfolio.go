@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"math"
 	"strconv"
 	"strings"
@@ -326,7 +327,7 @@ func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) o
 	return totalValue
 }
 
-func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
+func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmomath.BigDec, osmomath.BigDec, sdkmath.LegacyDec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
 	}
@@ -337,7 +338,7 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmoma
 	}
 	tokenPriceAmm := k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
-	tokenPriceOracleDec := osmomath.ZeroBigDec()
+	tokenPriceOracleDec := sdkmath.LegacyZeroDec()
 	if found {
 		tokenPriceOracleD, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 		if found {

@@ -50,6 +50,57 @@ message PerpetualOrder {
   string owner_address = 2;
   PerpetualOrderType perpetual_order_type = 3;
   PerpetualPosition position = 4;
+  string trigger_price = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
+  string leverage = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_price = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 position_id = 9;
+  Status status = 10;
+  string stop_loss_price = 11 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 poolId = 12;
+}
+
+message PerpetualOrderExtraInfo {
+  PerpetualOrder perpetual_order = 1;
+  cosmos.base.v1beta1.Coin position_size = 2 [ (gogoproto.nullable) = false ];
+  string liquidation_price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string funding_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message LegacyPerpetualOrder {
+  uint64 order_id = 1;
+  string owner_address = 2;
+  PerpetualOrderType perpetual_order_type = 3;
+  PerpetualPosition position = 4;
   LegacyTriggerPriceV1 legacy_trigger_price_v1 = 5
       [ (gogoproto.nullable) = false ];
   string trigger_price = 14 [
@@ -77,24 +128,4 @@ message PerpetualOrder {
     (gogoproto.nullable) = false
   ];
   uint64 poolId = 13;
-}
-
-message PerpetualOrderExtraInfo {
-  PerpetualOrder perpetual_order = 1;
-  cosmos.base.v1beta1.Coin position_size = 2 [ (gogoproto.nullable) = false ];
-  string liquidation_price = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_rate = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
 }

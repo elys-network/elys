@@ -124,7 +124,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),

@@ -34,8 +34,13 @@ func (suite *TierKeeperTestSuite) TestQueryGetUsersPoolDataSuccessful() {
 		PoolId:  1,
 	}
 
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{ammPool.PoolId}
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
-	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)
+	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	suite.Require().NoError(err)
 
 	collateralAmount := sdkmath.NewInt(10_000_000)

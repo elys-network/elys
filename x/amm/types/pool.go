@@ -46,7 +46,7 @@ func (p Pool) parsePoolAssets(tokensA sdk.Coins, tokenBDenom string) (
 	if len(tokensA) != 1 {
 		return tokenA, Aasset, Basset, errors.New("expected tokensB to be of length one")
 	}
-	Aasset, Basset, err = p.parsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
+	Aasset, Basset, err = p.ParsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
 	if err != nil {
 		return sdk.Coin{}, PoolAsset{}, PoolAsset{}, err
 	}
@@ -63,7 +63,7 @@ func (p Pool) parsePoolAssetsCoins(tokensA sdk.Coins, tokensB sdk.Coins) (
 	return Aasset, Basset, err
 }
 
-func (p Pool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+func (p Pool) ParsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
 	Aasset PoolAsset, Basset PoolAsset, err error,
 ) {
 	Aasset, found1 := GetPoolAssetByDenom(p.PoolAssets, tokenADenom)

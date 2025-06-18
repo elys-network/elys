@@ -129,3 +129,37 @@ func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelS
 
 	return &types.MsgCancelSpotOrdersResponse{}, nil
 }
+
+func (k msgServer) CancelAllSpotOrders(goCtx context.Context, msg *types.MsgCancelAllSpotOrders) (*types.MsgCancelAllSpotOrdersResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	pendingStatus := types.Status_PENDING
+	pendingOrders, _, err := k.GetPendingSpotOrdersForAddress(ctx, msg.Creator, &pendingStatus, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(pendingOrders) == 0 {
+		return nil, types.ErrSpotOrderNotFound
+	}
+
+	for _, order := range pendingOrders {
+		// Get all balances from the spot order address
+		orderAddress := order.GetOrderAddress()
+		balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+		// Send all available balances back to the owner if there are any
+		if !balances.IsZero() {
+			ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+			err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		k.RemovePendingSpotOrder(ctx, order.OrderId)
+		types.EmitCloseSpotOrderEvent(ctx, order)
+	}
+
+	return &types.MsgCancelAllSpotOrdersResponse{}, nil
+}

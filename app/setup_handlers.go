@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -14,12 +15,8 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999999"
-	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
+	NewMaxBytes = 5 * 1024 * 1024 // 5MB
 )
-
-// make sure to update these when you upgrade the version
-var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
@@ -74,6 +71,26 @@ func (app *ElysApp) setUpgradeHandler() {
 				err := app.ojoOracleMigration(ctx, plan.Height+1)
 				if err != nil {
 					return nil, err
+				}
+			}
+
+			if ctx.ChainID() == "elysicstestnet-1" {
+				resetError := app.PerpetualKeeper.ResetStore(ctx)
+				if resetError != nil {
+					fmt.Println("----error while resetting store for testnet---")
+					fmt.Println(resetError.Error())
+				}
+			}
+
+			allPerpetualPools := app.PerpetualKeeper.GetAllPools(ctx)
+			for _, pool := range allPerpetualPools {
+				ammPool, found := app.AmmKeeper.GetPool(ctx, pool.AmmPoolId)
+				if !found {
+					return vm, errors.New("amm pool not found during migration")
+				}
+				err := app.AccountedPoolKeeper.PerpetualUpdates(ctx, ammPool, pool)
+				if err != nil {
+					return vm, err
 				}
 			}
 

@@ -17,7 +17,10 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del, _ := k.Delegation(ctx, creator, edenValAddr)
+		del, err := k.Delegation(ctx, creator, edenValAddr)
+		if err != nil {
+			return err
+		}
 		if del == nil {
 
 			_, err = k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: creator.String()})
@@ -56,7 +59,10 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del, _ := k.Delegation(ctx, creator, edenBValAddr)
+		del, err := k.Delegation(ctx, creator, edenBValAddr)
+		if err != nil {
+			return err
+		}
 		if del == nil {
 			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenBValAddr)
 			if err != nil {

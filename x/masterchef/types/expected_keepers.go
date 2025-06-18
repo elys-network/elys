@@ -99,7 +99,7 @@ type AmmKeeper interface {
 
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	SetPool(ctx sdk.Context, pool oracletypes.Pool)

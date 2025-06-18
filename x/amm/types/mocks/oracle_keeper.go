@@ -4,6 +4,7 @@ package mocks
 
 import (
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	math "cosmossdk.io/math"
 	mock "github.com/stretchr/testify/mock"
 
 	osmomath "github.com/osmosis-labs/osmosis/osmomath"
@@ -130,22 +131,22 @@ func (_c *OracleKeeper_GetAssetInfo_Call) RunAndReturn(run func(types.Context, s
 }
 
 // GetAssetPrice provides a mock function with given fields: ctx, asset
-func (_m *OracleKeeper) GetAssetPrice(ctx types.Context, asset string) (osmomath.BigDec, bool) {
+func (_m *OracleKeeper) GetAssetPrice(ctx types.Context, asset string) (math.LegacyDec, bool) {
 	ret := _m.Called(ctx, asset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAssetPrice")
 	}
 
-	var r0 osmomath.BigDec
+	var r0 math.LegacyDec
 	var r1 bool
-	if rf, ok := ret.Get(0).(func(types.Context, string) (osmomath.BigDec, bool)); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) (math.LegacyDec, bool)); ok {
 		return rf(ctx, asset)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, string) osmomath.BigDec); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) math.LegacyDec); ok {
 		r0 = rf(ctx, asset)
 	} else {
-		r0 = ret.Get(0).(osmomath.BigDec)
+		r0 = ret.Get(0).(math.LegacyDec)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, string) bool); ok {
@@ -176,12 +177,12 @@ func (_c *OracleKeeper_GetAssetPrice_Call) Run(run func(ctx types.Context, asset
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPrice_Call) Return(_a0 osmomath.BigDec, _a1 bool) *OracleKeeper_GetAssetPrice_Call {
+func (_c *OracleKeeper_GetAssetPrice_Call) Return(_a0 math.LegacyDec, _a1 bool) *OracleKeeper_GetAssetPrice_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, string) (osmomath.BigDec, bool)) *OracleKeeper_GetAssetPrice_Call {
+func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, string) (math.LegacyDec, bool)) *OracleKeeper_GetAssetPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }

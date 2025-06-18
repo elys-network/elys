@@ -30,7 +30,6 @@ func TestOpenPosition(t *testing.T) {
 		"long",
 		"1.5",
 		"1",
-		"uatom",
 		"1000" + ptypes.BaseCurrency,
 		"--from=" + val.Address.String(),
 		"-y",

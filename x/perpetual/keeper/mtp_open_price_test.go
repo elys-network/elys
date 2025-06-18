@@ -170,7 +170,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAndSetOpenPrice() {
 				tc.setup(tc.mtp)
 			}
 
-			err := suite.app.PerpetualKeeper.GetAndSetOpenPrice(suite.ctx, tc.mtp)
+			err := suite.app.PerpetualKeeper.GetAndSetOpenPrice(suite.ctx, tc.mtp, false)
 
 			if tc.expectedErr != nil {
 				suite.Require().Error(err)

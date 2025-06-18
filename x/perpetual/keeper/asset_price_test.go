@@ -27,12 +27,22 @@ func (suite *PerpetualKeeperTestSuite) TestGetAssetPriceAndAssetUsdcDenomRatio()
 	tradingAssetPrice, tradingAssetPriceDenomRatio, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	suite.Require().Equal(math.LegacyMustNewDecFromStr("5"), tradingAssetPrice)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("5.102040816326530612244897959183673469"), tradingAssetPriceDenomRatio)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("5.102040816326530612000000000000000000"), tradingAssetPriceDenomRatio)
+
+	tradingAssetPrice, tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, "ameme")
+	suite.Require().NoError(err)
+	suite.Require().Equal(math.LegacyMustNewDecFromStr("0.0000000253"), tradingAssetPrice)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000000000000000025816326531000000"), tradingAssetPriceDenomRatio)
+
+	tradingAssetPrice, tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, "afet")
+	suite.Require().NoError(err)
+	suite.Require().Equal(math.LegacyMustNewDecFromStr("0.5"), tradingAssetPrice)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000000000510204081632653061000000"), tradingAssetPriceDenomRatio)
 
 	tradingAssetPrice, tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, "wei")
 	suite.Require().NoError(err)
 	suite.Require().Equal(math.LegacyMustNewDecFromStr("1500"), tradingAssetPrice)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673469387"), tradingAssetPriceDenomRatio)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673000000"), tradingAssetPriceDenomRatio)
 }
 
 func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
@@ -53,18 +63,11 @@ func (suite *PerpetualKeeperTestSuite) TestConvertPriceToAssetUsdcDenomRatio() {
 
 	tradingAssetPriceDenomRatio, err := suite.app.PerpetualKeeper.ConvertPriceToAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM, math.LegacyMustNewDecFromStr("5"))
 	suite.Require().NoError(err)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("5.102040816326530612244897959183673469"), tradingAssetPriceDenomRatio)
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("5.102040816326530612000000000000000000"), tradingAssetPriceDenomRatio)
 
 	tradingAssetPriceDenomRatio, err = suite.app.PerpetualKeeper.ConvertPriceToAssetUsdcDenomRatio(suite.ctx, "wei", math.LegacyMustNewDecFromStr("1500"))
 	suite.Require().NoError(err)
-	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673469387"), tradingAssetPriceDenomRatio)
-
-	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
-		Denom:   "afet",
-		Display: "FET",
-		Ticker:  "FET",
-		Decimal: 18,
-	})
+	suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000000001530612244897959183673000000"), tradingAssetPriceDenomRatio)
 
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "uusdc",

@@ -302,12 +302,6 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
-		appCodec,
-		app.keys[ccvconsumertypes.StoreKey],
-		app.GetSubspace(ccvconsumertypes.ModuleName),
-	)
-
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
@@ -353,6 +347,7 @@ func NewAppKeeper(
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
 		app.TokenomicsKeeper,
+		&app.ConsumerKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -360,10 +355,9 @@ func NewAppKeeper(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
-		&app.ConsumerKeeper,
+		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-
 	groupConfig := group.DefaultConfig()
 	/*
 		Example of setting group params:
@@ -504,17 +498,6 @@ func NewAppKeeper(
 		wasmOpts...,
 	)
 
-	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
-		&app.ConsumerKeeper,
-		app.SlashingKeeper,
-		app.AccountKeeper.AddressCodec(),
-		runtime.ProvideCometInfoService(),
-	)
-	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.EvidenceKeeper = *evidenceKeeper
-
 	app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 		appCodec,
 		app.keys[ccvconsumertypes.StoreKey],
@@ -535,8 +518,31 @@ func NewAppKeeper(
 		address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
+	app.ConsumerKeeper.SetStandaloneStakingKeeper(app.StakingKeeper)
+
+	// consumer keeper satisfies the staking keeper interface
+	// of the slashing module
+	app.SlashingKeeper = slashingkeeper.NewKeeper(
+		appCodec,
+		legacyAmino,
+		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
+		&app.ConsumerKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
+
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
+		&app.ConsumerKeeper,
+		app.SlashingKeeper,
+		app.AccountKeeper.AddressCodec(),
+		runtime.ProvideCometInfoService(),
+	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
 
 	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
 		appCodec,
@@ -681,6 +687,8 @@ func NewAppKeeper(
 		app.MasterchefKeeper,
 		app.AccountedPoolKeeper,
 	)
+
+	app.StablestakeKeeper.SetLeverageLpKeeper(app.LeveragelpKeeper)
 
 	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,

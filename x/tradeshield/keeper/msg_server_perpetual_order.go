@@ -26,7 +26,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		TriggerPrice:       msg.TriggerPrice,
 		Collateral:         msg.Collateral,
 		OwnerAddress:       msg.OwnerAddress,
-		TradingAsset:       msg.TradingAsset,
 		Position:           msg.Position,
 		Leverage:           msg.Leverage,
 		TakeProfitPrice:    msg.TakeProfitPrice,
@@ -46,9 +45,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 	for _, order := range orders {
-		if order.PoolId == msg.PoolId && order.Position == msg.Position &&
-			order.Collateral.Denom == msg.Collateral.Denom &&
-			order.TradingAsset == msg.TradingAsset {
+		if order.Position == msg.Position && order.Collateral.Denom == msg.Collateral.Denom && order.PoolId == msg.PoolId {
 			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
 		}
 	}
@@ -60,7 +57,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 	for _, mtp := range mtps {
-		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom && mtp.Mtp.TradingAsset == msg.TradingAsset {
+		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom {
 			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
 		}
 	}
@@ -74,7 +71,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 	_, err = k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 		Position:        perpetualtypes.Position(msg.Position),
 		Leverage:        msg.Leverage,
-		TradingAsset:    msg.TradingAsset,
 		Collateral:      msg.Collateral,
 		TakeProfitPrice: msg.TakeProfitPrice,
 		PoolId:          msg.PoolId,
@@ -216,4 +212,38 @@ func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCa
 	}
 
 	return &types.MsgCancelPerpetualOrdersResponse{}, nil
+}
+
+func (k msgServer) CancelAllPerpetualOrders(goCtx context.Context, msg *types.MsgCancelAllPerpetualOrders) (*types.MsgCancelAllPerpetualOrdersResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	pendingStatus := types.Status_PENDING
+	pendingOrders, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, msg.OwnerAddress, &pendingStatus, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(pendingOrders) == 0 {
+		return nil, types.ErrPerpetualOrderNotFound
+	}
+
+	for _, order := range pendingOrders {
+		// Get all balances from the spot order address
+		orderAddress := order.GetOrderAddress()
+		balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+		// Send all available balances back to the owner if there are any
+		if !balances.IsZero() {
+			ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+			err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+		types.EmitCancelPerpetualOrderEvent(ctx, order)
+	}
+
+	return &types.MsgCancelAllPerpetualOrdersResponse{}, nil
 }

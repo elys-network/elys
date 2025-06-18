@@ -7,7 +7,7 @@ import (
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, EnableTakeProfitCustodyLiabilities bool) error {
+func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) error {
 	// Get accounted pool
 	accountedPool, found := k.GetAccountedPool(ctx, ammPool.PoolId)
 	if !found {
@@ -22,12 +22,8 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 		if err != nil {
 			return err
 		}
-		totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalances(asset.Denom)
+		totalLiabilities, totalCustody := perpetualPool.GetPerpetualPoolBalances(asset.Denom)
 		accountedPoolAmt := ammBalance.Add(totalLiabilities).Sub(totalCustody)
-		// if this is enabled then we need to consider impact of weight balance bonus of swap while calculating takeProfitLiabilities
-		if EnableTakeProfitCustodyLiabilities {
-			accountedPoolAmt = accountedPoolAmt.Add(totalTakeProfitCustody).Sub(totalTakeProfitLiabilities)
-		}
 
 		//netTotalCustody = netTotalCustody.Add(sdk.NewCoin(asset.Denom, totalCustody))
 		//netTotalLiabilities = netTotalLiabilities.Add(sdk.NewCoin(asset.Denom, totalLiabilities))
@@ -72,18 +68,18 @@ func (k Keeper) PerpetualHooks() PerpetualHooks {
 	return PerpetualHooks{k}
 }
 
-func (h PerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, EnableTakeProfitCustodyLiabilities bool) error {
-	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool, EnableTakeProfitCustodyLiabilities)
+func (h PerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) error {
+	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
-	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool, EnableTakeProfitCustodyLiabilities)
+func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
+	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
-	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool, EnableTakeProfitCustodyLiabilities)
+func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
+	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
-	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool, EnableTakeProfitCustodyLiabilities)
+func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
+	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }

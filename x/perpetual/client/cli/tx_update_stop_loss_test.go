@@ -21,6 +21,7 @@ func TestUpdatestopLoss(t *testing.T) {
 	args := []string{
 		"100.0",
 		"1",
+		"1",
 		"--from=" + val.Address.String(),
 		"-y",
 	}
