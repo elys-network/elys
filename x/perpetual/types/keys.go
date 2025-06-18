@@ -60,12 +60,22 @@ func GetWhitelistKey(addr sdk.AccAddress) []byte {
 	return append(WhitelistPrefix, address.MustLengthPrefix(addr)...)
 }
 
-func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
-	return append(MTPPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
-}
-
 func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
 	return append(MTPPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetMTPPrefixForAddressAndPoolId(addr sdk.AccAddress, poolId uint64) []byte {
+	key := GetMTPPrefixForAddress(addr)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(poolId)...)
+	return key
+}
+
+func GetMTPKey(addr sdk.AccAddress, poolId, id uint64) []byte {
+	key := GetMTPPrefixForAddressAndPoolId(addr, poolId)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(id)...)
+	return key
 }
 
 func GetPoolKey(index uint64) []byte {

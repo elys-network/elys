@@ -14,7 +14,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	// Handle liquidations
 	for _, val := range msg.Liquidate {
 		owner := sdk.MustAccAddressFromBech32(val.Address)
-		position, err := k.GetMTP(ctx, owner, val.Id)
+		position, err := k.GetMTP(ctx, val.PoolId, owner, val.Id)
 		if err != nil {
 			continue
 		}
@@ -42,7 +42,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	//Handle StopLoss
 	for _, val := range msg.StopLoss {
 		owner := sdk.MustAccAddressFromBech32(val.Address)
-		position, err := k.GetMTP(ctx, owner, val.Id)
+		position, err := k.GetMTP(ctx, val.PoolId, owner, val.Id)
 		if err != nil {
 			continue
 		}
@@ -70,7 +70,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	//Handle take profit
 	for _, val := range msg.TakeProfit {
 		owner := sdk.MustAccAddressFromBech32(val.Address)
-		position, err := k.GetMTP(ctx, owner, val.Id)
+		position, err := k.GetMTP(ctx, val.PoolId, owner, val.Id)
 		if err != nil {
 			continue
 		}

@@ -131,6 +131,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(99871050)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(400_000_000)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -249,6 +251,8 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200789260)),
 		WeightBreakingFee:  math.LegacyMustNewDecFromStr("0.001435619047211833"),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -385,6 +389,8 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(2220729049)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(9000000000)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -519,6 +525,8 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(500000000)),
 		Liabilities:        sdk.NewCoin(ptypes.ATOM, math.NewInt(80240642)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}
 	require.Equal(t, expectedRes, res)
 }
