@@ -66,9 +66,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "MTP",
-					Use:            "get-mtp [address] [id]",
+					Use:            "get-mtp [address] [id] [pool-id]",
 					Short:          "Query mtp",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}, {ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod: "OpenEstimation",
