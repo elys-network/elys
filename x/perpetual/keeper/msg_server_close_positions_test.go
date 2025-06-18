@@ -81,34 +81,41 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 						{
 							Address: secondPositionCreator.String(),
 							Id:      secondPosition.Id,
+							PoolId:  secondPool,
 						},
 						{
 							Address: sample.AccAddress(),
 							Id:      2000,
+							PoolId:  3,
 						},
 					},
 					StopLoss: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 						{
 							Address: sample.AccAddress(),
 							Id:      2000,
+							PoolId:  3,
 						},
 					},
 					TakeProfit: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 						{
 							Address: sample.AccAddress(),
 							Id:      2000,
+							PoolId:  3,
 						},
 					},
 				}
@@ -145,7 +152,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 				suite.Require().NoError(err)
 
 				// Increase unpaid liability to reduce the MTP health
-				mtp, _ := suite.app.PerpetualKeeper.GetMTP(suite.ctx, firstPositionCreator, firstPosition.Id)
+				mtp, _ := suite.app.PerpetualKeeper.GetMTP(suite.ctx, firstPool, firstPositionCreator, firstPosition.Id)
 				mtp.BorrowInterestUnpaidLiability = math.NewInt(389)
 				suite.app.PerpetualKeeper.SetMTP(suite.ctx, &mtp)
 
@@ -155,6 +162,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 					},
 					StopLoss:   []types.PositionRequest{},
@@ -207,6 +215,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 					},
 					TakeProfit: []types.PositionRequest{},
@@ -259,6 +268,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
+							PoolId:  firstPool,
 						},
 					},
 				}

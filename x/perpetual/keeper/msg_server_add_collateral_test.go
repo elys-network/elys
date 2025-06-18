@@ -33,6 +33,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       "invalid",
 					Id:            uint64(10),
 					AddCollateral: sdk.NewCoin("uusdc", math.NewInt(12000)),
+					PoolId:        1,
 				}
 			},
 			"decoding bech32 failed: invalid bech32 string length 7",
@@ -47,6 +48,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       sample.AccAddress(),
 					Id:            uint64(10),
 					AddCollateral: sdk.NewCoin("uusdc", math.NewInt(12000)),
+					PoolId:        1,
 				}
 			},
 			"mtp not found",
@@ -59,7 +61,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 			func() *types.MsgAddCollateral {
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
-				_, _, ammPool := suite.SetPerpetualPool(1)
+				_, _, ammPool = suite.SetPerpetualPool(1)
 				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
@@ -79,6 +81,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       positionCreator.String(),
 					Id:            position.Id,
 					AddCollateral: sdk.NewCoin("uusdc", math.NewInt(12000)),
+					PoolId:        ammPool.PoolId,
 				}
 			},
 			"asset uusdc not found",
@@ -93,7 +96,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
-				_, _, ammPool := suite.SetPerpetualPool(1)
+				_, _, ammPool = suite.SetPerpetualPool(1)
 				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 				openPositionMsg := &types.MsgOpen{
@@ -113,6 +116,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       positionCreator.String(),
 					Id:            position.Id,
 					AddCollateral: sdk.NewCoin(ptypes.ATOM, openPositionMsg.Collateral.Amount.QuoRaw(2)),
+					PoolId:        ammPool.PoolId,
 				}
 			},
 			"denom not same as collateral asset",
@@ -152,6 +156,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       positionCreator.String(),
 					Id:            position.Id,
 					AddCollateral: sdk.NewCoin(ptypes.BaseCurrency, openPositionMsg.Collateral.Amount.QuoRaw(2)),
+					PoolId:        ammPool.PoolId,
 				}
 			},
 			"",
@@ -197,6 +202,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       positionCreator.String(),
 					Id:            position.Id,
 					AddCollateral: sdk.NewCoin(ptypes.ATOM, openPositionMsg.Collateral.Amount.QuoRaw(2)),
+					PoolId:        ammPool.PoolId,
 				}
 			},
 			"",
@@ -245,6 +251,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					Creator:       positionCreator.String(),
 					Id:            position.Id,
 					AddCollateral: sdk.NewCoin(ptypes.BaseCurrency, openPositionMsg.Collateral.Amount.QuoRaw(2)),
+					PoolId:        ammPool.PoolId,
 				}
 			},
 			"",

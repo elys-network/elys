@@ -11,7 +11,7 @@ import (
 )
 
 func TestMsgUpdateStopLoss(t *testing.T) {
-	msg := types.NewMsgUpdateStopLoss(sample.AccAddress(), 1, sdkmath.LegacyOneDec())
+	msg := types.NewMsgUpdateStopLoss(sample.AccAddress(), 1, sdkmath.LegacyOneDec(), 1)
 	tests := []struct {
 		name   string
 		setter func()
@@ -46,6 +46,14 @@ func TestMsgUpdateStopLoss(t *testing.T) {
 				msg.Price = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			errMsg: "price is negative",
+		},
+		{
+			name: "invalid pool id",
+			setter: func() {
+				msg.Price = sdkmath.LegacyOneDec()
+				msg.PoolId = 0
+			},
+			errMsg: "invalid pool id",
 		},
 	}
 	for _, tt := range tests {
