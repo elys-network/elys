@@ -21,6 +21,7 @@ func NewParams() Params {
 		EnabledPools:        []uint64(nil),
 		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
 		StopLossEnabled:     true,
+		LiabilitiesFactor:   sdkmath.LegacyMustNewDecFromStr("1.0"),
 	}
 }
 
@@ -67,6 +68,19 @@ func (p Params) Validate() error {
 	if p.ExitBuffer.IsNil() {
 		return fmt.Errorf("exit buffer must be not nil")
 	}
+
+	if p.LiabilitiesFactor.IsNil() {
+		return fmt.Errorf("liabilities factor must be not nil")
+	}
+
+	if !p.LiabilitiesFactor.IsPositive() {
+		return fmt.Errorf("liabilities factor must be positive: %s", p.LiabilitiesFactor.String())
+	}
+
+	if p.LiabilitiesFactor.GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("liabilities factor must be less than or equal to 1: %s", p.LiabilitiesFactor.String())
+	}
+
 	return nil
 }
 
