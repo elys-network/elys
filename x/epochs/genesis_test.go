@@ -76,13 +76,13 @@ func TestEpochsExportGenesis(t *testing.T) {
 	require.Equal(t, genesis.Epochs[1].CurrentEpochStartHeight, chainStartHeight)
 	require.Equal(t, genesis.Epochs[1].CurrentEpochStartTime, chainStartTime)
 	require.Equal(t, genesis.Epochs[1].EpochCountingStarted, false)
-	require.Equal(t, genesis.Epochs[2].Identifier, types.FiveMinutesEpochID)
-	require.Equal(t, genesis.Epochs[2].StartTime, chainStartTime)
-	require.Equal(t, genesis.Epochs[2].Duration, time.Second*300)
-	require.Equal(t, genesis.Epochs[2].CurrentEpoch, int64(0))
-	require.Equal(t, genesis.Epochs[2].CurrentEpochStartHeight, chainStartHeight)
-	require.Equal(t, genesis.Epochs[2].CurrentEpochStartTime, chainStartTime)
-	require.Equal(t, genesis.Epochs[2].EpochCountingStarted, false)
+	require.Equal(t, genesis.Epochs[3].Identifier, types.FiveMinutesEpochID)
+	require.Equal(t, genesis.Epochs[3].StartTime, chainStartTime)
+	require.Equal(t, genesis.Epochs[3].Duration, time.Second*300)
+	require.Equal(t, genesis.Epochs[3].CurrentEpoch, int64(0))
+	require.Equal(t, genesis.Epochs[3].CurrentEpochStartHeight, chainStartHeight)
+	require.Equal(t, genesis.Epochs[3].CurrentEpochStartTime, chainStartTime)
+	require.Equal(t, genesis.Epochs[3].EpochCountingStarted, false)
 }
 
 func TestEpochsInitGenesis(t *testing.T) {
