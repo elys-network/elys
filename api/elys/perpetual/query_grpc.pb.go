@@ -24,8 +24,7 @@ type QueryClient interface {
 	GetPositions(ctx context.Context, in *PositionsRequest, opts ...grpc.CallOption) (*PositionsResponse, error)
 	// Queries a list of mtp positions by pool.
 	GetPositionsByPool(ctx context.Context, in *PositionsByPoolRequest, opts ...grpc.CallOption) (*PositionsByPoolResponse, error)
-	// Retuns the total number of open and lifetime mtps.
-	GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	PerpetualCounter(ctx context.Context, in *PerpetualCounterRequest, opts ...grpc.CallOption) (*PerpetualCounterResponse, error)
 	// Queries a list of mtp positions for a given address.
 	GetPositionsForAddress(ctx context.Context, in *PositionsForAddressRequest, opts ...grpc.CallOption) (*PositionsForAddressResponse, error)
 	// Queries a list of whitelisted addresses.
@@ -42,6 +41,7 @@ type QueryClient interface {
 	OpenEstimation(ctx context.Context, in *QueryOpenEstimationRequest, opts ...grpc.CallOption) (*QueryOpenEstimationResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(ctx context.Context, in *QueryCloseEstimationRequest, opts ...grpc.CallOption) (*QueryCloseEstimationResponse, error)
+	OpenEstimationByFinal(ctx context.Context, in *QueryOpenEstimationByFinalRequest, opts ...grpc.CallOption) (*QueryOpenEstimationByFinalResponse, error)
 }
 
 type queryClient struct {
@@ -79,9 +79,9 @@ func (c *queryClient) GetPositionsByPool(ctx context.Context, in *PositionsByPoo
 	return out, nil
 }
 
-func (c *queryClient) GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/GetStatus", in, out, opts...)
+func (c *queryClient) PerpetualCounter(ctx context.Context, in *PerpetualCounterRequest, opts ...grpc.CallOption) (*PerpetualCounterResponse, error) {
+	out := new(PerpetualCounterResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/PerpetualCounter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -160,6 +160,15 @@ func (c *queryClient) CloseEstimation(ctx context.Context, in *QueryCloseEstimat
 	return out, nil
 }
 
+func (c *queryClient) OpenEstimationByFinal(ctx context.Context, in *QueryOpenEstimationByFinalRequest, opts ...grpc.CallOption) (*QueryOpenEstimationByFinalResponse, error) {
+	out := new(QueryOpenEstimationByFinalResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/OpenEstimationByFinal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -170,8 +179,7 @@ type QueryServer interface {
 	GetPositions(context.Context, *PositionsRequest) (*PositionsResponse, error)
 	// Queries a list of mtp positions by pool.
 	GetPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error)
-	// Retuns the total number of open and lifetime mtps.
-	GetStatus(context.Context, *StatusRequest) (*StatusResponse, error)
+	PerpetualCounter(context.Context, *PerpetualCounterRequest) (*PerpetualCounterResponse, error)
 	// Queries a list of mtp positions for a given address.
 	GetPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error)
 	// Queries a list of whitelisted addresses.
@@ -188,6 +196,7 @@ type QueryServer interface {
 	OpenEstimation(context.Context, *QueryOpenEstimationRequest) (*QueryOpenEstimationResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error)
+	OpenEstimationByFinal(context.Context, *QueryOpenEstimationByFinalRequest) (*QueryOpenEstimationByFinalResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -204,8 +213,8 @@ func (UnimplementedQueryServer) GetPositions(context.Context, *PositionsRequest)
 func (UnimplementedQueryServer) GetPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPositionsByPool not implemented")
 }
-func (UnimplementedQueryServer) GetStatus(context.Context, *StatusRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStatus not implemented")
+func (UnimplementedQueryServer) PerpetualCounter(context.Context, *PerpetualCounterRequest) (*PerpetualCounterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerpetualCounter not implemented")
 }
 func (UnimplementedQueryServer) GetPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPositionsForAddress not implemented")
@@ -230,6 +239,9 @@ func (UnimplementedQueryServer) OpenEstimation(context.Context, *QueryOpenEstima
 }
 func (UnimplementedQueryServer) CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CloseEstimation not implemented")
+}
+func (UnimplementedQueryServer) OpenEstimationByFinal(context.Context, *QueryOpenEstimationByFinalRequest) (*QueryOpenEstimationByFinalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpenEstimationByFinal not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -298,20 +310,20 @@ func _Query_GetPositionsByPool_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatusRequest)
+func _Query_PerpetualCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PerpetualCounterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetStatus(ctx, in)
+		return srv.(QueryServer).PerpetualCounter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.perpetual.Query/GetStatus",
+		FullMethod: "/elys.perpetual.Query/PerpetualCounter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetStatus(ctx, req.(*StatusRequest))
+		return srv.(QueryServer).PerpetualCounter(ctx, req.(*PerpetualCounterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -460,6 +472,24 @@ func _Query_CloseEstimation_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_OpenEstimationByFinal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOpenEstimationByFinalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OpenEstimationByFinal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.perpetual.Query/OpenEstimationByFinal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OpenEstimationByFinal(ctx, req.(*QueryOpenEstimationByFinalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -480,8 +510,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_GetPositionsByPool_Handler,
 		},
 		{
-			MethodName: "GetStatus",
-			Handler:    _Query_GetStatus_Handler,
+			MethodName: "PerpetualCounter",
+			Handler:    _Query_PerpetualCounter_Handler,
 		},
 		{
 			MethodName: "GetPositionsForAddress",
@@ -514,6 +544,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CloseEstimation",
 			Handler:    _Query_CloseEstimation_Handler,
+		},
+		{
+			MethodName: "OpenEstimationByFinal",
+			Handler:    _Query_OpenEstimationByFinal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

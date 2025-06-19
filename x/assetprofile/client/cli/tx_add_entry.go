@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )

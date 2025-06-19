@@ -2,9 +2,9 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/estaking/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // Process commitmentChanged hook
@@ -17,7 +17,10 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del, _ := k.Delegation(ctx, creator, edenValAddr)
+		del, err := k.Delegation(ctx, creator, edenValAddr)
+		if err != nil {
+			return err
+		}
 		if del == nil {
 
 			_, err = k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: creator.String()})
@@ -56,7 +59,10 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del, _ := k.Delegation(ctx, creator, edenBValAddr)
+		del, err := k.Delegation(ctx, creator, edenBValAddr)
+		if err != nil {
+			return err
+		}
 		if del == nil {
 			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenBValAddr)
 			if err != nil {

@@ -3,7 +3,7 @@ package keeper
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -149,7 +149,7 @@ func (k Keeper) UpdatePoolForSwap(
 			}
 
 			// Track amount in pool
-			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
+			var weightRecoveryFeeAmountForPool sdkmath.Int
 			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
 			if givenOut {
 				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
@@ -195,7 +195,12 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// convert the fees into USD
 	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
-	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+	var slippageAmountInUSD osmomath.BigDec
+	if givenOut {
+		slippageAmountInUSD = k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+	} else {
+		slippageAmountInUSD = k.CalculateUSDValue(ctx, tokenOut.Denom, slippageAmount.Dec().TruncateInt())
+	}
 	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount)
 	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount)
 	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
@@ -214,6 +219,18 @@ func (k Keeper) UpdatePoolForSwap(
 			bonusTokenAmountInUSD.String(),
 			takerFeesAmountInUSD.String(),
 		)
+	}
+
+	if !pool.PoolParams.UseOracle {
+		tokenInAsset, tokenOutAsset, err := pool.ParsePoolAssetsByDenoms(tokenIn.Denom, tokenOut.Denom)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		tokenInRatewWrtTokenOut := types.CalculateTokenARate(
+			osmomath.BigDecFromSDKInt(tokenInAsset.Token.Amount), osmomath.BigDecFromSDKInt(tokenInAsset.Weight),
+			osmomath.BigDecFromSDKInt(tokenOutAsset.Token.Amount), osmomath.BigDecFromSDKInt(tokenOutAsset.Weight),
+		)
+		types.EmitSwapPriceChangeEvent(ctx, pool.PoolId, tokenIn.Denom, tokenInRatewWrtTokenOut.String(), tokenOut.Denom)
 	}
 
 	// emit swap event

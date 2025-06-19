@@ -7,10 +7,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -27,7 +27,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 		LeverageMax:        math.LegacyOneDec().MulInt64(10),
 		MaxLeveragelpRatio: math.LegacyMustNewDecFromStr("0.6"),
 	}
-	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
+	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount*1000), sdk.NewInt64Coin("uusdt", amount*1000)}
 
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
 	suite.Require().NoError(err)
@@ -78,11 +78,17 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
 	suite.Require().True(found)
 	err = suite.app.PerpetualKeeper.OnLeverageLpEnablePool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
 
 	usdcToken := sdk.NewInt64Coin("uusdc", amount*20)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
+	suite.Require().NoError(err)
+
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{ammPool.PoolId}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
@@ -178,7 +184,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.248428922744246029301737955585596100", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.249687500781052735356319568798777725", health.String()) // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
@@ -187,7 +193,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.166756002564715915235269117369715981", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.167932243720610033043289316634371706", health.String()) // slippage disabled on amm
 }
 
 // test positionHealth should be maxDec when liablities is zero
@@ -199,7 +205,7 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
-	suite.Require().Equal("1.248428922744246029301737955585596100", health.String())
+	suite.Require().Equal("1.249687500781052735356319568798777725", health.String())
 
 	//setting position debt/liablities to zero
 	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress(), position.BorrowPoolId)

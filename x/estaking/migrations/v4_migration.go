@@ -3,8 +3,8 @@ package migrations
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
 )
 
 func (m Migrator) V4Migration(ctx sdk.Context) error {

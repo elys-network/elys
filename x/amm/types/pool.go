@@ -46,7 +46,7 @@ func (p Pool) parsePoolAssets(tokensA sdk.Coins, tokenBDenom string) (
 	if len(tokensA) != 1 {
 		return tokenA, Aasset, Basset, errors.New("expected tokensB to be of length one")
 	}
-	Aasset, Basset, err = p.parsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
+	Aasset, Basset, err = p.ParsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
 	if err != nil {
 		return sdk.Coin{}, PoolAsset{}, PoolAsset{}, err
 	}
@@ -63,7 +63,7 @@ func (p Pool) parsePoolAssetsCoins(tokensA sdk.Coins, tokensB sdk.Coins) (
 	return Aasset, Basset, err
 }
 
-func (p Pool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+func (p Pool) ParsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
 	Aasset PoolAsset, Basset PoolAsset, err error,
 ) {
 	Aasset, found1 := GetPoolAssetByDenom(p.PoolAssets, tokenADenom)
@@ -154,13 +154,21 @@ func (p *Pool) IncreaseLiquidity(sharesAmt sdkmath.Int, coinsIn sdk.Coins) error
 }
 
 func (p *Pool) DecreaseLiquidity(sharesAmt sdkmath.Int, coinsIn sdk.Coins) error {
+	if sharesAmt.IsNil() || sharesAmt.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "invalid shares amount: %s", sharesAmt.String())
+	}
+
+	if err := coinsIn.Validate(); err != nil {
+		return errorsmod.Wrapf(err, "invalid coins input: %s", coinsIn.String())
+	}
+
 	err := p.subtractFromPoolAssetBalances(coinsIn)
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(err, "failed to subtract from pool asset balances: %s", coinsIn.String())
 	}
 	p.SubtractTotalShares(sharesAmt)
 	if p.TotalShares.IsNegative() {
-		return fmt.Errorf("can't subtract %s, pool total shares going negative", sharesAmt.String())
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "pool total shares would become negative after subtracting %s", sharesAmt.String())
 	}
 	return nil
 }
@@ -169,11 +177,11 @@ func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 	// Check that PoolAsset exists.
 	assetIndex, existingAsset, err := p.GetPoolAssetAndIndex(coin.Denom)
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(err, "failed to get pool asset for denom: %s", coin.Denom)
 	}
 
 	if coin.Amount.LTE(sdkmath.ZeroInt()) {
-		return errors.New("can't set the pool's balance of a token to be zero or negative")
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "cannot set pool balance to zero or negative for denom: %s", coin.Denom)
 	}
 
 	// Update the supply of the asset

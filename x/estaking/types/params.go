@@ -7,7 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

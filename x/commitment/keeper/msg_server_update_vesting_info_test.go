@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/app"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/app"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

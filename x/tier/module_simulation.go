@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	membershiptiersimulation "github.com/elys-network/elys/x/tier/simulation"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	membershiptiersimulation "github.com/elys-network/elys/v6/x/tier/simulation"
+	"github.com/elys-network/elys/v6/x/tier/types"
 )
 
 // avoid unused import issue

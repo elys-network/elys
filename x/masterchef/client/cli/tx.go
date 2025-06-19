@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 )
 
 var (

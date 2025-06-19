@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/stablestake"
+	"github.com/elys-network/elys/v6/api/elys/stablestake"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -57,6 +57,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:            "interest [pool-id] [block-height]",
 					Short:          "Query interest",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "block_height"}},
+				},
+				{
+					RpcMethod:      "MaxBondableAmount",
+					Use:            "max-bondable [pool-id]",
+					Short:          "Query max bondable amount for a pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
 				},
 			},
 		},

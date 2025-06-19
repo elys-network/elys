@@ -4,17 +4,17 @@ import (
 	"time"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -22,9 +22,9 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
-			sdk.NewCoin(ptypes.ATOM, issueAmount),
-			sdk.NewCoin(ptypes.Elys, issueAmount),
-			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+			sdk.NewCoin(ptypes.ATOM, issueAmount.MulRaw(1000)),
+			sdk.NewCoin(ptypes.Elys, issueAmount.MulRaw(1000)),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount.MulRaw(1000)),
 		)
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 		if err != nil {
@@ -44,11 +44,11 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
+				Token:  sdk.NewCoin(asset1, issueAmount.MulRaw(10)),
 				Weight: sdkmath.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
+				Token:  sdk.NewCoin(asset2, issueAmount.MulRaw(10)),
 				Weight: sdkmath.NewInt(50),
 			},
 		},
@@ -71,6 +71,12 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		Amount:  issueAmount.QuoRaw(20),
 		PoolId:  1,
 	}
+
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
@@ -275,7 +281,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdkmath.NewIntFromString("8472689380952380950")
+				actualShares, ok := sdkmath.NewIntFromString("9991380952380952380")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
 			},
@@ -284,7 +290,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdkmath.LegacyMustNewDecFromStr("8472689380952380950").TruncateInt(),
+				LpAmount: sdkmath.LegacyMustNewDecFromStr("9991380952380952380").TruncateInt(),
 			},
 			false,
 			"",

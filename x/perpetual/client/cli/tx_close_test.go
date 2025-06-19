@@ -6,7 +6,7 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/x/perpetual/client/cli"
+	"github.com/elys-network/elys/v6/x/perpetual/client/cli"
 )
 
 func TestClosePosition(t *testing.T) {
@@ -20,6 +20,7 @@ func TestClosePosition(t *testing.T) {
 	args := []string{
 		"1",
 		"10000000",
+		"1",
 		"--from=" + val.Address.String(),
 		"-y",
 	}

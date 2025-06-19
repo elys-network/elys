@@ -48,6 +48,10 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
+	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
@@ -58,9 +62,6 @@ import (
 	icahost "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
-	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
-	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
@@ -73,41 +74,41 @@ import (
 	ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccv "github.com/cosmos/interchain-security/v6/x/ccv/types"
-	wasmbindingsclient "github.com/elys-network/elys/wasmbindings/client"
-	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
-	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
-	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
-	assetprofilemodulekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
-	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
-	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
+	wasmbindingsclient "github.com/elys-network/elys/v6/wasmbindings/client"
+	accountedpoolmodulekeeper "github.com/elys-network/elys/v6/x/accountedpool/keeper"
+	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
+	ammmodulekeeper "github.com/elys-network/elys/v6/x/amm/keeper"
+	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofilemodulekeeper "github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	burnermodulekeeper "github.com/elys-network/elys/v6/x/burner/keeper"
+	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	commitmentmodulekeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
+	epochsmodulekeeper "github.com/elys-network/elys/v6/x/epochs/keeper"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	estakingmodulekeeper "github.com/elys-network/elys/v6/x/estaking/keeper"
+	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	masterchefmodulekeeper "github.com/elys-network/elys/v6/x/masterchef/keeper"
+	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametermodulekeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
+	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualmodulekeeper "github.com/elys-network/elys/v6/x/perpetual/keeper"
+	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tiermodulekeeper "github.com/elys-network/elys/v6/x/tier/keeper"
+	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
+	tokenomicsmodulekeeper "github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	tradeshieldmodulekeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 	clobmodulekeeper "github.com/elys-network/elys/x/clob/keeper"
 	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
-	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
-	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
-	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	estakingmodulekeeper "github.com/elys-network/elys/x/estaking/keeper"
-	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
-	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
-	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualmodulekeeper "github.com/elys-network/elys/x/perpetual/keeper"
-	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	tiermodulekeeper "github.com/elys-network/elys/x/tier/keeper"
-	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
-	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
-	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
-	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
-	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -120,7 +121,7 @@ type AppKeepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    ICSStakingKeeper
+	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        *govkeeper.Keeper
@@ -130,17 +131,15 @@ type AppKeepers struct {
 
 	// IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCKeeper             *ibckeeper.Keeper
+	IBCHooksKeeper        *ibchookskeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
 	ICAControllerKeeper   icacontrollerkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
-	TransferKeeper        ibctransferkeeper.Keeper
+	TransferKeeper        *ibctransferkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	GroupKeeper           groupkeeper.Keeper
-
-	IBCFeeKeeper   ibcfeekeeper.Keeper
-	IBCHooksKeeper *ibchookskeeper.Keeper
 
 	ConsumerKeeper ccvconsumerkeeper.Keeper
 	ConsumerModule ccvconsumer.AppModule // Have to declare this here for IBC router
@@ -172,10 +171,11 @@ type AppKeepers struct {
 	EstakingKeeper      *estakingmodulekeeper.Keeper
 	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
+	ClobKeeper          clobmodulekeeper.Keeper
 
-	ClobKeeper clobmodulekeeper.Keeper
-	// FIXME: disabled to avoid dependency with wasm
-	// HooksICS4Wrapper ibchooks.ICS4Middleware
+	HooksICS4Wrapper    ibchooks.ICS4Middleware
+	Ics20WasmHooks      *ibchooks.WasmHooks
+	PacketForwardKeeper *packetforwardkeeper.Keeper
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -299,22 +299,20 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.StakingKeeper = NewICSStakingKeeper(
-		stakingkeeper.NewKeeper(
-			appCodec,
-			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
-			app.AccountKeeper,
-			app.BankKeeper,
-			authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
-		),
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[assetprofilemoduletypes.StoreKey]),
-		&app.TransferKeeper,
+		app.TransferKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -323,7 +321,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -339,11 +337,12 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
 		app.TokenomicsKeeper,
+		&app.ConsumerKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -351,10 +350,9 @@ func NewAppKeeper(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
-		&app.ConsumerKeeper,
+		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-
 	groupConfig := group.DefaultConfig()
 	/*
 		Example of setting group params:
@@ -400,24 +398,41 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// IBC Fee Module keeper
-	app.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
-		appCodec,
-		app.keys[ibcfeetypes.StoreKey],
-		app.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
+	// Configure the hooks keeper
+	hooksKeeper := ibchookskeeper.NewKeeper(
+		app.keys[ibchookstypes.StoreKey],
 	)
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
+	app.IBCHooksKeeper = &hooksKeeper
+
+	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix)
+	app.Ics20WasmHooks = &wasmHooks
+	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		app.IBCKeeper.ChannelKeeper,
+		app.Ics20WasmHooks,
+	)
+
+	transferKeeper := ibctransferkeeper.NewKeeper(
 		appCodec,
 		app.keys[ibctransfertypes.StoreKey],
 		app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCFeeKeeper, // ISC4 Wrapper: PFM Router middleware
+		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper: This is overridden later
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.ScopedTransferKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	app.TransferKeeper = &transferKeeper
+
+	app.PacketForwardKeeper = packetforwardkeeper.NewKeeper(
+		appCodec,
+		app.keys[packetforwardtypes.StoreKey],
+		app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.BankKeeper,
+		// The ICS4Wrapper is replaced by the HooksICS4Wrapper instead of the channel so that sending can be overridden by the middleware
+		app.HooksICS4Wrapper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -475,7 +490,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.StakingKeeper,
 		distrkeeper.NewQuerier(app.DistrKeeper),
-		app.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
+		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.ScopedWasmKeeper,
@@ -488,22 +503,6 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		wasmOpts...,
 	)
-
-	// Create fee enabled wasm ibc Stack
-	var wasmStack porttypes.IBCModule
-	wasmStackIBCHandler := wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
-	wasmStack = ibcfee.NewIBCMiddleware(wasmStackIBCHandler, app.IBCFeeKeeper)
-
-	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
-		&app.ConsumerKeeper,
-		app.SlashingKeeper,
-		app.AccountKeeper.AddressCodec(),
-		runtime.ProvideCometInfoService(),
-	)
-	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.EvidenceKeeper = *evidenceKeeper
 
 	app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 		appCodec,
@@ -525,8 +524,31 @@ func NewAppKeeper(
 		address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
+	app.ConsumerKeeper.SetStandaloneStakingKeeper(app.StakingKeeper)
+
+	// consumer keeper satisfies the staking keeper interface
+	// of the slashing module
+	app.SlashingKeeper = slashingkeeper.NewKeeper(
+		appCodec,
+		legacyAmino,
+		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
+		&app.ConsumerKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
+
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
+		&app.ConsumerKeeper,
+		app.SlashingKeeper,
+		app.AccountKeeper.AddressCodec(),
+		runtime.ProvideCometInfoService(),
+	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
 
 	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
@@ -636,18 +658,6 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Configure the hooks keeper
-	hooksKeeper := ibchookskeeper.NewKeeper(
-		app.keys[ibchookstypes.StoreKey],
-	)
-	app.IBCHooksKeeper = &hooksKeeper
-
-	// FIXME: disabled to avoid dependency with wasm
-	// app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
-	// 	app.IBCKeeper.ChannelKeeper,
-	// 	hooksKeeper,
-	// )
-
 	// provider depends on gov, so gov must be registered first
 	govConfig := govtypes.DefaultConfig()
 	// set the MaxMetadataLen for proposals to the same value as it was pre-sdk v0.47.x
@@ -658,7 +668,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
@@ -685,6 +695,8 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
+	app.StablestakeKeeper.SetLeverageLpKeeper(app.LeveragelpKeeper)
+
 	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
@@ -695,7 +707,7 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		app.MasterchefKeeper,
 		app.CommitmentKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
@@ -735,24 +747,29 @@ func NewAppKeeper(
 	// * SendPacket -> Transfer -> Provider -> PFM -> RateLimit -> Fee -> IBC core (ICS4Wrapper)
 
 	var transferStack porttypes.IBCModule
-	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	// FIXME: ibccallbacks missing
-	// transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCFeeKeeper, wasmStackIBCHandler, wasm.DefaultMaxIBCCallbackGas)
-	// transferICS4Wrapper := transferStack.(porttypes.ICS4Wrapper)
-	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
+	transferStack = transfer.NewIBCModule(*app.TransferKeeper)
+	transferStack = ibchooks.NewIBCMiddleware(transferStack, &app.HooksICS4Wrapper)
+	transferStack = packetforward.NewIBCMiddleware(
+		transferStack,
+		app.PacketForwardKeeper,
+		0, // retries on timeout
+		packetforwardkeeper.DefaultForwardTransferPacketTimeoutTimestamp,
+	)
+	transferICS4Wrapper := transferStack.(porttypes.ICS4Wrapper)
+	app.TransferKeeper.WithICS4Wrapper(transferICS4Wrapper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
 
 	// Create Interchain Accounts Controller Stack
-	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(nil, app.ICAControllerKeeper)
-	// FIXME: ibccallbacks missing
-	// icaControllerStack = ibccallbacks.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper, wasmStackIBCHandler, wasm.DefaultMaxIBCCallbackGas)
-	// icaICS4Wrapper := icaControllerStack.(porttypes.ICS4Wrapper)
-	// icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper)
-	// // Since the callbacks middleware itself is an ics4wrapper, it needs to be passed to the ica controller keeper
-	// app.ICAControllerKeeper.WithICS4Wrapper(icaICS4Wrapper)
+	var icaControllerStack porttypes.IBCModule
+	icaControllerStack = icacontroller.NewIBCMiddleware(icaControllerStack, app.ICAControllerKeeper)
+	icaICS4Wrapper := icaControllerStack.(porttypes.ICS4Wrapper)
+	// Since the callbacks middleware itself is an ics4wrapper, it needs to be passed to the ica controller keeper
+	app.ICAControllerKeeper.WithICS4Wrapper(icaICS4Wrapper)
 
+	var wasmStack porttypes.IBCModule
+	wasmStack = wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
@@ -861,6 +878,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 	paramsKeeper.Subspace(ccvconsumertypes.ModuleName).WithKeyTable(ccv.ParamKeyTable())
+	paramsKeeper.Subspace(ibchookstypes.ModuleName)
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)

@@ -1,11 +1,12 @@
 package types_test
 
 import (
+	"testing"
+
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {

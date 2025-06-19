@@ -7,7 +7,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 // Increase collateral, repay with additional collateral, update debt, liability and health

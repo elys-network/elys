@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/amm/client/cli"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/migrations"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/client/cli"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/migrations"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 var (

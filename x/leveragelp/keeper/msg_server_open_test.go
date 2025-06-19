@@ -8,13 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -22,9 +22,9 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	issueAmount := sdkmath.NewInt(10_000_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
-			sdk.NewCoin(ptypes.ATOM, issueAmount),
-			sdk.NewCoin(ptypes.Elys, issueAmount),
-			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+			sdk.NewCoin(ptypes.ATOM, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.Elys, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount.MulRaw(100)),
 		)
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 		if err != nil {
@@ -44,11 +44,11 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(asset1, 100_000_000_000_000),
+				Token:  sdk.NewCoin(asset1, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 1000_000_000_000_000),
+				Token:  sdk.NewCoin(asset2, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 		},
@@ -62,6 +62,11 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 		Amount:  issueAmount.QuoRaw(20),
 		PoolId:  1,
 	}
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{poolId}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
@@ -423,70 +428,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 					// The portfolio value changes after the hook is called.
 					suite.Require().NotEqual(portfolio_old, portfolio_new)
 				}
-				suite.Require().NoError(err)
-			}
-		})
-	}
-}
-
-func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
-	suite.ResetSuite()
-	// not adding uusdc asset info and price yet
-	suite.AddCoinPrices(suite.ctx, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
-	asset1 := ptypes.ATOM
-	asset2 := ptypes.Elys
-	initializeForOpen(suite, addresses, asset1, asset2)
-	testCases := []struct {
-		name                 string
-		input                *types.MsgOpen
-		expectErr            bool
-		expectErrMsg         string
-		prerequisiteFunction func()
-	}{
-		{"Fail to do JoinPoolNoSwap",
-			&types.MsgOpen{
-				Creator:          addresses[0].String(),
-				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdkmath.NewInt(10000000),
-				AmmPoolId:        1,
-				Leverage:         sdkmath.LegacyMustNewDecFromStr("2.0"),
-				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
-			},
-			true,
-			"Asset: uusdc: asset not found in amm pool", // Can't join elys atom pool with usdc
-			func() {
-			},
-		},
-		{"Open Position",
-			&types.MsgOpen{
-				Creator:          addresses[0].String(),
-				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdkmath.NewInt(10_000_000),
-				AmmPoolId:        1,
-				Leverage:         sdkmath.LegacyMustNewDecFromStr("2.0"),
-				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
-			},
-			true,
-			"Asset: uusdc: asset not found in amm pool",
-			func() {
-				suite.ResetSuite()
-				suite.SetupCoinPrices(suite.ctx)
-				initializeForOpen(suite, addresses, asset1, asset2)
-				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.1"))
-				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
-			},
-		},
-	}
-
-	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			tc.prerequisiteFunction()
-			_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, tc.input)
-			if tc.expectErr {
-				suite.Require().Error(err)
-				suite.Require().Contains(err.Error(), tc.expectErrMsg)
-			} else {
 				suite.Require().NoError(err)
 			}
 		})

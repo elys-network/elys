@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"math"
 	"strconv"
 	"strings"
@@ -14,16 +15,16 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/v6/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/tier/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 )
 
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
@@ -326,7 +327,7 @@ func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) o
 	return totalValue
 }
 
-func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
+func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmomath.BigDec, osmomath.BigDec, sdkmath.LegacyDec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
 	}
@@ -337,7 +338,7 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmoma
 	}
 	tokenPriceAmm := k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
-	tokenPriceOracleDec := osmomath.ZeroBigDec()
+	tokenPriceOracleDec := sdkmath.LegacyZeroDec()
 	if found {
 		tokenPriceOracleD, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 		if found {

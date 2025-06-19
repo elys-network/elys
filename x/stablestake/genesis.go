@@ -2,8 +2,8 @@ package stablestake
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/stablestake/keeper"
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v6/x/stablestake/keeper"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

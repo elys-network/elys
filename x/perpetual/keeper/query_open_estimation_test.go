@@ -6,18 +6,18 @@ import (
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	simapp "github.com/elys-network/elys/app"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -106,10 +106,9 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 
@@ -121,7 +120,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		HourlyInterestRate: math.LegacyZeroDec(),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(99871050)),
 		OpenPrice:          math.LegacyMustNewDecFromStr("5.006455824786061626"),
-		TakeProfitPrice:    tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.105293776324570533"),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(998065750)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(600000000000)),
@@ -132,6 +131,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(99871050)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(400_000_000)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -226,10 +227,9 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10_000_000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
@@ -239,7 +239,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Collateral:         sdk.NewCoin(ptypes.ATOM, math.NewInt(10_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
 		OpenPrice:          math.LegacyMustNewDecFromStr("5.019731500000000000"),
-		TakeProfitPrice:    tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.116179830000000000"),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(399210740)),
 		HourlyInterestRate: math.LegacyZeroDec(),
@@ -251,6 +251,8 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200789260)),
 		WeightBreakingFee:  math.LegacyMustNewDecFromStr("0.001435619047211833"),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -363,10 +365,9 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("10.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1_000_000000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
@@ -376,7 +377,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1_000_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(2220729049)),
 		OpenPrice:          math.LegacyMustNewDecFromStr("4.503025708833333678"),
-		TakeProfitPrice:    tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.154041216398750318"),
 		HourlyInterestRate: math.LegacyZeroDec(),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(19247001575)),
@@ -384,10 +385,12 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		Slippage:           math.LegacyMustNewDecFromStr("0.025099947050000000"),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        math.LegacyMustNewDecFromStr("-0.025746175132877830"),
+		PriceImpact:        math.LegacyMustNewDecFromStr("-0.025746175132877831"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(2220729049)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(9000000000)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}, res)
 }
 
@@ -498,10 +501,9 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("4.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().QuoInt64(3),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 	require.NoError(t, err)
 	expectedRes := &types.QueryOpenEstimationResponse{
@@ -511,18 +513,20 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(80240642)),
 		OpenPrice:          math.LegacyMustNewDecFromStr("4.985004980393850786"),
-		TakeProfitPrice:    tradingAssetPrice.Dec().QuoInt64(3),
+		TakeProfitPrice:    tradingAssetPrice.QuoInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("6.079274366333964374"),
-		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, math.NewInt(266265597)},
+		EstimatedPnl:       sdk.Coin{Denom: ptypes.BaseCurrency, Amount: math.NewInt(266265597)},
 		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
 		Slippage:           math.LegacyMustNewDecFromStr("0.003008025000000000"),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        math.LegacyMustNewDecFromStr("0.002999003921229842"),
+		PriceImpact:        math.LegacyMustNewDecFromStr("0.002999003921229843"),
 		Custody:            sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(500000000)),
 		Liabilities:        sdk.NewCoin(ptypes.ATOM, math.NewInt(80240642)),
 		WeightBreakingFee:  math.LegacyZeroDec(),
+		SwapFees:           math.LegacyMustNewDecFromStr("0.001000000000000000"),
+		TakerFees:          math.LegacyMustNewDecFromStr("0.000000000000000000"),
 	}
 	require.Equal(t, expectedRes, res)
 }
@@ -618,51 +622,23 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.BaseCurrency,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
-		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(3),
-	})
-
-	assert.Error(t, err)
-	assert.Equal(t, "invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset", err.Error())
-
-	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
-		PoolId:          1,
-		Position:        types.Position_LONG,
-		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.Eden, math.NewInt(10000000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(3),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 
 	assert.Error(t, err)
-	assert.Equal(t, "invalid collateral: collateral must either match the borrowed asset or be the base currency: invalid borrowing asset", err.Error())
+	assert.Equal(t, "invalid operation: collateral asset has to be either trading asset or base currency for long: invalid collateral asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.BaseCurrency,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
 		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().QuoInt64(3),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 
 	assert.Error(t, err)
-	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error())
-
-	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
-		PoolId:          1,
-		Position:        types.Position_SHORT,
-		Leverage:        math.LegacyMustNewDecFromStr("5.0"),
-		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
-		Address:         "",
-		TakeProfitPrice: tradingAssetPrice.Dec().QuoInt64(3),
-	})
-
-	assert.Error(t, err)
-	assert.Equal(t, "invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset", err.Error())
+	assert.Equal(t, "invalid collateral: collateral asset for short position must be the base currency: invalid collateral asset", err.Error())
 }

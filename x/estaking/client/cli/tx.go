@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -27,6 +27,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdWithdrawAllRewards(),
 		CmdWithdrawElysStakingRewards(),
+		CmdUnjailGovernor(),
 	)
 
 	return cmd
@@ -54,6 +55,43 @@ $ %s tx estaking withdraw-all-rewards --from mykey
 			delAddr := clientCtx.GetFromAddress()
 			msg := &types.MsgWithdrawAllRewards{
 				DelegatorAddress: delAddr.String(),
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdUnjailGovernor() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unjail-governor",
+		Short: "Unjail a jailed governor",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Unjail a jailed governor,
+Example:
+$ %s tx estaking unjail-governor --from governor 
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address := clientCtx.GetFromAddress()
+
+			msg := &types.MsgUnjailGovernor{
+				Address: address.String(),
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

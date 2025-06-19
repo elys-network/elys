@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -60,7 +60,7 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/version.Version=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
-          -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
+          -X github.com/elys-network/elys/v6/app.NextVersion=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
           -w -s \
           -linkmode=external \
@@ -98,7 +98,7 @@ jobs:
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
-          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+25; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+40; exit }'; }
           extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables

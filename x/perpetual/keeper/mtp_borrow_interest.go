@@ -6,30 +6,34 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.Int {
+func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) (math.Int, error) {
 
-	err := mtp.UpdateMTPTakeProfitBorrowFactor()
+	err := k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
 	if err != nil {
-		panic(err)
+		return math.ZeroInt(), err
 	}
 
 	// This already gives a floor tested value for interest rate
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.GetBigDecTakeProfitBorrowFactor())
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPayment := osmomath.BigDecFromSDKInt(totalLiability).Mul(borrowInterestRate).Dec().TruncateInt()
-	return borrowInterestPayment
+	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
+	return borrowInterestPayment, nil
 }
 
-func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP) {
-	borrowInterestPaymentInt := k.GetBorrowInterestAmount(ctx, mtp)
+func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP) error {
+	borrowInterestPaymentInt, err := k.GetBorrowInterestAmount(ctx, mtp)
+	if err != nil {
+		return err
+	}
 	mtp.BorrowInterestUnpaidLiability = mtp.BorrowInterestUnpaidLiability.Add(borrowInterestPaymentInt)
 	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
+	return nil
 }
 
 // SettleMTPBorrowInterestUnpaidLiability  This does not update BorrowInterestUnpaidLiability, it should be done through UpdateMTPBorrowInterestUnpaidLiability beforehand

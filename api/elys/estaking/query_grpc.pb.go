@@ -24,6 +24,9 @@ type QueryClient interface {
 	Rewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error)
 	// Invariant queries the invariant values
 	Invariant(ctx context.Context, in *QueryInvariantRequest, opts ...grpc.CallOption) (*QueryInvariantResponse, error)
+	// EdenBBurnAmount queries the amount of EdenB that will be burned when
+	// unstaking
+	EdenBBurnAmount(ctx context.Context, in *QueryEdenBBurnAmountRequest, opts ...grpc.CallOption) (*QueryEdenBBurnAmountResponse, error)
 }
 
 type queryClient struct {
@@ -61,6 +64,15 @@ func (c *queryClient) Invariant(ctx context.Context, in *QueryInvariantRequest, 
 	return out, nil
 }
 
+func (c *queryClient) EdenBBurnAmount(ctx context.Context, in *QueryEdenBBurnAmountRequest, opts ...grpc.CallOption) (*QueryEdenBBurnAmountResponse, error) {
+	out := new(QueryEdenBBurnAmountResponse)
+	err := c.cc.Invoke(ctx, "/elys.estaking.Query/EdenBBurnAmount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -71,6 +83,9 @@ type QueryServer interface {
 	Rewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error)
 	// Invariant queries the invariant values
 	Invariant(context.Context, *QueryInvariantRequest) (*QueryInvariantResponse, error)
+	// EdenBBurnAmount queries the amount of EdenB that will be burned when
+	// unstaking
+	EdenBBurnAmount(context.Context, *QueryEdenBBurnAmountRequest) (*QueryEdenBBurnAmountResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -86,6 +101,9 @@ func (UnimplementedQueryServer) Rewards(context.Context, *QueryRewardsRequest) (
 }
 func (UnimplementedQueryServer) Invariant(context.Context, *QueryInvariantRequest) (*QueryInvariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Invariant not implemented")
+}
+func (UnimplementedQueryServer) EdenBBurnAmount(context.Context, *QueryEdenBBurnAmountRequest) (*QueryEdenBBurnAmountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EdenBBurnAmount not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -154,6 +172,24 @@ func _Query_Invariant_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_EdenBBurnAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEdenBBurnAmountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EdenBBurnAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.estaking.Query/EdenBBurnAmount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EdenBBurnAmount(ctx, req.(*QueryEdenBBurnAmountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -172,6 +208,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Invariant",
 			Handler:    _Query_Invariant_Handler,
+		},
+		{
+			MethodName: "EdenBBurnAmount",
+			Handler:    _Query_EdenBBurnAmount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,12 +1,13 @@
 package types_test
 
 import (
-	"github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
+	"github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 

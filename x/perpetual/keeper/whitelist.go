@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	gomath "math"
+
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/x/perpetual/types"
-	gomath "math"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool {
@@ -64,24 +65,4 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 	}
 
 	return list
-}
-
-func (k Keeper) V6_MigrateWhitelistedAddress(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.WhitelistPrefix)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		address := (string)(iterator.Value())
-		accAddress := sdk.MustAccAddressFromBech32(address)
-		k.removeLegacyWhitelistAddress(ctx, address)
-		k.WhitelistAddress(ctx, accAddress)
-	}
-
-	return
-}
-
-func (k Keeper) removeLegacyWhitelistAddress(ctx sdk.Context, address string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.GetLegacyWhitelistKey(address))
 }

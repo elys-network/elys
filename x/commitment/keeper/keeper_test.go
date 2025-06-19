@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

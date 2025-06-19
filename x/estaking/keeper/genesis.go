@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/estaking/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

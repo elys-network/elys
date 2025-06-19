@@ -5,10 +5,10 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -60,7 +60,7 @@ type AssetProfileKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)

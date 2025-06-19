@@ -6,10 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 func createTestGenesisInflation(keeper *keeper.Keeper, ctx sdk.Context) types.GenesisInflation {

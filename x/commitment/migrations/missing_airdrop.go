@@ -2,7 +2,7 @@ package migrations
 
 import (
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 )
 
 var KolClaim = []types.KolList{

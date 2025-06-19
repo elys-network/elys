@@ -3,10 +3,11 @@
 package mocks
 
 import (
+	math "cosmossdk.io/math"
 	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 	mock "github.com/stretchr/testify/mock"
 
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 
 	query "github.com/cosmos/cosmos-sdk/types/query"
 
@@ -86,23 +87,23 @@ func (_c *PerpetualKeeper_Close_Call) RunAndReturn(run func(types.Context, *perp
 }
 
 // GetAssetPriceAndAssetUsdcDenomRatio provides a mock function with given fields: ctx, asset
-func (_m *PerpetualKeeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx types.Context, asset string) (osmomath.BigDec, osmomath.BigDec, error) {
+func (_m *PerpetualKeeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx types.Context, asset string) (math.LegacyDec, osmomath.BigDec, error) {
 	ret := _m.Called(ctx, asset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAssetPriceAndAssetUsdcDenomRatio")
 	}
 
-	var r0 osmomath.BigDec
+	var r0 math.LegacyDec
 	var r1 osmomath.BigDec
 	var r2 error
-	if rf, ok := ret.Get(0).(func(types.Context, string) (osmomath.BigDec, osmomath.BigDec, error)); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) (math.LegacyDec, osmomath.BigDec, error)); ok {
 		return rf(ctx, asset)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, string) osmomath.BigDec); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) math.LegacyDec); ok {
 		r0 = rf(ctx, asset)
 	} else {
-		r0 = ret.Get(0).(osmomath.BigDec)
+		r0 = ret.Get(0).(math.LegacyDec)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, string) osmomath.BigDec); ok {
@@ -139,12 +140,12 @@ func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Run(run func
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Return(_a0 osmomath.BigDec, _a1 osmomath.BigDec, _a2 error) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
+func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Return(_a0 math.LegacyDec, _a1 osmomath.BigDec, _a2 error) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
 	_c.Call.Return(_a0, _a1, _a2)
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) RunAndReturn(run func(types.Context, string) (osmomath.BigDec, osmomath.BigDec, error)) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
+func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) RunAndReturn(run func(types.Context, string) (math.LegacyDec, osmomath.BigDec, error)) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -375,6 +376,63 @@ func (_c *PerpetualKeeper_GetPool_Call) Return(val perpetualtypes.Pool, found bo
 }
 
 func (_c *PerpetualKeeper_GetPool_Call) RunAndReturn(run func(types.Context, uint64) (perpetualtypes.Pool, bool)) *PerpetualKeeper_GetPool_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetTradingAsset provides a mock function with given fields: ctx, poolId
+func (_m *PerpetualKeeper) GetTradingAsset(ctx types.Context, poolId uint64) (string, error) {
+	ret := _m.Called(ctx, poolId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTradingAsset")
+	}
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, uint64) (string, error)); ok {
+		return rf(ctx, poolId)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, uint64) string); ok {
+		r0 = rf(ctx, poolId)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, uint64) error); ok {
+		r1 = rf(ctx, poolId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PerpetualKeeper_GetTradingAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTradingAsset'
+type PerpetualKeeper_GetTradingAsset_Call struct {
+	*mock.Call
+}
+
+// GetTradingAsset is a helper method to define mock.On call
+//   - ctx types.Context
+//   - poolId uint64
+func (_e *PerpetualKeeper_Expecter) GetTradingAsset(ctx interface{}, poolId interface{}) *PerpetualKeeper_GetTradingAsset_Call {
+	return &PerpetualKeeper_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", ctx, poolId)}
+}
+
+func (_c *PerpetualKeeper_GetTradingAsset_Call) Run(run func(ctx types.Context, poolId uint64)) *PerpetualKeeper_GetTradingAsset_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(uint64))
+	})
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetTradingAsset_Call) Return(_a0 string, _a1 error) *PerpetualKeeper_GetTradingAsset_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetTradingAsset_Call) RunAndReturn(run func(types.Context, uint64) (string, error)) *PerpetualKeeper_GetTradingAsset_Call {
 	_c.Call.Return(run)
 	return _c
 }

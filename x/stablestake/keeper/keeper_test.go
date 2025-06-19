@@ -1,19 +1,21 @@
 package keeper_test
 
 import (
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"testing"
+
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v6/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -39,6 +41,37 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.SetStakingParam()
 	suite.SetStableStakeParam()
 	suite.SetupAssetProfile()
+
+	poolAddr := types.NewPoolAddress(uint64(1))
+	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	pool := types.Pool{
+		PoolId:            1,
+		Address:           poolAddr.String(),
+		RebalanceTreasury: treasuryAddr.String(),
+		PoolParams: types.PoolParams{
+			SwapFee:   math.LegacyZeroDec(),
+			UseOracle: true,
+			FeeDenom:  ptypes.BaseCurrency,
+		},
+		TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), math.ZeroInt()),
+		PoolAssets: []types.PoolAsset{
+			{
+				Token:  sdk.NewCoin("uusdc", math.NewInt(1000_000)),
+				Weight: math.NewInt(10),
+			},
+			{
+				Token:  sdk.NewCoin("uatom", math.NewInt(1000_000)),
+				Weight: math.NewInt(10),
+			},
+		},
+		TotalWeight: math.ZeroInt(),
+	}
+	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+
+	leverageLpParams := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	leverageLpParams.EnabledPools = []uint64{1}
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &leverageLpParams)
+	suite.Require().NoError(err)
 
 	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
 		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),

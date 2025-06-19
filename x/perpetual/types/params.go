@@ -5,36 +5,34 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		BorrowInterestRateDecrease:             math.LegacyMustNewDecFromStr("0.0003"),
-		BorrowInterestRateIncrease:             math.LegacyMustNewDecFromStr("0.0003"),
-		BorrowInterestRateMax:                  math.LegacyMustNewDecFromStr("0.3"),
-		BorrowInterestRateMin:                  math.LegacyMustNewDecFromStr("0.1"),
-		EnableTakeProfitCustodyLiabilities:     false,
-		FixedFundingRate:                       math.LegacyMustNewDecFromStr("0.5"), // 50%
-		HealthGainFactor:                       math.LegacyMustNewDecFromStr("0.000000220000000000"),
-		BorrowInterestPaymentEnabled:           true,
-		LegacyBorrowInterestPaymentFundAddress: authtypes.NewModuleAddress("borrow-interest-payment-fund").String(), // IMP: Shouldn't be same as perpetual module address
-		BorrowInterestPaymentFundPercentage:    math.LegacyMustNewDecFromStr("0.1"),
-		LeverageMax:                            math.LegacyNewDec(25),
-		MaxLimitOrder:                          (int64)(100000),
-		MaxOpenPositions:                       (int64)(100000),
-		MaximumLongTakeProfitPriceRatio:        math.LegacyMustNewDecFromStr("11"),
-		MaximumShortTakeProfitPriceRatio:       math.LegacyMustNewDecFromStr("0.98"),
-		MinimumLongTakeProfitPriceRatio:        math.LegacyMustNewDecFromStr("1.02"),
-		PerpetualSwapFee:                       math.LegacyMustNewDecFromStr("0.001"), // 0.1%
-		PoolOpenThreshold:                      math.LegacyMustNewDecFromStr("0.65"),
-		SafetyFactor:                           math.LegacyMustNewDecFromStr("1.025000000000000000"),
-		WeightBreakingFeeFactor:                math.LegacyMustNewDecFromStr("0.5"),
-		WhitelistingEnabled:                    false,
-		EnabledPools:                           []uint64(nil),
+		BorrowInterestRateDecrease:          math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateIncrease:          math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateMax:               math.LegacyMustNewDecFromStr("0.3"),
+		BorrowInterestRateMin:               math.LegacyMustNewDecFromStr("0.1"),
+		FixedFundingRate:                    math.LegacyMustNewDecFromStr("0.5"), // 50%
+		HealthGainFactor:                    math.LegacyMustNewDecFromStr("0.000000220000000000"),
+		BorrowInterestPaymentEnabled:        true,
+		BorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
+		LeverageMax:                         math.LegacyNewDec(25),
+		MaxLimitOrder:                       (int64)(100000),
+		MaxOpenPositions:                    (int64)(100000),
+		MaximumLongTakeProfitPriceRatio:     math.LegacyMustNewDecFromStr("11"),
+		MaximumShortTakeProfitPriceRatio:    math.LegacyMustNewDecFromStr("0.98"),
+		MinimumLongTakeProfitPriceRatio:     math.LegacyMustNewDecFromStr("1.02"),
+		PerpetualSwapFee:                    math.LegacyMustNewDecFromStr("0.001"), // 0.1%
+		PoolMaxLiabilitiesThreshold:         math.LegacyMustNewDecFromStr("0.65"),
+		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.025000000000000000"),
+		WeightBreakingFeeFactor:             math.LegacyMustNewDecFromStr("0.5"),
+		WhitelistingEnabled:                 false,
+		EnabledPools:                        []uint64(nil),
+		MinimumNotionalValue:                math.LegacyNewDec(0),
+		LongMinimumLiabilityAmount:          math.NewInt(1),
 	}
 }
 
@@ -76,9 +74,6 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.HealthGainFactor, "HealthGainFactor"); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.LegacyBorrowInterestPaymentFundAddress); err != nil {
-		return fmt.Errorf("invalid address: %s", err.Error())
-	}
 	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestPaymentFundPercentage, "IncrementalBorrowInterestPaymentFundPercentage"); err != nil {
 		return err
 	}
@@ -109,7 +104,7 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.PerpetualSwapFee, "PerpetualSwapFee"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.PoolOpenThreshold, "PoolOpenThreshold"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.PoolMaxLiabilitiesThreshold, "PoolMaxLiabilitiesThreshold"); err != nil {
 		return err
 	}
 	if err := CheckLegacyDecNilAndNegative(p.SafetyFactor, "SafetyFactor"); err != nil {

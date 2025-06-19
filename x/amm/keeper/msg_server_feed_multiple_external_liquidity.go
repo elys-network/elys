@@ -5,9 +5,9 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -31,7 +31,11 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 					return nil, types.ErrAmountTooLow
 				}
 
-				liquidityRatio := LiquidityRatioFromPriceDepth(osmomath.BigDecFromDec(el.Depth))
+				liquidityRatio, err := LiquidityRatioFromPriceDepth(osmomath.BigDecFromDec(el.Depth))
+				if err != nil {
+					return nil, err
+				}
+
 				// Ensure tvl is not zero to avoid division by zero
 				if liquidityRatio.IsZero() {
 					return nil, types.ErrAmountTooLow
@@ -48,15 +52,15 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 	return updatedAssets, nil
 }
 
-func LiquidityRatioFromPriceDepth(depth osmomath.BigDec) osmomath.BigDec {
+func LiquidityRatioFromPriceDepth(depth osmomath.BigDec) (osmomath.BigDec, error) {
 	if depth == osmomath.OneBigDec() {
-		return osmomath.OneBigDec()
+		return osmomath.OneBigDec(), nil
 	}
 	sqrt, err := osmomath.OneBigDec().Sub(depth).ApproxSqrt()
 	if err != nil {
-		panic(err)
+		return osmomath.ZeroBigDec(), err
 	}
-	return osmomath.OneBigDec().Sub(sqrt)
+	return osmomath.OneBigDec().Sub(sqrt), nil
 }
 
 func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *types.MsgFeedMultipleExternalLiquidity) (*types.MsgFeedMultipleExternalLiquidityResponse, error) {

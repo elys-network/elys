@@ -4,7 +4,9 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/estaking"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/elys-network/elys/v6/api/elys/estaking"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -29,6 +31,16 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "invariant",
 					Short:     "Query invariant values",
 				},
+				{
+					RpcMethod: "EdenBBurnAmount",
+					Use:       "edenb-burn-amount [address] [token_type] [amount]",
+					Short:     "Query the amount of EdenB that will be burned when unstaking",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{ProtoField: "address"},
+						{ProtoField: "token_type"},
+						{ProtoField: "amount"},
+					},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
@@ -50,6 +62,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "WithdrawElysStakingRewards",
 					Use:       "withdraw-elys-staking-rewards",
 					Short:     "Withdraw rewards for delegations",
+				},
+				{
+					RpcMethod: "UnjailGovernor",
+					Use:       "unjail-governor",
+					Short:     "Unjail a jailed governor",
+					Example:   fmt.Sprintf("%s tx estaking unjail --from [governor]", version.AppName),
 				},
 				{
 					RpcMethod: "UpdateParams",

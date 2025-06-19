@@ -6,10 +6,10 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset, baseCurrency string) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
@@ -27,7 +27,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if forceClosed {
-		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, msg.TradingAsset)
+		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 		if err != nil {
 			return nil, err
 		}
@@ -43,23 +43,19 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if !newMtp.Liabilities.IsZero() {
-		consolidatedOpenPrice := (existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecOpenPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecOpenPrice()))).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
-		existingMtp.OpenPrice = consolidatedOpenPrice.Dec()
-
-		consolidatedTakeProfitPrice := existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecTakeProfitPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecTakeProfitPrice())).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
-		existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice.Dec()
+		consolidatedOpenPrice := (existingMtp.OpenPrice.MulInt(existingMtp.Custody).Add(newMtp.OpenPrice.MulInt(newMtp.Custody))).QuoInt(existingMtp.Custody.Add(newMtp.Custody))
+		existingMtp.OpenPrice = consolidatedOpenPrice
 	}
 
-	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
-	existingMtp.TakeProfitLiabilities = existingMtp.TakeProfitLiabilities.Add(newMtp.TakeProfitLiabilities)
+	// overwrite take profit price instead of taking average of both take profit prices
+	if msg.TakeProfitPrice.IsPositive() {
+		existingMtp.TakeProfitPrice = msg.TakeProfitPrice
+	}
 
-	// no need to update pool's TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities as it was already in OpenDefineAssets
-
-	mtpHealth, err := k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
+	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
-	existingMtp.MtpHealth = mtpHealth.Dec()
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -69,7 +65,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp).Dec()
+		liquidationPrice, err := k.GetLiquidationPrice(ctx, *existingMtp)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
+		}
+		stopLossPrice = liquidationPrice
 	}
 	existingMtp.StopLossPrice = stopLossPrice
 
@@ -80,9 +80,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		params := k.GetParams(ctx)
 		// The pool value above was sent in pointer so its updated
-		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err
 		}

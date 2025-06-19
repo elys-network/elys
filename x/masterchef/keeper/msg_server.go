@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

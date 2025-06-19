@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSpotOrder) (*types.MsgCreateSpotOrderResponse, error) {
@@ -25,12 +25,10 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 
 	// if the order is market buy, execute it immediately
 	if msg.OrderType == types.SpotOrderType_MARKETBUY {
-		res, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
+		_, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
 		if err != nil {
 			return nil, err
 		}
-
-		ctx.EventManager().EmitEvent(types.NewExecuteMarketBuySpotOrderEvt(pendingSpotOrder, res))
 
 		return &types.MsgCreateSpotOrderResponse{
 			OrderId: pendingSpotOrder.OrderId,
@@ -130,4 +128,38 @@ func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelS
 	}
 
 	return &types.MsgCancelSpotOrdersResponse{}, nil
+}
+
+func (k msgServer) CancelAllSpotOrders(goCtx context.Context, msg *types.MsgCancelAllSpotOrders) (*types.MsgCancelAllSpotOrdersResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	pendingStatus := types.Status_PENDING
+	pendingOrders, _, err := k.GetPendingSpotOrdersForAddress(ctx, msg.Creator, &pendingStatus, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(pendingOrders) == 0 {
+		return nil, types.ErrSpotOrderNotFound
+	}
+
+	for _, order := range pendingOrders {
+		// Get all balances from the spot order address
+		orderAddress := order.GetOrderAddress()
+		balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+		// Send all available balances back to the owner if there are any
+		if !balances.IsZero() {
+			ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+			err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		k.RemovePendingSpotOrder(ctx, order.OrderId)
+		types.EmitCloseSpotOrderEvent(ctx, order)
+	}
+
+	return &types.MsgCancelAllSpotOrdersResponse{}, nil
 }
