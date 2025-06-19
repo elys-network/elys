@@ -9,6 +9,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/elys-network/elys/v6/x/tradeshield/types"
@@ -67,13 +68,13 @@ func (k Keeper) AppendPendingPerpetualOrder(
 func (k Keeper) SetPendingPerpetualOrder(ctx sdk.Context, pendingPerpetualOrder types.PerpetualOrder) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	b := k.cdc.MustMarshal(&pendingPerpetualOrder)
-	store.Set(GetPendingPerpetualOrderIDBytes(pendingPerpetualOrder.OrderId), b)
+	store.Set(GetPendingPerpetualOrderKeyBytes(sdk.MustAccAddressFromBech32(pendingPerpetualOrder.OwnerAddress), pendingPerpetualOrder.PoolId, pendingPerpetualOrder.OrderId), b)
 }
 
 // GetPendingPerpetualOrder returns a pendingPerpetualOrder from its id
 func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.PerpetualOrder, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	b := store.Get(GetPendingPerpetualOrderIDBytes(id))
+	b := store.Get(GetPendingPerpetualOrderKeyBytes(sdk.MustAccAddressFromBech32(val.OwnerAddress), val.PoolId, val.OrderId))
 	if b == nil {
 		return val, false
 	}
@@ -85,7 +86,8 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 	var orders []types.PerpetualOrder
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	orderStore := prefix.NewStore(store, types.PendingPerpetualOrderKey)
+	key := types.GetPendingPerpetualOrderAddressKey(sdk.MustAccAddressFromBech32(address))
+	orderStore := prefix.NewStore(store, key)
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -97,7 +99,7 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 		var order types.PerpetualOrder
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
-			if accumulate && order.OwnerAddress == address && (*status == types.Status_ALL || order.Status == *status) {
+			if accumulate && (*status == types.Status_ALL || order.Status == *status) {
 				orders = append(orders, order)
 				return true, nil
 			}
@@ -112,7 +114,13 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 }
 
 // RemovePendingPerpetualOrder removes a pendingPerpetualOrder from the store
-func (k Keeper) RemovePendingPerpetualOrder(ctx sdk.Context, id uint64) {
+func (k Keeper) RemovePendingPerpetualOrder(ctx sdk.Context, user sdk.AccAddress, poolId uint64, orderId uint64) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	store.Delete(GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
+}
+
+// LegacyRemovePendingPerpetualOrder removes a pendingPerpetualOrder from the store
+func (k Keeper) LegacyRemovePendingPerpetualOrder(ctx sdk.Context, id uint64) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	store.Delete(GetPendingPerpetualOrderIDBytes(id))
 }
@@ -162,6 +170,21 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	return
 }
 
+// GetPendingPerpetualOrderKeyBytes returns the byte representation of the Address + PoolId + OrderId
+func GetPendingPerpetualOrderKeyBytes(user sdk.AccAddress, poolId uint64, orderId uint64) []byte {
+
+	key := address.MustLengthPrefix(user)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	orderIdBytes := sdk.Uint64ToBigEndian(orderId)
+	key = append(key, orderIdBytes...)
+
+	return key
+}
+
+// Remove after migration
 // GetPendingPerpetualOrderIDBytes returns the byte representation of the ID
 func GetPendingPerpetualOrderIDBytes(id uint64) []byte {
 	bz := make([]byte, 8)
@@ -169,27 +192,19 @@ func GetPendingPerpetualOrderIDBytes(id uint64) []byte {
 	return bz
 }
 
-// GetPendingPerpetualOrderIDFromBytes returns ID in uint64 format from a byte array
-func GetPendingPerpetualOrderIDFromBytes(bz []byte) uint64 {
-	return binary.BigEndian.Uint64(bz)
-}
-
-func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, err error) {
+func (k Keeper) MigratePendingOrders(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedPerpetualOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var orderIds []uint64
-		orderIds, err := types.DecodeUint64Slice(iterator.Value())
-		if err != nil {
-			return nil, err
-		}
-		list = append(list, orderIds)
-	}
+		var order types.PerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		k.LegacyRemovePendingPerpetualOrder(ctx, order.OrderId)
 
-	return
+		k.SetPendingPerpetualOrder(ctx, order)
+	}
 }
 
 // ExecuteLimitOpenOrder executes a limit open order
@@ -243,7 +258,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 	}
 
 	// Remove the order from the pending order list
-	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+	k.RemovePendingPerpetualOrder(ctx, ownerAddress, order.PoolId, order.OrderId)
 
 	ctx.EventManager().EmitEvent(types.NewExecuteLimitOpenPerpetualOrderEvt(order, res.Id))
 
@@ -292,7 +307,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 	}
 
 	// Remove the order from the pending order list
-	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+	k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
 
 	return nil
 }
@@ -317,7 +332,7 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 	}
 
 	// Remove the order from the pending order list
-	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+	k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
 
 	return nil
 }
@@ -341,7 +356,7 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 	}
 
 	// Remove the order from the pending order list
-	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+	k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
 
 	return nil
 }

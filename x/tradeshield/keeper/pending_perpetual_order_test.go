@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 
 	"cosmossdk.io/math"
@@ -47,7 +48,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderGet() {
 func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderRemove() {
 	items := suite.createNPendingPerpetualOrder(10)
 	for _, item := range items {
-		suite.app.TradeshieldKeeper.RemovePendingPerpetualOrder(suite.ctx, item.OrderId)
+		suite.app.TradeshieldKeeper.RemovePendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(item.OwnerAddress), item.PoolId, item.OrderId)
 		_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, item.OrderId)
 		suite.Require().False(found)
 	}

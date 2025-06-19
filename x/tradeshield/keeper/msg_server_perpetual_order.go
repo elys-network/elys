@@ -188,7 +188,7 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 		}
 	}
 
-	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
+	k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
 	types.EmitCancelPerpetualOrderEvent(ctx, order)
 
 	return &types.MsgCancelPerpetualOrderResponse{
@@ -241,7 +241,7 @@ func (k msgServer) CancelAllPerpetualOrders(goCtx context.Context, msg *types.Ms
 			}
 		}
 
-		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+		k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
 		types.EmitCancelPerpetualOrderEvent(ctx, order)
 	}
 
