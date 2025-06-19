@@ -130,7 +130,7 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
+	order, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PoolId, msg.OrderId)
 	if !found {
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
@@ -165,7 +165,7 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
+	order, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PoolId, msg.OrderId)
 	if !found {
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("order %d doesn't exist", msg.OrderId))
 	}

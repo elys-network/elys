@@ -76,9 +76,15 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 
 				msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
 				_, err := msgSrvr.ExecuteOrders(suite.ctx, &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					PerpetualOrderIds: []uint64{1},
-					SpotOrderIds:      []uint64{},
+					Creator:      addr[2].String(),
+					SpotOrderIds: []uint64{},
+					PerpetualOrders: []*types.PerpetualOrderKey{
+						{
+							OwnerAddress: addr[2].String(),
+							PoolId:       1,
+							OrderId:      1,
+						},
+					},
 				})
 				suite.T().Log("Error: ", err)
 				suite.Require().NoError(err)
@@ -274,7 +280,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				suite.Require().NoError(err)
-				_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, res.OrderId)
+				_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), 1, res.OrderId)
 				suite.Require().False(found)
 				// Hardcoded collateral amount, as using only one test case
 				suite.Require().Equal(balanceBefore.Amount.Add(math.NewInt(100)), balanceAfter.Amount)

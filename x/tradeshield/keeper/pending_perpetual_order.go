@@ -72,9 +72,9 @@ func (k Keeper) SetPendingPerpetualOrder(ctx sdk.Context, pendingPerpetualOrder 
 }
 
 // GetPendingPerpetualOrder returns a pendingPerpetualOrder from its id
-func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.PerpetualOrder, found bool) {
+func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, user sdk.AccAddress, poolId uint64, orderId uint64) (val types.PerpetualOrder, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	b := store.Get(GetPendingPerpetualOrderKeyBytes(sdk.MustAccAddressFromBech32(val.OwnerAddress), val.PoolId, val.OrderId))
+	b := store.Get(GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
 	if b == nil {
 		return val, false
 	}

@@ -33,7 +33,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 		{
 			desc: "valid request",
 			request: &types.QueryGetPendingPerpetualOrderRequest{
-				Id: 1,
+				OwnerAddress: "valid_address",
+				PoolId:       1,
+				OrderId:      1,
 			},
 			response: &types.QueryGetPendingPerpetualOrderResponse{
 				PendingPerpetualOrder: types.PerpetualOrderExtraInfo{

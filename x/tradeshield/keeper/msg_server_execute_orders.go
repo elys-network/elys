@@ -64,9 +64,9 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 
 	perpLog := []string{}
 	// loop through the perpetual orders and execute them
-	for _, perpetualOrderId := range msg.PerpetualOrderIds {
+	for _, perpetualOrder := range msg.PerpetualOrders {
 		// get the perpetual order
-		perpetualOrder, found := k.GetPendingPerpetualOrder(ctx, perpetualOrderId)
+		perpetualOrder, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, perpetualOrder.OrderId)
 		if !found {
 			return nil, types.ErrPerpetualOrderNotFound
 		}
@@ -92,7 +92,7 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		// log the error if any
 		if err != nil {
 			// Add log about error or not executed
-			perpLog = append(perpLog, fmt.Sprintf("Perpetual order Id:%d cannot be executed due to err: %s", perpetualOrderId, err.Error()))
+			perpLog = append(perpLog, fmt.Sprintf("Perpetual order Id:%d cannot be executed due to err: %s", perpetualOrder.OrderId, err.Error()))
 		}
 	}
 

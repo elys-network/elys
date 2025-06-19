@@ -36,7 +36,7 @@ func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []t
 func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderGet() {
 	items := suite.createNPendingPerpetualOrder(10)
 	for _, item := range items {
-		got, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, item.OrderId)
+		got, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(item.OwnerAddress), item.PoolId, item.OrderId)
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -49,7 +49,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderRemove() {
 	items := suite.createNPendingPerpetualOrder(10)
 	for _, item := range items {
 		suite.app.TradeshieldKeeper.RemovePendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(item.OwnerAddress), item.PoolId, item.OrderId)
-		_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, item.OrderId)
+		_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(item.OwnerAddress), item.PoolId, item.OrderId)
 		suite.Require().False(found)
 	}
 }
@@ -92,12 +92,12 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitOpenOrder() {
 
 	suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 
-	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, perpetualOrder.OrderId)
 
 	err := suite.app.TradeshieldKeeper.ExecuteLimitOpenOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
-	_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, perpetualOrder.OrderId)
 	suite.Require().False(found)
 }
 
@@ -124,7 +124,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
 
 	suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
-	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, perpetualOrder.OrderId)
 	err := suite.app.TradeshieldKeeper.ExecuteLimitOpenOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
@@ -133,14 +133,14 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 	perpetualOrder.PositionId = 1
 	orderId := suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 
-	order, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
+	order, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, orderId)
 	suite.Require().True(found)
 
 	err = suite.app.TradeshieldKeeper.ExecuteLimitCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
 	suite.Require().Contains(err.Error(), perpetualtypes.ErrInvalidAmount.Error())
 
-	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
+	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, orderId)
 	suite.Require().True(found)
 }
 
@@ -161,12 +161,12 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketOpenOrder() {
 		PoolId:             1,
 	})
 
-	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(address[2].String()), 1, 1)
 
 	err := suite.app.TradeshieldKeeper.ExecuteMarketOpenOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
-	_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	_, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(address[2].String()), 1, 1)
 	suite.Require().False(found)
 }
 
@@ -188,7 +188,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 		PoolId:             1,
 	}
 	suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
-	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
+	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(address[2].String()), 1, 1)
 	err := suite.app.TradeshieldKeeper.ExecuteMarketOpenOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
@@ -197,13 +197,13 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 	perpetualOrder.PositionId = 1
 	orderId := suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 
-	order, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
+	order, found := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(address[2].String()), 1, orderId)
 	suite.Require().True(found)
 
 	err = suite.app.TradeshieldKeeper.ExecuteMarketCloseOrder(suite.ctx, order)
 	suite.Require().Error(err)
 	suite.Require().Contains(err.Error(), perpetualtypes.ErrInvalidAmount.Error())
 
-	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, orderId)
+	_, found = suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, sdk.MustAccAddressFromBech32(address[2].String()), 1, orderId)
 	suite.Require().True(found)
 }
