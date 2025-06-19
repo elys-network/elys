@@ -96,7 +96,7 @@ func (k Keeper) AllPerpetualsWithLiquidationPrice(goCtx context.Context, req *ty
 		}
 
 		perpInfo := types.PerpetualInfo{
-			Perpetual:        &perpetual,
+			Perpetual:        perpetual,
 			LiquidationPrice: liquidationPrice,
 			MarketBaseDenom:  market.BaseDenom,
 		}
