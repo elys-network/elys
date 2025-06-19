@@ -18,5 +18,8 @@ func (k Keeper) GetHealth(ctx sdk.Context, perpetual types.Perpetual, market typ
 		return math.LegacyDec{}, math.LegacyDec{}, err
 	}
 	health = currentPrice.Quo(liquidationPrice).Sub(math.LegacyOneDec())
+	if perpetual.Quantity.IsNegative() {
+		health = liquidationPrice.Quo(currentPrice).Sub(math.LegacyOneDec())
+	}
 	return health, liquidationPrice, nil
 }
