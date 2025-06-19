@@ -64,9 +64,9 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 
 	perpLog := []string{}
 	// loop through the perpetual orders and execute them
-	for _, perpetualOrder := range msg.PerpetualOrders {
+	for _, perpetualOrderKey := range msg.PerpetualOrders {
 		// get the perpetual order
-		perpetualOrder, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(perpetualOrder.OwnerAddress), perpetualOrder.PoolId, perpetualOrder.OrderId)
+		perpetualOrder, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(perpetualOrderKey.OwnerAddress), perpetualOrderKey.PoolId, perpetualOrderKey.OrderId)
 		if !found {
 			return nil, types.ErrPerpetualOrderNotFound
 		}

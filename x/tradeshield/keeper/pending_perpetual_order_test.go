@@ -17,7 +17,7 @@ func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []t
 	for i := range items {
 		items[i] = types.PerpetualOrder{
 			OrderId:            0,
-			OwnerAddress:       fmt.Sprintf("address%d", i),
+			OwnerAddress:       sdk.AccAddress([]byte(fmt.Sprintf("address%d", i))).String(),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
 			TriggerPrice:       math.LegacyNewDec(1),
