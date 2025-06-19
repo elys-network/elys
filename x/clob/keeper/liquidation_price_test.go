@@ -164,8 +164,7 @@ func (suite *KeeperTestSuite) TestGetLiquidationPrice() {
 				// Pass copies to ensure original tc.perpetual/market are not modified if they are pointers
 				pCopy := perpetual
 				mCopy := market
-				saCopy := subAccount
-				return suite.app.ClobKeeper.GetLiquidationPrice(suite.ctx, pCopy, mCopy, saCopy)
+				return suite.app.ClobKeeper.GetLiquidationPrice(suite.ctx, pCopy, mCopy)
 			}
 
 			liqPrice, err := call()

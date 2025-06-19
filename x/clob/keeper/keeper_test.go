@@ -268,8 +268,8 @@ func (suite *KeeperTestSuite) CreateMarketWithFees(baseDenoms ...string) []types
 			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
 			TwapPricesWindow:        15,
 			LiquidationFeeShareRate: math.LegacyMustNewDecFromStr("0.01"),
-			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.01"),
-			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.025"),
+			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.001"),
+			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.002"),
 		}
 		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 		list = append(list, market)
