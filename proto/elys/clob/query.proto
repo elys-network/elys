@@ -64,8 +64,8 @@ service Query {
 
   // if market_id is 0, it will return all perpetual else it will return
   // perpetual for the specified market_id
-  rpc AllPerpetualsWithLiquidationPrice(
-    AllPerpetualsWithLiquidationPriceRequest) returns (AllPerpetualsWithLiquidationPriceResponse) {
+  rpc AllPerpetuals(
+    AllPerpetualsRequest) returns (AllPerpetualsResponse) {
     option (google.api.http).get =
         "/elys-network/elys/clob/all-perpetuals-with-liquidation-price/{pagination.key}";
   }
@@ -92,7 +92,7 @@ message OwnerPerpetualsRequest {
 }
 
 message OwnerPerpetualsResponse {
-  repeated Perpetual list = 1 [ (gogoproto.nullable) = false ];
+  repeated PerpetualInfo list = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -162,12 +162,12 @@ message AllPerpetualADLResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message AllPerpetualsWithLiquidationPriceRequest {
+message AllPerpetualsRequest {
   uint64 market_id = 1; // if 0, it will return all perpetuals
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message AllPerpetualsWithLiquidationPriceResponse {
+message AllPerpetualsResponse {
   repeated PerpetualInfo perpetual_infos = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
