@@ -152,12 +152,13 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				return &types.MsgUpdatePerpetualOrder{
 					OwnerAddress: addr[2].String(),
 					OrderId:      1,
+					PoolId:       1,
 				}
 			},
 		},
 		{
 			"Incorrect Order Owner updating the order",
-			"incorrect owner",
+			"key 1 doesn't exist: key not found",
 			func() *types.MsgUpdatePerpetualOrder {
 				_, _, _ = suite.SetPerpetualPool(1)
 
@@ -178,6 +179,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				return &types.MsgUpdatePerpetualOrder{
 					OwnerAddress: addr[1].String(), // incorrect owner
 					OrderId:      1,
+					PoolId:       1,
 				}
 			},
 		},
@@ -190,6 +192,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				return &types.MsgUpdatePerpetualOrder{
 					OwnerAddress: addr[2].String(),
 					OrderId:      1,
+					PoolId:       1,
 					TriggerPrice: math.LegacyNewDec(12),
 				}
 			},
@@ -231,7 +234,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 		},
 		{
 			"Incorrect Order Owner cancelling the order",
-			"incorrect owner",
+			"order 1 doesn't exist: key not found",
 			func() *types.MsgCancelPerpetualOrder {
 				_, _, _ = suite.SetPerpetualPool(1)
 
@@ -252,6 +255,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 				return &types.MsgCancelPerpetualOrder{
 					OwnerAddress: addr[1].String(), // incorrect owner
 					OrderId:      1,
+					PoolId:       1,
 				}
 			},
 		},
@@ -263,6 +267,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 				return &types.MsgCancelPerpetualOrder{
 					OwnerAddress: addr[2].String(), // incorrect owner
 					OrderId:      1,
+					PoolId:       1,
 				}
 			},
 		},

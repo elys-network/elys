@@ -83,3 +83,7 @@ func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool 
 func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
 	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
+
+func (h PerpetualHooks) AfterPositionDestroyed(ctx sdk.Context, owner sdk.AccAddress, poolId uint64, positionId uint64) error {
+	return nil
+}

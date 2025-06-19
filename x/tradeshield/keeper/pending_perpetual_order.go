@@ -9,7 +9,6 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/elys-network/elys/v6/x/tradeshield/types"
@@ -68,18 +67,37 @@ func (k Keeper) AppendPendingPerpetualOrder(
 func (k Keeper) SetPendingPerpetualOrder(ctx sdk.Context, pendingPerpetualOrder types.PerpetualOrder) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	b := k.cdc.MustMarshal(&pendingPerpetualOrder)
-	store.Set(GetPendingPerpetualOrderKeyBytes(sdk.MustAccAddressFromBech32(pendingPerpetualOrder.OwnerAddress), pendingPerpetualOrder.PoolId, pendingPerpetualOrder.OrderId), b)
+	store.Set(types.GetPendingPerpetualOrderKeyBytes(sdk.MustAccAddressFromBech32(pendingPerpetualOrder.OwnerAddress), pendingPerpetualOrder.PoolId, pendingPerpetualOrder.OrderId), b)
 }
 
 // GetPendingPerpetualOrder returns a pendingPerpetualOrder from its id
 func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, user sdk.AccAddress, poolId uint64, orderId uint64) (val types.PerpetualOrder, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	b := store.Get(GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
+	b := store.Get(types.GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
 	if b == nil {
 		return val, false
 	}
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// DeletePendingPerpetualOrdersForAddressAndPool deletes all pending perpetual orders for a given address, pool id and position id
+func (k Keeper) DeletePendingPerpetualOrdersForAddressAndPool(ctx sdk.Context, user sdk.AccAddress, poolId uint64, positionId uint64) ([]types.PerpetualOrder, error) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPendingPerpetualOrderAddressPoolKey(user, poolId))
+	defer iterator.Close()
+
+	var orders []types.PerpetualOrder
+	for ; iterator.Valid(); iterator.Next() {
+		var order types.PerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		if order.Status == types.Status_PENDING && order.PositionId == positionId &&
+			(order.PerpetualOrderType == types.PerpetualOrderType_LIMITCLOSE || order.PerpetualOrderType == types.PerpetualOrderType_STOPLOSSPERP) {
+			store.Delete(types.GetPendingPerpetualOrderKeyBytes(user, poolId, order.OrderId))
+		}
+	}
+
+	return orders, nil
 }
 
 func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *types.Status, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
@@ -116,7 +134,7 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 // RemovePendingPerpetualOrder removes a pendingPerpetualOrder from the store
 func (k Keeper) RemovePendingPerpetualOrder(ctx sdk.Context, user sdk.AccAddress, poolId uint64, orderId uint64) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	store.Delete(GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
+	store.Delete(types.GetPendingPerpetualOrderKeyBytes(user, poolId, orderId))
 }
 
 // LegacyRemovePendingPerpetualOrder removes a pendingPerpetualOrder from the store
@@ -168,20 +186,6 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	}
 
 	return
-}
-
-// GetPendingPerpetualOrderKeyBytes returns the byte representation of the Address + PoolId + OrderId
-func GetPendingPerpetualOrderKeyBytes(user sdk.AccAddress, poolId uint64, orderId uint64) []byte {
-
-	key := address.MustLengthPrefix(user)
-	key = append(key, []byte("/")...)
-	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
-	key = append(key, poolIdBytes...)
-	key = append(key, []byte("/")...)
-	orderIdBytes := sdk.Uint64ToBigEndian(orderId)
-	key = append(key, orderIdBytes...)
-
-	return key
 }
 
 // Remove after migration

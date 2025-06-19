@@ -42,3 +42,26 @@ func GetPendingPerpetualOrderAddressKey(user sdk.AccAddress) []byte {
 	key = append(key, address.MustLengthPrefix(user)...)
 	return key
 }
+
+// GetPendingPerpetualOrderKeyBytes returns the byte representation of the Address + PoolId + OrderId
+func GetPendingPerpetualOrderKeyBytes(user sdk.AccAddress, poolId uint64, orderId uint64) []byte {
+
+	key := address.MustLengthPrefix(user)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	orderIdBytes := sdk.Uint64ToBigEndian(orderId)
+	key = append(key, orderIdBytes...)
+
+	return key
+}
+
+func GetPendingPerpetualOrderAddressPoolKey(user sdk.AccAddress, poolId uint64) []byte {
+	key := address.MustLengthPrefix(user)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+
+	return key
+}
