@@ -49,7 +49,12 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
-		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)
+		  -X github.com/elys-network/elys/v5/app.NextVersion=${VERSION} \
+		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)\
+		  -w -s \
+          -linkmode=external \
+		  -extldflags "-Wl,-z,muldefs -static -lm"
+
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
 
 
@@ -84,7 +89,7 @@ $(BUILDDIR)/:
 ## build: Build the binary
 build: check-version go.sum $(BUILDDIR)/
 	@echo Building Elysd binary...
-	@GOFLAGS=$(GOFLAGS) go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/$(BINARY)
 
 ## build-all: Build binaries for all platforms
 build-all: $(BUILDDIR)/
