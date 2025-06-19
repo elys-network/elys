@@ -83,6 +83,8 @@ import (
 	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	burnermodulekeeper "github.com/elys-network/elys/v6/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	clobmodulekeeper "github.com/elys-network/elys/v6/x/clob/keeper"
+	clobmoduletypes "github.com/elys-network/elys/v6/x/clob/types"
 	commitmentmodulekeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
 	epochsmodulekeeper "github.com/elys-network/elys/v6/x/epochs/keeper"
@@ -107,8 +109,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
-	clobmodulekeeper "github.com/elys-network/elys/x/clob/keeper"
-	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 

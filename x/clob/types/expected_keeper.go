@@ -2,9 +2,10 @@ package types
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -21,7 +22,7 @@ type BankKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

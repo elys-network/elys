@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 type Keeper struct {

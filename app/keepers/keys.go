@@ -30,6 +30,7 @@ import (
 	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	clobmoduletypes "github.com/elys-network/elys/v6/x/clob/types"
 	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
 	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
 	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
@@ -42,7 +43,6 @@ import (
 	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
-	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

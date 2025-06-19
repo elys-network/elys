@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreatPerpetualMarket) (*types.MsgCreatPerpetualMarketResponse, error) {

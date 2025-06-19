@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 // GetHealth Values from 0 to infinity, at 0, liquidation should happen as currentPrice == liquidationPrice

@@ -65,6 +65,8 @@ import (
 	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	burnermodule "github.com/elys-network/elys/v6/x/burner"
 	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	clobmodule "github.com/elys-network/elys/v6/x/clob"
+	clobmoduletypes "github.com/elys-network/elys/v6/x/clob/types"
 	commitmentmodule "github.com/elys-network/elys/v6/x/commitment"
 	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
 	epochsmodule "github.com/elys-network/elys/v6/x/epochs"
@@ -90,8 +92,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmodule "github.com/elys-network/elys/v6/x/tradeshield"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
-	clobmodule "github.com/elys-network/elys/x/clob"
-	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 )
 
 // module account permissions
