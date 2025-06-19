@@ -81,21 +81,16 @@ func (k Keeper) AllPerpetualsWithLiquidationPrice(goCtx context.Context, req *ty
 			return err
 		}
 
-		subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
-		if err != nil {
-			return err
-		}
-
 		market, exists := marketCache[perpetual.MarketId]
 		if !exists {
-			market, err = k.GetPerpetualMarket(ctx, perpetual.MarketId)
+			market, err := k.GetPerpetualMarket(ctx, perpetual.MarketId)
 			if err != nil {
 				return err
 			}
 			marketCache[perpetual.MarketId] = market
 		}
 
-		liquidationPrice, err := k.GetLiquidationPrice(ctx, perpetual, market, subAccount)
+		liquidationPrice, err := k.GetLiquidationPrice(ctx, perpetual, market)
 		if err != nil {
 			return err
 		}
