@@ -28,6 +28,8 @@ type QueryClient interface {
 	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error)
+	// if market_id is 0, it will return all perpetual else it will return
+	// perpetual for the specified market_id
 	AllPerpetualsWithLiquidationPrice(ctx context.Context, in *AllPerpetualsWithLiquidationPriceRequest, opts ...grpc.CallOption) (*AllPerpetualsWithLiquidationPriceResponse, error)
 }
 
@@ -134,6 +136,8 @@ type QueryServer interface {
 	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error)
+	// if market_id is 0, it will return all perpetual else it will return
+	// perpetual for the specified market_id
 	AllPerpetualsWithLiquidationPrice(context.Context, *AllPerpetualsWithLiquidationPriceRequest) (*AllPerpetualsWithLiquidationPriceResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }

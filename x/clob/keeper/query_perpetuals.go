@@ -68,7 +68,12 @@ func (k Keeper) AllPerpetualsWithLiquidationPrice(goCtx context.Context, req *ty
 
 	marketCache := make(map[uint64]types.PerpetualMarket)
 
-	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualPrefix)
+	key := types.PerpetualPrefix
+	if req.MarketId != 0 {
+		key = append(key, sdk.Uint64ToBigEndian(req.MarketId)...)
+	}
+
+	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 
 	pageRes, err := query.Paginate(prefixStore, req.Pagination, func(key []byte, value []byte) error {
 		var perpetual types.Perpetual
