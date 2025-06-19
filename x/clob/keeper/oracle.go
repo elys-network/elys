@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (math.LegacyDec, error) {
@@ -12,22 +13,21 @@ func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (math.Lega
 		return math.LegacyDec{}, fmt.Errorf("asset info (%s) not found for denom", denom)
 	}
 
-	priceBigDec, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
+	price, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	if !found {
 		return math.LegacyDec{}, fmt.Errorf("asset price not found for denom (%s)", denom)
 	}
-	price := priceBigDec.Dec()
 	if price.LTE(math.LegacyZeroDec()) || price.IsNil() {
 		return math.LegacyDec{}, fmt.Errorf("asset price (%s) is invalid", price.String())
 	}
 	return price, nil
 }
 
-func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) (math.LegacyDec, error) {
+func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) (osmomath.BigDec, math.LegacyDec, error) {
 	price := k.oracleKeeper.GetDenomPrice(ctx, denom)
 	if price.IsNil() || price.IsZero() {
-		return math.LegacyDec{}, fmt.Errorf("denom (%s) price not found", denom)
+		return osmomath.BigDec{}, math.LegacyDec{}, fmt.Errorf("denom (%s) price not found", denom)
 	}
 	// No major benefit to use 36 decimal places in clob as everything is synthetic except margin amount
-	return price.Dec(), nil
+	return price, price.Dec(), nil
 }

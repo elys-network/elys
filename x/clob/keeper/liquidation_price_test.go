@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func newTestPerpetualForLiqPrice(id uint64, owner string, qty math.LegacyDec, ep math.LegacyDec, marginAmt math.Int) types.Perpetual {
@@ -164,8 +164,7 @@ func (suite *KeeperTestSuite) TestGetLiquidationPrice() {
 				// Pass copies to ensure original tc.perpetual/market are not modified if they are pointers
 				pCopy := perpetual
 				mCopy := market
-				saCopy := subAccount
-				return suite.app.ClobKeeper.GetLiquidationPrice(suite.ctx, pCopy, mCopy, saCopy)
+				return suite.app.ClobKeeper.GetLiquidationPrice(suite.ctx, pCopy, mCopy)
 			}
 
 			liqPrice, err := call()

@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
 	"github.com/stretchr/testify/require"
 )
 

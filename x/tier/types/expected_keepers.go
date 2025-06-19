@@ -9,16 +9,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/v6/x/estaking/types"
+	leveragelptypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -38,7 +38,7 @@ type BankKeeper interface {
 
 type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }

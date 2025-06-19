@@ -1,13 +1,14 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )

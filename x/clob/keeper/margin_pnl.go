@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 // SettleMarginAndRPnL Following cases possible:
@@ -28,7 +28,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 		return
 	}
 
-	quoteDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+	_, quoteDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
 	if err != nil {
 		return
 	}

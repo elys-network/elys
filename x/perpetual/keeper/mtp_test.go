@@ -3,19 +3,19 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
+func (suite *PerpetualKeeperTestSuite) TestGetExistingPosition() {
 	addr := suite.AddAccounts(1, nil)
 	msg := &types.MsgOpen{
 		Creator:       addr[0].String(),
 		Position:      types.Position_LONG,
 		Leverage:      math.LegacyNewDec(1),
-		TradingAsset:  ptypes.ATOM,
 		Collateral:    sdk.NewCoin(ptypes.ATOM, math.NewInt(100)),
 		StopLossPrice: math.LegacyZeroDec(),
+		PoolId:        1,
 	}
 
 	mtp := types.NewMTP(suite.ctx, addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, types.TakeProfitPriceDefault, 1)
@@ -45,8 +45,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 			false,
 			func() {
 				msg.Position = types.Position_LONG
-				err := suite.app.PerpetualKeeper.SetMTP(suite.ctx, mtp)
-				suite.Require().NoError(err)
+			},
+		},
+		{
+			"mtp not found because pool is different",
+			false,
+			func() {
+				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100))
+				msg.PoolId = 4
 			},
 		},
 		{
@@ -54,6 +60,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 			true,
 			func() {
 				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100))
+				msg.PoolId = 1
 			},
 		},
 	}
@@ -61,7 +68,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			gotMtp := suite.app.PerpetualKeeper.CheckSameAssetPosition(suite.ctx, msg)
+			gotMtp := suite.app.PerpetualKeeper.GetExistingPosition(suite.ctx, msg)
 			if tc.exists {
 				suite.Require().NotNil(gotMtp)
 				suite.Require().Equal(mtp, gotMtp)

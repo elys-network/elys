@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) CalculateMaxFees(market types.PerpetualMarket, order types.PerpetualOrder) math.Int {

@@ -16,32 +16,33 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
-	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
-	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
-	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
-	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
-	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
-	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
-	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
+	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
+	clobmoduletypes "github.com/elys-network/elys/v6/x/clob/types"
+	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
+	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
+	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
+	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -60,16 +61,17 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		upgradetypes.StoreKey,
 		evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey,
-		ibcfeetypes.StoreKey,
 		icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		capabilitytypes.StoreKey,
+		ibchookstypes.StoreKey,
 		feegrant.StoreKey,
 		authz.ModuleName,
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
 		ccvconsumertypes.StoreKey,
 		wasmTypes.StoreKey,
+		packetforwardtypes.StoreKey,
 
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,

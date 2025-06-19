@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 // ForcedLiquidation Possible cases in isolated margin:
@@ -23,11 +23,7 @@ import (
 // - OnPositionClose will handle the trader's PNL, margin refund, and use IF if netRefund for trader is negative (after accounting for fee).
 // - MarketLiquidation will flag for ADL if IF is insufficient OR if the order is not fully filled.
 func (k Keeper) ForcedLiquidation(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket, liquidator sdk.AccAddress) (math.Int, error) {
-	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.SubAccountId)
-	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("forced_liquidation: %w", err)
-	}
-	liquidationPrice, err := k.GetLiquidationPrice(ctx, perpetual, market, subAccount)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, perpetual, market)
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("forced_liquidation: failed to get liquidation price for perp %d: %w", perpetual.Id, err)
 	}

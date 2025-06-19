@@ -4,7 +4,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // ResetStore resets all keys in the perpetual module store
@@ -14,9 +14,10 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 	// List of prefixes to clear
 	prefixes := [][]byte{
 		types.MTPPrefix,
-		types.MTPCountPrefix,
-		types.OpenMTPCountPrefix,
+		types.LegacyMTPCountPrefix,
+		types.LegacyOpenMTPCountPrefix,
 		types.WhitelistPrefix,
+		types.PerpetualCounterPrefix,
 	}
 
 	for _, prefix := range prefixes {
@@ -28,5 +29,15 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 		}
 	}
 
+	params := k.GetParams(ctx)
+	allPools := k.GetAllPools(ctx)
+	for _, pool := range allPools {
+		ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+		if err != nil {
+			return err
+		}
+		resetPool := types.NewPool(ammPool, params.LeverageMax)
+		k.SetPool(ctx, resetPool)
+	}
 	return nil
 }

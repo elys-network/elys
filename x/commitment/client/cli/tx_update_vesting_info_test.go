@@ -6,8 +6,8 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/testutil/network"
-	"github.com/elys-network/elys/x/commitment/client/cli"
+	"github.com/elys-network/elys/v6/testutil/network"
+	"github.com/elys-network/elys/v6/x/commitment/client/cli"
 )
 
 func setupNetwork(t *testing.T) *network.Network {

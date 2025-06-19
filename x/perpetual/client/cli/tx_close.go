@@ -9,16 +9,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
 
 func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "close [mtp-id] [amount] [flags]",
+		Use:     "close [mtp-id] [amount] [pool-id]",
 		Short:   "Close perpetual position",
 		Example: `elysd tx perpetual close 1 10000000 --from=bob --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(2),
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -39,10 +39,16 @@ func CmdClose() *cobra.Command {
 				return errors.New("invalid amount")
 			}
 
+			poolId, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgClose(
 				signer.String(),
 				argMtpId,
 				argAmount,
+				poolId,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err

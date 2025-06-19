@@ -5,11 +5,11 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/sample"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
@@ -28,6 +28,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: sample.AccAddress(),
 					Id:      uint64(10),
 					Price:   math.LegacyNewDec(2),
+					PoolId:  3,
 				}
 			},
 			"mtp not found",
@@ -45,9 +46,8 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -58,6 +58,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(2),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"perpetual pool does not exist",
@@ -66,6 +67,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 			"asset profile not found",
 			func() *types.MsgUpdateTakeProfitPrice {
 				suite.ResetSuite()
+				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				positionCreator := addr[0]
 				_, _, ammPool := suite.SetPerpetualPool(1)
@@ -76,9 +78,8 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -89,9 +90,10 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(2),
+					PoolId:  ammPool.PoolId,
 				}
 			},
-			"price for outToken not set: uatom",
+			"asset info uatom not found",
 		},
 		{
 			"success: take profit price updated",
@@ -107,9 +109,8 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -120,6 +121,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(10),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -138,9 +140,8 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -159,6 +160,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(10),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
@@ -177,9 +179,8 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -198,6 +199,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(200),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
@@ -215,7 +217,6 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("2.9"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -235,6 +236,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyMustNewDecFromStr("2.98"),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be less than %s times of current market price for short", params.MaximumShortTakeProfitPriceRatio.String()),

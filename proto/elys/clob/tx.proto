@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.clob;
 
-option go_package = "github.com/elys-network/elys/x/clob/types";
+option go_package = "github.com/elys-network/elys/v6/x/clob/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -23,13 +23,16 @@ service Msg {
 
   rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
 
-  rpc CreatePerpetualMarket(MsgCreatPerpetualMarket) returns (MsgCreatPerpetualMarketResponse);
+  rpc CreatePerpetualMarket(MsgCreatPerpetualMarket)
+      returns (MsgCreatPerpetualMarketResponse);
 
   rpc PlaceLimitOrder(MsgPlaceLimitOrder) returns (MsgPlaceLimitOrderResponse);
 
-  rpc PlaceMarketOrder(MsgPlaceMarketOrder) returns (MsgPlaceMarketOrderResponse);
+  rpc PlaceMarketOrder(MsgPlaceMarketOrder)
+      returns (MsgPlaceMarketOrderResponse);
 
-  rpc LiquidatePositions(MsgLiquidatePositions) returns (MsgLiquidatePositionsResponse);
+  rpc LiquidatePositions(MsgLiquidatePositions)
+      returns (MsgLiquidatePositionsResponse);
 }
 
 message MsgUpdateParams {
@@ -165,9 +168,7 @@ message MsgLiquidatePositions {
   option (cosmos.msg.v1.signer) = "liquidator";
   option (amino.name) = "clob/MsgLiquidatePositions";
   string liquidator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated LiquidatePosition positions = 2 [
-    (gogoproto.nullable) = false
-  ];
+  repeated LiquidatePosition positions = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgLiquidatePositionsResponse {

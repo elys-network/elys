@@ -4,7 +4,7 @@ package elys.parameter;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/parameter/types";
+option go_package = "github.com/elys-network/elys/v6/x/parameter/types";
 
 message LegacyParams {
   string min_commission_rate = 1 [
@@ -51,4 +51,6 @@ message Params {
     (gogoproto.nullable) = false
   ];
   string taker_fee_collection_address = 7;
+  bool enable_taker_fee_swap = 8;
+  uint64 taker_fee_collection_interval = 9;
 }

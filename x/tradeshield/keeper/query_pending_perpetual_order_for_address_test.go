@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/sample"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,18 +36,14 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 			OwnerAddress:       ownerAddress,
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			LegacyTriggerPriceV1: types.LegacyTriggerPriceV1{
-				Rate: math.LegacyZeroDec(),
-			},
-			TriggerPrice:    math.LegacyNewDec(1),
-			Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-			TradingAsset:    "ATOM",
-			Leverage:        math.LegacyNewDec(int64(2)),
-			TakeProfitPrice: math.LegacyNewDec(10),
-			PositionId:      positionId,
-			Status:          types.Status_PENDING,
-			StopLossPrice:   math.LegacyNewDec(1),
-			PoolId:          1,
+			TriggerPrice:       math.LegacyNewDec(1),
+			Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+			Leverage:           math.LegacyNewDec(int64(2)),
+			TakeProfitPrice:    math.LegacyNewDec(10),
+			PositionId:         positionId,
+			Status:             types.Status_PENDING,
+			StopLossPrice:      math.LegacyNewDec(1),
+			PoolId:             1,
 		},
 		LiquidationPrice:   math.LegacyZeroDec(),
 		FundingRate:        math.LegacyZeroDec(),
@@ -61,16 +57,12 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
 			TriggerPrice:       math.LegacyNewDec(2),
-			LegacyTriggerPriceV1: types.LegacyTriggerPriceV1{
-				Rate: math.LegacyZeroDec(),
-			},
-			Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-			TradingAsset:    "uatom",
-			Leverage:        math.LegacyNewDec(int64(2)),
-			TakeProfitPrice: math.LegacyNewDec(10),
-			PositionId:      positionId,
-			Status:          types.Status_EXECUTED,
-			StopLossPrice:   math.LegacyNewDec(1),
+			Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+			Leverage:           math.LegacyNewDec(int64(2)),
+			TakeProfitPrice:    math.LegacyNewDec(10),
+			PositionId:         positionId,
+			Status:             types.Status_EXECUTED,
+			StopLossPrice:      math.LegacyNewDec(1),
 		},
 		LiquidationPrice:   math.LegacyZeroDec(),
 		FundingRate:        math.LegacyZeroDec(),

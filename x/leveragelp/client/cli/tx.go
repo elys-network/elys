@@ -6,8 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -26,6 +25,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdWhitelist())
 	cmd.AddCommand(CmdDewhitelist())
 	cmd.AddCommand(CmdClaimRewards())
+	cmd.AddCommand(CmdClaimAllUserRewards())
 	cmd.AddCommand(CmdUpdateStopLoss())
 	cmd.AddCommand(CmdClosePositions())
 	// this line is used by starport scaffolding # 1

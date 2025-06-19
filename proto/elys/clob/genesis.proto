@@ -12,7 +12,7 @@ import "elys/clob/adl.proto";
 import "elys/clob/price.proto";
 import "elys/clob/funding_rate.proto";
 
-option go_package = "github.com/elys-network/elys/x/clob/types";
+option go_package = "github.com/elys-network/elys/v6/x/clob/types";
 
 // GenesisState defines the clob module's genesis state.
 message GenesisState {

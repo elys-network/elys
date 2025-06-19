@@ -9,19 +9,22 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // BeginBlocker of amm module
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
+	params := k.parameterKeeper.GetParams(ctx)
 	// convert balances in taker address to elys and burn them
-	k.ProcessTakerFee(ctx)
+	if ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 && params.EnableTakerFeeSwap {
+		k.ProcessTakerFee(ctx)
+	}
 	return nil
 }
 

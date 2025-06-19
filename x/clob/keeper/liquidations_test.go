@@ -6,7 +6,7 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 	"github.com/stretchr/testify/require"
 )
 

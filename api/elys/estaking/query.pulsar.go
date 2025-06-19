@@ -3258,6 +3258,958 @@ func (x *fastReflection_QueryInvariantResponse) ProtoMethods() *protoiface.Metho
 	}
 }
 
+var (
+	md_QueryEdenBBurnAmountRequest            protoreflect.MessageDescriptor
+	fd_QueryEdenBBurnAmountRequest_address    protoreflect.FieldDescriptor
+	fd_QueryEdenBBurnAmountRequest_token_type protoreflect.FieldDescriptor
+	fd_QueryEdenBBurnAmountRequest_amount     protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_estaking_query_proto_init()
+	md_QueryEdenBBurnAmountRequest = File_elys_estaking_query_proto.Messages().ByName("QueryEdenBBurnAmountRequest")
+	fd_QueryEdenBBurnAmountRequest_address = md_QueryEdenBBurnAmountRequest.Fields().ByName("address")
+	fd_QueryEdenBBurnAmountRequest_token_type = md_QueryEdenBBurnAmountRequest.Fields().ByName("token_type")
+	fd_QueryEdenBBurnAmountRequest_amount = md_QueryEdenBBurnAmountRequest.Fields().ByName("amount")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryEdenBBurnAmountRequest)(nil)
+
+type fastReflection_QueryEdenBBurnAmountRequest QueryEdenBBurnAmountRequest
+
+func (x *QueryEdenBBurnAmountRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEdenBBurnAmountRequest)(x)
+}
+
+func (x *QueryEdenBBurnAmountRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_estaking_query_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryEdenBBurnAmountRequest_messageType fastReflection_QueryEdenBBurnAmountRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEdenBBurnAmountRequest_messageType{}
+
+type fastReflection_QueryEdenBBurnAmountRequest_messageType struct{}
+
+func (x fastReflection_QueryEdenBBurnAmountRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEdenBBurnAmountRequest)(nil)
+}
+func (x fastReflection_QueryEdenBBurnAmountRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEdenBBurnAmountRequest)
+}
+func (x fastReflection_QueryEdenBBurnAmountRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEdenBBurnAmountRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEdenBBurnAmountRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEdenBBurnAmountRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEdenBBurnAmountRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEdenBBurnAmountRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_QueryEdenBBurnAmountRequest_address, value) {
+			return
+		}
+	}
+	if x.TokenType != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.TokenType))
+		if !f(fd_QueryEdenBBurnAmountRequest_token_type, value) {
+			return
+		}
+	}
+	if x.Amount != "" {
+		value := protoreflect.ValueOfString(x.Amount)
+		if !f(fd_QueryEdenBBurnAmountRequest_amount, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		return x.Address != ""
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		return x.TokenType != 0
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		return x.Amount != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		x.Address = ""
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		x.TokenType = 0
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		x.Amount = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		value := x.TokenType
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		value := x.Amount
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		x.Address = value.Interface().(string)
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		x.TokenType = (TokenType)(value.Enum())
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		x.Amount = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		panic(fmt.Errorf("field address of message elys.estaking.QueryEdenBBurnAmountRequest is not mutable"))
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		panic(fmt.Errorf("field token_type of message elys.estaking.QueryEdenBBurnAmountRequest is not mutable"))
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		panic(fmt.Errorf("field amount of message elys.estaking.QueryEdenBBurnAmountRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountRequest.address":
+		return protoreflect.ValueOfString("")
+	case "elys.estaking.QueryEdenBBurnAmountRequest.token_type":
+		return protoreflect.ValueOfEnum(0)
+	case "elys.estaking.QueryEdenBBurnAmountRequest.amount":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountRequest"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.estaking.QueryEdenBBurnAmountRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryEdenBBurnAmountRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.TokenType != 0 {
+			n += 1 + runtime.Sov(uint64(x.TokenType))
+		}
+		l = len(x.Amount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Amount) > 0 {
+			i -= len(x.Amount)
+			copy(dAtA[i:], x.Amount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Amount)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if x.TokenType != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TokenType))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEdenBBurnAmountRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEdenBBurnAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenType", wireType)
+				}
+				x.TokenType = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TokenType |= TokenType(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Amount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryEdenBBurnAmountResponse                   protoreflect.MessageDescriptor
+	fd_QueryEdenBBurnAmountResponse_burn_edenb_amount protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_estaking_query_proto_init()
+	md_QueryEdenBBurnAmountResponse = File_elys_estaking_query_proto.Messages().ByName("QueryEdenBBurnAmountResponse")
+	fd_QueryEdenBBurnAmountResponse_burn_edenb_amount = md_QueryEdenBBurnAmountResponse.Fields().ByName("burn_edenb_amount")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryEdenBBurnAmountResponse)(nil)
+
+type fastReflection_QueryEdenBBurnAmountResponse QueryEdenBBurnAmountResponse
+
+func (x *QueryEdenBBurnAmountResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEdenBBurnAmountResponse)(x)
+}
+
+func (x *QueryEdenBBurnAmountResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_estaking_query_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryEdenBBurnAmountResponse_messageType fastReflection_QueryEdenBBurnAmountResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEdenBBurnAmountResponse_messageType{}
+
+type fastReflection_QueryEdenBBurnAmountResponse_messageType struct{}
+
+func (x fastReflection_QueryEdenBBurnAmountResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEdenBBurnAmountResponse)(nil)
+}
+func (x fastReflection_QueryEdenBBurnAmountResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEdenBBurnAmountResponse)
+}
+func (x fastReflection_QueryEdenBBurnAmountResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEdenBBurnAmountResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEdenBBurnAmountResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEdenBBurnAmountResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEdenBBurnAmountResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEdenBBurnAmountResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.BurnEdenbAmount != "" {
+		value := protoreflect.ValueOfString(x.BurnEdenbAmount)
+		if !f(fd_QueryEdenBBurnAmountResponse_burn_edenb_amount, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		return x.BurnEdenbAmount != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		x.BurnEdenbAmount = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		value := x.BurnEdenbAmount
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		x.BurnEdenbAmount = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		panic(fmt.Errorf("field burn_edenb_amount of message elys.estaking.QueryEdenBBurnAmountResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.estaking.QueryEdenBBurnAmountResponse.burn_edenb_amount":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.estaking.QueryEdenBBurnAmountResponse"))
+		}
+		panic(fmt.Errorf("message elys.estaking.QueryEdenBBurnAmountResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.estaking.QueryEdenBBurnAmountResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryEdenBBurnAmountResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.BurnEdenbAmount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.BurnEdenbAmount) > 0 {
+			i -= len(x.BurnEdenbAmount)
+			copy(dAtA[i:], x.BurnEdenbAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BurnEdenbAmount)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEdenBBurnAmountResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEdenBBurnAmountResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEdenBBurnAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BurnEdenbAmount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BurnEdenbAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -3270,6 +4222,52 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+type TokenType int32
+
+const (
+	TokenType_TOKEN_TYPE_ELYS TokenType = 0
+	TokenType_TOKEN_TYPE_EDEN TokenType = 1
+)
+
+// Enum value maps for TokenType.
+var (
+	TokenType_name = map[int32]string{
+		0: "TOKEN_TYPE_ELYS",
+		1: "TOKEN_TYPE_EDEN",
+	}
+	TokenType_value = map[string]int32{
+		"TOKEN_TYPE_ELYS": 0,
+		"TOKEN_TYPE_EDEN": 1,
+	}
+)
+
+func (x TokenType) Enum() *TokenType {
+	p := new(TokenType)
+	*p = x
+	return p
+}
+
+func (x TokenType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TokenType) Descriptor() protoreflect.EnumDescriptor {
+	return file_elys_estaking_query_proto_enumTypes[0].Descriptor()
+}
+
+func (TokenType) Type() protoreflect.EnumType {
+	return &file_elys_estaking_query_proto_enumTypes[0]
+}
+
+func (x TokenType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TokenType.Descriptor instead.
+func (TokenType) EnumDescriptor() ([]byte, []int) {
+	return file_elys_estaking_query_proto_rawDescGZIP(), []int{0}
+}
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
@@ -3527,6 +4525,92 @@ func (x *QueryInvariantResponse) GetBondedValidatorTokensSum() string {
 	return ""
 }
 
+type QueryEdenBBurnAmountRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address   string    `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	TokenType TokenType `protobuf:"varint,2,opt,name=token_type,json=tokenType,proto3,enum=elys.estaking.TokenType" json:"token_type,omitempty"`
+	Amount    string    `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (x *QueryEdenBBurnAmountRequest) Reset() {
+	*x = QueryEdenBBurnAmountRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_estaking_query_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryEdenBBurnAmountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryEdenBBurnAmountRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryEdenBBurnAmountRequest.ProtoReflect.Descriptor instead.
+func (*QueryEdenBBurnAmountRequest) Descriptor() ([]byte, []int) {
+	return file_elys_estaking_query_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *QueryEdenBBurnAmountRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *QueryEdenBBurnAmountRequest) GetTokenType() TokenType {
+	if x != nil {
+		return x.TokenType
+	}
+	return TokenType_TOKEN_TYPE_ELYS
+}
+
+func (x *QueryEdenBBurnAmountRequest) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+type QueryEdenBBurnAmountResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	BurnEdenbAmount string `protobuf:"bytes,1,opt,name=burn_edenb_amount,json=burnEdenbAmount,proto3" json:"burn_edenb_amount,omitempty"`
+}
+
+func (x *QueryEdenBBurnAmountResponse) Reset() {
+	*x = QueryEdenBBurnAmountResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_estaking_query_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryEdenBBurnAmountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryEdenBBurnAmountResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryEdenBBurnAmountResponse.ProtoReflect.Descriptor instead.
+func (*QueryEdenBBurnAmountResponse) Descriptor() ([]byte, []int) {
+	return file_elys_estaking_query_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *QueryEdenBBurnAmountResponse) GetBurnEdenbAmount() string {
+	if x != nil {
+		return x.BurnEdenbAmount
+	}
+	return ""
+}
+
 var File_elys_estaking_query_proto protoreflect.FileDescriptor
 
 var file_elys_estaking_query_proto_rawDesc = []byte{
@@ -3591,44 +4675,77 @@ var file_elys_estaking_query_proto_rawDesc = []byte{
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
 	0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74,
 	0x52, 0x18, 0x62, 0x6f, 0x6e, 0x64, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f,
-	0x72, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x53, 0x75, 0x6d, 0x32, 0x9a, 0x03, 0x0a, 0x05, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x12, 0x7b, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x21,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x24, 0x12, 0x22, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x12, 0x89, 0x01, 0x0a, 0x07, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x22, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2f, 0x72, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x12, 0x87, 0x01,
-	0x0a, 0x09, 0x49, 0x6e, 0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x12, 0x24, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x49, 0x6e, 0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27,
-	0x12, 0x25, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2f, 0x69, 0x6e,
-	0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x42, 0xa4, 0x01, 0x0a, 0x11, 0x63, 0x6f, 0x6d, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x42, 0x0a, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2e, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0xa2, 0x02, 0x03, 0x45, 0x45,
-	0x58, 0xaa, 0x02, 0x0d, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0xca, 0x02, 0x0d, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0xe2, 0x02, 0x19, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0e,
-	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x53, 0x75, 0x6d, 0x22, 0xb5, 0x01, 0x0a, 0x1b, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x45, 0x64, 0x65, 0x6e, 0x42, 0x42, 0x75, 0x72, 0x6e, 0x41, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x12, 0x37, 0x0a, 0x0a, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x74, 0x79,
+	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x52, 0x09, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x43, 0x0a,
+	0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x22, 0x77, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x64, 0x65, 0x6e, 0x42,
+	0x42, 0x75, 0x72, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x57, 0x0a, 0x11, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x62,
+	0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0f, 0x62, 0x75, 0x72, 0x6e,
+	0x45, 0x64, 0x65, 0x6e, 0x62, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x2a, 0x35, 0x0a, 0x09, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x13, 0x0a, 0x0f, 0x54, 0x4f, 0x4b, 0x45,
+	0x4e, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x45, 0x4c, 0x59, 0x53, 0x10, 0x00, 0x12, 0x13, 0x0a,
+	0x0f, 0x54, 0x4f, 0x4b, 0x45, 0x4e, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x45, 0x44, 0x45, 0x4e,
+	0x10, 0x01, 0x32, 0xbe, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x7b, 0x0a, 0x06,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73,
+	0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2a, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x24, 0x12, 0x22, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69,
+	0x6e, 0x67, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x89, 0x01, 0x0a, 0x07, 0x52, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74,
+	0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b,
+	0x69, 0x6e, 0x67, 0x2f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x7d, 0x12, 0x87, 0x01, 0x0a, 0x09, 0x49, 0x6e, 0x76, 0x61, 0x72, 0x69,
+	0x61, 0x6e, 0x74, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b,
+	0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x76, 0x61, 0x72, 0x69, 0x61,
+	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49,
+	0x6e, 0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x65, 0x73, 0x74,
+	0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2f, 0x69, 0x6e, 0x76, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x12,
+	0xa1, 0x01, 0x0a, 0x0f, 0x45, 0x64, 0x65, 0x6e, 0x42, 0x42, 0x75, 0x72, 0x6e, 0x41, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b,
+	0x69, 0x6e, 0x67, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x64, 0x65, 0x6e, 0x42, 0x42, 0x75,
+	0x72, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x64, 0x65, 0x6e, 0x42, 0x42, 0x75, 0x72, 0x6e, 0x41, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
+	0x67, 0x2f, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x2d, 0x62, 0x75, 0x72, 0x6e, 0x2d, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x42, 0xa7, 0x01, 0x0a, 0x11, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0xa2, 0x02, 0x03, 0x45, 0x45, 0x58,
+	0xaa, 0x02, 0x0d, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67,
+	0xca, 0x02, 0x0d, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67,
+	0xe2, 0x02, 0x19, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67,
+	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0e, 0x45,
+	0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x45, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3643,34 +4760,41 @@ func file_elys_estaking_query_proto_rawDescGZIP() []byte {
 	return file_elys_estaking_query_proto_rawDescData
 }
 
-var file_elys_estaking_query_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_elys_estaking_query_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_elys_estaking_query_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_elys_estaking_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),        // 0: elys.estaking.QueryParamsRequest
-	(*QueryParamsResponse)(nil),       // 1: elys.estaking.QueryParamsResponse
-	(*QueryRewardsRequest)(nil),       // 2: elys.estaking.QueryRewardsRequest
-	(*DelegationDelegatorReward)(nil), // 3: elys.estaking.DelegationDelegatorReward
-	(*QueryRewardsResponse)(nil),      // 4: elys.estaking.QueryRewardsResponse
-	(*QueryInvariantRequest)(nil),     // 5: elys.estaking.QueryInvariantRequest
-	(*QueryInvariantResponse)(nil),    // 6: elys.estaking.QueryInvariantResponse
-	(*Params)(nil),                    // 7: elys.estaking.Params
-	(*v1beta1.Coin)(nil),              // 8: cosmos.base.v1beta1.Coin
+	(TokenType)(0),                       // 0: elys.estaking.TokenType
+	(*QueryParamsRequest)(nil),           // 1: elys.estaking.QueryParamsRequest
+	(*QueryParamsResponse)(nil),          // 2: elys.estaking.QueryParamsResponse
+	(*QueryRewardsRequest)(nil),          // 3: elys.estaking.QueryRewardsRequest
+	(*DelegationDelegatorReward)(nil),    // 4: elys.estaking.DelegationDelegatorReward
+	(*QueryRewardsResponse)(nil),         // 5: elys.estaking.QueryRewardsResponse
+	(*QueryInvariantRequest)(nil),        // 6: elys.estaking.QueryInvariantRequest
+	(*QueryInvariantResponse)(nil),       // 7: elys.estaking.QueryInvariantResponse
+	(*QueryEdenBBurnAmountRequest)(nil),  // 8: elys.estaking.QueryEdenBBurnAmountRequest
+	(*QueryEdenBBurnAmountResponse)(nil), // 9: elys.estaking.QueryEdenBBurnAmountResponse
+	(*Params)(nil),                       // 10: elys.estaking.Params
+	(*v1beta1.Coin)(nil),                 // 11: cosmos.base.v1beta1.Coin
 }
 var file_elys_estaking_query_proto_depIdxs = []int32{
-	7, // 0: elys.estaking.QueryParamsResponse.params:type_name -> elys.estaking.Params
-	8, // 1: elys.estaking.DelegationDelegatorReward.reward:type_name -> cosmos.base.v1beta1.Coin
-	3, // 2: elys.estaking.QueryRewardsResponse.rewards:type_name -> elys.estaking.DelegationDelegatorReward
-	8, // 3: elys.estaking.QueryRewardsResponse.total:type_name -> cosmos.base.v1beta1.Coin
-	0, // 4: elys.estaking.Query.Params:input_type -> elys.estaking.QueryParamsRequest
-	2, // 5: elys.estaking.Query.Rewards:input_type -> elys.estaking.QueryRewardsRequest
-	5, // 6: elys.estaking.Query.Invariant:input_type -> elys.estaking.QueryInvariantRequest
-	1, // 7: elys.estaking.Query.Params:output_type -> elys.estaking.QueryParamsResponse
-	4, // 8: elys.estaking.Query.Rewards:output_type -> elys.estaking.QueryRewardsResponse
-	6, // 9: elys.estaking.Query.Invariant:output_type -> elys.estaking.QueryInvariantResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	10, // 0: elys.estaking.QueryParamsResponse.params:type_name -> elys.estaking.Params
+	11, // 1: elys.estaking.DelegationDelegatorReward.reward:type_name -> cosmos.base.v1beta1.Coin
+	4,  // 2: elys.estaking.QueryRewardsResponse.rewards:type_name -> elys.estaking.DelegationDelegatorReward
+	11, // 3: elys.estaking.QueryRewardsResponse.total:type_name -> cosmos.base.v1beta1.Coin
+	0,  // 4: elys.estaking.QueryEdenBBurnAmountRequest.token_type:type_name -> elys.estaking.TokenType
+	1,  // 5: elys.estaking.Query.Params:input_type -> elys.estaking.QueryParamsRequest
+	3,  // 6: elys.estaking.Query.Rewards:input_type -> elys.estaking.QueryRewardsRequest
+	6,  // 7: elys.estaking.Query.Invariant:input_type -> elys.estaking.QueryInvariantRequest
+	8,  // 8: elys.estaking.Query.EdenBBurnAmount:input_type -> elys.estaking.QueryEdenBBurnAmountRequest
+	2,  // 9: elys.estaking.Query.Params:output_type -> elys.estaking.QueryParamsResponse
+	5,  // 10: elys.estaking.Query.Rewards:output_type -> elys.estaking.QueryRewardsResponse
+	7,  // 11: elys.estaking.Query.Invariant:output_type -> elys.estaking.QueryInvariantResponse
+	9,  // 12: elys.estaking.Query.EdenBBurnAmount:output_type -> elys.estaking.QueryEdenBBurnAmountResponse
+	9,  // [9:13] is the sub-list for method output_type
+	5,  // [5:9] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_elys_estaking_query_proto_init() }
@@ -3764,19 +4888,44 @@ func file_elys_estaking_query_proto_init() {
 				return nil
 			}
 		}
+		file_elys_estaking_query_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryEdenBBurnAmountRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_estaking_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryEdenBBurnAmountResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_estaking_query_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   7,
+			NumEnums:      1,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_elys_estaking_query_proto_goTypes,
 		DependencyIndexes: file_elys_estaking_query_proto_depIdxs,
+		EnumInfos:         file_elys_estaking_query_proto_enumTypes,
 		MessageInfos:      file_elys_estaking_query_proto_msgTypes,
 	}.Build()
 	File_elys_estaking_query_proto = out.File

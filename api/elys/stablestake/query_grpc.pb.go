@@ -30,6 +30,7 @@ type QueryClient interface {
 	AllAmmPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error)
 	Debt(ctx context.Context, in *QueryDebtRequest, opts ...grpc.CallOption) (*QueryDebtResponse, error)
 	GetInterest(ctx context.Context, in *QueryGetInterestRequest, opts ...grpc.CallOption) (*QueryGetInterestResponse, error)
+	MaxBondableAmount(ctx context.Context, in *MaxBondableAmountRequest, opts ...grpc.CallOption) (*MaxBondableAmountResponse, error)
 }
 
 type queryClient struct {
@@ -112,6 +113,15 @@ func (c *queryClient) GetInterest(ctx context.Context, in *QueryGetInterestReque
 	return out, nil
 }
 
+func (c *queryClient) MaxBondableAmount(ctx context.Context, in *MaxBondableAmountRequest, opts ...grpc.CallOption) (*MaxBondableAmountResponse, error) {
+	out := new(MaxBondableAmountResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/MaxBondableAmount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -128,6 +138,7 @@ type QueryServer interface {
 	AllAmmPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error)
 	Debt(context.Context, *QueryDebtRequest) (*QueryDebtResponse, error)
 	GetInterest(context.Context, *QueryGetInterestRequest) (*QueryGetInterestResponse, error)
+	MaxBondableAmount(context.Context, *MaxBondableAmountRequest) (*MaxBondableAmountResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -158,6 +169,9 @@ func (UnimplementedQueryServer) Debt(context.Context, *QueryDebtRequest) (*Query
 }
 func (UnimplementedQueryServer) GetInterest(context.Context, *QueryGetInterestRequest) (*QueryGetInterestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInterest not implemented")
+}
+func (UnimplementedQueryServer) MaxBondableAmount(context.Context, *MaxBondableAmountRequest) (*MaxBondableAmountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MaxBondableAmount not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -316,6 +330,24 @@ func _Query_GetInterest_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_MaxBondableAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MaxBondableAmountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MaxBondableAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/MaxBondableAmount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MaxBondableAmount(ctx, req.(*MaxBondableAmountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -354,6 +386,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetInterest",
 			Handler:    _Query_GetInterest_Handler,
+		},
+		{
+			MethodName: "MaxBondableAmount",
+			Handler:    _Query_MaxBondableAmount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

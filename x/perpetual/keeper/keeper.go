@@ -1,20 +1,18 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
-
-	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v6/x/tier/keeper"
 )
 
 type (
@@ -76,7 +74,7 @@ func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
 	return k.tierKeeper
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage osmomath.BigDec, baseCurrency string) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string) error {
 	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
@@ -89,8 +87,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	// eta = leverage - 1
-	eta := proxyLeverage.Sub(osmomath.OneBigDec())
-	liabilitiesInCollateral := osmomath.BigDecFromSDKInt(collateralAmount).Mul(eta).Dec().TruncateInt()
+	eta := proxyLeverage.Sub(math.LegacyOneDec())
+	liabilitiesInCollateral := eta.MulInt(collateralAmount).TruncateInt()
 	liabilities := liabilitiesInCollateral
 	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
 	// For LONG, Liability has to be in base currency, CollateralAsset can be trading asset or base currency
@@ -99,7 +97,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
 			// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool, mtp.Address)
+			liabilities, _, _, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
@@ -111,7 +109,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool, mtp.Address)
+			liabilities, _, _, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
@@ -122,23 +120,10 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price: LONG, profit custody = liabilities * take profit price: SHORT)
-	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, *mtp)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}
-
-	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price LONG, take profit custody / current price SHORT)
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
-	if err != nil {
-		return err
-	}
-
-	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
-	if err != nil {
-		return err
-	}
-	mtp.MtpHealth = h.Dec()
 
 	collateralCoins := sdk.NewCoins(collateralCoin)
 	err = k.SendToAmmPool(ctx, senderAddress, ammPool, collateralCoins)
@@ -158,18 +143,6 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	err = pool.UpdateCollateral(mtp.CollateralAsset, mtp.Collateral, true, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	// All take profit liability has to be in liabilities asset
-	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	// All take profit custody has to be in custody asset
-	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -215,65 +188,66 @@ func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receive
 	return nil
 }
 
-func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (osmomath.BigDec, error) {
+func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (math.LegacyDec, error) {
 	poolAssets := pool.GetPoolAssets(position)
-	targetBorrowInterestRate := osmomath.OneBigDec()
+	targetBorrowInterestRate := math.LegacyOneDec()
 	for _, asset := range *poolAssets {
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
-			return osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), err
 		}
 
-		balance := osmomath.BigDecFromSDKInt(ammBalance.Sub(asset.Custody))
-		liabilities := asset.GetBigDecLiabilities()
+		balance := ammBalance.Sub(asset.Custody)
+		liabilities := asset.Liabilities
 
 		// Ensure balance is not zero to avoid division by zero
 		if balance.IsZero() {
-			return osmomath.ZeroBigDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 		if balance.Add(liabilities).IsZero() {
-			return osmomath.ZeroBigDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 
-		mul := balance.Add(liabilities).Quo(balance)
+		mul := balance.Add(liabilities).ToLegacyDec().Quo(balance.ToLegacyDec())
 		targetBorrowInterestRate = targetBorrowInterestRate.Mul(mul)
 	}
 	return targetBorrowInterestRate, nil
 }
 
-func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (osmomath.BigDec, error) {
+func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (math.LegacyDec, error) {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return osmomath.ZeroBigDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
+		return math.LegacyZeroDec(), errors.New("amm pool not found")
 	}
 
-	borrowInterestRateMax := k.GetBigDecBorrowInterestRateMax(ctx)
-	borrowInterestRateMin := k.GetBigDecBorrowInterestRateMin(ctx)
-	borrowInterestRateIncrease := k.GetBigDecBorrowInterestRateIncrease(ctx)
-	borrowInterestRateDecrease := k.GetBigDecBorrowInterestRateDecrease(ctx)
-	healthGainFactor := k.GetBigDecHealthGainFactor(ctx)
+	params := k.GetParams(ctx)
+	borrowInterestRateMax := params.BorrowInterestRateMax
+	borrowInterestRateMin := params.BorrowInterestRateMin
+	borrowInterestRateIncrease := params.BorrowInterestRateIncrease
+	borrowInterestRateDecrease := params.BorrowInterestRateDecrease
+	healthGainFactor := params.HealthGainFactor
 
-	prevBorrowInterestRate := pool.GetBigDecBorrowInterestRate()
+	prevBorrowInterestRate := pool.BorrowInterestRate
 
 	targetBorrowInterestRate := healthGainFactor
 	targetBorrowInterestRateLong, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_LONG)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRateShort, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_SHORT)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
 
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate
-	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(osmomath.NewBigDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
+	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
 		borrowInterestRate = targetBorrowInterestRate
 	} else if borrowInterestRateChange.GT(borrowInterestRateIncrease) {
 		borrowInterestRate = prevBorrowInterestRate.Add(borrowInterestRateIncrease)
-	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(osmomath.NewBigDec(-1))) {
+	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) {
 		borrowInterestRate = prevBorrowInterestRate.Sub(borrowInterestRateDecrease)
 	}
 
@@ -292,7 +266,7 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 
 func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAsset string, ammPool *ammtypes.Pool, pool types.Pool) (math.Int, error) {
 	params := k.GetParams(ctx)
-	insuranceAmount := osmomath.BigDecFromSDKInt(amount).Mul(params.GetBigDecBorrowInterestPaymentFundPercentage()).Dec().TruncateInt()
+	insuranceAmount := params.BorrowInterestPaymentFundPercentage.MulInt(amount).TruncateInt()
 
 	if !insuranceAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, insuranceAmount))

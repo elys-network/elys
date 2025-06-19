@@ -8,7 +8,7 @@ import "elys/amm/swap_route.proto";
 import "elys/amm/pool_params.proto";
 import "elys/amm/pool_asset.proto";
 
-option go_package = "github.com/elys-network/elys/x/amm/types";
+option go_package = "github.com/elys-network/elys/v6/x/amm/types";
 
 message ProposalCreateBalancerPool {
   string title = 1;

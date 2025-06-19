@@ -8,23 +8,22 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/stablestake/types"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
-type (
-	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeService       store.KVStoreService
-		authority          string
-		bk                 types.BankKeeper
-		commitmentKeeper   *commitmentkeeper.Keeper
-		assetProfileKeeper types.AssetProfileKeeper
-		oracleKeeper       types.OracleKeeper
-		ammKeeper          types.AmmKeeper
-		hooks              types.StableStakeHooks
-	}
-)
+type Keeper struct {
+	cdc                codec.BinaryCodec
+	storeService       store.KVStoreService
+	authority          string
+	bk                 types.BankKeeper
+	commitmentKeeper   *commitmentkeeper.Keeper
+	assetProfileKeeper types.AssetProfileKeeper
+	oracleKeeper       types.OracleKeeper
+	ammKeeper          types.AmmKeeper
+	leverageLpKeeper   types.LeverageLpKeeper
+	hooks              types.StableStakeHooks
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
@@ -52,6 +51,10 @@ func NewKeeper(
 		oracleKeeper:       oracleKeeper,
 		ammKeeper:          ammKeeper,
 	}
+}
+
+func (k *Keeper) SetLeverageLpKeeper(v types.LeverageLpKeeper) {
+	k.leverageLpKeeper = v
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

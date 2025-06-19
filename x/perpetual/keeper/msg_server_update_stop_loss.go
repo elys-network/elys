@@ -7,8 +7,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
@@ -16,7 +15,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 
 	// Load existing mtp
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +47,12 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	if mtp.Position == types.Position_LONG {
-		if !msg.Price.IsZero() && osmomath.BigDecFromDec(msg.Price).GTE(tradingAssetPrice) {
+		if !msg.Price.IsZero() && msg.Price.GTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.Price.String(), tradingAssetPrice.String())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
-		if !msg.Price.IsZero() && osmomath.BigDecFromDec(msg.Price).LTE(tradingAssetPrice) {
+		if !msg.Price.IsZero() && msg.Price.LTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.Price.String(), tradingAssetPrice.String())
 		}
 	}

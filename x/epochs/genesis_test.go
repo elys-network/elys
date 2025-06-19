@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/epochs"
-	"github.com/elys-network/elys/x/epochs/types"
+	"github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/epochs"
+	"github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 func TestEpochsExportGenesis(t *testing.T) {
@@ -66,7 +66,7 @@ func TestEpochsExportGenesis(t *testing.T) {
 	epochs.InitGenesis(ctx, *app.EpochsKeeper, genesisState)
 
 	genesis := epochs.ExportGenesis(ctx, *app.EpochsKeeper)
-	require.Len(t, genesis.Epochs, 5)
+	require.Len(t, genesis.Epochs, 6)
 
 	require.Equal(t, genesis.Epochs[0].Identifier, "band_epoch")
 	require.Equal(t, genesis.Epochs[1].Identifier, types.DayEpochID)
@@ -76,13 +76,13 @@ func TestEpochsExportGenesis(t *testing.T) {
 	require.Equal(t, genesis.Epochs[1].CurrentEpochStartHeight, chainStartHeight)
 	require.Equal(t, genesis.Epochs[1].CurrentEpochStartTime, chainStartTime)
 	require.Equal(t, genesis.Epochs[1].EpochCountingStarted, false)
-	require.Equal(t, genesis.Epochs[2].Identifier, types.FiveMinutesEpochID)
-	require.Equal(t, genesis.Epochs[2].StartTime, chainStartTime)
-	require.Equal(t, genesis.Epochs[2].Duration, time.Second*300)
-	require.Equal(t, genesis.Epochs[2].CurrentEpoch, int64(0))
-	require.Equal(t, genesis.Epochs[2].CurrentEpochStartHeight, chainStartHeight)
-	require.Equal(t, genesis.Epochs[2].CurrentEpochStartTime, chainStartTime)
-	require.Equal(t, genesis.Epochs[2].EpochCountingStarted, false)
+	require.Equal(t, genesis.Epochs[3].Identifier, types.FiveMinutesEpochID)
+	require.Equal(t, genesis.Epochs[3].StartTime, chainStartTime)
+	require.Equal(t, genesis.Epochs[3].Duration, time.Second*300)
+	require.Equal(t, genesis.Epochs[3].CurrentEpoch, int64(0))
+	require.Equal(t, genesis.Epochs[3].CurrentEpochStartHeight, chainStartHeight)
+	require.Equal(t, genesis.Epochs[3].CurrentEpochStartTime, chainStartTime)
+	require.Equal(t, genesis.Epochs[3].EpochCountingStarted, false)
 }
 
 func TestEpochsInitGenesis(t *testing.T) {

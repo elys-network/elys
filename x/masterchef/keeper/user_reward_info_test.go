@@ -5,7 +5,7 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestUserRewardInfo() {

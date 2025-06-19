@@ -2,14 +2,14 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"strings"
 
-	"github.com/elys-network/elys/utils"
+	"github.com/elys-network/elys/v6/utils"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/tier/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -26,7 +26,7 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 	return &types.QueryGetConsolidatedPriceResponse{
 		AmmPrice:       amm.Dec(),
 		OraclePrice:    oracle.Dec(),
-		OraclePriceDec: oracleDec.Dec(),
+		OraclePriceDec: oracleDec,
 	}, nil
 }
 
@@ -72,11 +72,11 @@ func (k Keeper) GetOraclePrices(goCtx context.Context, req *types.QueryGetOracle
 	for _, denom := range req.Denoms {
 		tokenPriceOracle, found := k.oracleKeeper.GetAssetPrice(ctx, denom)
 		if !found {
-			tokenPriceOracle = osmomath.ZeroBigDec()
+			tokenPriceOracle = math.LegacyZeroDec()
 		}
 		prices = append(prices, &types.OraclePrice{
 			Denom:       denom,
-			OraclePrice: tokenPriceOracle.Dec(),
+			OraclePrice: tokenPriceOracle,
 		})
 	}
 

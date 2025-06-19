@@ -3,10 +3,10 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 

@@ -7,9 +7,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // UpdatePoolParams updates the pool params
@@ -60,6 +60,10 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, newPoolParams t
 		}
 	}
 	pool.PoolParams = newPoolParams
+	err := pool.Validate()
+	if err != nil {
+		return 0, types.PoolParams{}, err
+	}
 	k.SetPool(ctx, pool)
 	return pool.PoolId, pool.PoolParams, nil
 }

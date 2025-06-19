@@ -1,15 +1,16 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"strconv"
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 

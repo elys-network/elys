@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) GetPerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId, marketId, perpetualId uint64) (types.PerpetualOwner, bool) {

@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"github.com/spf13/cobra"
 )
 

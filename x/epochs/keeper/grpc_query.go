@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	"cosmossdk.io/store/prefix"
@@ -10,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/elys-network/elys/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 var _ types.QueryServer = Keeper{}

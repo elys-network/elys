@@ -2,15 +2,16 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"errors"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/commitment/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	paramtypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.MsgStakeResponse, error) {

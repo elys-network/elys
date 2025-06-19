@@ -10,7 +10,7 @@ import "elys/stablestake/types.proto";
 import "elys/stablestake/debt.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/stablestake/types";
+option go_package = "github.com/elys-network/elys/v6/x/stablestake/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -52,6 +52,12 @@ service Query {
   rpc GetInterest(QueryGetInterestRequest) returns (QueryGetInterestResponse) {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/interest/{pool_id}/{block_height}";
+  }
+
+  rpc MaxBondableAmount(MaxBondableAmountRequest)
+      returns (MaxBondableAmountResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/max_bondable_amount/{pool_id}";
   }
 }
 
@@ -198,4 +204,14 @@ message QueryGetInterestRequest {
 
 message QueryGetInterestResponse {
   InterestBlock interest_block = 1 [ (gogoproto.nullable) = false ];
+}
+
+message MaxBondableAmountRequest { uint64 pool_id = 1; }
+
+message MaxBondableAmountResponse {
+  string amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

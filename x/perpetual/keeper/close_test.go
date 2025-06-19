@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/testutil/sample"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestClose() {
@@ -26,6 +26,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: sample.AccAddress(),
 					Id:      uint64(10),
 					Amount:  math.NewInt(12000),
+					PoolId:  1,
 				}
 			},
 			"mtp not found",
@@ -44,9 +45,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -57,9 +57,10 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(500),
+					PoolId:  ammPool.PoolId,
 				}
 			},
-			"unable to find base currency entry",
+			"asset info uusdc not found",
 			math.NewInt(0),
 		},
 		{
@@ -77,9 +78,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -90,6 +90,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(50000000000000), // same as with amount 399
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -110,9 +111,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -131,6 +131,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(107),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -151,9 +152,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -162,7 +162,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
-					Price:     tradingAssetPrice.MulInt64(4).Dec(),
+					Price:     tradingAssetPrice.MulInt64(4),
 					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -172,6 +172,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -192,9 +193,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.0"),
 				}
 
@@ -213,6 +213,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -233,9 +234,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
@@ -244,6 +244,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -262,7 +263,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -273,10 +273,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
-			math.NewInt(4503),
+			math.NewInt(4498),
 		},
 		// TODO: Edge case when custody becomes low, this is throwing error, instead it should be closed
 		// FIX this: error updating mtp health: unable to swap (EstimateSwapGivenOut) for out 1uatom and in denom uusdc: amount too low
@@ -297,7 +298,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 		// 			PoolId:          ammPool.PoolId,
 		// 			TradingAsset:    ptypes.ATOM,
 		// 			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-		// 			TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
+		// 			TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 		// 			StopLossPrice:   math.LegacyZeroDec(),
 		// 		}
 		// 		position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
@@ -331,7 +332,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -348,6 +348,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"not enough liquidity",

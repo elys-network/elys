@@ -1,14 +1,15 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 )
 
 type (

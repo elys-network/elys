@@ -3,8 +3,8 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	epochstypes "github.com/elys-network/elys/x/epochs/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	epochstypes "github.com/elys-network/elys/v6/x/epochs/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func DefaultParams() Params {

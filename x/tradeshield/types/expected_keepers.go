@@ -2,12 +2,11 @@ package types
 
 import (
 	"context"
-
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -43,11 +42,12 @@ type AmmKeeper interface {
 type PerpetualKeeper interface {
 	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)
 	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
-	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
+	GetMTP(ctx sdk.Context, poolId uint64, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
 	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)
 	GetParams(ctx sdk.Context) perpetualtypes.Params
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
 	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
-	GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (osmomath.BigDec, osmomath.BigDec, error)
+	GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (sdkmath.LegacyDec, osmomath.BigDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
+	GetTradingAsset(ctx sdk.Context, poolId uint64) (string, error)
 }

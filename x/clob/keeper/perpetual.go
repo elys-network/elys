@@ -6,7 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/clob/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) GetPerpetual(ctx sdk.Context, marketId, id uint64) (types.Perpetual, error) {
@@ -60,7 +60,7 @@ func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual,
 	if err != nil {
 		return math.Int{}, err
 	}
-	quoteDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+	_, quoteDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -87,7 +87,7 @@ func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAc
 		if err != nil {
 			return math.LegacyDec{}, err
 		}
-		quoteAssetDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+		_, quoteAssetDenomPrice, err := k.GetDenomPrice(ctx, market.QuoteDenom)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}

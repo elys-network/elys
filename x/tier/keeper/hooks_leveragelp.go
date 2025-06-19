@@ -2,8 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	leveragelptypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 )
 
 type LeverageLpHooks struct {

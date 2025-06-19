@@ -9,11 +9,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/clob/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/clob/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/stretchr/testify/suite"
 	"strconv"
 	"testing"
@@ -268,8 +268,8 @@ func (suite *KeeperTestSuite) CreateMarketWithFees(baseDenoms ...string) []types
 			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
 			TwapPricesWindow:        15,
 			LiquidationFeeShareRate: math.LegacyMustNewDecFromStr("0.01"),
-			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.01"),
-			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.025"),
+			MakerFeeRate:            math.LegacyMustNewDecFromStr("0.001"),
+			TakerFeeRate:            math.LegacyMustNewDecFromStr("0.002"),
 		}
 		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 		list = append(list, market)

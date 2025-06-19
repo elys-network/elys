@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -128,6 +128,37 @@ func TestMsgCancelSpotOrders_ValidateBasic(t *testing.T) {
 			msg: MsgCancelSpotOrders{
 				Creator:      sample.AccAddress(),
 				SpotOrderIds: []uint64{1},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgCancelAllSpotOrders_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgCancelAllSpotOrders
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgCancelAllSpotOrders{
+				Creator: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgCancelAllSpotOrders{
+				Creator: sample.AccAddress(),
 			},
 		},
 	}
