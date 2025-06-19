@@ -4,11 +4,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
-func (suite *KeeperTestSuite) TestAllPerpetualsWithLiquidationPrice() {
+func (suite *KeeperTestSuite) TestAllPerpetuals() {
 	var market types.PerpetualMarket
 	var liquidatingSubAccount types.SubAccount
 
@@ -36,7 +35,7 @@ func (suite *KeeperTestSuite) TestAllPerpetualsWithLiquidationPrice() {
 	testCases := []struct {
 		name                      string
 		perpetualsSetup           func() []types.Perpetual
-		pagination                *query.PageRequest
+		queryReq                  types.AllPerpetualsRequest
 		expectedLiquidationPrices []math.LegacyDec
 		expectedErrSubstring      string
 	}{
@@ -49,24 +48,14 @@ func (suite *KeeperTestSuite) TestAllPerpetualsWithLiquidationPrice() {
 				suite.SetPerpetualStateWithEntryFR(p2, false)
 				return []types.Perpetual{p1, p2}
 			},
-			pagination: &query.PageRequest{
-				Limit: 2,
+			queryReq: types.AllPerpetualsRequest{
+				MarketId: 0,
+				Pagination: &query.PageRequest{
+					Limit: 2,
+				},
 			},
 			expectedLiquidationPrices: []math.LegacyDec{math.LegacyMustNewDecFromStr("94.736842105263157895"), math.LegacyMustNewDecFromStr("104.761904761904761905")},
 			expectedErrSubstring:      "",
-		},
-		{
-			name: "Fail: Invalid liquidation price due to missing subaccount",
-			perpetualsSetup: func() []types.Perpetual {
-				p := newTestPerpetualForForcedLiq(authtypes.NewModuleAddress("unknown").String(), math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000))
-				suite.SetPerpetualStateWithEntryFR(p, false)
-				return []types.Perpetual{p}
-			},
-			pagination: &query.PageRequest{
-				Limit: 1,
-			},
-			expectedLiquidationPrices: nil,
-			expectedErrSubstring:      "subAccount not found",
 		},
 		{
 			name: "Pagination: Limit 1, Offset 1",
@@ -77,9 +66,31 @@ func (suite *KeeperTestSuite) TestAllPerpetualsWithLiquidationPrice() {
 				suite.SetPerpetualStateWithEntryFR(p2, false)
 				return []types.Perpetual{p1, p2}
 			},
-			pagination: &query.PageRequest{
-				Limit:  1,
-				Offset: 1,
+			queryReq: types.AllPerpetualsRequest{
+				MarketId: 0,
+				Pagination: &query.PageRequest{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			expectedLiquidationPrices: []math.LegacyDec{math.LegacyMustNewDecFromStr("104.761904761904761905")}, // The second perpetual's liquidation price
+			expectedErrSubstring:      "",
+		},
+		{
+			name: "Pagination: Limit 1, Offset 1, from specific market",
+			perpetualsSetup: func() []types.Perpetual {
+				p1 := newTestPerpetualForForcedLiq(liquidatingSubAccount.Owner, math.LegacyNewDec(10), math.LegacyNewDec(100), math.NewInt(100_000_000))
+				p2 := newTestPerpetualForForcedLiq(liquidatingSubAccount.Owner, math.LegacyNewDec(-10), math.LegacyNewDec(100), math.NewInt(100_000_000))
+				suite.SetPerpetualStateWithEntryFR(p1, false)
+				suite.SetPerpetualStateWithEntryFR(p2, false)
+				return []types.Perpetual{p1, p2}
+			},
+			queryReq: types.AllPerpetualsRequest{
+				MarketId: 1,
+				Pagination: &query.PageRequest{
+					Limit:  1,
+					Offset: 1,
+				},
 			},
 			expectedLiquidationPrices: []math.LegacyDec{math.LegacyMustNewDecFromStr("104.761904761904761905")}, // The second perpetual's liquidation price
 			expectedErrSubstring:      "",
@@ -91,11 +102,7 @@ func (suite *KeeperTestSuite) TestAllPerpetualsWithLiquidationPrice() {
 			setupTest()
 			_ = tc.perpetualsSetup()
 
-			req := &types.AllPerpetualsWithLiquidationPriceRequest{
-				Pagination: tc.pagination,
-			}
-
-			res, err := suite.app.ClobKeeper.AllPerpetualsWithLiquidationPrice(suite.ctx, req)
+			res, err := suite.app.ClobKeeper.AllPerpetuals(suite.ctx, &tc.queryReq)
 
 			if tc.expectedErrSubstring != "" {
 				suite.Require().Error(err, "Expected an error but got nil")
