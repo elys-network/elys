@@ -66,7 +66,7 @@ func TestEpochsExportGenesis(t *testing.T) {
 	epochs.InitGenesis(ctx, *app.EpochsKeeper, genesisState)
 
 	genesis := epochs.ExportGenesis(ctx, *app.EpochsKeeper)
-	require.Len(t, genesis.Epochs, 5)
+	require.Len(t, genesis.Epochs, 6)
 
 	require.Equal(t, genesis.Epochs[0].Identifier, "band_epoch")
 	require.Equal(t, genesis.Epochs[1].Identifier, types.DayEpochID)
