@@ -35,40 +35,13 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		Status:             types.Status_PENDING,
 	}
 
-	// Verify if user hasn't created a order for same pool with pending status
-	// Note: A user can have either
-	// at most one pending order for a pool
-	// or a position in the pool
-	pendingStatus := types.Status_PENDING
-	orders, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, msg.OwnerAddress, &pendingStatus, nil)
-	if err != nil {
-		return nil, err
-	}
-	for _, order := range orders {
-		if order.Position == msg.Position && order.Collateral.Denom == msg.Collateral.Denom && order.PoolId == msg.PoolId {
-			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
-		}
-	}
-
-	// Verify if user doesn't have a position in the same pool
-	// Should not create a order for a position where the user already has a position in the same pool
-	mtps, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), nil)
-	if err != nil {
-		return nil, err
-	}
-	for _, mtp := range mtps {
-		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom {
-			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
-		}
-	}
-
 	id := k.AppendPendingPerpetualOrder(
 		ctx,
 		pendingPerpetualOrder,
 	)
 
 	// Verify if order is valid before saving
-	_, err = k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
+	_, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 		Position:        perpetualtypes.Position(msg.Position),
 		Leverage:        msg.Leverage,
 		Collateral:      msg.Collateral,

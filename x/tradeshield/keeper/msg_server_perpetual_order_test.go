@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
 	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
@@ -36,63 +35,6 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 					OwnerAddress:    addr[2].String(),
 					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
-					Position:        types.PerpetualPosition_LONG,
-					Leverage:        math.LegacyNewDec(5),
-					TakeProfitPrice: math.LegacyNewDec(15),
-					StopLossPrice:   math.LegacyNewDec(8),
-					PoolId:          1,
-				}
-			},
-		},
-		{
-			"Perpetual Open Order already pending for the same Pool", // From above test case
-			"user already has a order for the same pool",
-			func() *types.MsgCreatePerpetualOpenOrder {
-
-				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress:    addr[2].String(),
-					TriggerPrice:    math.LegacyNewDec(10),
-					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
-					Position:        types.PerpetualPosition_LONG,
-					Leverage:        math.LegacyNewDec(5),
-					TakeProfitPrice: math.LegacyNewDec(15),
-					StopLossPrice:   math.LegacyNewDec(8),
-					PoolId:          1,
-				}
-			},
-		},
-		{
-			"Position already open in the perpetual pool",
-			"user already has a position in the same pool",
-			func() *types.MsgCreatePerpetualOpenOrder {
-				// Make asset price equal to the trigger price
-				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
-					Asset:     "ATOM",
-					Price:     math.LegacyNewDec(10),
-					Source:    "elys",
-					Provider:  oracleProvider.String(),
-					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
-				})
-
-				msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
-				_, err := msgSrvr.ExecuteOrders(suite.ctx, &types.MsgExecuteOrders{
-					Creator:      addr[2].String(),
-					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
-						{
-							OwnerAddress: addr[2].String(),
-							PoolId:       1,
-							OrderId:      1,
-						},
-					},
-				})
-				suite.T().Log("Error: ", err)
-				suite.Require().NoError(err)
-
-				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress:    addr[2].String(),
-					TriggerPrice:    math.LegacyNewDec(10),
-					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
 					Position:        types.PerpetualPosition_LONG,
 					Leverage:        math.LegacyNewDec(5),
 					TakeProfitPrice: math.LegacyNewDec(15),
