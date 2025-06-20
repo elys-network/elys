@@ -96,34 +96,31 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 }
 
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
-	// Disable for v1
-	return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "disabled for v1")
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// // check if the position owner address matches the msg owner address
-	// position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
-	// if err != nil {
-	// 	return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
-	// }
+	// check if the position owner address matches the msg owner address
+	position, err := k.perpetual.GetMTP(ctx, msg.PoolId, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
+	if err != nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
+	}
 
-	// var pendingPerpetualOrder = types.PerpetualOrder{
-	// 	PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-	// 	TriggerPrice: types.TriggerPrice{
-	// 		TradingAssetDenom: position.TradingAsset,
-	// 		Rate:              msg.TriggerPrice.Rate,
-	// 	},
-	// 	OwnerAddress: position.Address,
-	// 	PositionId:   position.Id,
-	// }
+	var pendingPerpetualOrder = types.PerpetualOrder{
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+		TriggerPrice:       msg.TriggerPrice,
+		OwnerAddress:       position.Address,
+		PositionId:         position.Id,
+		PoolId:             msg.PoolId,
+		Status:             types.Status_PENDING,
+	}
 
-	// id := k.AppendPendingPerpetualOrder(
-	// 	ctx,
-	// 	pendingPerpetualOrder,
-	// )
+	id := k.AppendPendingPerpetualOrder(
+		ctx,
+		pendingPerpetualOrder,
+	)
 
-	// return &types.MsgCreatePerpetualCloseOrderResponse{
-	// 	OrderId: id,
-	// }, nil
+	return &types.MsgCreatePerpetualCloseOrderResponse{
+		OrderId: id,
+	}, nil
 }
 
 func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePerpetualOrder) (*types.MsgUpdatePerpetualOrderResponse, error) {
@@ -197,14 +194,15 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 }
 
 func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
-	if len(msg.OrderIds) == 0 {
+	if len(msg.Orders) == 0 {
 		return nil, types.ErrSizeZero
 	}
 	// loop through the spot orders and cancel them
-	for _, orderId := range msg.OrderIds {
+	for _, order := range msg.Orders {
 		_, err := k.CancelPerpetualOrder(goCtx, &types.MsgCancelPerpetualOrder{
 			OwnerAddress: msg.OwnerAddress,
-			OrderId:      orderId,
+			PoolId:       order.PoolId,
+			OrderId:      order.OrderId,
 		})
 		if err != nil {
 			return nil, err

@@ -308,7 +308,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 			func() *types.MsgCancelPerpetualOrders {
 				return &types.MsgCancelPerpetualOrders{
 					OwnerAddress: addr[2].String(),
-					OrderIds:     []uint64{},
+					Orders:       []*types.PerpetualOrderPoolKey{},
 				}
 			},
 		},
@@ -334,7 +334,12 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 
 				return &types.MsgCancelPerpetualOrders{
 					OwnerAddress: addr[2].String(),
-					OrderIds:     []uint64{1},
+					Orders: []*types.PerpetualOrderPoolKey{
+						{
+							PoolId:  1,
+							OrderId: 1,
+						},
+					},
 				}
 			},
 		},
