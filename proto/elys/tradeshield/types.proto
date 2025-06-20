@@ -74,6 +74,7 @@ message PerpetualOrder {
     (gogoproto.nullable) = false
   ];
   uint64 poolId = 12;
+  uint64 close_percentage = 13;
 }
 
 message PerpetualOrderExtraInfo {

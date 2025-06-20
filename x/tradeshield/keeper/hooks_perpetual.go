@@ -6,7 +6,6 @@ import (
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-// Hooks wrapper struct for tvl keeper
 type PerpetualHooks struct {
 	k Keeper
 }
@@ -23,20 +22,21 @@ func (h PerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool
 }
 
 func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
-	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
 func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
-	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
 func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
-	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
 func (h PerpetualHooks) AfterPositionDestroyed(ctx sdk.Context, owner sdk.AccAddress, poolId uint64, positionId uint64) error {
+	_, err := h.k.DeletePendingPerpetualOrdersForAddressAndPool(ctx, owner, poolId, positionId)
+	if err != nil {
+		return err
+	}
 	return nil
 }

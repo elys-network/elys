@@ -53,7 +53,7 @@ func (k Keeper) PendingPerpetualOrder(goCtx context.Context, req *types.QueryGet
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	pendingPerpetualOrder, found := k.GetPendingPerpetualOrder(ctx, req.Id)
+	pendingPerpetualOrder, found := k.GetPendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(req.OwnerAddress), req.PoolId, req.OrderId)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
 	}

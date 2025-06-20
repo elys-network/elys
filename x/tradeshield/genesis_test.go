@@ -3,6 +3,7 @@ package tradeshield_test
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
 	"github.com/elys-network/elys/v6/testutil/nullify"
 	"github.com/elys-network/elys/v6/x/tradeshield"
@@ -25,10 +26,14 @@ func TestGenesis(t *testing.T) {
 		PendingSpotOrderCount: 2,
 		PendingPerpetualOrderList: []types.PerpetualOrder{
 			{
-				OrderId: 0,
+				OrderId:      0,
+				OwnerAddress: sdk.AccAddress([]byte("owner_address")).String(),
+				PoolId:       1,
 			},
 			{
-				OrderId: 1,
+				OrderId:      1,
+				OwnerAddress: sdk.AccAddress([]byte("owner_address")).String(),
+				PoolId:       1,
 			},
 		},
 		PendingPerpetualOrderCount: 2,
