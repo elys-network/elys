@@ -23,7 +23,7 @@ func (m Migrator) V19Migration(ctx sdk.Context) error {
 		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.035"),
 		BorrowInterestPaymentEnabled:        legacyParams.BorrowInterestPaymentEnabled,
 		WhitelistingEnabled:                 true,
-		PerpetualSwapFee:                    legacyParams.PerpetualSwapFee,
+		PerpetualSwapFee:                    math.LegacyMustNewDecFromStr("0.0005"),
 		MaxLimitOrder:                       legacyParams.MaxLimitOrder,
 		FixedFundingRate:                    math.LegacyMustNewDecFromStr("0.3"),
 		MinimumLongTakeProfitPriceRatio:     math.LegacyMustNewDecFromStr("1.01"),
