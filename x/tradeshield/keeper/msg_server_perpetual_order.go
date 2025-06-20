@@ -111,6 +111,7 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 		PositionId:         position.Id,
 		PoolId:             msg.PoolId,
 		Status:             types.Status_PENDING,
+		ClosePercentage:    msg.ClosePercentage,
 	}
 
 	id := k.AppendPendingPerpetualOrder(

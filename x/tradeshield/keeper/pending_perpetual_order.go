@@ -294,10 +294,19 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 		}
 	}
 
+	// get the position info
+	position, err := k.perpetual.GetMTP(ctx, order.PoolId, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PositionId)
+	if err != nil {
+		return err
+	}
+
+	closePercentage := sdkmath.LegacyNewDec(int64(order.ClosePercentage)).Quo(sdkmath.LegacyNewDec(100))
+	closeAmount := closePercentage.Mul(sdkmath.LegacyNewDecFromInt(position.Custody)).TruncateInt()
+
 	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
-		Amount:  sdkmath.ZeroInt(),
+		Amount:  closeAmount,
 		PoolId:  order.PoolId,
 	}
 

@@ -142,6 +142,7 @@ message MsgCreatePerpetualCloseOrder {
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 5;
+  uint64 close_percentage = 6;
 }
 
 message MsgCreatePerpetualCloseOrderResponse { uint64 order_id = 1; }
