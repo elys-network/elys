@@ -145,7 +145,8 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage).TruncateInt()
 		mtp.Collateral = collateral
 		liabilities = req.FinalAmount.Amount
-		custodyAmount = collateral.Mul(req.Leverage.Add(math.LegacyOneDec()).TruncateInt())
+		proxyLeverage := req.Leverage.Add(math.LegacyOneDec())
+		custodyAmount = proxyLeverage.MulInt(collateral).TruncateInt()
 	}
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
