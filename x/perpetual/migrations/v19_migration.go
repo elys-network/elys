@@ -20,23 +20,20 @@ func (m Migrator) V19Migration(ctx sdk.Context) error {
 		MaxOpenPositions:                    legacyParams.MaxOpenPositions,
 		PoolMaxLiabilitiesThreshold:         math.LegacyMustNewDecFromStr("0.3"),
 		BorrowInterestPaymentFundPercentage: legacyParams.BorrowInterestPaymentFundPercentage,
-		SafetyFactor:                        legacyParams.SafetyFactor,
+		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.035"),
 		BorrowInterestPaymentEnabled:        legacyParams.BorrowInterestPaymentEnabled,
 		WhitelistingEnabled:                 true,
 		PerpetualSwapFee:                    legacyParams.PerpetualSwapFee,
 		MaxLimitOrder:                       legacyParams.MaxLimitOrder,
-		FixedFundingRate:                    legacyParams.FixedFundingRate,
-		MinimumLongTakeProfitPriceRatio:     legacyParams.MinimumLongTakeProfitPriceRatio,
+		FixedFundingRate:                    math.LegacyMustNewDecFromStr("0.3"),
+		MinimumLongTakeProfitPriceRatio:     math.LegacyMustNewDecFromStr("1.01"),
 		MaximumLongTakeProfitPriceRatio:     legacyParams.MaximumLongTakeProfitPriceRatio,
 		MaximumShortTakeProfitPriceRatio:    legacyParams.MaximumShortTakeProfitPriceRatio,
 		WeightBreakingFeeFactor:             legacyParams.WeightBreakingFeeFactor,
-		EnabledPools:                        legacyParams.EnabledPools,
+		EnabledPools:                        []uint64{1, 13},
 		MinimumNotionalValue:                math.LegacyNewDec(10),
 		LongMinimumLiabilityAmount:          math.NewInt(1_000_000),
 	}
-
-	// enabling bitcoin and atom pools
-	params.EnabledPools = []uint64{1, 13}
 
 	err := m.keeper.SetParams(ctx, &params)
 	if err != nil {
@@ -119,6 +116,18 @@ func (m Migrator) V19Migration(ctx sdk.Context) error {
 
 	for _, address := range addresses {
 		m.keeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(address))
+	}
+
+	atomPool, found := m.keeper.GetPool(ctx, 1)
+	if found {
+		atomPool.LeverageMax = math.LegacyMustNewDecFromStr("5.0")
+		m.keeper.SetPool(ctx, atomPool)
+	}
+
+	btcPool, found := m.keeper.GetPool(ctx, 13)
+	if found {
+		btcPool.LeverageMax = math.LegacyMustNewDecFromStr("10.0")
+		m.keeper.SetPool(ctx, btcPool)
 	}
 	return nil
 }
