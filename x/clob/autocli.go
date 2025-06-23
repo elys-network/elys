@@ -59,8 +59,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "AllPerpetuals",
-					Use:       "all-perpetuals-with-liquidation-price",
-					Short:     "Query all perpetuals with liquidation price",
+					Use:       "all-perpetuals",
+					Short:     "Query all perpetuals with liquidation price and health",
 				},
 			},
 		},

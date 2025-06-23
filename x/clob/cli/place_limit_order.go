@@ -1,21 +1,22 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+	"strconv"
+
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/elys-network/elys/v6/x/clob/types"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 func CmdPlaceLimitOrder() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "place-limit-order [market-id] [price] [quantity] [order-type]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
-		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
+		Example: `elysd tx clob place-limit-order 1 10 5 limit_buy --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -24,22 +25,22 @@ func CmdPlaceLimitOrder() *cobra.Command {
 				return err
 			}
 
-			marketId, err := strconv.ParseUint(args[1], 10, 64)
+			marketId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			price, err := math.LegacyNewDecFromStr(args[2])
+			price, err := math.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
 
-			quantity, err := math.LegacyNewDecFromStr(args[3])
+			quantity, err := math.LegacyNewDecFromStr(args[2])
 			if err != nil {
 				return err
 			}
 			var orderType types.OrderType
-			switch args[4] {
+			switch args[3] {
 			case "limit_buy":
 				orderType = types.OrderType_ORDER_TYPE_LIMIT_BUY
 			case "limit_sell":
