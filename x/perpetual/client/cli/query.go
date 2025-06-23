@@ -24,6 +24,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	cmd.AddCommand(CmdOpenEstimation())
+	cmd.AddCommand(CmdOpenEstimationByFinal())
 
 	// this line is used by starport scaffolding # 1
 

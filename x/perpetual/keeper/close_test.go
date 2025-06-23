@@ -26,6 +26,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: sample.AccAddress(),
 					Id:      uint64(10),
 					Amount:  math.NewInt(12000),
+					PoolId:  1,
 				}
 			},
 			"mtp not found",
@@ -56,6 +57,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(500),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"asset info uusdc not found",
@@ -88,6 +90,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(50000000000000), // same as with amount 399
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -128,6 +131,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(107),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -168,6 +172,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -208,6 +213,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -238,6 +244,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -266,6 +273,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -340,6 +348,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"not enough liquidity",

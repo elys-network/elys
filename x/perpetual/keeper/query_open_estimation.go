@@ -123,11 +123,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := eta.MulInt(req.Collateral.Amount).TruncateInt()
 	weightBreakingFee := osmomath.ZeroBigDec()
+	swapFees := math.LegacyZeroDec()
+	takerFees := math.LegacyZeroDec()
 	if req.Position == types.Position_LONG {
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool, req.Address)
+			custodyAmount, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -140,7 +142,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
 			amountIn := eta.MulInt(req.Collateral.Amount).TruncateInt()
-			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
+			liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -156,7 +158,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		// Collateral will be in base currency
 		amountOut := eta.MulInt(req.Collateral.Amount).TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
-		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
+		liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
 		}
@@ -241,5 +243,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		LimitPrice:         req.LimitPrice,
 		WeightBreakingFee:  weightBreakingFee.Dec(),
+		SwapFees:           swapFees,
+		TakerFees:          takerFees,
 	}, nil
 }
