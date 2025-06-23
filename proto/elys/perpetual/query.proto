@@ -225,6 +225,7 @@ message QueryAllPoolResponse {
 message MTPRequest {
   string address = 1;
   uint64 id = 2;
+  uint64 pool_id = 3;
 }
 
 message MTPResponse { MtpAndPrice mtp = 1; }
@@ -316,6 +317,16 @@ message QueryOpenEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string swap_fees = 20 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fees = 21 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message PoolResponse {
@@ -388,6 +399,7 @@ message QueryCloseEstimationRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message QueryCloseEstimationResponse {
@@ -513,6 +525,16 @@ message QueryOpenEstimationByFinalResponse {
     (gogoproto.nullable) = false
   ];
   string weight_breaking_fee = 18 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fees = 19 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fees = 20 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

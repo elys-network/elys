@@ -55,9 +55,7 @@ func (k Keeper) AppendPendingPerpetualOrder(
 	// Set the ID of the appended value
 	pendingPerpetualOrder.OrderId = count
 
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	appendedValue := k.cdc.MustMarshal(&pendingPerpetualOrder)
-	store.Set(GetPendingPerpetualOrderIDBytes(pendingPerpetualOrder.OrderId), appendedValue)
+	k.SetPendingPerpetualOrder(ctx, pendingPerpetualOrder)
 
 	// Update pendingPerpetualOrder count
 	k.SetPendingPerpetualOrderCount(ctx, count+1)
@@ -135,6 +133,21 @@ func (k Keeper) GetAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Perpe
 	return
 }
 
+func (k Keeper) GetAllLegacyPendingPerpetualOrder(ctx sdk.Context) (list []types.LegacyPerpetualOrder) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 // DeleteAllPendingPerpetualOrder returns all pendingPerpetualOrder
 func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.PerpetualOrder) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
@@ -147,22 +160,6 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	}
 
 	return
-}
-
-// SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure set all legacy perpetual trigger price to new trigger price structure
-func (k Keeper) SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure(ctx sdk.Context) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.PerpetualOrder
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-		order.TriggerPrice = order.LegacyTriggerPriceV1.Rate
-		order.LegacyTriggerPriceV1 = types.LegacyTriggerPriceV1{}
-		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
-	}
 }
 
 // GetPendingPerpetualOrderIDBytes returns the byte representation of the ID
@@ -227,7 +224,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		return err
 	}
 
-	res, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+	openMsg := perpetualtypes.MsgOpen{
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
@@ -235,7 +232,12 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
 		PoolId:          order.PoolId,
-	})
+	}
+
+	if err = openMsg.ValidateBasic(); err != nil {
+		return err
+	}
+	res, err := k.perpetual.Open(ctx, &openMsg)
 	if err != nil {
 		return err
 	}
@@ -273,11 +275,18 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 		}
 	}
 
-	_, err = k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
 		Amount:  sdkmath.ZeroInt(),
-	})
+		PoolId:  order.PoolId,
+	}
+
+	if err = closeMsg.ValidateBasic(); err != nil {
+		return err
+	}
+
+	_, err = k.perpetual.Close(ctx, &closeMsg)
 	if err != nil {
 		return err
 	}
@@ -290,7 +299,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 // ExecuteMarketOpenOrder executes a market open order
 func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+	openMsg := perpetualtypes.MsgOpen{
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
@@ -298,7 +307,11 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
 		PoolId:          order.PoolId,
-	})
+	}
+	if err := openMsg.ValidateBasic(); err != nil {
+		return err
+	}
+	_, err := k.perpetual.Open(ctx, &openMsg)
 	if err != nil {
 		return err
 	}
@@ -311,11 +324,18 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 
 // ExecuteMarketCloseOrder executes a market close order
 func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
 		Amount:  sdkmath.ZeroInt(),
-	})
+		PoolId:  order.PoolId,
+	}
+
+	if err := closeMsg.ValidateBasic(); err != nil {
+		return err
+	}
+
+	_, err := k.perpetual.Close(ctx, &closeMsg)
 	if err != nil {
 		return err
 	}
@@ -360,7 +380,7 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 	}
 
 	// otherwise retrieve the position info from existing position
-	mtp, err := k.perpetual.GetMTP(ctx, sdk.AccAddress(order.OwnerAddress), order.PositionId)
+	mtp, err := k.perpetual.GetMTP(ctx, order.PoolId, sdk.AccAddress(order.OwnerAddress), order.PositionId)
 	if err != nil {
 		return nil, err
 	}
@@ -373,6 +393,7 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 	res, err := k.perpetual.HandleCloseEstimation(ctx, &perpetualtypes.QueryCloseEstimationRequest{
 		Address:    order.OwnerAddress,
 		PositionId: order.PositionId,
+		PoolId:     mtp.AmmPoolId,
 	})
 	if err != nil {
 		return nil, err

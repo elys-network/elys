@@ -41,7 +41,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 	suite.Require().NoError(err)
 	_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg2)
 	suite.Require().NoError(err)
-	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, mtpOpenResponse.Id)
+	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, ammPool.PoolId, positionCreator, mtpOpenResponse.Id)
 	suite.Require().NoError(err)
 	pool, _ := suite.app.PerpetualKeeper.GetPool(suite.ctx, mtp.Id)
 	ammPool, _ = suite.app.PerpetualKeeper.GetAmmPool(suite.ctx, mtp.AmmPoolId)

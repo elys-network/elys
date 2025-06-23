@@ -14,9 +14,9 @@ import (
 
 func CmdUpdateTakeProfitPrice() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-take-profit-price [amount] [id]",
+		Use:   "update-take-profit-price [amount] [id] [poolId]",
 		Short: "Broadcast message update-take-profit-price",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argPrice, err := math.LegacyNewDecFromStr(args[0])
 			if err != nil {
@@ -32,10 +32,16 @@ func CmdUpdateTakeProfitPrice() *cobra.Command {
 				return err
 			}
 
+			poolId, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgUpdateTakeProfitPrice(
 				clientCtx.GetFromAddress().String(),
 				uint64(positionId),
 				argPrice,
+				poolId,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err

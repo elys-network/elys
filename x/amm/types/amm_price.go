@@ -17,7 +17,7 @@ func (p *Pool) GetTokenARate(
 ) (rate osmomath.BigDec, err error) {
 	// balancer pricing if normal amm pool
 	if !p.PoolParams.UseOracle {
-		Aasset, Basset, err := p.parsePoolAssetsByDenoms(tokenA, tokenB)
+		Aasset, Basset, err := p.ParsePoolAssetsByDenoms(tokenA, tokenB)
 		if err != nil {
 			return osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "failed to parse pool assets for tokens %s and %s", tokenA, tokenB)
 		}

@@ -45,8 +45,14 @@ func (suite *PerpetualKeeperTestSuite) TestGetExistingPosition() {
 			false,
 			func() {
 				msg.Position = types.Position_LONG
-				err := suite.app.PerpetualKeeper.SetMTP(suite.ctx, mtp)
-				suite.Require().NoError(err)
+			},
+		},
+		{
+			"mtp not found because pool is different",
+			false,
+			func() {
+				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100))
+				msg.PoolId = 4
 			},
 		},
 		{
@@ -54,6 +60,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetExistingPosition() {
 			true,
 			func() {
 				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100))
+				msg.PoolId = 1
 			},
 		},
 	}
