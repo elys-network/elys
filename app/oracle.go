@@ -194,7 +194,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:       "WBTC",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "BTC",
-		QuoteProxyDenom: "USDC",
+		QuoteProxyDenom: "USDT",
 		Providers: []string{
 			"binance",
 			"gate",
@@ -206,7 +206,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:       "WETH",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "ETH",
-		QuoteProxyDenom: "USDC",
+		QuoteProxyDenom: "USDT",
 		Providers: []string{
 			"binance",
 			"gate",

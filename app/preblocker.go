@@ -71,10 +71,6 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, req *cometabci.RequestFinalizeBl
 				})
 			}
 
-			app.Logger().Info("----------VOTE EXTENSION DATA------------")
-			fmt.Println(assetAmountDepthInfo)
-			app.Logger().Info("----------VOTE EXTENSION DATA------------")
-
 			// Get external liquidity ratio for each of the asset separately
 			poolAssets, err := app.AmmKeeper.GetExternalLiquidityRatio(ctx, pool, assetAmountDepthInfo)
 			if err != nil {
