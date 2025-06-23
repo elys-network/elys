@@ -190,6 +190,96 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		},
 		ExternLiquidityProvider: "gate",
 	},
+	{
+		BaseDenom:       "WBTC",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "BTC",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "WETH",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "ETH",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "PAXG",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "PAXG",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "BABY",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "BABY",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "FET",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "FET",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:  "STRD",
+		QuoteDenom: "USD",
+		Providers: []string{
+			"kraken",
+		},
+		ExternLiquidityProvider: "kraken",
+	},
+	{
+		BaseDenom:       "INJ",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "INJ",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "XRP",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "XRP",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"binance",
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "binance",
+	},
 }
 
 func addDenomToList(denom, display string, decimal uint64, denomList []ojooracletypes.Denom, rewardBand []ojooracletypes.RewardBand, deviationThreshold []ojooracletypes.CurrencyDeviationThreshold) ([]ojooracletypes.Denom, []ojooracletypes.RewardBand, []ojooracletypes.CurrencyDeviationThreshold) {
