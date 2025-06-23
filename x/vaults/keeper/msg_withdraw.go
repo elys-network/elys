@@ -99,6 +99,8 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		return nil, err
 	}
 
+	// TODO: Add an option to withdraw in usdc
+
 	// Set withdrawal usd value
 	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
 	if err != nil {

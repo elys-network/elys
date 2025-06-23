@@ -171,6 +171,8 @@ func (k Keeper) distributeVaultFees(
 		k.Logger(ctx).Error("error sending coins to protocol address", "error", err)
 	}
 
+	// TODO: Add an option to withdraw in usdc, maybe add a new address for collection and then claim
+
 	// Calculate USD value of all distributed fees
 	feeCoins := managerCoins.Add(protocolCoins...)
 	usdValue := k.amm.CalculateCoinsUSDValue(ctx, feeCoins)
