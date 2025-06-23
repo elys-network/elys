@@ -15,7 +15,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 
 	// Load existing mtp
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}

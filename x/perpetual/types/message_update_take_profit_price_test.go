@@ -10,7 +10,7 @@ import (
 )
 
 func TestMsgUpdatetakeProfitPrice(t *testing.T) {
-	msg := types.NewMsgUpdateTakeProfitPrice(sample.AccAddress(), 1, math.LegacyOneDec())
+	msg := types.NewMsgUpdateTakeProfitPrice(sample.AccAddress(), 1, math.LegacyOneDec(), 1)
 	//require.Equal(t, msg.GetCreator(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)})
 	//msg.Creator = ""
 	//require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetCreator() })
@@ -48,6 +48,14 @@ func TestMsgUpdatetakeProfitPrice(t *testing.T) {
 				msg.Price = math.LegacyOneDec().MulInt64(-1)
 			},
 			errMsg: "price is negative",
+		},
+		{
+			name: "invalid pool id",
+			setter: func() {
+				msg.Price = math.LegacyOneDec()
+				msg.PoolId = 0
+			},
+			errMsg: "invalid pool id",
 		},
 	}
 	for _, tt := range tests {

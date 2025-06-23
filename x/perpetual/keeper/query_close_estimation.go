@@ -31,7 +31,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	mtp, err := k.GetMTP(ctx, address, req.PositionId)
+	mtp, err := k.GetMTP(ctx, req.PoolId, address, req.PositionId)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}

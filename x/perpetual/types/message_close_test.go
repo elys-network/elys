@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -16,12 +17,14 @@ func TestNewMsgClose(t *testing.T) {
 		accAdress,
 		2,
 		math.NewInt(20),
+		1,
 	)
 
 	want := &MsgClose{
 		Creator: accAdress,
 		Id:      2,
 		Amount:  math.NewInt(20),
+		PoolId:  1,
 	}
 
 	assert.Equal(t, want, got)
@@ -59,10 +62,20 @@ func TestMsgClose_ValidateBasic(t *testing.T) {
 			want: ErrInvalidAmount,
 		},
 		{
+			title: "invalid pool id",
+			msg: MsgClose{
+				Creator: sample.AccAddress(),
+				Amount:  math.NewInt(20),
+				PoolId:  0,
+			},
+			want: errors.New("invalid pool id"),
+		},
+		{
 			title: "successful",
 			msg: MsgClose{
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(20),
+				PoolId:  1,
 			},
 			want: nil,
 		},
@@ -73,7 +86,7 @@ func TestMsgClose_ValidateBasic(t *testing.T) {
 			got := test.msg.ValidateBasic()
 
 			if got != nil {
-				assert.ErrorIs(t, got, test.want)
+				assert.Contains(t, got.Error(), test.want.Error())
 			} else {
 				assert.Equal(t, test.want, got)
 			}

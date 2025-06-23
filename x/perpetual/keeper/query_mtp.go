@@ -21,7 +21,7 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}
-	mtp, err := k.GetMTP(ctx, creator, req.Id)
+	mtp, err := k.GetMTP(ctx, req.PoolId, creator, req.Id)
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}

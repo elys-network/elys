@@ -25,7 +25,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 		// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
 		if mtp.CollateralAsset != baseCurrency {
 			custodyAmtToken := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			borrowingAmount, _, _, err := k.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, *ammPool, mtp.Address)
+			borrowingAmount, _, _, _, _, err := k.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
@@ -41,7 +41,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 		// If position is long, calculate custody amount in custody asset
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, _, _, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, *ammPool, mtp.Address)
+			custodyAmount, _, _, _, _, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}

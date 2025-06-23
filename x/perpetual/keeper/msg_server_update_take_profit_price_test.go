@@ -28,6 +28,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: sample.AccAddress(),
 					Id:      uint64(10),
 					Price:   math.LegacyNewDec(2),
+					PoolId:  3,
 				}
 			},
 			"mtp not found",
@@ -57,6 +58,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(2),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"perpetual pool does not exist",
@@ -88,6 +90,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(2),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"asset info uatom not found",
@@ -118,6 +121,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(10),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -156,6 +160,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(10),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
@@ -194,6 +199,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyNewDec(200),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
@@ -230,6 +236,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Price:   math.LegacyMustNewDecFromStr("2.98"),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			fmt.Sprintf("take profit price should be less than %s times of current market price for short", params.MaximumShortTakeProfitPriceRatio.String()),
