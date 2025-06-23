@@ -72,6 +72,10 @@ func (app *ElysApp) setUpgradeHandler() {
 			//	}
 			//}
 
+			if ctx.ChainID() == "elysicstestnet-1" {
+				app.GovKeeper.Proposals.Remove(ctx, 87)
+			}
+
 			return vm, vmErr
 		},
 	)
