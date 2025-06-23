@@ -3,8 +3,8 @@ package types
 import (
 	"errors"
 	"fmt"
+
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	"slices"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
