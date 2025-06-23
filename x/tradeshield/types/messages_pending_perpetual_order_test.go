@@ -163,7 +163,7 @@ func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
-				Orders: []*PerpetualOrderPoolKey{
+				Orders: []PerpetualOrderPoolKey{
 					{
 						PoolId:  1,
 						OrderId: 1,

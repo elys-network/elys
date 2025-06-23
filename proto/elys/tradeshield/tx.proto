@@ -178,7 +178,7 @@ message MsgCancelPerpetualOrders {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCancelPerpetualOrders";
   string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated PerpetualOrderPoolKey orders = 2;
+  repeated PerpetualOrderPoolKey orders = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgCancelPerpetualOrdersResponse {}
@@ -208,7 +208,8 @@ message MsgExecuteOrders {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgExecuteOrders";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated PerpetualOrderKey perpetual_orders = 2;
+  repeated PerpetualOrderKey perpetual_orders = 2
+      [ (gogoproto.nullable) = false ];
   repeated uint64 spot_order_ids = 3;
 }
 

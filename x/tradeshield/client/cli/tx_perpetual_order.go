@@ -236,15 +236,15 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 	return cmd
 }
 
-func readPerpetualOrderRequestJSON(filename string) ([]*types.PerpetualOrderPoolKey, error) {
-	var orders []*types.PerpetualOrderPoolKey
+func readPerpetualOrderRequestJSON(filename string) ([]types.PerpetualOrderPoolKey, error) {
+	var orders []types.PerpetualOrderPoolKey
 	bz, err := os.ReadFile(filename)
 	if err != nil {
-		return []*types.PerpetualOrderPoolKey{}, err
+		return []types.PerpetualOrderPoolKey{}, err
 	}
 	err = json.Unmarshal(bz, &orders)
 	if err != nil {
-		return []*types.PerpetualOrderPoolKey{}, err
+		return []types.PerpetualOrderPoolKey{}, err
 	}
 
 	return orders, nil

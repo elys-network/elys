@@ -40,11 +40,6 @@ func CmdExecuteOrders() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			// Convert to slice of pointers
-			var perpetualOrderKeyPtrs []*types.PerpetualOrderKey
-			for i := range argPerpetualOrderKeys {
-				perpetualOrderKeyPtrs = append(perpetualOrderKeyPtrs, &argPerpetualOrderKeys[i])
-			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -54,7 +49,7 @@ func CmdExecuteOrders() *cobra.Command {
 			msg := types.NewMsgExecuteOrders(
 				clientCtx.GetFromAddress().String(),
 				argSpotOrderIds,
-				perpetualOrderKeyPtrs,
+				argPerpetualOrderKeys,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

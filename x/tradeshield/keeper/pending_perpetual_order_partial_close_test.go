@@ -50,7 +50,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				executeOpenMsg := &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -84,7 +84,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -141,7 +141,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				executeOpenMsg := &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -175,7 +175,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,

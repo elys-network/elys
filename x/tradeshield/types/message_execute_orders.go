@@ -11,7 +11,7 @@ import (
 
 var _ sdk.Msg = &MsgExecuteOrders{}
 
-func NewMsgExecuteOrders(creator string, spotOrderIds []uint64, perpetualOrders []*PerpetualOrderKey) *MsgExecuteOrders {
+func NewMsgExecuteOrders(creator string, spotOrderIds []uint64, perpetualOrders []PerpetualOrderKey) *MsgExecuteOrders {
 	return &MsgExecuteOrders{
 		Creator:         creator,
 		SpotOrderIds:    spotOrderIds,

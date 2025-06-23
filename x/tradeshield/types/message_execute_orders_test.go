@@ -25,7 +25,7 @@ func TestMsgExecuteOrders_ValidateBasic(t *testing.T) {
 			msg: MsgExecuteOrders{
 				Creator:      sample.AccAddress(),
 				SpotOrderIds: []uint64{1},
-				PerpetualOrders: []*PerpetualOrderKey{
+				PerpetualOrders: []PerpetualOrderKey{
 					{
 						OwnerAddress: sample.AccAddress(),
 						PoolId:       1,

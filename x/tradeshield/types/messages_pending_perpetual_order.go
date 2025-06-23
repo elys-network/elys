@@ -175,7 +175,7 @@ func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgCancelPerpetualOrders(creator string, orders []*PerpetualOrderPoolKey) *MsgCancelPerpetualOrders {
+func NewMsgCancelPerpetualOrders(creator string, orders []PerpetualOrderPoolKey) *MsgCancelPerpetualOrders {
 	return &MsgCancelPerpetualOrders{
 		Orders:       orders,
 		OwnerAddress: creator,

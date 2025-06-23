@@ -25,7 +25,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{1},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -54,7 +54,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{1},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -95,7 +95,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:         addr[2].String(),
 					SpotOrderIds:    []uint64{1},
-					PerpetualOrders: []*types.PerpetualOrderKey{},
+					PerpetualOrders: []types.PerpetualOrderKey{},
 				}
 			},
 			func() {
@@ -158,7 +158,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:      addr[2].String(),
 					SpotOrderIds: []uint64{},
-					PerpetualOrders: []*types.PerpetualOrderKey{
+					PerpetualOrders: []types.PerpetualOrderKey{
 						{
 							OwnerAddress: addr[2].String(),
 							PoolId:       1,
@@ -240,7 +240,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				return &types.MsgExecuteOrders{
 					Creator:         addr[2].String(),
 					SpotOrderIds:    []uint64{1, 2}, // Both orders exist but second will fail during execution
-					PerpetualOrders: []*types.PerpetualOrderKey{},
+					PerpetualOrders: []types.PerpetualOrderKey{},
 				}
 			},
 			func() {
