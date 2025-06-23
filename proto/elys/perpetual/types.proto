@@ -129,4 +129,5 @@ message WhiteList { repeated string validator_list = 1; }
 message PositionRequest {
   string address = 1;
   uint64 id = 2;
+  uint64 pool_id = 3;
 }
