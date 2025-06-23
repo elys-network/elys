@@ -62,10 +62,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if ctx.ChainID() == "elysicstestnet-1" {
-				app.TradeshieldKeeper.DeleteAllPendingPerpetualOrder(ctx)
-			}
-
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
