@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) TestAddPoolRewardsAccum() {
 				suite.Require().Equal(tt.edenReward, osmomath.BigDecFromDec(accum.EdenReward))
 			} else {
 				// For existing pool, rewards should be cumulative
-				suite.Require().Equal(math.LegacyNewDec(30), accum.UsdcReward)
+				suite.Require().Equal(math.LegacyNewDec(15), accum.UsdcReward)
 				suite.Require().Equal(math.LegacyNewDec(9), accum.EdenReward)
 			}
 		})

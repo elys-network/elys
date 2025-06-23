@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
@@ -40,11 +41,17 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	}
 
 	shareDenom := types.GetShareDenomForVault(vault.Id)
+	var shareAmount sdkmath.Int
 	// Initial case
 	if redemptionRate.IsZero() {
-		redemptionRate = osmomath.OneBigDec()
+		usdValue := k.amm.CalculateUSDValue(ctx, depositCoin.Denom, depositCoin.Amount)
+		if usdValue.IsZero() {
+			return nil, types.ErrDepositValueZero
+		}
+		shareAmount = usdValue.Mul(osmomath.BigDecFromSDKInt(sdkmath.NewInt(1000000))).Dec().RoundInt()
+	} else {
+		shareAmount = (osmomath.BigDecFromSDKInt(depositCoin.Amount).Quo(redemptionRate)).Dec().RoundInt()
 	}
-	shareAmount := (osmomath.BigDecFromSDKInt(depositCoin.Amount).Quo(redemptionRate)).Dec().RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 
 	err = k.bk.MintCoins(ctx, types.ModuleName, shareCoins)
@@ -130,6 +137,8 @@ func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64)
 	if err != nil || usdValue.IsZero() {
 		return osmomath.ZeroBigDec()
 	}
+	// Multiply by supply decimals
+	usdValue = usdValue.Mul(osmomath.BigDecFromSDKInt(sdkmath.NewInt(1000000)))
 	return usdValue.Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 }
 

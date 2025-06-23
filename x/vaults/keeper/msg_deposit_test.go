@@ -15,9 +15,9 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := types.MsgAddVault{
 		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:  "ustake",
+		DepositDenom:  "uusdc",
 		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"ustake"},
+		AllowedCoins:  []string{"uusdc"},
 		BenchmarkCoin: "uatom",
 		RewardCoins:   []string{},
 	}
@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 			desc:        "successful deposit",
 			vaultId:     1,
 			depositer:   sdk.AccAddress([]byte("depositer1")),
-			amount:      sdk.NewCoin("ustake", sdkmath.NewInt(1000)),
+			amount:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
 			expectError: false,
 		},
 		{

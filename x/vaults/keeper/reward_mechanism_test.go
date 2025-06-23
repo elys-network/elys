@@ -214,6 +214,11 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 	rewardDenom := ptypes.Eden
 	suite.app.VaultsKeeper.UpdateAccPerShare(suite.ctx, 1, rewardDenom, rewardAmount)
 
+	poolBalance1 := suite.app.VaultsKeeper.GetPoolBalance(suite.ctx, 1, depositor1)
+	suite.Require().Equal(sdkmath.NewInt(100000), poolBalance1)
+	poolBalance2 := suite.app.VaultsKeeper.GetPoolBalance(suite.ctx, 1, depositor2)
+	suite.Require().Equal(sdkmath.NewInt(100000), poolBalance2)
+
 	// Update rewards for both users
 	suite.app.VaultsKeeper.UpdateUserRewardPending(suite.ctx, 1, rewardDenom, depositor1, false, sdkmath.ZeroInt())
 	suite.app.VaultsKeeper.UpdateUserRewardDebt(suite.ctx, 1, rewardDenom, depositor1)
@@ -224,11 +229,11 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 	// Verify both users have pending rewards
 	user1RewardInfo, found := suite.app.VaultsKeeper.GetUserRewardInfo(suite.ctx, depositor1, 1, rewardDenom)
 	suite.Require().True(found)
-	suite.Require().True(user1RewardInfo.RewardPending.IsPositive())
+	suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("500"), user1RewardInfo.RewardPending)
 
 	user2RewardInfo, found := suite.app.VaultsKeeper.GetUserRewardInfo(suite.ctx, depositor2, 1, rewardDenom)
 	suite.Require().True(found)
-	suite.Require().True(user2RewardInfo.RewardPending.IsPositive())
+	suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("500"), user2RewardInfo.RewardPending)
 
 	// Test claiming rewards for both users
 	claimMsg1 := types.MsgClaimRewards{
