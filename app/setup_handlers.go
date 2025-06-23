@@ -69,6 +69,14 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			app.OracleKeeper.EndBlock(ctx)
 
+			if ctx.ChainID() == "elysicstestnet-1" {
+				resetError := app.PerpetualKeeper.ResetStore(ctx)
+				if resetError != nil {
+					fmt.Println("----error while resetting store for testnet---")
+					fmt.Println(resetError.Error())
+				}
+			}
+
 			allPerpetualPools := app.PerpetualKeeper.GetAllPools(ctx)
 			for _, pool := range allPerpetualPools {
 				ammPool, found := app.AmmKeeper.GetPool(ctx, pool.AmmPoolId)

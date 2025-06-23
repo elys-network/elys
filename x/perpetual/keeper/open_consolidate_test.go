@@ -38,7 +38,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
-				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
+				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, ammPool.PoolId, positionCreator, position.Id)
 				suite.Require().NoError(err)
 
 				suite.app.AmmKeeper.RemovePool(suite.ctx, firstPool)
@@ -71,7 +71,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				}
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
-				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
+				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, firstPool, positionCreator, position.Id)
 				suite.Require().NoError(err)
 
 				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
@@ -106,7 +106,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				}
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
-				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
+				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, firstPool, positionCreator, position.Id)
 				suite.Require().NoError(err)
 
 				return openPositionMsg, &mtp, &mtp
@@ -261,7 +261,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
 			} else {
 				suite.Require().NoError(err)
-				consolidateMtp, mtpErr := suite.app.PerpetualKeeper.GetMTP(suite.ctx, sdk.MustAccAddressFromBech32(msg.Creator), position.Id)
+				consolidateMtp, mtpErr := suite.app.PerpetualKeeper.GetMTP(suite.ctx, uint64(1), sdk.MustAccAddressFromBech32(msg.Creator), position.Id)
 				suite.Require().NoError(mtpErr)
 				suite.Require().Equal(tc.consolidatedMtp.Collateral, consolidateMtp.Collateral)
 				suite.Require().Equal(tc.consolidatedMtp.Liabilities, consolidateMtp.Liabilities)

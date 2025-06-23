@@ -48,6 +48,10 @@ func (msg *MsgOpen) ValidateBasic() error {
 	if err = msg.Collateral.Validate(); err != nil {
 		return err
 	}
+
+	if msg.Collateral.IsZero() {
+		return errors.New("collateral cannot be 0")
+	}
 	if err = CheckLegacyDecNilAndNegative(msg.TakeProfitPrice, "TakeProfitPrice"); err != nil {
 		return err
 	}

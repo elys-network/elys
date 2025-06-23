@@ -12,7 +12,7 @@ import (
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, math.Int, math.LegacyDec, math.Int, math.Int, math.Int, math.Int, math.Int, bool, bool, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return types.MTP{}, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, err
 	}

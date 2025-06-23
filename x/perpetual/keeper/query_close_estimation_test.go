@@ -99,6 +99,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_ErrorGetPerpetua
 		Address:     firstPositionCreator.String(),
 		PositionId:  openResponse.Id,
 		CloseAmount: math.NewInt(200),
+		PoolId:      firstPool,
 	})
 
 	suite.Require().ErrorContains(err, "perpetual pool 1 not found")
@@ -145,6 +146,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_Successful() {
 		Address:     firstPositionCreator.String(),
 		PositionId:  openResponse.Id,
 		CloseAmount: math.NewInt(200),
+		PoolId:      firstPool,
 	})
 
 	suite.Require().Nil(err)
