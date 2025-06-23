@@ -75,6 +75,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, // use custom command
 				},
 				{
+					RpcMethod: "OpenEstimationByFinal",
+					Skip:      true, // use custom command
+				},
+				{
 					RpcMethod:      "CloseEstimation",
 					Use:            "close-estimation [address] [position-id] [closing-amount] [pool-id]",
 					Short:          "Query close-estimation",
