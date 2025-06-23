@@ -1,20 +1,21 @@
 package cli
 
 import (
+	"strconv"
+
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/elys-network/elys/v6/x/clob/types"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 func CmdCreateMarket() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create-market [base-denom] [quote-denom] [initial-margin] [maintenance-margin] [maker-fee] [taker-fee] [liquidation-fee] [min-price-tick] [min-quantity-tick] [min-notional] [max-funding-rate] [max-funding-rate-change] [twap-time]",
 		Short:   "opens new perpetual market",
-		Example: `elysd tx clob exit-pool create-market uatom uusdc 0.02 0.02 0 0 0.01 0.001 1 0.05 0.001 100 --from=bob --gas=1000000`,
+		Example: `elysd tx clob create-market uatom uusdc 0.02 0.01 0 0 0.01 0.001 1 0.05 0.001 0.05 100 --from=bob --gas=1000000`,
 		Args:    cobra.ExactArgs(13),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

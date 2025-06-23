@@ -13,7 +13,7 @@ func CmdDeposit() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "deposit [amount]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
-		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
+		Example: `elysd tx clob deposit 1000uatom --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -21,7 +21,7 @@ func CmdDeposit() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			amount, err := sdk.ParseCoinNormalized(args[1])
+			amount, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
 				return err
 			}

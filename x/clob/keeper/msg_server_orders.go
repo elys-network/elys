@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
@@ -58,6 +59,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
 		Amount:       msg.BaseQuantity,
+		Filled:       math.LegacyZeroDec(),
 	}
 
 	orderRequiredBalance, err := k.RequiredBalanceForOrder(ctx, order)
