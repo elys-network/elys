@@ -14,15 +14,280 @@ import (
 	sync "sync"
 )
 
+var _ protoreflect.List = (*_GenesisState_2_list)(nil)
+
+type _GenesisState_2_list struct {
+	list *[]*Vault
+}
+
+func (x *_GenesisState_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Vault)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Vault)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_2_list) AppendMutable() protoreflect.Value {
+	v := new(Vault)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_2_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_2_list) NewElement() protoreflect.Value {
+	v := new(Vault)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_3_list)(nil)
+
+type _GenesisState_3_list struct {
+	list *[]*PoolInfo
+}
+
+func (x *_GenesisState_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolInfo)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolInfo)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_3_list) AppendMutable() protoreflect.Value {
+	v := new(PoolInfo)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_3_list) NewElement() protoreflect.Value {
+	v := new(PoolInfo)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_4_list)(nil)
+
+type _GenesisState_4_list struct {
+	list *[]*PoolRewardInfo
+}
+
+func (x *_GenesisState_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolRewardInfo)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolRewardInfo)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_4_list) AppendMutable() protoreflect.Value {
+	v := new(PoolRewardInfo)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_4_list) NewElement() protoreflect.Value {
+	v := new(PoolRewardInfo)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_5_list)(nil)
+
+type _GenesisState_5_list struct {
+	list *[]*UserRewardInfo
+}
+
+func (x *_GenesisState_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*UserRewardInfo)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*UserRewardInfo)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_5_list) AppendMutable() protoreflect.Value {
+	v := new(UserRewardInfo)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_5_list) NewElement() protoreflect.Value {
+	v := new(UserRewardInfo)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_6_list)(nil)
+
+type _GenesisState_6_list struct {
+	list *[]*PoolRewardsAccum
+}
+
+func (x *_GenesisState_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolRewardsAccum)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolRewardsAccum)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_6_list) AppendMutable() protoreflect.Value {
+	v := new(PoolRewardsAccum)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_6_list) NewElement() protoreflect.Value {
+	v := new(PoolRewardsAccum)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_GenesisState        protoreflect.MessageDescriptor
-	fd_GenesisState_params protoreflect.FieldDescriptor
+	md_GenesisState                         protoreflect.MessageDescriptor
+	fd_GenesisState_params                  protoreflect.FieldDescriptor
+	fd_GenesisState_vault_list              protoreflect.FieldDescriptor
+	fd_GenesisState_pool_info_list          protoreflect.FieldDescriptor
+	fd_GenesisState_pool_reward_info_list   protoreflect.FieldDescriptor
+	fd_GenesisState_user_reward_info_list   protoreflect.FieldDescriptor
+	fd_GenesisState_pool_rewards_accum_list protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_vaults_genesis_proto_init()
 	md_GenesisState = File_elys_vaults_genesis_proto.Messages().ByName("GenesisState")
 	fd_GenesisState_params = md_GenesisState.Fields().ByName("params")
+	fd_GenesisState_vault_list = md_GenesisState.Fields().ByName("vault_list")
+	fd_GenesisState_pool_info_list = md_GenesisState.Fields().ByName("pool_info_list")
+	fd_GenesisState_pool_reward_info_list = md_GenesisState.Fields().ByName("pool_reward_info_list")
+	fd_GenesisState_user_reward_info_list = md_GenesisState.Fields().ByName("user_reward_info_list")
+	fd_GenesisState_pool_rewards_accum_list = md_GenesisState.Fields().ByName("pool_rewards_accum_list")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -96,6 +361,36 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if len(x.VaultList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_2_list{list: &x.VaultList})
+		if !f(fd_GenesisState_vault_list, value) {
+			return
+		}
+	}
+	if len(x.PoolInfoList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.PoolInfoList})
+		if !f(fd_GenesisState_pool_info_list, value) {
+			return
+		}
+	}
+	if len(x.PoolRewardInfoList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.PoolRewardInfoList})
+		if !f(fd_GenesisState_pool_reward_info_list, value) {
+			return
+		}
+	}
+	if len(x.UserRewardInfoList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_5_list{list: &x.UserRewardInfoList})
+		if !f(fd_GenesisState_user_reward_info_list, value) {
+			return
+		}
+	}
+	if len(x.PoolRewardsAccumList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_6_list{list: &x.PoolRewardsAccumList})
+		if !f(fd_GenesisState_pool_rewards_accum_list, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -113,6 +408,16 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 	switch fd.FullName() {
 	case "elys.vaults.GenesisState.params":
 		return x.Params != nil
+	case "elys.vaults.GenesisState.vault_list":
+		return len(x.VaultList) != 0
+	case "elys.vaults.GenesisState.pool_info_list":
+		return len(x.PoolInfoList) != 0
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		return len(x.PoolRewardInfoList) != 0
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		return len(x.UserRewardInfoList) != 0
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		return len(x.PoolRewardsAccumList) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -131,6 +436,16 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "elys.vaults.GenesisState.params":
 		x.Params = nil
+	case "elys.vaults.GenesisState.vault_list":
+		x.VaultList = nil
+	case "elys.vaults.GenesisState.pool_info_list":
+		x.PoolInfoList = nil
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		x.PoolRewardInfoList = nil
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		x.UserRewardInfoList = nil
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		x.PoolRewardsAccumList = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -150,6 +465,36 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 	case "elys.vaults.GenesisState.params":
 		value := x.Params
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.vaults.GenesisState.vault_list":
+		if len(x.VaultList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_2_list{})
+		}
+		listValue := &_GenesisState_2_list{list: &x.VaultList}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.GenesisState.pool_info_list":
+		if len(x.PoolInfoList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_3_list{})
+		}
+		listValue := &_GenesisState_3_list{list: &x.PoolInfoList}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		if len(x.PoolRewardInfoList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_4_list{})
+		}
+		listValue := &_GenesisState_4_list{list: &x.PoolRewardInfoList}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		if len(x.UserRewardInfoList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_5_list{})
+		}
+		listValue := &_GenesisState_5_list{list: &x.UserRewardInfoList}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		if len(x.PoolRewardsAccumList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_6_list{})
+		}
+		listValue := &_GenesisState_6_list{list: &x.PoolRewardsAccumList}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -172,6 +517,26 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 	switch fd.FullName() {
 	case "elys.vaults.GenesisState.params":
 		x.Params = value.Message().Interface().(*Params)
+	case "elys.vaults.GenesisState.vault_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_2_list)
+		x.VaultList = *clv.list
+	case "elys.vaults.GenesisState.pool_info_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_3_list)
+		x.PoolInfoList = *clv.list
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_4_list)
+		x.PoolRewardInfoList = *clv.list
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_5_list)
+		x.UserRewardInfoList = *clv.list
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_6_list)
+		x.PoolRewardsAccumList = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -197,6 +562,36 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 			x.Params = new(Params)
 		}
 		return protoreflect.ValueOfMessage(x.Params.ProtoReflect())
+	case "elys.vaults.GenesisState.vault_list":
+		if x.VaultList == nil {
+			x.VaultList = []*Vault{}
+		}
+		value := &_GenesisState_2_list{list: &x.VaultList}
+		return protoreflect.ValueOfList(value)
+	case "elys.vaults.GenesisState.pool_info_list":
+		if x.PoolInfoList == nil {
+			x.PoolInfoList = []*PoolInfo{}
+		}
+		value := &_GenesisState_3_list{list: &x.PoolInfoList}
+		return protoreflect.ValueOfList(value)
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		if x.PoolRewardInfoList == nil {
+			x.PoolRewardInfoList = []*PoolRewardInfo{}
+		}
+		value := &_GenesisState_4_list{list: &x.PoolRewardInfoList}
+		return protoreflect.ValueOfList(value)
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		if x.UserRewardInfoList == nil {
+			x.UserRewardInfoList = []*UserRewardInfo{}
+		}
+		value := &_GenesisState_5_list{list: &x.UserRewardInfoList}
+		return protoreflect.ValueOfList(value)
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		if x.PoolRewardsAccumList == nil {
+			x.PoolRewardsAccumList = []*PoolRewardsAccum{}
+		}
+		value := &_GenesisState_6_list{list: &x.PoolRewardsAccumList}
+		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -213,6 +608,21 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "elys.vaults.GenesisState.params":
 		m := new(Params)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.vaults.GenesisState.vault_list":
+		list := []*Vault{}
+		return protoreflect.ValueOfList(&_GenesisState_2_list{list: &list})
+	case "elys.vaults.GenesisState.pool_info_list":
+		list := []*PoolInfo{}
+		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
+	case "elys.vaults.GenesisState.pool_reward_info_list":
+		list := []*PoolRewardInfo{}
+		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "elys.vaults.GenesisState.user_reward_info_list":
+		list := []*UserRewardInfo{}
+		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
+	case "elys.vaults.GenesisState.pool_rewards_accum_list":
+		list := []*PoolRewardsAccum{}
+		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.vaults.GenesisState"))
@@ -286,6 +696,36 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.Params)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if len(x.VaultList) > 0 {
+			for _, e := range x.VaultList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.PoolInfoList) > 0 {
+			for _, e := range x.PoolInfoList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.PoolRewardInfoList) > 0 {
+			for _, e := range x.PoolRewardInfoList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.UserRewardInfoList) > 0 {
+			for _, e := range x.UserRewardInfoList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.PoolRewardsAccumList) > 0 {
+			for _, e := range x.PoolRewardsAccumList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -314,6 +754,86 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.PoolRewardsAccumList) > 0 {
+			for iNdEx := len(x.PoolRewardsAccumList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.PoolRewardsAccumList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
+		}
+		if len(x.UserRewardInfoList) > 0 {
+			for iNdEx := len(x.UserRewardInfoList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.UserRewardInfoList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
+		}
+		if len(x.PoolRewardInfoList) > 0 {
+			for iNdEx := len(x.PoolRewardInfoList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.PoolRewardInfoList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x22
+			}
+		}
+		if len(x.PoolInfoList) > 0 {
+			for iNdEx := len(x.PoolInfoList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.PoolInfoList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x1a
+			}
+		}
+		if len(x.VaultList) > 0 {
+			for iNdEx := len(x.VaultList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.VaultList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x12
+			}
 		}
 		if x.Params != nil {
 			encoded, err := options.Marshal(x.Params)
@@ -414,6 +934,176 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.VaultList = append(x.VaultList, &Vault{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.VaultList[len(x.VaultList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolInfoList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolInfoList = append(x.PoolInfoList, &PoolInfo{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PoolInfoList[len(x.PoolInfoList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolRewardInfoList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolRewardInfoList = append(x.PoolRewardInfoList, &PoolRewardInfo{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PoolRewardInfoList[len(x.PoolRewardInfoList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UserRewardInfoList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UserRewardInfoList = append(x.UserRewardInfoList, &UserRewardInfo{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.UserRewardInfoList[len(x.UserRewardInfoList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolRewardsAccumList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolRewardsAccumList = append(x.PoolRewardsAccumList, &PoolRewardsAccum{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PoolRewardsAccumList[len(x.PoolRewardsAccumList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -470,6 +1160,16 @@ type GenesisState struct {
 
 	// params defines all the parameters of the module.
 	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	// vault_list defines the list of vaults
+	VaultList []*Vault `protobuf:"bytes,2,rep,name=vault_list,json=vaultList,proto3" json:"vault_list,omitempty"`
+	// pool_info_list defines the list of pool info
+	PoolInfoList []*PoolInfo `protobuf:"bytes,3,rep,name=pool_info_list,json=poolInfoList,proto3" json:"pool_info_list,omitempty"`
+	// pool_reward_info_list defines the list of pool reward info
+	PoolRewardInfoList []*PoolRewardInfo `protobuf:"bytes,4,rep,name=pool_reward_info_list,json=poolRewardInfoList,proto3" json:"pool_reward_info_list,omitempty"`
+	// user_reward_info_list defines the list of user reward info
+	UserRewardInfoList []*UserRewardInfo `protobuf:"bytes,5,rep,name=user_reward_info_list,json=userRewardInfoList,proto3" json:"user_reward_info_list,omitempty"`
+	// pool_rewards_accum_list defines the list of pool rewards accum
+	PoolRewardsAccumList []*PoolRewardsAccum `protobuf:"bytes,6,rep,name=pool_rewards_accum_list,json=poolRewardsAccumList,proto3" json:"pool_rewards_accum_list,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -499,6 +1199,41 @@ func (x *GenesisState) GetParams() *Params {
 	return nil
 }
 
+func (x *GenesisState) GetVaultList() []*Vault {
+	if x != nil {
+		return x.VaultList
+	}
+	return nil
+}
+
+func (x *GenesisState) GetPoolInfoList() []*PoolInfo {
+	if x != nil {
+		return x.PoolInfoList
+	}
+	return nil
+}
+
+func (x *GenesisState) GetPoolRewardInfoList() []*PoolRewardInfo {
+	if x != nil {
+		return x.PoolRewardInfoList
+	}
+	return nil
+}
+
+func (x *GenesisState) GetUserRewardInfoList() []*UserRewardInfo {
+	if x != nil {
+		return x.UserRewardInfoList
+	}
+	return nil
+}
+
+func (x *GenesisState) GetPoolRewardsAccumList() []*PoolRewardsAccum {
+	if x != nil {
+		return x.PoolRewardsAccumList
+	}
+	return nil
+}
+
 var File_elys_vaults_genesis_proto protoreflect.FileDescriptor
 
 var file_elys_vaults_genesis_proto_rawDesc = []byte{
@@ -508,22 +1243,50 @@ var file_elys_vaults_genesis_proto_rawDesc = []byte{
 	0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67,
 	0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x18, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x0c, 0x47,
-	0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x36, 0x0a, 0x06, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x42, 0x9d, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02,
-	0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75,
-	0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x16, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xca, 0x03, 0x0a,
+	0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x36, 0x0a,
+	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x37, 0x0a, 0x0a, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x6c,
+	0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x41,
+	0x0a, 0x0e, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74,
+	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x73, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x0c, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x4c, 0x69, 0x73,
+	0x74, 0x12, 0x54, 0x0a, 0x15, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x50,
+	0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x12, 0x70, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49,
+	0x6e, 0x66, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x54, 0x0a, 0x15, 0x75, 0x73, 0x65, 0x72, 0x5f,
+	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74,
+	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49,
+	0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x75, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x5a, 0x0a,
+	0x17, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x61, 0x63,
+	0x63, 0x75, 0x6d, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2e, 0x50, 0x6f, 0x6f,
+	0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x41, 0x63, 0x63, 0x75, 0x6d, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x14, 0x70, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
+	0x41, 0x63, 0x63, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x9d, 0x01, 0x0a, 0x0f, 0x63, 0x6f,
+	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0c, 0x47,
+	0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2f, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02,
+	0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73,
+	0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -540,16 +1303,26 @@ func file_elys_vaults_genesis_proto_rawDescGZIP() []byte {
 
 var file_elys_vaults_genesis_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_elys_vaults_genesis_proto_goTypes = []interface{}{
-	(*GenesisState)(nil), // 0: elys.vaults.GenesisState
-	(*Params)(nil),       // 1: elys.vaults.Params
+	(*GenesisState)(nil),     // 0: elys.vaults.GenesisState
+	(*Params)(nil),           // 1: elys.vaults.Params
+	(*Vault)(nil),            // 2: elys.vaults.Vault
+	(*PoolInfo)(nil),         // 3: elys.vaults.PoolInfo
+	(*PoolRewardInfo)(nil),   // 4: elys.vaults.PoolRewardInfo
+	(*UserRewardInfo)(nil),   // 5: elys.vaults.UserRewardInfo
+	(*PoolRewardsAccum)(nil), // 6: elys.vaults.PoolRewardsAccum
 }
 var file_elys_vaults_genesis_proto_depIdxs = []int32{
 	1, // 0: elys.vaults.GenesisState.params:type_name -> elys.vaults.Params
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 1: elys.vaults.GenesisState.vault_list:type_name -> elys.vaults.Vault
+	3, // 2: elys.vaults.GenesisState.pool_info_list:type_name -> elys.vaults.PoolInfo
+	4, // 3: elys.vaults.GenesisState.pool_reward_info_list:type_name -> elys.vaults.PoolRewardInfo
+	5, // 4: elys.vaults.GenesisState.user_reward_info_list:type_name -> elys.vaults.UserRewardInfo
+	6, // 5: elys.vaults.GenesisState.pool_rewards_accum_list:type_name -> elys.vaults.PoolRewardsAccum
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_elys_vaults_genesis_proto_init() }
@@ -558,6 +1331,8 @@ func file_elys_vaults_genesis_proto_init() {
 		return
 	}
 	file_elys_vaults_params_proto_init()
+	file_elys_vaults_vault_proto_init()
+	file_elys_vaults_pool_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_elys_vaults_genesis_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GenesisState); i {
