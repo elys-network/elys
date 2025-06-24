@@ -10,7 +10,7 @@ import (
 func (m Migrator) V21Migration(ctx sdk.Context) error {
 	pools := m.keeper.GetAllPools(ctx)
 	for _, pool := range pools {
-		if pool.AmmPoolId == 2 || pool.AmmPoolId == 10 || pool.AmmPoolId == 15 {
+		if pool.AmmPoolId == 2 {
 			pool.LeveragedLpAmount = math.NewInt(0)
 			m.keeper.SetPool(ctx, pool)
 		}
@@ -18,7 +18,7 @@ func (m Migrator) V21Migration(ctx sdk.Context) error {
 	// Traverse positions and update lp amount and health, as there are few positions, haven't optimized it much
 	positions := m.keeper.GetAllPositions(ctx)
 	for _, position := range positions {
-		if position.AmmPoolId == 2 || position.AmmPoolId == 10 || position.AmmPoolId == 15 {
+		if position.AmmPoolId == 2 {
 			// Retrieve Pool
 			pool, found := m.keeper.GetPool(ctx, position.AmmPoolId)
 			if !found {
