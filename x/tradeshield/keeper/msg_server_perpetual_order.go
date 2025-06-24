@@ -16,6 +16,10 @@ import (
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if k.perpetual.IsWhitelistingEnabled(ctx) && !k.perpetual.CheckIfWhitelisted(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress)) {
+		return nil, fmt.Errorf("address %s is not whitelisted", msg.OwnerAddress)
+	}
+
 	perpetualParams := k.perpetual.GetParams(ctx)
 	if !slices.Contains(perpetualParams.EnabledPools, msg.PoolId) {
 		return nil, fmt.Errorf("pool %d not enabled", msg.PoolId)
