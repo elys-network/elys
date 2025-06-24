@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/elys-network/elys/v6/indexer"
 	"io"
 	"os"
 	"path/filepath"
@@ -396,6 +397,7 @@ func (app *ElysApp) setPostHandler() {
 func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+	indexer.SetCurrentChainHeight(uint64(ctx.BlockHeight() - 1))
 	return app.mm.PreBlock(ctx)
 }
 

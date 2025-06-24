@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"github.com/elys-network/elys/v6/indexer"
 	"io"
 	"os"
 	"strings"
@@ -213,6 +215,7 @@ func initRootCmd(rootCmd *cobra.Command,
 	//rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
 	//rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
 	//rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
+	rootCmd.PersistentFlags().Bool("enable-indexer", false, "Enable the indexer")
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
@@ -339,6 +342,21 @@ func (a appCreator) newApp(
 	//
 
 	//app.OracleKeeper.PriceFeeder.AppConfig = appConfig
+
+	enableIndexer := false
+	var err error
+	if v := appOpts.Get("enable-indexer"); v != nil {
+		if enableIndexer, err = cast.ToBoolE(v); err != nil {
+			panic(err)
+		}
+	}
+
+	if enableIndexer {
+		fmt.Println("-------------Starting Indexer----------------")
+		go indexer.Start(app.InterfaceRegistry(), app.AppCodec(), app.TxConfig())
+	} else {
+		fmt.Println("-------------NOT Starting Indexer----------------")
+	}
 
 	return app
 }
