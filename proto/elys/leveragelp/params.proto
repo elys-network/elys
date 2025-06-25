@@ -59,4 +59,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
   bool stop_loss_enabled = 11;
+  string liabilities_factor = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

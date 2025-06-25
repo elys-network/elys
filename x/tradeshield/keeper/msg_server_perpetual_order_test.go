@@ -12,6 +12,11 @@ import (
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 	addr := suite.AddAccounts(3, nil)
 
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
+
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -134,6 +139,11 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 	addr := suite.AddAccounts(3, nil)
 
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
+
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -207,6 +217,11 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 	addr := suite.AddAccounts(3, nil)
+
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
 
 	testCases := []struct {
 		name                 string
@@ -286,6 +301,11 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 	addr := suite.AddAccounts(3, nil)
 
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
+
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -346,6 +366,11 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelAllPerpetualOrders() {
 	addr := suite.AddAccounts(3, nil)
+
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1, 2}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
 
 	testCases := []struct {
 		name                 string
