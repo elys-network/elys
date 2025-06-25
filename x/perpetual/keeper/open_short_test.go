@@ -31,8 +31,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
