@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	errorsmod "cosmossdk.io/errors"
 
@@ -15,10 +16,19 @@ import (
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if k.perpetual.IsWhitelistingEnabled(ctx) && !k.perpetual.CheckIfWhitelisted(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress)) {
+		return nil, fmt.Errorf("address %s is not whitelisted", msg.OwnerAddress)
+	}
+
+	perpetualParams := k.perpetual.GetParams(ctx)
+	if !slices.Contains(perpetualParams.EnabledPools, msg.PoolId) {
+		return nil, fmt.Errorf("pool %d not enabled", msg.PoolId)
+	}
+
 	// Verify if perpetual pool exists
 	_, found := k.perpetual.GetPool(ctx, msg.PoolId)
 	if !found {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("pool %d not found", msg.PoolId))
+		return nil, fmt.Errorf("pool %d not found", msg.PoolId)
 	}
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
