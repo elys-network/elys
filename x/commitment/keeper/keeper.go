@@ -186,13 +186,15 @@ func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	k.SetTotalSupply(ctx, prev)
 
 	// Emit event to track Eden and EdenB mint amount
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeMintCoins,
-			sdk.NewAttribute("module", moduleName),
-			sdk.NewAttribute("coins", coinsChanged.String()),
-		),
-	)
+	if !coinsChanged.Empty() {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeMintCoins,
+				sdk.NewAttribute("module", moduleName),
+				sdk.NewAttribute("coins", coinsChanged.String()),
+			),
+		)
+	}
 
 	if amt.Empty() {
 		return nil
@@ -215,13 +217,15 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	k.SetTotalSupply(ctx, prev)
 
 	// Emit event to track Eden and EdenB burn amount
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeBurnCoins,
-			sdk.NewAttribute("module", moduleName),
-			sdk.NewAttribute("coins", coinsChanged.String()),
-		),
-	)
+	if !coinsChanged.Empty() {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeBurnCoins,
+				sdk.NewAttribute("module", moduleName),
+				sdk.NewAttribute("coins", coinsChanged.String()),
+			),
+		)
+	}
 
 	if amt.Empty() {
 		return nil

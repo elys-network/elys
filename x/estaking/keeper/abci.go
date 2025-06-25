@@ -134,14 +134,14 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 
 	// Maximum eden APR - 30% by default
 	stakersMaxEdenAmount := osmomath.BigDecFromDec(params.MaxEdenRewardAprStakers).
-		Mul(osmomath.BigDecFromSDKInt(totalElysEdenStake)).
+		Mul(osmomath.BigDecFromSDKInt(totalElysEdenEdenBStake)).
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.Dec().TruncateInt())
 
 	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
-	stakersEdenBAmount := osmomath.BigDecFromSDKInt(totalElysEdenEdenBStake).
+	stakersEdenBAmount := osmomath.BigDecFromSDKInt(totalElysEdenStake).
 		Mul(params.GetBigDecEdenBoostApr()).
 		QuoInt64(totalBlocksPerYear).
 		Dec().
