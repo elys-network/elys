@@ -2,35 +2,34 @@ package chain
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/elys-network/elys/v6/indexer/db"
 	"log"
 	"time"
 )
 
 type Block struct {
+	ID              string    `json:"id"`
 	LastBlockHeight int64     `json:"last_block_height"`
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
 }
 
-// UpsertBlock inserts a new block height record, or updates the timestamp if it already exists.
-// This is more practical than a standard UPDATE since the only column is the PK.
-func UpsertBlock(height int64) (*Block, error) {
-	sqlStatement := `
-		INSERT INTO chain.block (last_block_height)
-		VALUES ($1)
-		ON CONFLICT (last_block_height) DO UPDATE
-		SET updated_at = CURRENT_TIMESTAMP
-		RETURNING last_block_height, created_at, updated_at`
-
+func UpsertBlockHeight(height int64) (*Block, error) {
+	id := "latest_block_height"
+	upsertBlockHeight := `
+		INSERT INTO chain.block (id, last_block_height)
+		VALUES ($1, $2)
+		ON CONFLICT (id) DO UPDATE
+		SET last_block_height = EXCLUDED.last_block_height,
+    		updated_at = CURRENT_TIMESTAMP
+		RETURNING id, last_block_height, created_at, updated_at;
+	`
+	row := db.DataBase.QueryRow(upsertBlockHeight, id, height)
 	block := &Block{}
-	err := db.DataBase.QueryRow(sqlStatement, height).Scan(&block.LastBlockHeight, &block.CreatedAt, &block.UpdatedAt)
+	err := row.Scan(&block.ID, &block.LastBlockHeight, &block.CreatedAt, &block.UpdatedAt)
 	if err != nil {
-		log.Printf("Error upserting block record: %v", err)
 		return nil, err
 	}
-	fmt.Printf("Successfully upserted block record for height %d\n", height)
 	return block, nil
 }
 

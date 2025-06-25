@@ -6,24 +6,25 @@ ALTER ROLE elys SET search_path TO tradeshield;
 
 CREATE TABLE IF NOT EXISTS chain.block
 (
-    last_block_height BIGINT NOT NULL          DEFAULT 0,
+    id                VARCHAR(255) NOT NULL,
+    last_block_height BIGINT       NOT NULL    DEFAULT 0,
     created_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (last_block_height)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS tradeshield.perpetual_orders
 (
-    owner_address     VARCHAR(255)   NOT NULL,
-    pool_id           BIGINT         NOT NULL,
-    order_id          BIGINT         NOT NULL,
-    order_type        SMALLINT       NOT NULL,
-    is_long           bool           NOT NULL,
-    collateral_amount NUMERIC(36, 0) NOT NULL,
-    collateral_denom  VARCHAR(128)   NOT NULL,
-    price             DECIMAL(18, 6) NOT NULL,
-    take_profit_price DECIMAL(18, 6) NOT NULL,
-    stop_loss_price   DECIMAL(18, 6) NOT NULL,
+    owner_address     VARCHAR(255) NOT NULL,
+    pool_id           BIGINT       NOT NULL,
+    order_id          BIGINT       NOT NULL,
+    order_type        SMALLINT     NOT NULL,
+    is_long           bool         NOT NULL,
+    collateral_amount NUMERIC      NOT NULL,
+    collateral_denom  VARCHAR(128) NOT NULL,
+    price             NUMERIC      NOT NULL,
+    take_profit_price NUMERIC      NOT NULL,
+    stop_loss_price   NUMERIC      NOT NULL,
     created_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (owner_address, pool_id, order_id)

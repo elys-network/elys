@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 
@@ -99,6 +100,20 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 	if err != nil {
 		return nil, err
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(types.TypeEvtCreatePerpetualLimitOrder,
+			sdk.NewAttribute("pool_id", strconv.FormatInt(int64(pendingPerpetualOrder.PoolId), 10)),
+			sdk.NewAttribute("owner", pendingPerpetualOrder.OwnerAddress),
+			sdk.NewAttribute("order_id", strconv.FormatInt(int64(pendingPerpetualOrder.OrderId), 10)),
+			sdk.NewAttribute("trigger_price", pendingPerpetualOrder.TriggerPrice.String()),
+			sdk.NewAttribute("collateral", pendingPerpetualOrder.Collateral.Amount.String()),
+			sdk.NewAttribute("collateral_denom", pendingPerpetualOrder.Collateral.Denom),
+			sdk.NewAttribute("leverage", pendingPerpetualOrder.Leverage.String()),
+			sdk.NewAttribute("take_profit_price", pendingPerpetualOrder.TakeProfitPrice.String()),
+			sdk.NewAttribute("stop_loss_price", pendingPerpetualOrder.StopLossPrice.String()),
+			sdk.NewAttribute("position_type", pendingPerpetualOrder.Position.String()),
+		))
 
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: pendingPerpetualOrder.OrderId,

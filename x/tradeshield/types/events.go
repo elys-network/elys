@@ -17,6 +17,7 @@ const (
 	TypeEvtExecuteLimitSellSpotOrder      = "tradeshield_execute_limit_sell_spot_order"
 	TypeEvtExecuteStopLossSpotOrder       = "tradeshield_execute_stop_loss_spot_order"
 	TypeEvtExecuteMarketBuySpotOrder      = "tradeshield_execute_market_buy_spot_order"
+	TypeEvtCreatePerpetualLimitOrder      = "tradeshield_create_perpetual_limit_order"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {

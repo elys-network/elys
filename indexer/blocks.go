@@ -21,5 +21,9 @@ func ProcessBlock() {
 		for blockHeight := indexerLastHeight + 1; blockHeight <= chainHeight; blockHeight++ {
 			ProcessTransactions(blockHeight)
 		}
+		_, err = chain.UpsertBlockHeight(chainHeight)
+		if err != nil {
+			log.Printf("Error upserting block %d: %v", chainHeight, err)
+		}
 	}
 }

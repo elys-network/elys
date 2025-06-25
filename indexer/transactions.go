@@ -6,8 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/elys-network/elys/v6/indexer/schema/tradeshield"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 	"log"
+	"strconv"
 )
 
 type EncodingConfig struct {
@@ -28,17 +30,12 @@ func setEncodingConfig(ir types.InterfaceRegistry, marshaller codec.Codec, confi
 
 func ProcessTransactions(blockHeight int64) {
 
-	blockResponse, err := TxClient.GetBlockWithTxs(context.Background(), &tx.GetBlockWithTxsRequest{Height: blockHeight})
-	if err != nil {
-		return
-	}
-
 	blockResults, err := RPCClient.BlockResults(context.Background(), &blockHeight)
 	if err != nil {
 		return
 	}
 
-	for i, tx := range blockResponse.Txs {
+	for _, txResult := range blockResults.TxsResults {
 		// Decode the raw transaction bytes into a readable format.
 		//decodedTx, err := encodingConfig.TxConfig.TxDecoder()(txBytes)
 		//if err != nil {
@@ -46,29 +43,45 @@ func ProcessTransactions(blockHeight int64) {
 		//	continue
 		//}
 
-		fmt.Println("----")
-		fmt.Println(tx)
+		fmt.Println("TX RESULTS:")
+		fmt.Println(txResult)
 
-		// Get the corresponding transaction result.
-		txResult := blockResults.TxsResults[i]
+		if txResult.Code == 0 {
+			for _, event := range txResult.Events {
+				switch event.Type {
+				case tradeshieldmoduletypes.TypeEvtCreatePerpetualLimitOrder:
+					attributes := event.Attributes
 
-		// Determine transaction status. Code 0 is success.
-		status := "✅ SUCCESSFUL"
-		if txResult.Code != 0 {
-			status = "❌ FAILED"
-		}
+					poolId, err := strconv.ParseInt(attributes[0].Value, 10, 64)
+					if err != nil {
+						panic(err)
+					}
 
-		fmt.Printf("--- Transaction %d: %s ---\n", i, status)
-		fmt.Printf("  - Result Code: %d\n", txResult.Code)
+					orderId, err := strconv.ParseInt(attributes[2].Value, 10, 64)
+					if err != nil {
+						panic(err)
+					}
 
-		fmt.Println(txResult.Data)
-		t1, err := encodingConfig.TxConfig.TxDecoder()(txResult.Data)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		fmt.Println(t1)
-		if txResult.Code != 0 {
-			fmt.Printf("  - Error Log: %s\n", txResult.Log)
+					val := tradeshield.PerpetualOrder{
+						OwnerAddress:     attributes[1].Value,
+						PoolID:           poolId,
+						OrderID:          orderId,
+						OrderType:        0,
+						IsLong:           true,
+						CollateralAmount: attributes[4].Value,
+						CollateralDenom:  attributes[5].Value,
+						Price:            attributes[3].Value,
+						TakeProfitPrice:  attributes[7].Value,
+						StopLossPrice:    attributes[8].Value,
+					}
+
+					err = tradeshield.CreatePerpetualOrder(&val)
+					if err != nil {
+						log.Fatal(err)
+					}
+				default:
+				}
+			}
 		}
 
 		//for _, msg := range t1.GetMsgs() {
