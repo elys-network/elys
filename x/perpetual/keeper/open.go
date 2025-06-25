@@ -104,6 +104,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	// should not be checked before OpenConsolidate
 	denomPrice, err := k.GetDenomPrice(ctx, tradingAsset)
+	if err != nil {
+		return nil, err
+	}
 	if mtp.GetMTPValue(denomPrice).LT(params.MinimumNotionalValue) {
 		return nil, fmt.Errorf("not enough notional value for the mtp: minimum %s, mtp: %s", params.MinimumNotionalValue.String(), mtp.GetMTPValue(denomPrice).String())
 	}
