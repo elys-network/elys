@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestQuerySwapEstimation() {
@@ -43,7 +44,7 @@ func (suite *AmmKeeperTestSuite) TestQuerySwapEstimation() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := math.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				_, err := suite.app.AmmKeeper.SwapEstimation(suite.ctx, &types.QuerySwapEstimationRequest{
 					Routes: []*types.SwapAmountInRoute{

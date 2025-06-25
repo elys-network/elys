@@ -2,13 +2,28 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 	var mtp types.MTP
 	mtp.TradingAsset = ptypes.ATOM
+
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -17,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 	}{
 		{
 			"price not set",
-			"asset price uatom not found",
+			"asset info uatom not found",
 			math.LegacyDec{},
 			func() {
 			},
@@ -25,7 +40,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"LONG",
 			"",
-			math.LegacyMustNewDecFromStr("1.176470588235294118"),
+			math.LegacyMustNewDecFromStr("1.176470588235294117"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_LONG
@@ -36,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"SHORT",
 			"",
-			math.LegacyMustNewDecFromStr("1.666666666666666667"),
+			math.LegacyMustNewDecFromStr("1.666666666666666666"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_SHORT
@@ -61,11 +76,11 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			effectiveLeverage, err := suite.app.PerpetualKeeper.GetEffectiveLeverage(suite.ctx, mtp)
-			suite.Require().Equal(tc.result, effectiveLeverage)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
+				suite.Require().Equal(tc.result, effectiveLeverage)
 				suite.Require().NoError(err)
 			}
 		})

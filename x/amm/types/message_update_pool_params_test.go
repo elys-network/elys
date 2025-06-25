@@ -1,13 +1,13 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,7 +22,7 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 			msg: types.MsgUpdatePoolParams{
 				Authority: "invalid_address",
 				PoolParams: types.PoolParams{
-					SwapFee:   sdkmath.LegacyZeroDec(),
+					SwapFee:   math.LegacyZeroDec(),
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
@@ -34,7 +34,7 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 				Authority: sample.AccAddress(),
 				PoolId:    1,
 				PoolParams: types.PoolParams{
-					SwapFee:   sdkmath.LegacyZeroDec(),
+					SwapFee:   math.LegacyZeroDec(),
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},

@@ -8,7 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/burner/params.proto";
 import "elys/burner/history.proto";
 
-option go_package = "github.com/elys-network/elys/x/burner/types";
+option go_package = "github.com/elys-network/elys/v6/x/burner/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -20,8 +20,7 @@ service Query {
 
   // Queries a list of History items.
   rpc History(QueryGetHistoryRequest) returns (QueryGetHistoryResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/burner/history/{timestamp}/{denom}";
+    option (google.api.http).get = "/elys-network/elys/burner/history/{block}";
   }
   rpc HistoryAll(QueryAllHistoryRequest) returns (QueryAllHistoryResponse) {
     option (google.api.http).get = "/elys-network/elys/burner/history";
@@ -37,10 +36,7 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetHistoryRequest {
-  string timestamp = 1;
-  string denom = 2;
-}
+message QueryGetHistoryRequest { uint64 block = 1; }
 
 message QueryGetHistoryResponse {
   History history = 1 [ (gogoproto.nullable) = false ];

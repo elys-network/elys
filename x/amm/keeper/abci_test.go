@@ -8,9 +8,9 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
@@ -106,7 +106,7 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					TokenOutMinAmount: sdkmath.ZeroInt(),
 				},
 			},
-			expSwapOrder: []uint64{1, 0, 2},
+			expSwapOrder: []uint64{1, 2, 0},
 		},
 		{
 			desc:              "three requests combining different swap msg types",
@@ -473,7 +473,7 @@ func (suite *AmmKeeperTestSuite) TestAbci() {
 
 				poolId := uint64(2)
 				ratio := suite.app.AmmKeeper.GetStackedSlippage(suite.ctx, poolId)
-				suite.Require().Equal(sdkmath.LegacyZeroDec(), ratio)
+				suite.Require().Equal(sdkmath.LegacyZeroDec(), ratio.Dec())
 			},
 			func() {},
 		},

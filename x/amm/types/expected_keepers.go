@@ -3,11 +3,14 @@ package types
 import (
 	"context"
 
+	"github.com/osmosis-labs/osmosis/osmomath"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -37,9 +40,14 @@ type BankKeeper interface {
 //
 //go:generate mockery --srcpkg . --name OracleKeeper --structname OracleKeeper --filename oracle_keeper.go --with-expecter
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
+	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, bool)
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	//SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	//CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	//SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 
 // AssetProfileKeeper defines the expected interfaces
@@ -62,7 +70,11 @@ type AccountedPoolKeeper interface {
 }
 
 type TierKeeper interface {
-	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
+	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio osmomath.BigDec, tier string, discount osmomath.BigDec)
 
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) osmomath.BigDec
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parametertypes.Params)
 }

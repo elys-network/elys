@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -41,16 +41,26 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 		blocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
-		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
+		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().QuoInt64(blocksPerYear)
+		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().QuoInt64(blocksPerYear)
+
+		fundingShareLong := math.LegacyZeroDec()
+		if totalShortOpenInterest.IsPositive() {
+			fundingShareLong = fundingAmountLong.Quo(totalShortOpenInterest.ToLegacyDec())
+		}
+
+		fundingShareShort := math.LegacyZeroDec()
+		if totalLongOpenInterest.IsPositive() {
+			fundingShareShort = fundingAmountShort.Quo(totalLongOpenInterest.ToLegacyDec())
+		}
 
 		k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-			BlockHeight:        ctx.BlockHeight(),
-			BlockTime:          ctx.BlockTime().Unix(),
-			FundingRateLong:    fundingRateLong,
-			FundingRateShort:   fundingRateShort,
-			FundingAmountShort: fundingAmountShort,
-			FundingAmountLong:  fundingAmountLong,
+			BlockHeight:       ctx.BlockHeight(),
+			BlockTime:         ctx.BlockTime().Unix(),
+			FundingRateLong:   fundingRateLong,
+			FundingRateShort:  fundingRateShort,
+			FundingShareShort: fundingShareShort,
+			FundingShareLong:  fundingShareLong,
 		})
 		k.SetPool(ctx, pool)
 	}

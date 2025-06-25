@@ -2,9 +2,9 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CalcInAmtGivenOut calculates token to be provided, fee added,
@@ -13,14 +13,14 @@ func (k Keeper) CalcInAmtGivenOut(
 	ctx sdk.Context,
 	poolId uint64,
 	oracle types.OracleKeeper,
-	snapshot *types.Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (
-	tokenIn sdk.Coin, slippage sdkmath.LegacyDec, err error,
+	snapshot types.SnapshotPool,
+	tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec) (
+	tokenIn sdk.Coin, slippage osmomath.BigDec, err error,
 ) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
-	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee, k.accountedPoolKeeper)
+	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
 }

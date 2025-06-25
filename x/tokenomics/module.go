@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/tokenomics/client/cli"
-	"github.com/elys-network/elys/x/tokenomics/keeper"
-	"github.com/elys-network/elys/x/tokenomics/migrations"
-	"github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/elys-network/elys/v6/x/tokenomics/client/cli"
+	"github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v6/x/tokenomics/migrations"
+	"github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 var (

@@ -19,9 +19,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/elys-network/elys/x/epochs/keeper"
-	"github.com/elys-network/elys/x/epochs/migrations"
-	"github.com/elys-network/elys/x/epochs/types"
+	"github.com/elys-network/elys/v6/x/epochs/keeper"
+	"github.com/elys-network/elys/v6/x/epochs/migrations"
+	"github.com/elys-network/elys/v6/x/epochs/types"
 )
 
 var (
@@ -170,8 +170,8 @@ func (am AppModule) EndBlock(_ context.Context) error {
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
-func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
-	return []simtypes.WeightedProposalContent{}
+func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalMsg {
+	return []simtypes.WeightedProposalMsg{}
 }
 
 // RegisterStoreDecoder registers a decoder for supply module's types

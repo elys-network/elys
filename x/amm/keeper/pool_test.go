@@ -7,12 +7,13 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 )
 
@@ -161,7 +162,7 @@ func (suite *AmmKeeperTestSuite) TestPool() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				err := suite.app.AmmKeeper.AddToPoolBalanceAndUpdateLiquidity(suite.ctx, &pool, sdkmath.ZeroInt(), sdk.NewCoins(sdk.NewCoin("non-existant-denom", amount)))
 				suite.Require().Error(err)
@@ -177,7 +178,7 @@ func (suite *AmmKeeperTestSuite) TestPool() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				err := suite.app.AmmKeeper.AddToPoolBalanceAndUpdateLiquidity(suite.ctx, &pool, sdkmath.ZeroInt(), sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, amount)))
 				suite.Require().NoError(err)
@@ -193,7 +194,7 @@ func (suite *AmmKeeperTestSuite) TestPool() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				err := suite.app.AmmKeeper.RemoveFromPoolBalanceAndUpdateLiquidity(suite.ctx, &pool, sdkmath.ZeroInt(), sdk.NewCoins(sdk.NewCoin("non-existant-denom", amount)))
 				suite.Require().Error(err)
@@ -209,7 +210,7 @@ func (suite *AmmKeeperTestSuite) TestPool() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				err := suite.app.AmmKeeper.RemoveFromPoolBalanceAndUpdateLiquidity(suite.ctx, &pool, sdkmath.ZeroInt(), sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, amount)))
 				suite.Require().NoError(err)

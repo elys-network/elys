@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/commitment"
+	"github.com/elys-network/elys/v6/api/elys/commitment"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -57,6 +57,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:            "show-kol [address]",
 					Short:          "Query kols",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
+				},
+				{
+					RpcMethod:      "RewardProgram",
+					Use:            "show-reward-program [address]",
+					Short:          "Query reward program",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
+				},
+				{
+					RpcMethod: "TotalRewardProgramClaimed",
+					Use:       "total-reward-program-claimed",
+					Short:     "Query total reward program claimed",
 				},
 			},
 		},

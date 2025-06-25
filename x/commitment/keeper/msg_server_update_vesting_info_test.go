@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/app"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/app"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -84,7 +84,7 @@ func TestUpdateVestingInfo(t *testing.T) {
 	require.NoError(t, err)
 }
 
-// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with wrong gov address
+// TestKeeper_UpdateVestingInfoWithWrongGovAddress tests the UpdateVestingInfo function with wrong gov address
 func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
@@ -109,7 +109,7 @@ func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with negative num blocks
+// TestKeeper_UpdateVestingInfoWithNegativeNumBlocks tests the UpdateVestingInfo function with negative num blocks
 func TestKeeper_UpdateVestingInfoWithNegativeNumBlocks(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 

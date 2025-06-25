@@ -6,7 +6,7 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/x/perpetual/client/cli"
+	"github.com/elys-network/elys/v6/x/perpetual/client/cli"
 )
 
 func TestUpdatestopLoss(t *testing.T) {
@@ -20,6 +20,7 @@ func TestUpdatestopLoss(t *testing.T) {
 
 	args := []string{
 		"100.0",
+		"1",
 		"1",
 		"--from=" + val.Address.String(),
 		"-y",

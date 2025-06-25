@@ -3,9 +3,10 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/testutil/sample"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,18 +48,18 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 			"",
 		},
 		{
-			"invalid asset denom",
+			"empty asset denom",
 			types.MsgFeedMultipleExternalLiquidity{
 				Sender: sample.AccAddress(),
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "invalid denom", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyNewDec(500)},
+							{Asset: "", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyNewDec(500)},
 						},
 					},
 				},
 			},
-			"invalid denom: invalid denom",
+			"asset cannot be empty",
 		},
 		{
 			"negative depth",
@@ -95,7 +96,7 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "tokenA", Depth: sdkmath.LegacyDec{}, Amount: sdkmath.LegacyNewDec(500)},
+							{Asset: "tokenA", Depth: math.LegacyDec{}, Amount: sdkmath.LegacyNewDec(500)},
 						},
 					},
 				},
@@ -109,7 +110,7 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "tokenA", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyDec{}},
+							{Asset: "tokenA", Depth: sdkmath.LegacyNewDec(1000), Amount: math.LegacyDec{}},
 						},
 					},
 				},

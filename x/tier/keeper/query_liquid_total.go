@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -19,6 +19,6 @@ func (k Keeper) LiquidTotal(goCtx context.Context, req *types.QueryLiquidTotalRe
 	total := k.RetrieveLiquidAssetsTotal(ctx, sender)
 
 	return &types.QueryLiquidTotalResponse{
-		Total: total,
+		Total: total.Dec(),
 	}, nil
 }

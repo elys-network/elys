@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/estaking/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
 )
 
 type msgServer struct {
@@ -28,6 +30,12 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Prevent changing Eden and EdenB validators
+	oldParams := k.GetParams(ctx)
+	req.Params.EdenCommitVal = oldParams.EdenCommitVal
+	req.Params.EdenbCommitVal = oldParams.EdenbCommitVal
+
 	k.SetParams(ctx, req.Params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
@@ -92,10 +100,6 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 	if err != nil {
 		return nil, err
 	}
-
-	if err != nil {
-		return nil, err
-	}
 	return &types.MsgWithdrawElysStakingRewardsResponse{Amount: rewards}, nil
 }
 
@@ -105,7 +109,7 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 	var amount sdk.Coins
 	var err error = nil
 	var rewards = sdk.Coins{}
-	err = k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
+	iterateError := k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
 		valAddr, errB := sdk.ValAddressFromBech32(del.GetValidatorAddr())
 		if errB != nil {
 			err = errB
@@ -127,7 +131,7 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		})
 		return false
 	})
-	if err != nil {
+	if iterateError != nil {
 		return nil, err
 	}
 
@@ -135,4 +139,55 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		return nil, err
 	}
 	return &types.MsgWithdrawAllRewardsResponse{Amount: rewards}, nil
+}
+
+func (k msgServer) UnjailGovernor(goCtx context.Context, msg *types.MsgUnjailGovernor) (*types.MsgUnjailGovernorResponse, error) {
+	sender, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	validatorAddr := sdk.ValAddress(sender)
+
+	validator, err := k.Validator(ctx, validatorAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	// cannot be unjailed if no self-delegation exists
+	// k.Delegation sends err as nil if no delegations are found
+	selfDel, err := k.Keeper.Keeper.Delegation(ctx, sender, validatorAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	if selfDel == nil {
+		return nil, errors.New("governor has no self-delegation; cannot be unjailed")
+	}
+
+	tokens := validator.TokensFromShares(selfDel.GetShares()).TruncateInt()
+	minSelfBond := validator.GetMinSelfDelegation()
+	if tokens.LT(minSelfBond) {
+		return nil, fmt.Errorf("governor's self delegation less than minimum; cannot be unjailed: %s less than %s", tokens.String(), minSelfBond.String())
+	}
+
+	// cannot be unjailed if not jailed
+	if !validator.IsJailed() {
+		return nil, errors.New("governor not jailed; cannot be unjailed")
+	}
+
+	consAddr, err := validator.GetConsAddr()
+	if err != nil {
+		return nil, err
+	}
+
+	// Though we do have staking keeper in estaking keeper and we can directly call Unjail of staking keeper,
+	// calling through Consumer Keeper seems to be more appropriate as it have extra checks for PreCCV, etc.
+	if err = k.Keeper.ConsumerKeeper.Unjail(ctx, consAddr); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUnjailGovernorResponse{}, nil
 }

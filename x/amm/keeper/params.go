@@ -1,12 +1,14 @@
 package keeper
 
 import (
+	"slices"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
@@ -42,26 +44,8 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 		}
 	}
 
-	found := false
-	for _, asset := range params.BaseAssets {
-		if asset == denom {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(params.BaseAssets, denom)
 	return found
-}
-
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-
-	b := store.Get([]byte(types.ParamsKey))
-	if b == nil {
-		return
-	}
-
-	k.cdc.MustUnmarshal(b, &params)
-	return
 }
 
 func (k Keeper) V8Migrate(ctx sdk.Context) error {

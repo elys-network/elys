@@ -1,17 +1,17 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *TestSuite) TestCalculateTokenARate() {
-	tokenARate := types.CalculateTokenARate(sdkmath.LegacyNewDec(10), sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(100), sdkmath.LegacyNewDec(6))
-	suite.Require().Equal(tokenARate.String(), sdkmath.LegacyNewDec(5).String())
+	tokenARate := types.CalculateTokenARate(osmomath.NewBigDec(10), osmomath.NewBigDec(3), osmomath.NewBigDec(100), osmomath.NewBigDec(6))
+	suite.Require().Equal(tokenARate.String(), osmomath.NewBigDec(5).String())
 
-	tokenARate = types.CalculateTokenARate(sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(10), sdkmath.LegacyNewDec(6))
-	suite.Require().Equal(tokenARate.String(), sdkmath.LegacyNewDec(0).String())
+	tokenARate = types.CalculateTokenARate(osmomath.NewBigDec(0), osmomath.NewBigDec(3), osmomath.NewBigDec(10), osmomath.NewBigDec(6))
+	suite.Require().Equal(tokenARate.String(), osmomath.NewBigDec(0).String())
 
-	tokenARate = types.CalculateTokenARate(sdkmath.LegacyNewDec(10), sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(100), sdkmath.LegacyNewDec(0))
-	suite.Require().Equal(tokenARate.String(), sdkmath.LegacyNewDec(0).String())
+	tokenARate = types.CalculateTokenARate(osmomath.NewBigDec(10), osmomath.NewBigDec(3), osmomath.NewBigDec(100), osmomath.NewBigDec(0))
+	suite.Require().Equal(tokenARate.String(), osmomath.NewBigDec(0).String())
 }

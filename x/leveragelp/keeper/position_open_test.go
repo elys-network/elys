@@ -6,11 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestOpenLong() {
@@ -81,10 +81,16 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(50000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -96,14 +102,14 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 	suite.Require().NoError(err)
 	suite.Require().Equal(position.Address, addr.String())
 	suite.Require().Equal(position.Collateral.String(), "1000uusdc")
 	suite.Require().Equal(position.Liabilities.String(), "4000")
 	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390000000000000") // slippage enabled on amm
 	// suite.Require().Equal(position.LeveragedLpAmount.String(), "50000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235117522775069750") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235117522775069654") // slippage enabled on amm
 	suite.Require().Equal(position.Id, uint64(1))
 	suite.Require().Equal(position.AmmPoolId, uint64(1))
 
@@ -124,7 +130,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position2.Liabilities.String(), "8000")
 	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98805291560975610") // slippage enabled on amm
 	// .Require().Equal(position2.LeveragedLpAmount.String(), "100000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235769184451886000") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235769184451886056") // slippage enabled on amm
 	// suite.Require().Equal(position2.PositionHealth.String(), "1.250000000000000000") // slippage disabled on amm
 	suite.Require().Equal(position2.Id, uint64(1))
 	suite.Require().Equal(position2.AmmPoolId, uint64(1))

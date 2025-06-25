@@ -6,8 +6,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // VestNow provides functionality to get the token immediately but lower amount than original
@@ -56,6 +56,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	prev := k.GetTotalSupply(ctx)
 	prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(msg.Amount)
+	prev.TotalEdenVested = prev.TotalEdenVested.Add(msg.Amount)
 	k.SetTotalSupply(ctx, prev)
 
 	// Update the commitments

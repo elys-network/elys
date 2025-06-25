@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	"errors"
+
 	sdkerrors "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 // MTPTriggerChecksAndUpdates Should be run whenever there is a state change of MTP. Runs in following order:
@@ -22,7 +23,10 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 	interestFullyPaid := true
 
 	// Update interests
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
+	err = k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
+	if err != nil {
+		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, sdkerrors.Wrap(err, "error updating borrow interest unpaid liability")
+	}
 
 	// Pay funding fee
 	fundingFeeFullyPaid, fundingFeeAmt, fundingAmtDistributed, err = k.SettleFunding(ctx, mtp, pool)
@@ -66,11 +70,10 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 
 	baseCurrency := baseCurrencyEntry.Denom
 
-	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 	if err != nil {
 		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, sdkerrors.Wrap(err, "error updating mtp health")
 	}
-	mtp.MtpHealth = h
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {

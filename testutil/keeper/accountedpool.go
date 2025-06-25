@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -13,8 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/accountedpool/keeper"
-	"github.com/elys-network/elys/x/accountedpool/types"
+	"github.com/elys-network/elys/v6/x/accountedpool/keeper"
+	"github.com/elys-network/elys/v6/x/accountedpool/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,6 +33,7 @@ func AccountedPoolKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k := keeper.NewKeeper(
 		cdc,
 		storeService,
+		nil,
 		nil,
 	)
 

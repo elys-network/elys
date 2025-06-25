@@ -17,10 +17,9 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/burner/client/cli"
-	"github.com/elys-network/elys/x/burner/keeper"
-	migrations "github.com/elys-network/elys/x/burner/migration"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v6/x/burner/client/cli"
+	"github.com/elys-network/elys/v6/x/burner/keeper"
+	"github.com/elys-network/elys/v6/x/burner/types"
 )
 
 var (
@@ -123,11 +122,6 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
-	m := migrations.NewMigrator(am.keeper)
-	err := cfg.RegisterMigration(types.ModuleName, 1, m.V2Migration)
-	if err != nil {
-		panic(err)
-	}
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)

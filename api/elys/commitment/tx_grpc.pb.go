@@ -48,6 +48,7 @@ type MsgClient interface {
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error)
 	ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error)
+	ClaimRewardProgram(ctx context.Context, in *MsgClaimRewardProgram, opts ...grpc.CallOption) (*MsgClaimRewardProgramResponse, error)
 }
 
 type msgClient struct {
@@ -184,6 +185,15 @@ func (c *msgClient) ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.
 	return out, nil
 }
 
+func (c *msgClient) ClaimRewardProgram(ctx context.Context, in *MsgClaimRewardProgram, opts ...grpc.CallOption) (*MsgClaimRewardProgramResponse, error) {
+	out := new(MsgClaimRewardProgramResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimRewardProgram", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -218,6 +228,7 @@ type MsgServer interface {
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error)
 	ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error)
+	ClaimRewardProgram(context.Context, *MsgClaimRewardProgram) (*MsgClaimRewardProgramResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -266,6 +277,9 @@ func (UnimplementedMsgServer) ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*
 }
 func (UnimplementedMsgServer) ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimKol not implemented")
+}
+func (UnimplementedMsgServer) ClaimRewardProgram(context.Context, *MsgClaimRewardProgram) (*MsgClaimRewardProgramResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimRewardProgram not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -532,6 +546,24 @@ func _Msg_ClaimKol_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ClaimRewardProgram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimRewardProgram)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimRewardProgram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/ClaimRewardProgram",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimRewardProgram(ctx, req.(*MsgClaimRewardProgram))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -594,6 +626,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClaimKol",
 			Handler:    _Msg_ClaimKol_Handler,
+		},
+		{
+			MethodName: "ClaimRewardProgram",
+			Handler:    _Msg_ClaimRewardProgram_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

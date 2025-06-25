@@ -16,10 +16,10 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	assetprofilekeeper "github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	estakingkeeper "github.com/elys-network/elys/v6/x/estaking/keeper"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 var (
@@ -105,7 +105,7 @@ func FilterDenoms(coins sdk.Coins, denoms ...string) sdk.Coins {
 	return filtered
 }
 
-// AllocateTokens handles distribution of the collected fees
+// AllocateEdenUsdcTokens handles distribution of the collected fees
 // USDC and Eden is distributed for staking Elys and locking Eden and locking EdenB
 func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
@@ -185,7 +185,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	}
 }
 
-// AllocateTokens handles distribution of the collected fees
+// AllocateEdenBTokens handles distribution of the collected fees
 // EdenB is distributed for staking Elys and locking Eden, not for locking EdenB
 func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is

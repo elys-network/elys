@@ -2,14 +2,15 @@ package network
 
 import (
 	"fmt"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"testing"
 	"time"
 
+	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+
 	"cosmossdk.io/log"
 	pruningtypes "cosmossdk.io/store/pruning/types"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	cometbftrand "github.com/cometbft/cometbft/libs/rand"
-	cosmosdb "github.com/cosmos/cosmos-db"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -20,7 +21,7 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/v6/app"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -97,6 +98,7 @@ func DefaultConfig(tempDirectory string) network.Config {
 		map[int64]bool{},
 		tempDirectory,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	return network.Config{
@@ -110,10 +112,11 @@ func DefaultConfig(tempDirectory string) network.Config {
 			tempDirectory := tempDirectory + uuid.New().String()
 
 			return app.NewElysApp(
-				val.GetCtx().Logger, cosmosdb.NewMemDB(), nil, true,
+				val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
 				map[int64]bool{},
 				tempDirectory,
 				appOptions,
+				[]wasmkeeper.Option{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 				baseapp.SetChainID(chainId),

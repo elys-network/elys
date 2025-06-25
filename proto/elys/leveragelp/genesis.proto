@@ -7,7 +7,7 @@ import "elys/leveragelp/params.proto";
 import "elys/leveragelp/pool.proto";
 import "elys/leveragelp/types.proto";
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v6/x/leveragelp/types";
 
 // GenesisState defines the leveragelp module's genesis state.
 message GenesisState {

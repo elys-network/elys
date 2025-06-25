@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestBatchProcessing() {
@@ -27,6 +28,7 @@ func (suite *AmmKeeperTestSuite) TestBatchProcessing() {
 							TokenOutDenom: ptypes.ATOM,
 						},
 					},
+					Sender: authtypes.NewModuleAddress("random").String(),
 				}, lastSwapIndex+1)
 				suite.app.AmmKeeper.SetLastSwapRequestIndex(suite.ctx, lastSwapIndex+1)
 			},
@@ -49,6 +51,7 @@ func (suite *AmmKeeperTestSuite) TestBatchProcessing() {
 							TokenInDenom: ptypes.BaseCurrency,
 						},
 					},
+					Sender: authtypes.NewModuleAddress("random").String(),
 				}, lastSwapIndex+1)
 				suite.app.AmmKeeper.SetLastSwapRequestIndex(suite.ctx, lastSwapIndex+1)
 			},

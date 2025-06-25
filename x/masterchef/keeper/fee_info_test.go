@@ -3,7 +3,8 @@ package keeper_test
 import (
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestFeeInfo() {
@@ -13,33 +14,33 @@ func (suite *MasterchefKeeperTestSuite) TestFeeInfo() {
 	twoDayAfterDateString := suite.ctx.BlockTime().AddDate(0, 0, 2).Format("2006-01-02")
 	addFeeInfoTestCases := []struct {
 		name        string
-		lp          sdkmath.LegacyDec
+		lp          osmomath.BigDec
 		expLp       sdkmath.Int
-		stakers     sdkmath.LegacyDec
+		stakers     osmomath.BigDec
 		expStakers  sdkmath.Int
-		protocol    sdkmath.LegacyDec
+		protocol    osmomath.BigDec
 		expProtocol sdkmath.Int
 		gas         bool
 		date        string
 	}{
 		{
 			name:        "AddFeeInfo for gas fees",
-			lp:          sdkmath.LegacyNewDec(100),
+			lp:          osmomath.NewBigDec(100),
 			expLp:       sdkmath.NewInt(100),
-			stakers:     sdkmath.LegacyNewDec(50),
+			stakers:     osmomath.NewBigDec(50),
 			expStakers:  sdkmath.NewInt(50),
-			protocol:    sdkmath.LegacyNewDec(25),
+			protocol:    osmomath.NewBigDec(25),
 			expProtocol: sdkmath.NewInt(25),
 			gas:         true,
 			date:        dateString,
 		},
 		{
 			name:        "AddFeeInfo for dex fees",
-			lp:          sdkmath.LegacyNewDec(200),
+			lp:          osmomath.NewBigDec(200),
 			expLp:       sdkmath.NewInt(200),
-			stakers:     sdkmath.LegacyNewDec(100),
+			stakers:     osmomath.NewBigDec(100),
 			expStakers:  sdkmath.NewInt(100),
-			protocol:    sdkmath.LegacyNewDec(50),
+			protocol:    osmomath.NewBigDec(50),
 			expProtocol: sdkmath.NewInt(50),
 			gas:         false,
 			date:        dateString,
@@ -64,13 +65,13 @@ func (suite *MasterchefKeeperTestSuite) TestFeeInfo() {
 
 	addEdenInfoTestCases := []struct {
 		name    string
-		eden    sdkmath.LegacyDec
+		eden    osmomath.BigDec
 		expEden sdkmath.Int
 		date    string
 	}{
 		{
 			name:    "Add eden Info",
-			eden:    sdkmath.LegacyNewDec(100),
+			eden:    osmomath.NewBigDec(100),
 			expEden: sdkmath.NewInt(100),
 			date:    dateString,
 		},

@@ -3,11 +3,11 @@ package migrations
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
-	legacyParams := m.keeper.GetLegacyParams(ctx)
+	legacyParams := m.keeper.GetParams(ctx)
 	params := types.Params{
 		PoolCreationFee:                  legacyParams.PoolCreationFee,
 		SlippageTrackDuration:            legacyParams.SlippageTrackDuration,

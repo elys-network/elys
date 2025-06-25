@@ -2,7 +2,6 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -15,8 +14,7 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
-	if len(msg.PoolIds) == 0 {
-		return fmt.Errorf("no pool ids provided")
-	}
+	// We don't check for len(msg.PoolIds) == 0 because in this case rewards are claimed from all pools
+
 	return nil
 }

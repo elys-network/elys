@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/tier/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -19,7 +19,7 @@ func (k Keeper) Perpetual(goCtx context.Context, req *types.QueryPerpetualReques
 	total, borrow, _ := k.RetrievePerpetualTotal(ctx, sender)
 
 	return &types.QueryPerpetualResponse{
-		TotalValue:   total,
-		TotalBorrows: borrow,
+		TotalValue:   total.Dec(),
+		TotalBorrows: borrow.Dec(),
 	}, nil
 }

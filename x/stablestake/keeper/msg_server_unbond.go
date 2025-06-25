@@ -3,18 +3,24 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/stablestake/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	pool, found := k.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, types.ErrPoolNotFound
+	}
 
-	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRate(ctx)
+	redemptionRate := k.CalculateRedemptionRateForPool(ctx, pool)
 
-	shareDenom := types.GetShareDenom()
+	shareDenom := types.GetShareDenomForPool(pool.Id)
 
 	// Withdraw committed LP tokens
 	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
@@ -34,26 +40,34 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
+	redemptionAmount := osmomath.BigDecFromSDKInt(shareCoin.Amount).Mul(redemptionRate).Dec().RoundInt()
 
-	amountAfterRedemption := params.TotalValue.Sub(redemptionAmount)
-	maxAllowed := (params.TotalValue.ToLegacyDec().Mul(params.MaxWithdrawRatio)).TruncateInt()
-	if amountAfterRedemption.LT(maxAllowed) {
-		return nil, types.ErrInvalidWithdraw
+	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
+	depositDenom := pool.GetDepositDenom()
+	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := pool.NetAmount.Sub(balance.Amount)
+	if borrowed.IsNegative() {
+		return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "negative borrowed amount while unbonding: %s", borrowed.String())
 	}
-
-	depositDenom := k.GetDepositDenom(ctx)
+	// in case borrowed is zero, it would mean the only user who bonded, is trying to take it out, so that's a valid case
+	// it also avoids 0/0 as redemptionAmount will be equal to pool.NetAmount
+	if borrowed.IsPositive() {
+		borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(redemptionAmount))))
+		if borrowedRatio.GT(pool.GetBigDecMaxWithdrawRatio()) {
+			return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "borrowedRatio: %d", borrowedRatio)
+		}
+	}
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.Coins{redemptionCoin})
 	if err != nil {
 		return nil, err
 	}
 
-	params.TotalValue = params.TotalValue.Sub(redemptionAmount)
-	k.SetParams(ctx, params)
+	pool.NetAmount = pool.NetAmount.Sub(redemptionAmount)
+	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount)
+		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount, pool.Id)
 		if err != nil {
 			return nil, err
 		}

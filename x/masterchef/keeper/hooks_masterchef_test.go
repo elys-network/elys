@@ -5,12 +5,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
-	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	tokenomicskeeper "github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	tokenomicstypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
@@ -91,7 +91,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares
@@ -175,7 +175,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().Len(res.TotalRewards, 0)
 
 	// first user exit pool
-	_, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// check rewards after 100 block
@@ -228,5 +228,5 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 
 	pool, found := suite.app.MasterchefKeeper.GetPoolInfo(ctx, pools[0].PoolId)
 	suite.Require().Equal(true, found)
-	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
+	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973501")
 }

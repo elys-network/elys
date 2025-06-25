@@ -5,12 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/tier/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v6/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -28,20 +26,11 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-
-	if !found {
-		return nil, errors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
 	listCommitments, pagination, err := k.commitement.GetAllCommitmentsWithPagination(ctx, req.Pagination)
 
 	if err != nil {
 		return nil, err
 	}
-
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-	params := k.stablestakeKeeper.GetParams(ctx)
 
 	usersData := []*types.UserData{}
 
@@ -56,14 +45,24 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 		for _, commitment := range user.CommittedTokens {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				stableId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				if err != nil {
+					continue
+				}
+				borrowPool, found := k.stablestakeKeeper.GetPool(ctx, stableId)
+				if !found {
+					continue
+				}
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, borrowPool)
+				tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, borrowPool.GetDepositDenom())
+				fiatValue := commitment.GetBigDecAmount().Mul(redemptionRate).Mul(tokenPrice)
+
 				u.Pools = append(u.Pools, &types.Pool{
-					Pool:      "USDC",
-					PoolId:    commitment.Denom,
+					Pool:      borrowPool.DepositDenom,
+					PoolId:    strconv.FormatUint(borrowPool.Id, 10),
 					FiatValue: fiatValue.String(),
 					Amount:    commitment.Amount,
 				})
-
 				continue
 			}
 
@@ -76,6 +75,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 				poolTitle := ""
 				var pool ammtypes.Pool
+				var found bool
 				if p, ok := pools[poolId]; ok {
 					poolTitle = p.Title
 					pool = p.Pool
@@ -99,8 +99,8 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 					}
 				}
 
-				info := k.amm.PoolExtraInfo(ctx, pool)
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare)
+				info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+				fiatValue := commitment.GetBigDecAmount().Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec)
 
 				poolID := strconv.FormatUint(pool.PoolId, 10)
 

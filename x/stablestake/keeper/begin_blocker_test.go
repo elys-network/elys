@@ -1,9 +1,11 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
+
+	"github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -18,53 +20,41 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 		expectedError  error
 	}{
 		{
-			name:           "epoch has passed",
-			epochLength:    1,
-			epochPosition:  0,
+			name:           "begin blocker call",
 			interestRate:   sdkmath.LegacyMustNewDecFromStr("0.17"),
 			redemptionRate: sdkmath.LegacyZeroDec(),
 			expectedError:  nil,
 		},
 		{
-			name:           "epoch has not passed",
-			epochLength:    2,
-			epochPosition:  1,
-			interestRate:   sdkmath.LegacyNewDec(5),
-			redemptionRate: sdkmath.LegacyNewDec(10),
+			name:           "begin blocker call with more height",
+			interestRate:   sdkmath.LegacyMustNewDecFromStr("0.17"),
+			redemptionRate: sdkmath.LegacyZeroDec(),
 			expectedError:  nil,
-		},
-		{
-			name:           "delete old data",
-			epochLength:    2,
-			epochPosition:  1,
-			interestRate:   sdkmath.LegacyNewDec(5),
-			redemptionRate: sdkmath.LegacyNewDec(10),
-			expectedError:  nil,
-			blockHeight:    95768100,
+			blockHeight:    25768000,
 		},
 	}
 
 	for _, tt := range tests {
 		suite.Run(tt.name, func() {
-			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.InterestRate = tt.interestRate
-			params.RedemptionRate = tt.redemptionRate
-			params.EpochLength = tt.epochLength
-			params.TotalValue = sdkmath.NewInt(1000000)
-			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+			suite.app.StablestakeKeeper.SetPool(suite.ctx, types.Pool{
+				DepositDenom:         "uusdc",
+				InterestRate:         tt.interestRate,
+				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
+				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
+				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				HealthGainFactor:     sdkmath.LegacyOneDec(),
+				NetAmount:            sdkmath.NewInt(1000000),
+				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+				Id:                   1,
+			})
 
 			suite.ctx = suite.ctx.WithBlockHeight(tt.blockHeight).WithBlockTime(time.Now())
 
 			suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 
-			storedParams := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			if tt.epochPosition == 0 {
-				require.Equal(suite.T(), tt.interestRate, storedParams.InterestRate)
-				require.Equal(suite.T(), tt.redemptionRate, storedParams.RedemptionRate)
-			} else {
-				require.NotEqual(suite.T(), tt.interestRate, storedParams.InterestRate)
-				require.NotEqual(suite.T(), tt.redemptionRate, storedParams.RedemptionRate)
-			}
+			storedPool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			require.Equal(suite.T(), tt.interestRate, storedPool.InterestRate)
 		})
 	}
 }

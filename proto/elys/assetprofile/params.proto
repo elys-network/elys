@@ -3,7 +3,7 @@ package elys.assetprofile;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/elys-network/elys/x/assetprofile/types";
+option go_package = "github.com/elys-network/elys/v6/x/assetprofile/types";
 
 // Params defines the parameters for the module.
 message Params {}

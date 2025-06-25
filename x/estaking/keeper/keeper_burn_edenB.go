@@ -3,8 +3,9 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/estaking/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // Burn EdenBoost from Elys unstaked
@@ -42,14 +43,14 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	// Unstaked
 	unstakedElys := prevElysStaked.Amount.Sub(delAmount)
 
-	unstakedElysDec := math.LegacyNewDecFromInt(unstakedElys)
-	edenCommittedAndElysStakedDec := math.LegacyNewDecFromInt(edenCommitted.Add(prevElysStaked.Amount))
-	edenBToBurn := math.LegacyZeroDec()
-	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
-		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
+	unstakedElysDec := osmomath.BigDecFromSDKInt(unstakedElys)
+	edenCommittedAndElysStakedDec := osmomath.BigDecFromSDKInt(edenCommitted.Add(prevElysStaked.Amount))
+	edenBToBurn := osmomath.ZeroBigDec()
+	if edenCommittedAndElysStakedDec.GT(osmomath.ZeroBigDec()) {
+		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(osmomath.BigDecFromSDKInt(totalEdenB))
 	}
 	if edenCommittedAndElysStakedDec.IsZero() {
-		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+		edenBToBurn = osmomath.BigDecFromSDKInt(totalEdenB)
 	}
 	if edenBToBurn.IsZero() {
 		return nil
@@ -65,7 +66,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	)
 
 	// Burn EdenB in commitment module
-	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.Dec().TruncateInt())
 	if err != nil {
 		return err
 	}
@@ -89,20 +90,20 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	edenBClaimed := commitments.GetClaimedForDenom(ptypes.EdenB)
 	totalEdenB := edenBCommitted.Add(edenBClaimed)
 
-	unclaimedAmtDec := math.LegacyNewDecFromInt(uncommitAmt)
+	unclaimedAmtDec := osmomath.BigDecFromSDKInt(uncommitAmt)
 	// This formula should be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
 	// So add uncommitted amount to committed eden bucket in calculation.
-	edenCommittedAndElysStakedDec := math.LegacyNewDecFromInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
+	edenCommittedAndElysStakedDec := osmomath.BigDecFromSDKInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
 	if edenCommittedAndElysStakedDec.IsZero() {
 		return nil
 	}
 
-	edenBToBurn := math.LegacyZeroDec()
-	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
-		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
+	edenBToBurn := osmomath.ZeroBigDec()
+	if edenCommittedAndElysStakedDec.GT(osmomath.ZeroBigDec()) {
+		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(osmomath.BigDecFromSDKInt(totalEdenB))
 	}
 	if edenCommittedAndElysStakedDec.IsZero() {
-		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+		edenBToBurn = osmomath.BigDecFromSDKInt(totalEdenB)
 	}
 
 	if edenBToBurn.IsZero() {
@@ -119,6 +120,6 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	)
 
 	// Burn EdenB in commitment module
-	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.Dec().TruncateInt())
 	return err
 }

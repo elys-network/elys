@@ -4,28 +4,28 @@ import (
 	"context"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
+func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool, days int) types.PoolExtraInfo {
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
-	apr := math.LegacyZeroDec()
+	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId, days)
+	apr := osmomath.ZeroBigDec()
 	if tvl.IsPositive() {
-		apr = avg.Mul(math.LegacyNewDec(365)).Quo(tvl)
+		apr = avg.Mul(osmomath.NewBigDec(365)).Quo(tvl)
 	}
 	return types.PoolExtraInfo{
-		Tvl:          tvl,
-		LpTokenPrice: lpTokenPrice,
-		LpSavedApr:   apr,
+		Tvl:          tvl.Dec(),
+		LpTokenPrice: lpTokenPrice.Dec(),
+		LpSavedApr:   apr.Dec(),
 	}
 }
 
@@ -48,7 +48,7 @@ func (k Keeper) PoolAll(goCtx context.Context, req *types.QueryAllPoolRequest) (
 		}
 
 		pools = append(pools, pool)
-		extraInfos = append(extraInfos, k.PoolExtraInfo(ctx, pool))
+		extraInfos = append(extraInfos, k.PoolExtraInfo(ctx, pool, int(req.Days)))
 		return nil
 	})
 	if err != nil {
@@ -71,6 +71,6 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 
 	return &types.QueryGetPoolResponse{
 		Pool:      pool,
-		ExtraInfo: k.PoolExtraInfo(ctx, pool),
+		ExtraInfo: k.PoolExtraInfo(ctx, pool, int(req.Days)),
 	}, nil
 }

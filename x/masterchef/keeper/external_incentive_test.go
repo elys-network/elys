@@ -6,12 +6,12 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
-	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	tokenomicskeeper "github.com/elys-network/elys/v6/x/tokenomics/keeper"
+	tokenomicstypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestExternalIncentive() {
@@ -140,7 +140,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares

@@ -1,18 +1,19 @@
 package types
 
 import (
-	context "context"
+	"context"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
-	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ctypes "github.com/elys-network/elys/v6/x/commitment/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	tokenomictypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CommitmentKeeper
@@ -77,11 +78,10 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.SnapshotPool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
-	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
+	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) osmomath.BigDec
 	InternalSwapExactAmountIn(
 		ctx sdk.Context,
 		sender sdk.AccAddress,
@@ -90,15 +90,23 @@ type AmmKeeper interface {
 		tokenIn sdk.Coin,
 		tokenOutDenom string,
 		tokenOutMinAmount math.Int,
-		swapFee math.LegacyDec,
-	) (tokenOutAmount math.Int, err error)
+		swapFee osmomath.BigDec,
+		takersFee osmomath.BigDec,
+	) (tokenOutAmount math.Int, weightBalanceReward sdk.Coin, err error)
+	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
+	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	//SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	//CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	//SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 
 // AccountedPoolKeeper
@@ -117,7 +125,12 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, baseCurrency string) math.LegacyDec
+	TVL(ctx sdk.Context, poolId uint64) osmomath.BigDec
+	AllTVL(ctx sdk.Context) osmomath.BigDec
+	GetTotalAndPerDenomTVL(ctx sdk.Context) (totalTVL osmomath.BigDec, denomTVL sdk.Coins)
+	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
+	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
+	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

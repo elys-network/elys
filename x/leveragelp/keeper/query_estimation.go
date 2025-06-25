@@ -5,7 +5,8 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,16 +19,23 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	leveragedAmount := req.Leverage.MulInt(req.CollateralAmount).TruncateInt()
 	leverageCoin := sdk.NewCoin(req.CollateralAsset, leveragedAmount)
-	_, shares, _, weightBalanceBonus, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
+	_, shares, slippage, weightBalanceBonus, swapFee, takerFees, weightRewardAmount, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}
-	params := k.stableKeeper.GetParams(ctx)
+	pool, found := k.stableKeeper.GetPoolByDenom(ctx, req.CollateralAsset)
+	if !found {
+		return nil, errors.New("borrow pool not found")
+	}
 
 	return &types.QueryOpenEstResponse{
-		PositionSize:       shares,
-		WeightBalanceRatio: weightBalanceBonus,
-		BorrowFee:          params.InterestRate,
+		PositionSize:              shares,
+		WeightBalanceRatio:        weightBalanceBonus.Dec(),
+		BorrowFee:                 pool.InterestRate,
+		Slippage:                  slippage.Dec(),
+		SwapFee:                   swapFee.Dec(),
+		TakerFee:                  takerFees.Dec(),
+		WeightBalanceRewardAmount: weightRewardAmount,
 	}, nil
 }
 
@@ -50,18 +58,22 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		return nil, errors.New("leverage lp pool not found")
 	}
 
-	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, _, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	closingRatio := osmomath.BigDecFromSDKInt(req.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, _, weightBreakingFee, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryCloseEstResponse{
 		RepayAmount:       repayAmount,
-		FinalClosingRatio: finalClosingRatio,
+		FinalClosingRatio: finalClosingRatio.Dec(),
 		ClosingLpAmount:   totalLpAmountToClose,
 		CoinsToAmm:        coinsForAmm,
-		UserRewards:       finalUserRewards,
-		ExitFee:           exitFeeOnClosingPosition,
+		UserReturnTokens:  userReturnTokens,
+		ExitWeightFee:     exitFeeOnClosingPosition.Dec(),
+		WeightBreakingFee: weightBreakingFee.Dec(),
+		ExitSlippageFee:   exitSlippageFee.Dec(),
+		ExitSwapFee:       swapFee.Dec(),
+		ExitTakerFee:      takerFee.Dec(),
 	}, nil
 }

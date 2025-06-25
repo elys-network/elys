@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
 
@@ -98,17 +98,12 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			poolOpenThreshold, err := cmd.Flags().GetString(FlagPoolOpenThreshold)
+			poolMaxLiabilitiesThreshold, err := cmd.Flags().GetString(FlagPoolOpenThreshold)
 			if err != nil {
 				return err
 			}
 
 			borrowInterestPaymentFundPercentage, err := cmd.Flags().GetString(FlagBorrowInterestPaymentFundPercentage)
-			if err != nil {
-				return err
-			}
-
-			borrowInterestPaymentFundAddress, err := cmd.Flags().GetString(FlagBorrowInterestPaymentFundAddress)
 			if err != nil {
 				return err
 			}
@@ -136,9 +131,8 @@ func CmdUpdateParams() *cobra.Command {
 				BorrowInterestRateDecrease:          sdkmath.LegacyMustNewDecFromStr(borrowInterestRateDecrease),
 				HealthGainFactor:                    sdkmath.LegacyMustNewDecFromStr(healthGainFactor),
 				MaxOpenPositions:                    maxOpenPositions,
-				PoolOpenThreshold:                   sdkmath.LegacyMustNewDecFromStr(poolOpenThreshold),
+				PoolMaxLiabilitiesThreshold:         sdkmath.LegacyMustNewDecFromStr(poolMaxLiabilitiesThreshold),
 				BorrowInterestPaymentFundPercentage: sdkmath.LegacyMustNewDecFromStr(borrowInterestPaymentFundPercentage),
-				BorrowInterestPaymentFundAddress:    borrowInterestPaymentFundAddress,
 				SafetyFactor:                        sdkmath.LegacyMustNewDecFromStr(safetyFactor),
 				BorrowInterestPaymentEnabled:        borrowInterestPaymentEnabled,
 				WhitelistingEnabled:                 whitelistingEnabled,

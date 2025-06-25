@@ -995,36 +995,36 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Params                        protoreflect.MessageDescriptor
-	fd_Params_deposit_denom          protoreflect.FieldDescriptor
-	fd_Params_redemption_rate        protoreflect.FieldDescriptor
-	fd_Params_epoch_length           protoreflect.FieldDescriptor
-	fd_Params_interest_rate          protoreflect.FieldDescriptor
-	fd_Params_interest_rate_max      protoreflect.FieldDescriptor
-	fd_Params_interest_rate_min      protoreflect.FieldDescriptor
-	fd_Params_interest_rate_increase protoreflect.FieldDescriptor
-	fd_Params_interest_rate_decrease protoreflect.FieldDescriptor
-	fd_Params_health_gain_factor     protoreflect.FieldDescriptor
-	fd_Params_total_value            protoreflect.FieldDescriptor
-	fd_Params_max_leverage_ratio     protoreflect.FieldDescriptor
-	fd_Params_max_withdraw_ratio     protoreflect.FieldDescriptor
+	md_Params                               protoreflect.MessageDescriptor
+	fd_Params_legacy_deposit_denom          protoreflect.FieldDescriptor
+	fd_Params_legacy_redemption_rate        protoreflect.FieldDescriptor
+	fd_Params_epoch_length                  protoreflect.FieldDescriptor
+	fd_Params_legacy_interest_rate          protoreflect.FieldDescriptor
+	fd_Params_legacy_interest_rate_max      protoreflect.FieldDescriptor
+	fd_Params_legacy_interest_rate_min      protoreflect.FieldDescriptor
+	fd_Params_legacy_interest_rate_increase protoreflect.FieldDescriptor
+	fd_Params_legacy_interest_rate_decrease protoreflect.FieldDescriptor
+	fd_Params_legacy_health_gain_factor     protoreflect.FieldDescriptor
+	fd_Params_total_value                   protoreflect.FieldDescriptor
+	fd_Params_legacy_max_leverage_ratio     protoreflect.FieldDescriptor
+	fd_Params_legacy_max_withdraw_ratio     protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_stablestake_params_proto_init()
 	md_Params = File_elys_stablestake_params_proto.Messages().ByName("Params")
-	fd_Params_deposit_denom = md_Params.Fields().ByName("deposit_denom")
-	fd_Params_redemption_rate = md_Params.Fields().ByName("redemption_rate")
+	fd_Params_legacy_deposit_denom = md_Params.Fields().ByName("legacy_deposit_denom")
+	fd_Params_legacy_redemption_rate = md_Params.Fields().ByName("legacy_redemption_rate")
 	fd_Params_epoch_length = md_Params.Fields().ByName("epoch_length")
-	fd_Params_interest_rate = md_Params.Fields().ByName("interest_rate")
-	fd_Params_interest_rate_max = md_Params.Fields().ByName("interest_rate_max")
-	fd_Params_interest_rate_min = md_Params.Fields().ByName("interest_rate_min")
-	fd_Params_interest_rate_increase = md_Params.Fields().ByName("interest_rate_increase")
-	fd_Params_interest_rate_decrease = md_Params.Fields().ByName("interest_rate_decrease")
-	fd_Params_health_gain_factor = md_Params.Fields().ByName("health_gain_factor")
+	fd_Params_legacy_interest_rate = md_Params.Fields().ByName("legacy_interest_rate")
+	fd_Params_legacy_interest_rate_max = md_Params.Fields().ByName("legacy_interest_rate_max")
+	fd_Params_legacy_interest_rate_min = md_Params.Fields().ByName("legacy_interest_rate_min")
+	fd_Params_legacy_interest_rate_increase = md_Params.Fields().ByName("legacy_interest_rate_increase")
+	fd_Params_legacy_interest_rate_decrease = md_Params.Fields().ByName("legacy_interest_rate_decrease")
+	fd_Params_legacy_health_gain_factor = md_Params.Fields().ByName("legacy_health_gain_factor")
 	fd_Params_total_value = md_Params.Fields().ByName("total_value")
-	fd_Params_max_leverage_ratio = md_Params.Fields().ByName("max_leverage_ratio")
-	fd_Params_max_withdraw_ratio = md_Params.Fields().ByName("max_withdraw_ratio")
+	fd_Params_legacy_max_leverage_ratio = md_Params.Fields().ByName("legacy_max_leverage_ratio")
+	fd_Params_legacy_max_withdraw_ratio = md_Params.Fields().ByName("legacy_max_withdraw_ratio")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -1092,15 +1092,15 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.DepositDenom != "" {
-		value := protoreflect.ValueOfString(x.DepositDenom)
-		if !f(fd_Params_deposit_denom, value) {
+	if x.LegacyDepositDenom != "" {
+		value := protoreflect.ValueOfString(x.LegacyDepositDenom)
+		if !f(fd_Params_legacy_deposit_denom, value) {
 			return
 		}
 	}
-	if x.RedemptionRate != "" {
-		value := protoreflect.ValueOfString(x.RedemptionRate)
-		if !f(fd_Params_redemption_rate, value) {
+	if x.LegacyRedemptionRate != "" {
+		value := protoreflect.ValueOfString(x.LegacyRedemptionRate)
+		if !f(fd_Params_legacy_redemption_rate, value) {
 			return
 		}
 	}
@@ -1110,39 +1110,39 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if x.InterestRate != "" {
-		value := protoreflect.ValueOfString(x.InterestRate)
-		if !f(fd_Params_interest_rate, value) {
+	if x.LegacyInterestRate != "" {
+		value := protoreflect.ValueOfString(x.LegacyInterestRate)
+		if !f(fd_Params_legacy_interest_rate, value) {
 			return
 		}
 	}
-	if x.InterestRateMax != "" {
-		value := protoreflect.ValueOfString(x.InterestRateMax)
-		if !f(fd_Params_interest_rate_max, value) {
+	if x.LegacyInterestRateMax != "" {
+		value := protoreflect.ValueOfString(x.LegacyInterestRateMax)
+		if !f(fd_Params_legacy_interest_rate_max, value) {
 			return
 		}
 	}
-	if x.InterestRateMin != "" {
-		value := protoreflect.ValueOfString(x.InterestRateMin)
-		if !f(fd_Params_interest_rate_min, value) {
+	if x.LegacyInterestRateMin != "" {
+		value := protoreflect.ValueOfString(x.LegacyInterestRateMin)
+		if !f(fd_Params_legacy_interest_rate_min, value) {
 			return
 		}
 	}
-	if x.InterestRateIncrease != "" {
-		value := protoreflect.ValueOfString(x.InterestRateIncrease)
-		if !f(fd_Params_interest_rate_increase, value) {
+	if x.LegacyInterestRateIncrease != "" {
+		value := protoreflect.ValueOfString(x.LegacyInterestRateIncrease)
+		if !f(fd_Params_legacy_interest_rate_increase, value) {
 			return
 		}
 	}
-	if x.InterestRateDecrease != "" {
-		value := protoreflect.ValueOfString(x.InterestRateDecrease)
-		if !f(fd_Params_interest_rate_decrease, value) {
+	if x.LegacyInterestRateDecrease != "" {
+		value := protoreflect.ValueOfString(x.LegacyInterestRateDecrease)
+		if !f(fd_Params_legacy_interest_rate_decrease, value) {
 			return
 		}
 	}
-	if x.HealthGainFactor != "" {
-		value := protoreflect.ValueOfString(x.HealthGainFactor)
-		if !f(fd_Params_health_gain_factor, value) {
+	if x.LegacyHealthGainFactor != "" {
+		value := protoreflect.ValueOfString(x.LegacyHealthGainFactor)
+		if !f(fd_Params_legacy_health_gain_factor, value) {
 			return
 		}
 	}
@@ -1152,15 +1152,15 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if x.MaxLeverageRatio != "" {
-		value := protoreflect.ValueOfString(x.MaxLeverageRatio)
-		if !f(fd_Params_max_leverage_ratio, value) {
+	if x.LegacyMaxLeverageRatio != "" {
+		value := protoreflect.ValueOfString(x.LegacyMaxLeverageRatio)
+		if !f(fd_Params_legacy_max_leverage_ratio, value) {
 			return
 		}
 	}
-	if x.MaxWithdrawRatio != "" {
-		value := protoreflect.ValueOfString(x.MaxWithdrawRatio)
-		if !f(fd_Params_max_withdraw_ratio, value) {
+	if x.LegacyMaxWithdrawRatio != "" {
+		value := protoreflect.ValueOfString(x.LegacyMaxWithdrawRatio)
+		if !f(fd_Params_legacy_max_withdraw_ratio, value) {
 			return
 		}
 	}
@@ -1179,30 +1179,30 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
-		return x.DepositDenom != ""
-	case "elys.stablestake.Params.redemption_rate":
-		return x.RedemptionRate != ""
+	case "elys.stablestake.Params.legacy_deposit_denom":
+		return x.LegacyDepositDenom != ""
+	case "elys.stablestake.Params.legacy_redemption_rate":
+		return x.LegacyRedemptionRate != ""
 	case "elys.stablestake.Params.epoch_length":
 		return x.EpochLength != int64(0)
-	case "elys.stablestake.Params.interest_rate":
-		return x.InterestRate != ""
-	case "elys.stablestake.Params.interest_rate_max":
-		return x.InterestRateMax != ""
-	case "elys.stablestake.Params.interest_rate_min":
-		return x.InterestRateMin != ""
-	case "elys.stablestake.Params.interest_rate_increase":
-		return x.InterestRateIncrease != ""
-	case "elys.stablestake.Params.interest_rate_decrease":
-		return x.InterestRateDecrease != ""
-	case "elys.stablestake.Params.health_gain_factor":
-		return x.HealthGainFactor != ""
+	case "elys.stablestake.Params.legacy_interest_rate":
+		return x.LegacyInterestRate != ""
+	case "elys.stablestake.Params.legacy_interest_rate_max":
+		return x.LegacyInterestRateMax != ""
+	case "elys.stablestake.Params.legacy_interest_rate_min":
+		return x.LegacyInterestRateMin != ""
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
+		return x.LegacyInterestRateIncrease != ""
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
+		return x.LegacyInterestRateDecrease != ""
+	case "elys.stablestake.Params.legacy_health_gain_factor":
+		return x.LegacyHealthGainFactor != ""
 	case "elys.stablestake.Params.total_value":
 		return x.TotalValue != ""
-	case "elys.stablestake.Params.max_leverage_ratio":
-		return x.MaxLeverageRatio != ""
-	case "elys.stablestake.Params.max_withdraw_ratio":
-		return x.MaxWithdrawRatio != ""
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
+		return x.LegacyMaxLeverageRatio != ""
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
+		return x.LegacyMaxWithdrawRatio != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Params"))
@@ -1219,30 +1219,30 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
-		x.DepositDenom = ""
-	case "elys.stablestake.Params.redemption_rate":
-		x.RedemptionRate = ""
+	case "elys.stablestake.Params.legacy_deposit_denom":
+		x.LegacyDepositDenom = ""
+	case "elys.stablestake.Params.legacy_redemption_rate":
+		x.LegacyRedemptionRate = ""
 	case "elys.stablestake.Params.epoch_length":
 		x.EpochLength = int64(0)
-	case "elys.stablestake.Params.interest_rate":
-		x.InterestRate = ""
-	case "elys.stablestake.Params.interest_rate_max":
-		x.InterestRateMax = ""
-	case "elys.stablestake.Params.interest_rate_min":
-		x.InterestRateMin = ""
-	case "elys.stablestake.Params.interest_rate_increase":
-		x.InterestRateIncrease = ""
-	case "elys.stablestake.Params.interest_rate_decrease":
-		x.InterestRateDecrease = ""
-	case "elys.stablestake.Params.health_gain_factor":
-		x.HealthGainFactor = ""
+	case "elys.stablestake.Params.legacy_interest_rate":
+		x.LegacyInterestRate = ""
+	case "elys.stablestake.Params.legacy_interest_rate_max":
+		x.LegacyInterestRateMax = ""
+	case "elys.stablestake.Params.legacy_interest_rate_min":
+		x.LegacyInterestRateMin = ""
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
+		x.LegacyInterestRateIncrease = ""
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
+		x.LegacyInterestRateDecrease = ""
+	case "elys.stablestake.Params.legacy_health_gain_factor":
+		x.LegacyHealthGainFactor = ""
 	case "elys.stablestake.Params.total_value":
 		x.TotalValue = ""
-	case "elys.stablestake.Params.max_leverage_ratio":
-		x.MaxLeverageRatio = ""
-	case "elys.stablestake.Params.max_withdraw_ratio":
-		x.MaxWithdrawRatio = ""
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
+		x.LegacyMaxLeverageRatio = ""
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
+		x.LegacyMaxWithdrawRatio = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Params"))
@@ -1259,41 +1259,41 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
-		value := x.DepositDenom
+	case "elys.stablestake.Params.legacy_deposit_denom":
+		value := x.LegacyDepositDenom
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.redemption_rate":
-		value := x.RedemptionRate
+	case "elys.stablestake.Params.legacy_redemption_rate":
+		value := x.LegacyRedemptionRate
 		return protoreflect.ValueOfString(value)
 	case "elys.stablestake.Params.epoch_length":
 		value := x.EpochLength
 		return protoreflect.ValueOfInt64(value)
-	case "elys.stablestake.Params.interest_rate":
-		value := x.InterestRate
+	case "elys.stablestake.Params.legacy_interest_rate":
+		value := x.LegacyInterestRate
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.interest_rate_max":
-		value := x.InterestRateMax
+	case "elys.stablestake.Params.legacy_interest_rate_max":
+		value := x.LegacyInterestRateMax
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.interest_rate_min":
-		value := x.InterestRateMin
+	case "elys.stablestake.Params.legacy_interest_rate_min":
+		value := x.LegacyInterestRateMin
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.interest_rate_increase":
-		value := x.InterestRateIncrease
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
+		value := x.LegacyInterestRateIncrease
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.interest_rate_decrease":
-		value := x.InterestRateDecrease
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
+		value := x.LegacyInterestRateDecrease
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.health_gain_factor":
-		value := x.HealthGainFactor
+	case "elys.stablestake.Params.legacy_health_gain_factor":
+		value := x.LegacyHealthGainFactor
 		return protoreflect.ValueOfString(value)
 	case "elys.stablestake.Params.total_value":
 		value := x.TotalValue
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.max_leverage_ratio":
-		value := x.MaxLeverageRatio
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
+		value := x.LegacyMaxLeverageRatio
 		return protoreflect.ValueOfString(value)
-	case "elys.stablestake.Params.max_withdraw_ratio":
-		value := x.MaxWithdrawRatio
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
+		value := x.LegacyMaxWithdrawRatio
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -1315,30 +1315,30 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
-		x.DepositDenom = value.Interface().(string)
-	case "elys.stablestake.Params.redemption_rate":
-		x.RedemptionRate = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_deposit_denom":
+		x.LegacyDepositDenom = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_redemption_rate":
+		x.LegacyRedemptionRate = value.Interface().(string)
 	case "elys.stablestake.Params.epoch_length":
 		x.EpochLength = value.Int()
-	case "elys.stablestake.Params.interest_rate":
-		x.InterestRate = value.Interface().(string)
-	case "elys.stablestake.Params.interest_rate_max":
-		x.InterestRateMax = value.Interface().(string)
-	case "elys.stablestake.Params.interest_rate_min":
-		x.InterestRateMin = value.Interface().(string)
-	case "elys.stablestake.Params.interest_rate_increase":
-		x.InterestRateIncrease = value.Interface().(string)
-	case "elys.stablestake.Params.interest_rate_decrease":
-		x.InterestRateDecrease = value.Interface().(string)
-	case "elys.stablestake.Params.health_gain_factor":
-		x.HealthGainFactor = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_interest_rate":
+		x.LegacyInterestRate = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_interest_rate_max":
+		x.LegacyInterestRateMax = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_interest_rate_min":
+		x.LegacyInterestRateMin = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
+		x.LegacyInterestRateIncrease = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
+		x.LegacyInterestRateDecrease = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_health_gain_factor":
+		x.LegacyHealthGainFactor = value.Interface().(string)
 	case "elys.stablestake.Params.total_value":
 		x.TotalValue = value.Interface().(string)
-	case "elys.stablestake.Params.max_leverage_ratio":
-		x.MaxLeverageRatio = value.Interface().(string)
-	case "elys.stablestake.Params.max_withdraw_ratio":
-		x.MaxWithdrawRatio = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
+		x.LegacyMaxLeverageRatio = value.Interface().(string)
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
+		x.LegacyMaxWithdrawRatio = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Params"))
@@ -1359,30 +1359,30 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
-		panic(fmt.Errorf("field deposit_denom of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.redemption_rate":
-		panic(fmt.Errorf("field redemption_rate of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_deposit_denom":
+		panic(fmt.Errorf("field legacy_deposit_denom of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_redemption_rate":
+		panic(fmt.Errorf("field legacy_redemption_rate of message elys.stablestake.Params is not mutable"))
 	case "elys.stablestake.Params.epoch_length":
 		panic(fmt.Errorf("field epoch_length of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.interest_rate":
-		panic(fmt.Errorf("field interest_rate of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.interest_rate_max":
-		panic(fmt.Errorf("field interest_rate_max of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.interest_rate_min":
-		panic(fmt.Errorf("field interest_rate_min of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.interest_rate_increase":
-		panic(fmt.Errorf("field interest_rate_increase of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.interest_rate_decrease":
-		panic(fmt.Errorf("field interest_rate_decrease of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.health_gain_factor":
-		panic(fmt.Errorf("field health_gain_factor of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_interest_rate":
+		panic(fmt.Errorf("field legacy_interest_rate of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_interest_rate_max":
+		panic(fmt.Errorf("field legacy_interest_rate_max of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_interest_rate_min":
+		panic(fmt.Errorf("field legacy_interest_rate_min of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
+		panic(fmt.Errorf("field legacy_interest_rate_increase of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
+		panic(fmt.Errorf("field legacy_interest_rate_decrease of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_health_gain_factor":
+		panic(fmt.Errorf("field legacy_health_gain_factor of message elys.stablestake.Params is not mutable"))
 	case "elys.stablestake.Params.total_value":
 		panic(fmt.Errorf("field total_value of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.max_leverage_ratio":
-		panic(fmt.Errorf("field max_leverage_ratio of message elys.stablestake.Params is not mutable"))
-	case "elys.stablestake.Params.max_withdraw_ratio":
-		panic(fmt.Errorf("field max_withdraw_ratio of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
+		panic(fmt.Errorf("field legacy_max_leverage_ratio of message elys.stablestake.Params is not mutable"))
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
+		panic(fmt.Errorf("field legacy_max_withdraw_ratio of message elys.stablestake.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Params"))
@@ -1396,29 +1396,29 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.stablestake.Params.deposit_denom":
+	case "elys.stablestake.Params.legacy_deposit_denom":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.redemption_rate":
+	case "elys.stablestake.Params.legacy_redemption_rate":
 		return protoreflect.ValueOfString("")
 	case "elys.stablestake.Params.epoch_length":
 		return protoreflect.ValueOfInt64(int64(0))
-	case "elys.stablestake.Params.interest_rate":
+	case "elys.stablestake.Params.legacy_interest_rate":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.interest_rate_max":
+	case "elys.stablestake.Params.legacy_interest_rate_max":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.interest_rate_min":
+	case "elys.stablestake.Params.legacy_interest_rate_min":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.interest_rate_increase":
+	case "elys.stablestake.Params.legacy_interest_rate_increase":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.interest_rate_decrease":
+	case "elys.stablestake.Params.legacy_interest_rate_decrease":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.health_gain_factor":
+	case "elys.stablestake.Params.legacy_health_gain_factor":
 		return protoreflect.ValueOfString("")
 	case "elys.stablestake.Params.total_value":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.max_leverage_ratio":
+	case "elys.stablestake.Params.legacy_max_leverage_ratio":
 		return protoreflect.ValueOfString("")
-	case "elys.stablestake.Params.max_withdraw_ratio":
+	case "elys.stablestake.Params.legacy_max_withdraw_ratio":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -1489,38 +1489,38 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.DepositDenom)
+		l = len(x.LegacyDepositDenom)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.RedemptionRate)
+		l = len(x.LegacyRedemptionRate)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.EpochLength != 0 {
 			n += 1 + runtime.Sov(uint64(x.EpochLength))
 		}
-		l = len(x.InterestRate)
+		l = len(x.LegacyInterestRate)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.InterestRateMax)
+		l = len(x.LegacyInterestRateMax)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.InterestRateMin)
+		l = len(x.LegacyInterestRateMin)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.InterestRateIncrease)
+		l = len(x.LegacyInterestRateIncrease)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.InterestRateDecrease)
+		l = len(x.LegacyInterestRateDecrease)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.HealthGainFactor)
+		l = len(x.LegacyHealthGainFactor)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1528,11 +1528,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.MaxLeverageRatio)
+		l = len(x.LegacyMaxLeverageRatio)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.MaxWithdrawRatio)
+		l = len(x.LegacyMaxWithdrawRatio)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1565,17 +1565,17 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.MaxWithdrawRatio) > 0 {
-			i -= len(x.MaxWithdrawRatio)
-			copy(dAtA[i:], x.MaxWithdrawRatio)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxWithdrawRatio)))
+		if len(x.LegacyMaxWithdrawRatio) > 0 {
+			i -= len(x.LegacyMaxWithdrawRatio)
+			copy(dAtA[i:], x.LegacyMaxWithdrawRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyMaxWithdrawRatio)))
 			i--
 			dAtA[i] = 0x62
 		}
-		if len(x.MaxLeverageRatio) > 0 {
-			i -= len(x.MaxLeverageRatio)
-			copy(dAtA[i:], x.MaxLeverageRatio)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxLeverageRatio)))
+		if len(x.LegacyMaxLeverageRatio) > 0 {
+			i -= len(x.LegacyMaxLeverageRatio)
+			copy(dAtA[i:], x.LegacyMaxLeverageRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyMaxLeverageRatio)))
 			i--
 			dAtA[i] = 0x5a
 		}
@@ -1586,45 +1586,45 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x52
 		}
-		if len(x.HealthGainFactor) > 0 {
-			i -= len(x.HealthGainFactor)
-			copy(dAtA[i:], x.HealthGainFactor)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.HealthGainFactor)))
+		if len(x.LegacyHealthGainFactor) > 0 {
+			i -= len(x.LegacyHealthGainFactor)
+			copy(dAtA[i:], x.LegacyHealthGainFactor)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyHealthGainFactor)))
 			i--
 			dAtA[i] = 0x4a
 		}
-		if len(x.InterestRateDecrease) > 0 {
-			i -= len(x.InterestRateDecrease)
-			copy(dAtA[i:], x.InterestRateDecrease)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InterestRateDecrease)))
+		if len(x.LegacyInterestRateDecrease) > 0 {
+			i -= len(x.LegacyInterestRateDecrease)
+			copy(dAtA[i:], x.LegacyInterestRateDecrease)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyInterestRateDecrease)))
 			i--
 			dAtA[i] = 0x42
 		}
-		if len(x.InterestRateIncrease) > 0 {
-			i -= len(x.InterestRateIncrease)
-			copy(dAtA[i:], x.InterestRateIncrease)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InterestRateIncrease)))
+		if len(x.LegacyInterestRateIncrease) > 0 {
+			i -= len(x.LegacyInterestRateIncrease)
+			copy(dAtA[i:], x.LegacyInterestRateIncrease)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyInterestRateIncrease)))
 			i--
 			dAtA[i] = 0x3a
 		}
-		if len(x.InterestRateMin) > 0 {
-			i -= len(x.InterestRateMin)
-			copy(dAtA[i:], x.InterestRateMin)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InterestRateMin)))
+		if len(x.LegacyInterestRateMin) > 0 {
+			i -= len(x.LegacyInterestRateMin)
+			copy(dAtA[i:], x.LegacyInterestRateMin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyInterestRateMin)))
 			i--
 			dAtA[i] = 0x32
 		}
-		if len(x.InterestRateMax) > 0 {
-			i -= len(x.InterestRateMax)
-			copy(dAtA[i:], x.InterestRateMax)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InterestRateMax)))
+		if len(x.LegacyInterestRateMax) > 0 {
+			i -= len(x.LegacyInterestRateMax)
+			copy(dAtA[i:], x.LegacyInterestRateMax)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyInterestRateMax)))
 			i--
 			dAtA[i] = 0x2a
 		}
-		if len(x.InterestRate) > 0 {
-			i -= len(x.InterestRate)
-			copy(dAtA[i:], x.InterestRate)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InterestRate)))
+		if len(x.LegacyInterestRate) > 0 {
+			i -= len(x.LegacyInterestRate)
+			copy(dAtA[i:], x.LegacyInterestRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyInterestRate)))
 			i--
 			dAtA[i] = 0x22
 		}
@@ -1633,17 +1633,17 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x18
 		}
-		if len(x.RedemptionRate) > 0 {
-			i -= len(x.RedemptionRate)
-			copy(dAtA[i:], x.RedemptionRate)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.RedemptionRate)))
+		if len(x.LegacyRedemptionRate) > 0 {
+			i -= len(x.LegacyRedemptionRate)
+			copy(dAtA[i:], x.LegacyRedemptionRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyRedemptionRate)))
 			i--
 			dAtA[i] = 0x12
 		}
-		if len(x.DepositDenom) > 0 {
-			i -= len(x.DepositDenom)
-			copy(dAtA[i:], x.DepositDenom)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DepositDenom)))
+		if len(x.LegacyDepositDenom) > 0 {
+			i -= len(x.LegacyDepositDenom)
+			copy(dAtA[i:], x.LegacyDepositDenom)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LegacyDepositDenom)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -1698,7 +1698,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DepositDenom", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyDepositDenom", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1726,11 +1726,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.DepositDenom = string(dAtA[iNdEx:postIndex])
+				x.LegacyDepositDenom = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RedemptionRate", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyRedemptionRate", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1758,7 +1758,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.RedemptionRate = string(dAtA[iNdEx:postIndex])
+				x.LegacyRedemptionRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
 				if wireType != 0 {
@@ -1781,7 +1781,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 			case 4:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InterestRate", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRate", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1809,11 +1809,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.InterestRate = string(dAtA[iNdEx:postIndex])
+				x.LegacyInterestRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 5:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InterestRateMax", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateMax", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1841,11 +1841,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.InterestRateMax = string(dAtA[iNdEx:postIndex])
+				x.LegacyInterestRateMax = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InterestRateMin", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateMin", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1873,11 +1873,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.InterestRateMin = string(dAtA[iNdEx:postIndex])
+				x.LegacyInterestRateMin = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 7:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InterestRateIncrease", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateIncrease", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1905,11 +1905,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.InterestRateIncrease = string(dAtA[iNdEx:postIndex])
+				x.LegacyInterestRateIncrease = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 8:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InterestRateDecrease", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateDecrease", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1937,11 +1937,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.InterestRateDecrease = string(dAtA[iNdEx:postIndex])
+				x.LegacyInterestRateDecrease = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 9:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field HealthGainFactor", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyHealthGainFactor", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1969,7 +1969,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.HealthGainFactor = string(dAtA[iNdEx:postIndex])
+				x.LegacyHealthGainFactor = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 10:
 				if wireType != 2 {
@@ -2005,7 +2005,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 11:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxLeverageRatio", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyMaxLeverageRatio", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -2033,11 +2033,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.MaxLeverageRatio = string(dAtA[iNdEx:postIndex])
+				x.LegacyMaxLeverageRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 12:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxWithdrawRatio", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyMaxWithdrawRatio", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -2065,7 +2065,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.MaxWithdrawRatio = string(dAtA[iNdEx:postIndex])
+				x.LegacyMaxWithdrawRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2228,18 +2228,18 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	DepositDenom         string `protobuf:"bytes,1,opt,name=deposit_denom,json=depositDenom,proto3" json:"deposit_denom,omitempty"`
-	RedemptionRate       string `protobuf:"bytes,2,opt,name=redemption_rate,json=redemptionRate,proto3" json:"redemption_rate,omitempty"`
-	EpochLength          int64  `protobuf:"varint,3,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
-	InterestRate         string `protobuf:"bytes,4,opt,name=interest_rate,json=interestRate,proto3" json:"interest_rate,omitempty"`
-	InterestRateMax      string `protobuf:"bytes,5,opt,name=interest_rate_max,json=interestRateMax,proto3" json:"interest_rate_max,omitempty"`
-	InterestRateMin      string `protobuf:"bytes,6,opt,name=interest_rate_min,json=interestRateMin,proto3" json:"interest_rate_min,omitempty"`
-	InterestRateIncrease string `protobuf:"bytes,7,opt,name=interest_rate_increase,json=interestRateIncrease,proto3" json:"interest_rate_increase,omitempty"`
-	InterestRateDecrease string `protobuf:"bytes,8,opt,name=interest_rate_decrease,json=interestRateDecrease,proto3" json:"interest_rate_decrease,omitempty"`
-	HealthGainFactor     string `protobuf:"bytes,9,opt,name=health_gain_factor,json=healthGainFactor,proto3" json:"health_gain_factor,omitempty"`
-	TotalValue           string `protobuf:"bytes,10,opt,name=total_value,json=totalValue,proto3" json:"total_value,omitempty"`
-	MaxLeverageRatio     string `protobuf:"bytes,11,opt,name=max_leverage_ratio,json=maxLeverageRatio,proto3" json:"max_leverage_ratio,omitempty"`
-	MaxWithdrawRatio     string `protobuf:"bytes,12,opt,name=max_withdraw_ratio,json=maxWithdrawRatio,proto3" json:"max_withdraw_ratio,omitempty"`
+	LegacyDepositDenom         string `protobuf:"bytes,1,opt,name=legacy_deposit_denom,json=legacyDepositDenom,proto3" json:"legacy_deposit_denom,omitempty"`
+	LegacyRedemptionRate       string `protobuf:"bytes,2,opt,name=legacy_redemption_rate,json=legacyRedemptionRate,proto3" json:"legacy_redemption_rate,omitempty"`
+	EpochLength                int64  `protobuf:"varint,3,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
+	LegacyInterestRate         string `protobuf:"bytes,4,opt,name=legacy_interest_rate,json=legacyInterestRate,proto3" json:"legacy_interest_rate,omitempty"`
+	LegacyInterestRateMax      string `protobuf:"bytes,5,opt,name=legacy_interest_rate_max,json=legacyInterestRateMax,proto3" json:"legacy_interest_rate_max,omitempty"`
+	LegacyInterestRateMin      string `protobuf:"bytes,6,opt,name=legacy_interest_rate_min,json=legacyInterestRateMin,proto3" json:"legacy_interest_rate_min,omitempty"`
+	LegacyInterestRateIncrease string `protobuf:"bytes,7,opt,name=legacy_interest_rate_increase,json=legacyInterestRateIncrease,proto3" json:"legacy_interest_rate_increase,omitempty"`
+	LegacyInterestRateDecrease string `protobuf:"bytes,8,opt,name=legacy_interest_rate_decrease,json=legacyInterestRateDecrease,proto3" json:"legacy_interest_rate_decrease,omitempty"`
+	LegacyHealthGainFactor     string `protobuf:"bytes,9,opt,name=legacy_health_gain_factor,json=legacyHealthGainFactor,proto3" json:"legacy_health_gain_factor,omitempty"`
+	TotalValue                 string `protobuf:"bytes,10,opt,name=total_value,json=totalValue,proto3" json:"total_value,omitempty"`
+	LegacyMaxLeverageRatio     string `protobuf:"bytes,11,opt,name=legacy_max_leverage_ratio,json=legacyMaxLeverageRatio,proto3" json:"legacy_max_leverage_ratio,omitempty"`
+	LegacyMaxWithdrawRatio     string `protobuf:"bytes,12,opt,name=legacy_max_withdraw_ratio,json=legacyMaxWithdrawRatio,proto3" json:"legacy_max_withdraw_ratio,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -2262,16 +2262,16 @@ func (*Params) Descriptor() ([]byte, []int) {
 	return file_elys_stablestake_params_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Params) GetDepositDenom() string {
+func (x *Params) GetLegacyDepositDenom() string {
 	if x != nil {
-		return x.DepositDenom
+		return x.LegacyDepositDenom
 	}
 	return ""
 }
 
-func (x *Params) GetRedemptionRate() string {
+func (x *Params) GetLegacyRedemptionRate() string {
 	if x != nil {
-		return x.RedemptionRate
+		return x.LegacyRedemptionRate
 	}
 	return ""
 }
@@ -2283,44 +2283,44 @@ func (x *Params) GetEpochLength() int64 {
 	return 0
 }
 
-func (x *Params) GetInterestRate() string {
+func (x *Params) GetLegacyInterestRate() string {
 	if x != nil {
-		return x.InterestRate
+		return x.LegacyInterestRate
 	}
 	return ""
 }
 
-func (x *Params) GetInterestRateMax() string {
+func (x *Params) GetLegacyInterestRateMax() string {
 	if x != nil {
-		return x.InterestRateMax
+		return x.LegacyInterestRateMax
 	}
 	return ""
 }
 
-func (x *Params) GetInterestRateMin() string {
+func (x *Params) GetLegacyInterestRateMin() string {
 	if x != nil {
-		return x.InterestRateMin
+		return x.LegacyInterestRateMin
 	}
 	return ""
 }
 
-func (x *Params) GetInterestRateIncrease() string {
+func (x *Params) GetLegacyInterestRateIncrease() string {
 	if x != nil {
-		return x.InterestRateIncrease
+		return x.LegacyInterestRateIncrease
 	}
 	return ""
 }
 
-func (x *Params) GetInterestRateDecrease() string {
+func (x *Params) GetLegacyInterestRateDecrease() string {
 	if x != nil {
-		return x.InterestRateDecrease
+		return x.LegacyInterestRateDecrease
 	}
 	return ""
 }
 
-func (x *Params) GetHealthGainFactor() string {
+func (x *Params) GetLegacyHealthGainFactor() string {
 	if x != nil {
-		return x.HealthGainFactor
+		return x.LegacyHealthGainFactor
 	}
 	return ""
 }
@@ -2332,16 +2332,16 @@ func (x *Params) GetTotalValue() string {
 	return ""
 }
 
-func (x *Params) GetMaxLeverageRatio() string {
+func (x *Params) GetLegacyMaxLeverageRatio() string {
 	if x != nil {
-		return x.MaxLeverageRatio
+		return x.LegacyMaxLeverageRatio
 	}
 	return ""
 }
 
-func (x *Params) GetMaxWithdrawRatio() string {
+func (x *Params) GetLegacyMaxWithdrawRatio() string {
 	if x != nil {
-		return x.MaxWithdrawRatio
+		return x.LegacyMaxWithdrawRatio
 	}
 	return ""
 }
@@ -2407,84 +2407,92 @@ var file_elys_stablestake_params_proto_rawDesc = []byte{
 	0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49,
-	0x6e, 0x74, 0x52, 0x0a, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x85,
-	0x08, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x23, 0x0a, 0x0d, 0x64, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0c, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x5a,
-	0x0a, 0x0f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x72, 0x61, 0x74,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0e, 0x72, 0x65, 0x64, 0x65,
-	0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x61, 0x74, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x65, 0x70,
-	0x6f, 0x63, 0x68, 0x5f, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x0b, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x12, 0x56, 0x0a,
-	0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
-	0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x5d, 0x0a, 0x11, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
-	0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x0f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
-	0x65, 0x4d, 0x61, 0x78, 0x12, 0x5d, 0x0a, 0x11, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
-	0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x69, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x0f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65,
-	0x4d, 0x69, 0x6e, 0x12, 0x67, 0x0a, 0x16, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f,
-	0x72, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x07, 0x20,
+	0x6e, 0x74, 0x52, 0x0a, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x87,
+	0x09, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x67, 0x0a, 0x16, 0x6c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x14,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x61, 0x74, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x5f, 0x6c, 0x65,
+	0x6e, 0x67, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x65, 0x70, 0x6f, 0x63,
+	0x68, 0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x12, 0x63, 0x0a, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x6a, 0x0a, 0x18,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f,
+	0x72, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x15, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73,
+	0x74, 0x52, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x78, 0x12, 0x6a, 0x0a, 0x18, 0x6c, 0x65, 0x67, 0x61,
+	0x63, 0x79, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65,
+	0x5f, 0x6d, 0x69, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x15, 0x6c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
+	0x65, 0x4d, 0x69, 0x6e, 0x12, 0x74, 0x0a, 0x1d, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x6e, 0x63,
+	0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61,
+	0x74, 0x65, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x74, 0x0a, 0x1d, 0x6c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61,
+	0x74, 0x65, 0x5f, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x1a, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x49, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x44, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65,
+	0x12, 0x6c, 0x0a, 0x19, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x68, 0x65, 0x61, 0x6c, 0x74,
+	0x68, 0x5f, 0x67, 0x61, 0x69, 0x6e, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x09, 0x20,
 	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
 	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x14, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
-	0x52, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x67, 0x0a, 0x16,
-	0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x5f, 0x64, 0x65,
-	0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x14, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x44, 0x65, 0x63,
-	0x72, 0x65, 0x61, 0x73, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x5f,
-	0x67, 0x61, 0x69, 0x6e, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x09, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x68, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x47, 0x61, 0x69, 0x6e,
-	0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x4c, 0x0a, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56,
-	0x61, 0x6c, 0x75, 0x65, 0x12, 0x5f, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x65, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x5f, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x77, 0x69, 0x74,
-	0x68, 0x64, 0x72, 0x61, 0x77, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0c, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61,
-	0x77, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x42, 0xb7, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x42,
-	0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b,
-	0x65, 0xa2, 0x02, 0x03, 0x45, 0x53, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x53,
-	0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xe2, 0x02, 0x1c,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65,
-	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45,
-	0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x16, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x48, 0x65,
+	0x61, 0x6c, 0x74, 0x68, 0x47, 0x61, 0x69, 0x6e, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x4c,
+	0x0a, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x0a, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74,
+	0x52, 0x0a, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x6c, 0x0a, 0x19,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x16, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4d, 0x61, 0x78, 0x4c, 0x65, 0x76,
+	0x65, 0x72, 0x61, 0x67, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x6c, 0x0a, 0x19, 0x6c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61,
+	0x77, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x16, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4d, 0x61, 0x78, 0x57, 0x69, 0x74, 0x68, 0x64,
+	0x72, 0x61, 0x77, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x42, 0xba, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b,
+	0x65, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x34, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76,
+	0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c,
+	0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xa2, 0x02, 0x03, 0x45, 0x53, 0x58, 0xaa, 0x02, 0x10, 0x45,
+	0x6c, 0x79, 0x73, 0x2e, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xca,
+	0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61,
+	0x6b, 0x65, 0xe2, 0x02, 0x1c, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65,
+	0x73, 0x74, 0x61, 0x6b, 0x65, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65,
+	0x73, 0x74, 0x61, 0x6b, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

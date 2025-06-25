@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/assetprofile/types"
 )
 
 const (

@@ -3,15 +3,18 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
-	shareDenom := ammtypes.GetPoolShareDenom(poolId)
-	if poolId == stablestaketypes.PoolId {
-		shareDenom = stablestaketypes.GetShareDenom()
+	var shareDenom string
+	if poolId >= stablestaketypes.UsdcPoolId {
+		shareDenom = stablestaketypes.GetShareDenomForPool(poolId)
+	} else {
+		shareDenom = ammtypes.GetPoolShareDenom(poolId)
 	}
 
 	params := k.commitmentKeeper.GetParams(ctx)
@@ -20,8 +23,10 @@ func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
 
 func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user sdk.AccAddress) math.Int {
 	commitments := k.commitmentKeeper.GetCommitments(ctx, user)
-	shareDenom := stablestaketypes.GetShareDenom()
-	if poolId != stablestaketypes.PoolId {
+	var shareDenom string
+	if poolId >= stablestaketypes.UsdcPoolId {
+		shareDenom = stablestaketypes.GetShareDenomForPool(poolId)
+	} else {
 		shareDenom = ammtypes.GetPoolShareDenom(poolId)
 	}
 
@@ -43,18 +48,18 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	if totalCommit.IsZero() {
 		return
 	}
-	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
-		math.LegacyNewDecFromInt(amount.Mul(ammtypes.OneShare)).QuoInt(totalCommit),
-	)
+	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare().Add(
+		(osmomath.BigDecFromSDKInt(amount).Mul(ammtypes.OneShareBigDec)).Quo(osmomath.BigDecFromSDKInt(totalCommit)),
+	).Dec()
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
 }
 
 func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, isDeposit bool, amount math.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-	poolAccRewardPerShare := math.LegacyNewDec(0)
+	poolAccRewardPerShare := osmomath.ZeroBigDec()
 	if found {
-		poolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare
+		poolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare()
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
@@ -76,21 +81,21 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 		userBalance = userBalance.Add(amount)
 	}
 
-	userRewardInfo.RewardPending = userRewardInfo.RewardPending.Add(
+	userRewardInfo.RewardPending = userRewardInfo.GetBigDecRewardPending().Add(
 		poolAccRewardPerShare.
-			MulInt(userBalance).
-			Sub(userRewardInfo.RewardDebt).
-			QuoInt(ammtypes.OneShare),
-	)
+			Mul(osmomath.BigDecFromSDKInt(userBalance)).
+			Sub(userRewardInfo.GetBigDecRewardDebt()).
+			Quo(ammtypes.OneShareBigDec),
+	).Dec()
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
 }
 
 func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-	poolAccRewardPerShare := math.LegacyNewDec(0)
+	poolAccRewardPerShare := osmomath.ZeroBigDec()
 	if found {
-		poolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare
+		poolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare()
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
@@ -105,8 +110,8 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	}
 
 	userRewardInfo.RewardDebt = poolAccRewardPerShare.Mul(
-		math.LegacyNewDecFromInt(k.GetPoolBalance(ctx, poolId, user)),
-	)
+		osmomath.BigDecFromSDKInt(k.GetPoolBalance(ctx, poolId, user)),
+	).Dec()
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
 }

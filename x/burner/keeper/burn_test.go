@@ -8,8 +8,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/burner/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/x/burner/types"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -48,11 +48,9 @@ func TestBurnTokensForAllDenoms(t *testing.T) {
 	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[0].denom).Return(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount))).Once()
 	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[1].denom).Return(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount))).Once()
 
-	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)))).Return(nil).Once()
-	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil).Once()
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)), sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil).Once()
 
-	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)))).Return(nil)
-	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil)
+	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)), sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil)
 
 	// Burn the tokens
 	err := k.BurnTokensForAllDenoms(ctx)

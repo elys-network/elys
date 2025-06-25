@@ -5,9 +5,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/stablestake/keeper"
-	"github.com/elys-network/elys/x/stablestake/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/stablestake/keeper"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerBond() {
@@ -18,13 +19,22 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 		expSenderBalance  sdk.Coins
 		expSenderCommit   sdk.Coin
 		expPass           bool
+		setup             func()
 	}{
+		{
+			desc:              "bonding more than allowed",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_00)},
+			bondAmount:        math.NewInt(1000_000_0),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
+			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenomForPool(1), 10000),
+			expPass:           false,
+		},
 		{
 			desc:              "successful bonding process",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			bondAmount:        math.NewInt(10000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
-			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenom(), 10000),
+			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenomForPool(1), 10000),
 			expPass:           true,
 		},
 		{
@@ -48,13 +58,18 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
+			_, found := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+			suite.Require().True(found)
+
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Bond(
 				suite.ctx,
 				&types.MsgBond{
 					Creator: sender.String(),
 					Amount:  tc.bondAmount,
+					PoolId:  1,
 				})
+
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
@@ -70,6 +85,8 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expSenderCommit.Amount.String())
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
 
+				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx)
+				suite.Require().Equal(total, osmomath.MustNewBigDecFromStr("0.01"))
 			}
 		})
 	}

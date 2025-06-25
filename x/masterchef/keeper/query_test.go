@@ -3,13 +3,15 @@ package keeper_test
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	estakingtypes "github.com/elys-network/elys/v6/x/estaking/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -70,6 +72,19 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		BlocksDistributed: 1000000,
 	}
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     sdkmath.LegacyOneDec(),
+		NetAmount:            sdkmath.ZeroInt(),
+		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+		Id:                   stablestaketypes.UsdcPoolId,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
 }
 
 func (suite *MasterchefKeeperTestSuite) TestApr() {
@@ -86,7 +101,7 @@ func (suite *MasterchefKeeperTestSuite) TestApr() {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 			},
 			err: nil,
 		},
@@ -126,12 +141,12 @@ func (suite *MasterchefKeeperTestSuite) TestAprs() {
 				UsdcAprUsdc:  sdkmath.LegacyZeroDec(),
 				EdenAprUsdc:  sdkmath.LegacyZeroDec(),
 				UsdcAprEdenb: sdkmath.LegacyZeroDec(),
-				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				UsdcAprEden:  sdkmath.LegacyZeroDec(),
-				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				EdenbAprEden: sdkmath.LegacyOneDec(),
 				UsdcAprElys:  sdkmath.LegacyZeroDec(),
-				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				EdenbAprElys: sdkmath.LegacyOneDec(),
 			},
 			err: nil,
@@ -376,6 +391,170 @@ func (suite *MasterchefKeeperTestSuite) TestUserRewardInfoQuery() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tc.response.String(), response.String())
+			}
+		})
+	}
+}
+
+func (suite *MasterchefKeeperTestSuite) TestTotalPendingRewards() {
+	suite.SetupApp()
+
+	// Create test addresses
+	addr1 := sdk.AccAddress("test1_______________")
+	addr2 := sdk.AccAddress("test2_______________")
+	addr3 := sdk.AccAddress("test3_______________")
+
+	// masterchef address
+	// elys1nwc45a3fl0dz37m5ulvw8pmpfjnewhgz7t96zn
+
+	// Create test user reward info entries
+	userRewardInfos := []types.UserRewardInfo{
+		{
+			User:          addr1.String(),
+			PoolId:        1,
+			RewardDenom:   "ueden",
+			RewardPending: sdkmath.LegacyNewDec(100),
+		},
+		{
+			User:          addr2.String(),
+			PoolId:        2,
+			RewardDenom:   "uusdc",
+			RewardPending: sdkmath.LegacyNewDec(200),
+		},
+		{
+			User:          addr3.String(),
+			PoolId:        1,
+			RewardDenom:   "ueden",
+			RewardPending: sdkmath.LegacyNewDec(300),
+		},
+	}
+
+	// Set all user reward info entries
+	for _, info := range userRewardInfos {
+		suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, info)
+	}
+
+	tests := []struct {
+		desc     string
+		request  *types.QueryTotalPendingRewardsRequest
+		response *types.QueryTotalPendingRewardsResponse
+		err      error
+	}{
+		{
+			desc: "valid request with default pagination",
+			request: &types.QueryTotalPendingRewardsRequest{
+				Pagination: &query.PageRequest{
+					Limit: 5000,
+				},
+			},
+			response: &types.QueryTotalPendingRewardsResponse{
+				TotalPendingRewards: sdk.NewCoins(
+					sdk.NewCoin("ueden", sdkmath.NewInt(400)), // 100 + 300
+					sdk.NewCoin("uusdc", sdkmath.NewInt(200)),
+				),
+				Count: 3,
+			},
+			err: nil,
+		},
+		{
+			desc: "valid request with custom pagination limit",
+			request: &types.QueryTotalPendingRewardsRequest{
+				Pagination: &query.PageRequest{
+					Limit: 1,
+				},
+			},
+			response: &types.QueryTotalPendingRewardsResponse{
+				TotalPendingRewards: sdk.NewCoins(
+					sdk.NewCoin("ueden", sdkmath.NewInt(100)),
+				),
+				Count: 1,
+			},
+			err: nil,
+		},
+		{
+			desc:    "invalid request",
+			request: nil,
+			err:     status.Error(codes.InvalidArgument, "invalid request"),
+		},
+	}
+
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.TotalPendingRewards(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.TotalPendingRewards.String(), response.TotalPendingRewards.String())
+				suite.Require().Equal(tc.response.Count, response.Count)
+			}
+		})
+	}
+}
+
+func (suite *MasterchefKeeperTestSuite) TestPendingRewards() {
+	// Create test addresses
+	addr1 := sdk.AccAddress("test1_______________")
+	addr2 := sdk.AccAddress("test2_______________")
+	addr3 := sdk.AccAddress("test3_______________")
+	// Create test user reward info entries
+	userRewardInfos := []types.UserRewardInfo{
+		{
+			User:          addr1.String(),
+			PoolId:        1,
+			RewardDenom:   "ueden",
+			RewardPending: sdkmath.LegacyNewDec(100),
+		},
+		{
+			User:          addr2.String(),
+			PoolId:        2,
+			RewardDenom:   "uusdc",
+			RewardPending: sdkmath.LegacyNewDec(200),
+		},
+		{
+			User:          addr3.String(),
+			PoolId:        1,
+			RewardDenom:   "ueden",
+			RewardPending: sdkmath.LegacyNewDec(300),
+		},
+	}
+
+	// Set all user reward info entries
+	for _, info := range userRewardInfos {
+		suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, info)
+	}
+
+	tests := []struct {
+		desc     string
+		request  *types.QueryPendingRewardsRequest
+		response *types.QueryPendingRewardsResponse
+		err      error
+	}{
+		{
+			desc:    "valid request",
+			request: &types.QueryPendingRewardsRequest{},
+			response: &types.QueryPendingRewardsResponse{
+				TotalPendingRewards: sdk.NewCoins(
+					sdk.NewCoin("ueden", sdkmath.NewInt(400)), // 100 + 300
+					sdk.NewCoin("uusdc", sdkmath.NewInt(200)),
+				),
+				Count: 3,
+			},
+			err: nil,
+		},
+	}
+
+	suite.SetupApp()
+
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.PendingRewards(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.Count, response.Count)
+				suite.Require().Equal(tc.response.TotalPendingRewards, response.TotalPendingRewards)
 			}
 		})
 	}

@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/tier"
+	"github.com/elys-network/elys/v6/api/elys/tier"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -98,6 +98,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "GetAllPrices",
 					Use:       "get-all-prices",
 					Short:     "Query get-all-prices",
+				},
+				{
+					RpcMethod:      "GetOraclePrices",
+					Use:            "get-oracle-prices [denoms]",
+					Short:          "Query get-oracle-prices",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denoms"}},
 				},
 			},
 		},

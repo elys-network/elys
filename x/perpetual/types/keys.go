@@ -18,8 +18,6 @@ const (
 
 	// ParamsKey is the prefix for parameters of perpetual module
 	ParamsKey = "perpetual_params"
-
-	LegacyPoolKeyPrefix = "Pool/value/"
 )
 
 const MaxPageLimit = 10000
@@ -35,14 +33,16 @@ var (
 )
 
 var (
-	MTPPrefix          = []byte{0x01}
-	MTPCountPrefix     = []byte{0x02}
-	OpenMTPCountPrefix = []byte{0x04}
-	WhitelistPrefix    = []byte{0x05}
-	PoolKeyPrefix      = []byte{0x06}
+	MTPPrefix              = []byte{0x01}
+	PerpetualCounterPrefix = []byte{0x02}
+	WhitelistPrefix        = []byte{0x05}
+	PoolKeyPrefix          = []byte{0x06}
+	InterestRatePrefix     = []byte{0x07}
+	FundingRatePrefix      = []byte{0x08}
 
-	InterestRatePrefix = []byte{0x07}
-	FundingRatePrefix  = []byte{0x08}
+	// Delete after v18 migration
+	LegacyMTPCountPrefix     = []byte{0x02}
+	LegacyOpenMTPCountPrefix = []byte{0x04}
 )
 
 func KeyPrefix(p string) []byte {
@@ -56,25 +56,26 @@ func GetUint64Bytes(ID uint64) []byte {
 	return IDBz
 }
 
-// GetUint64FromBytes returns ID in uint64 format from a byte array
-func GetUint64FromBytes(bz []byte) uint64 {
-	return binary.BigEndian.Uint64(bz)
-}
-
 func GetWhitelistKey(addr sdk.AccAddress) []byte {
 	return append(WhitelistPrefix, address.MustLengthPrefix(addr)...)
 }
 
-func GetLegacyWhitelistKey(address string) []byte {
-	return append(WhitelistPrefix, []byte(address)...)
-}
-
-func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
-	return append(MTPPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
-}
-
 func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
 	return append(MTPPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetMTPPrefixForAddressAndPoolId(addr sdk.AccAddress, poolId uint64) []byte {
+	key := GetMTPPrefixForAddress(addr)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(poolId)...)
+	return key
+}
+
+func GetMTPKey(addr sdk.AccAddress, poolId, id uint64) []byte {
+	key := GetMTPPrefixForAddressAndPoolId(addr, poolId)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(id)...)
+	return key
 }
 
 func GetPoolKey(index uint64) []byte {
@@ -88,4 +89,8 @@ func GetInterestRateKey(block uint64, pool uint64) []byte {
 
 func GetFundingRateKey(block uint64, pool uint64) []byte {
 	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
+}
+
+func GePerpetualCounterKey(ammPoolId uint64) []byte {
+	return append(PerpetualCounterPrefix, sdk.Uint64ToBigEndian(ammPoolId)...)
 }

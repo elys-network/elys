@@ -4,7 +4,7 @@ package elys.stablestake;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/stablestake/types";
+option go_package = "github.com/elys-network/elys/v6/x/stablestake/types";
 
 message Debt {
   string address = 1;
@@ -26,4 +26,5 @@ message Debt {
   uint64 borrow_time = 5;
   uint64 last_interest_calc_time = 6;
   uint64 last_interest_calc_block = 7;
+  uint64 pool_id = 8;
 }

@@ -1,8 +1,11 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -12,13 +15,21 @@ func NewParams(
 	minSelfDelegation sdkmath.Int,
 	totalBlocksPerYear uint64,
 	rewardsDataLifeTime uint64,
+	takerFees sdkmath.LegacyDec,
+	takerFeeAddress string,
+	enableTakerFeeSwap bool,
+	takerFeeCollectionInterval uint64,
 ) Params {
 	return Params{
-		MinCommissionRate:   minCommissionRate,
-		MaxVotingPower:      maxVotingPower,
-		MinSelfDelegation:   minSelfDelegation,
-		TotalBlocksPerYear:  totalBlocksPerYear,
-		RewardsDataLifetime: rewardsDataLifeTime,
+		MinCommissionRate:          minCommissionRate,
+		MaxVotingPower:             maxVotingPower,
+		MinSelfDelegation:          minSelfDelegation,
+		TotalBlocksPerYear:         totalBlocksPerYear,
+		RewardsDataLifetime:        rewardsDataLifeTime,
+		TakerFees:                  takerFees,
+		TakerFeeCollectionAddress:  takerFeeAddress,
+		EnableTakerFeeSwap:         enableTakerFeeSwap,
+		TakerFeeCollectionInterval: takerFeeCollectionInterval,
 	}
 }
 
@@ -30,6 +41,10 @@ func DefaultParams() Params {
 		sdkmath.OneInt(),
 		6307200,
 		86400, // 1 day
+		sdkmath.LegacyZeroDec(),
+		authtypes.NewModuleAddress("taker_fee_collection").String(),
+		true,
+		100,
 	)
 }
 
@@ -63,5 +78,15 @@ func (p Params) Validate() error {
 	if p.RewardsDataLifetime <= 0 {
 		return fmt.Errorf("rewards data lifetime cannot be negative or zero")
 	}
+
+	if p.EnableTakerFeeSwap {
+		if p.TakerFeeCollectionInterval <= 0 {
+			return fmt.Errorf("taker fee collection interval cannot be negative or zero")
+		}
+	}
 	return nil
+}
+
+func (p Params) GetBigDecTakerFees() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.TakerFees)
 }

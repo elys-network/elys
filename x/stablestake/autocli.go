@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/stablestake"
+	"github.com/elys-network/elys/v6/api/elys/stablestake"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -19,9 +19,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:     "Query the current parameters",
 				},
 				{
-					RpcMethod: "BorrowRatio",
-					Use:       "borrow-ratio",
-					Short:     "Query the borrow ratio",
+					RpcMethod:      "BorrowRatio",
+					Use:            "borrow-ratio [pool-id]",
+					Short:          "Query the borrow ratio",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod:      "AmmPool",
@@ -33,6 +34,35 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "AllAmmPools",
 					Use:       "all-amm-pools",
 					Short:     "Query all amm pools liabilities",
+				},
+				{
+					RpcMethod:      "Pool",
+					Use:            "pool [pool-id]",
+					Short:          "Query pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+				},
+				{
+					RpcMethod: "Pools",
+					Use:       "pools",
+					Short:     "Query all pools",
+				},
+				{
+					RpcMethod:      "Debt",
+					Use:            "debt [pool-id] [address]",
+					Short:          "Query debt",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "address"}},
+				},
+				{
+					RpcMethod:      "GetInterest",
+					Use:            "interest [pool-id] [block-height]",
+					Short:          "Query interest",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "block_height"}},
+				},
+				{
+					RpcMethod:      "MaxBondableAmount",
+					Use:            "max-bondable [pool-id]",
+					Short:          "Query max bondable amount for a pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
 				},
 			},
 		},

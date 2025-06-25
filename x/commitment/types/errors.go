@@ -31,4 +31,8 @@ var (
 	ErrKolAlreadyClaimed              = errorsmod.Register(ModuleName, 1021, "elys already claimed")
 	ErrKolRefunded                    = errorsmod.Register(ModuleName, 1022, "cannot claim elys, refund has been processed")
 	ErrClaimNotEnabled                = errorsmod.Register(ModuleName, 1023, "claim not enabled")
+	ErrRewardProgramNotFound          = errorsmod.Register(ModuleName, 1024, "reward program not found")
+	ErrRewardProgramAlreadyClaimed    = errorsmod.Register(ModuleName, 1025, "reward program already claimed")
+	ErrRewardProgramNotStarted        = errorsmod.Register(ModuleName, 1026, "reward program not started")
+	ErrRewardProgramEnded             = errorsmod.Register(ModuleName, 1027, "reward program ended")
 )

@@ -10,7 +10,7 @@ import "elys/tier/portfolio.proto";
 import "elys/tier/userdata.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/tier/types";
+option go_package = "github.com/elys-network/elys/v6/x/tier/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -103,6 +103,13 @@ service Query {
   rpc GetAllPrices(QueryGetAllPricesRequest)
       returns (QueryGetAllPricesResponse) {
     option (google.api.http).get = "/elys-network/elys/tier/get_all_prices";
+  }
+
+  // Queries a list of Oracle prices from denoms.
+  rpc GetOraclePrices(QueryGetOraclePricesRequest)
+      returns (QueryGetOraclePricesResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_oracle_prices/{denoms}";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -296,5 +303,24 @@ message QueryGetAllPricesRequest {
 
 message QueryGetAllPricesResponse {
   repeated Price prices = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message OraclePrice {
+  string denom = 1;
+  string oracle_price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryGetOraclePricesRequest {
+  repeated string denoms = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetOraclePricesResponse {
+  repeated OraclePrice prices = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

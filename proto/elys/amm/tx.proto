@@ -12,7 +12,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/amm/types";
+option go_package = "github.com/elys-network/elys/v6/x/amm/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -21,6 +21,8 @@ service Msg {
   rpc CreatePool(MsgCreatePool) returns (MsgCreatePoolResponse);
   rpc JoinPool(MsgJoinPool) returns (MsgJoinPoolResponse);
   rpc ExitPool(MsgExitPool) returns (MsgExitPoolResponse);
+  rpc UpFrontSwapExactAmountIn(MsgUpFrontSwapExactAmountIn)
+      returns (MsgUpFrontSwapExactAmountInResponse);
   rpc SwapExactAmountIn(MsgSwapExactAmountIn)
       returns (MsgSwapExactAmountInResponse);
   rpc SwapExactAmountOut(MsgSwapExactAmountOut)
@@ -87,6 +89,47 @@ message MsgExitPoolResponse {
   repeated cosmos.base.v1beta1.Coin token_out = 1
       [ (gogoproto.nullable) = false ];
   string weight_balance_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fee = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpFrontSwapExactAmountIn {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgUpFrontSwapExactAmountIn";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated SwapAmountInRoute routes = 2 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin token_in = 3 [ (gogoproto.nullable) = false ];
+  string token_out_min_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpFrontSwapExactAmountInResponse {
+  string token_out_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fee = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string discount = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -222,6 +265,16 @@ message MsgSwapByDenomResponse {
     (gogoproto.nullable) = false
   ];
   string recipient = 7;
+  string slippage = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_bonus = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdatePoolParams {

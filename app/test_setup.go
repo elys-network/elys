@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -30,11 +31,11 @@ import (
 	consumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccvprovidertypes "github.com/cosmos/interchain-security/v6/x/ccv/provider/types"
 	ccvtypes "github.com/cosmos/interchain-security/v6/x/ccv/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 // Initiate a new ElysApp object - Common function used by the following 2 functions.
@@ -54,6 +55,7 @@ func InitiateNewElysApp(t *testing.T) *ElysApp {
 		map[int64]bool{},
 		t.TempDir(),
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	return app
@@ -171,7 +173,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet,
 	initValPowers := []abci.ValidatorUpdate{}
 
 	for _, val := range valSet.Validators {
-		pk, _ := cryptocodec.FromTmPubKeyInterface(val.PubKey)
+		pk, _ := cryptocodec.FromCmtPubKeyInterface(val.PubKey)
 		pkAny, _ := codectypes.NewAnyWithValue(pk)
 		validator := stakingtypes.Validator{
 			OperatorAddress:   sdk.ValAddress(val.Address).String(),

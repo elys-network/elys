@@ -1,20 +1,21 @@
 package types_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/stablestake/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestPoolAddress(t *testing.T) {
 	require.Equal(t, authtypes.NewModuleAddress(types.ModuleName), types.PoolAddress())
 }
 func TestShareDenom(t *testing.T) {
-	require.Equal(t, "stablestake/share", types.GetShareDenom())
+	require.Equal(t, "stablestake/share", types.GetShareDenomForPool(types.UsdcPoolId))
 }
 
 func TestAddLiabilities(t *testing.T) {

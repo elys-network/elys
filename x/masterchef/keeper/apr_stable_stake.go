@@ -4,39 +4,40 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (sdkmath.LegacyDec, error) {
+func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (osmomath.BigDec, error) {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 
 	// Update params
 	defer k.SetParams(ctx, params)
 
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+
 	// If we don't have enough params
 	if query.Denom == ptypes.Eden {
 		lpIncentive := params.LpIncentives
 		if lpIncentive == nil || lpIncentive.EdenAmountPerYear.IsNil() {
-			return sdkmath.LegacyZeroDec(), nil
+			return osmomath.ZeroBigDec(), nil
 		}
 
 		totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 		if totalBlocksPerYear == 0 {
-			return sdkmath.LegacyZeroDec(), nil
+			return osmomath.ZeroBigDec(), nil
 		}
 
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-		}
-
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+		stableTvl := k.stableKeeper.TVL(ctx, stabletypes.UsdcPoolId)
 		if stableTvl.IsZero() {
-			return sdkmath.LegacyZeroDec(), nil
+			return osmomath.ZeroBigDec(), nil
 		}
 
 		// Calculate total Proxy TVL
@@ -47,26 +48,26 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
+		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.UsdcPoolId))
 		if !found {
-			return sdkmath.LegacyZeroDec(), nil
+			return osmomath.ZeroBigDec(), nil
 		}
 
 		// Calculate Proxy TVL share considering multiplier
-		proxyTVL := stableTvl.Mul(poolInfo.Multiplier)
+		proxyTVL := stableTvl.Mul(poolInfo.GetBigDecMultiplier())
 		if totalProxyTVL.IsZero() {
-			return sdkmath.LegacyZeroDec(), nil
+			return osmomath.ZeroBigDec(), nil
 		}
 		stableStakePoolShare := proxyTVL.Quo(totalProxyTVL)
 
-		stableStakeEdenAmount := sdkmath.LegacyNewDecFromInt(edenAmount).Mul(stableStakePoolShare)
+		stableStakeEdenAmount := osmomath.BigDecFromSDKInt(edenAmount).Mul(stableStakePoolShare)
 
 		params := k.GetParams(ctx)
-		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
+		poolMaxEdenAmount := params.GetBigDecMaxEdenRewardAprLps().
 			Mul(proxyTVL).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
-		stableStakeEdenAmount = sdkmath.LegacyMinDec(stableStakeEdenAmount, poolMaxEdenAmount)
+		stableStakeEdenAmount = osmomath.MinBigDec(stableStakeEdenAmount, poolMaxEdenAmount)
 
 		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
@@ -75,14 +76,17 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(stableTvl)
 		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {
-		params := k.stableKeeper.GetParams(ctx)
+		borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, baseCurrency)
+		if !found {
+			return osmomath.ZeroBigDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
+		}
 		res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), err
 		}
-		apr := params.InterestRate.Mul(res.BorrowRatio)
+		apr := borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
 		return apr, nil
 	}
 
-	return sdkmath.LegacyZeroDec(), nil
+	return osmomath.ZeroBigDec(), nil
 }

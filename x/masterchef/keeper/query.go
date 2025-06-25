@@ -2,10 +2,18 @@ package keeper
 
 import (
 	"context"
+
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/types/query"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -31,7 +39,54 @@ func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
 	}
 
-	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo}, nil
+	stable_apr := osmomath.ZeroBigDec()
+	if req.PoolId >= stabletypes.UsdcPoolId {
+		borrowPool, found := k.stableKeeper.GetPool(ctx, req.PoolId)
+		if found {
+			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: req.PoolId})
+			if err == nil {
+				stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
+			}
+		}
+	}
+
+	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo, StableApr: stable_apr.Dec()}, nil
+}
+
+func (k Keeper) ListPoolInfos(goCtx context.Context, req *types.QueryListPoolInfosRequest) (*types.QueryListPoolInfosResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	poolStore := prefix.NewStore(store, types.PoolInfoKeyPrefix)
+
+	var list []types.QueryPoolInfoResponse
+
+	pageRes, err := query.Paginate(poolStore, req.Pagination, func(key []byte, value []byte) error {
+		var pool types.PoolInfo
+		if err := k.cdc.Unmarshal(value, &pool); err != nil {
+			return err
+		}
+
+		stable_apr := osmomath.ZeroBigDec()
+		if pool.PoolId >= stabletypes.UsdcPoolId {
+			borrowPool, found := k.stableKeeper.GetPool(ctx, pool.PoolId)
+			if found {
+				res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: pool.PoolId})
+				if err == nil {
+					stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
+				}
+			}
+		}
+
+		list = append(list, types.QueryPoolInfoResponse{PoolInfo: pool, StableApr: stable_apr.Dec()})
+
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryListPoolInfosResponse{List: list, Pagination: pageRes}, nil
 }
 
 func (k Keeper) PoolRewardInfo(goCtx context.Context, req *types.QueryPoolRewardInfoRequest) (*types.QueryPoolRewardInfoResponse, error) {
@@ -113,7 +168,7 @@ func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStak
 		return nil, err
 	}
 
-	return &types.QueryStableStakeAprResponse{Apr: apr}, nil
+	return &types.QueryStableStakeAprResponse{Apr: apr.Dec()}, nil
 }
 
 func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {
@@ -124,4 +179,70 @@ func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	data := k.CalculatePoolAprs(ctx, req.PoolIds)
 	return &types.QueryPoolAprsResponse{Data: data}, nil
+}
+
+func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotalPendingRewardsRequest) (*types.QueryTotalPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var totalRewards sdk.Coins
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	positionStore := prefix.NewStore(store, types.UserRewardInfoKeyPrefix)
+
+	if req.Pagination == nil {
+		req.Pagination = &query.PageRequest{
+			Limit: 100000,
+		}
+	}
+
+	count := uint64(0)
+
+	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
+		var reward types.UserRewardInfo
+		k.cdc.MustUnmarshal(value, &reward)
+		k.AfterWithdraw(ctx, reward.PoolId, sdk.MustAccAddressFromBech32(reward.User), sdkmath.ZeroInt())
+		if reward.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
+		}
+		count++
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryTotalPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
+		Pagination:          pageRes,
+	}, nil
+}
+
+func (k Keeper) PendingRewards(goCtx context.Context, req *types.QueryPendingRewardsRequest) (*types.QueryPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	var totalRewards sdk.Coins
+	count := uint64(0)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(val.RewardDenom, val.RewardPending.TruncateInt()))
+		}
+		count++
+	}
+
+	return &types.QueryPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
+	}, nil
 }

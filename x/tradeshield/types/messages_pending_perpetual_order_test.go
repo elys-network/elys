@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,7 +29,6 @@ func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 				OwnerAddress:    sample.AccAddress(),
 				TriggerPrice:    math.LegacyNewDec(100),
 				Collateral:      sdk.NewCoin("token", math.NewInt(1000)),
-				TradingAsset:    "asset",
 				Position:        PerpetualPosition_LONG,
 				Leverage:        math.LegacyNewDec(2),
 				TakeProfitPrice: math.LegacyNewDec(150),
@@ -165,6 +164,37 @@ func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
 				OrderIds:     []uint64{1},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgCancelAllPerpetualOrders_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgCancelAllPerpetualOrders
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgCancelAllPerpetualOrders{
+				OwnerAddress: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgCancelAllPerpetualOrders{
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}

@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 // CanCreateModuleAccountAtAddr tells us if we can safely make a module account at
@@ -51,5 +51,5 @@ func CanCreateModuleAccountAtAddr(ctx sdk.Context, ak types.AccountKeeper, addr 
 		return nil
 	}
 	return errors.New("cannot create module account %s, " +
-		"due to an account at that address already existing & not being an overrideable type")
+		"due to an account at that address already existing & not being an overridable type")
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapExactAmountOut) (*types.MsgSwapExactAmountOutResponse, error) {
@@ -44,8 +44,8 @@ func (k Keeper) SwapExactAmountOut(ctx sdk.Context, msg *types.MsgSwapExactAmoun
 
 	return &types.MsgSwapExactAmountOutResponse{
 		TokenInAmount: tokenInAmount,
-		SwapFee:       swapFee,
-		Discount:      discount,
+		SwapFee:       swapFee.Dec(),
+		Discount:      discount.Dec(),
 		Recipient:     recipient.String(),
 	}, nil
 }

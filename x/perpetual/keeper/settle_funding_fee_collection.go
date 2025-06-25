@@ -3,13 +3,14 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (bool, math.Int, error) {
 
 	fullFundingFeePayment := true
-	takeAmountCustodyAmount := math.ZeroInt()
+	var takeAmountCustodyAmount math.Int
 	// get funding rate
 	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 
@@ -54,7 +55,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 			return fullFundingFeePayment, math.ZeroInt(), err
 		}
 
-		tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+		_, tradingAssetPriceBaseDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 		if err != nil {
 			return fullFundingFeePayment, math.ZeroInt(), err
 		}
@@ -63,7 +64,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 		// short -> usdc
 		// long -> custody
 		// For short, takeAmountLiabilityAmount is in trading asset, need to convert to custody asset which is in usdc
-		takeAmountCustodyAmount = takeAmountLiabilityAmount.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		takeAmountCustodyAmount = osmomath.BigDecFromSDKInt(takeAmountLiabilityAmount).Mul(tradingAssetPriceBaseDenomRatio).Dec().TruncateInt()
 
 		if takeAmountCustodyAmount.GT(mtp.Custody) {
 			fullFundingFeePayment = false

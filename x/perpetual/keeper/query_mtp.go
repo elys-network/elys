@@ -4,8 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,7 +21,7 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}
-	mtp, err := k.GetMTP(ctx, creator, req.Id)
+	mtp, err := k.GetMTP(ctx, req.PoolId, creator, req.Id)
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}

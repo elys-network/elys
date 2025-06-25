@@ -30,6 +30,7 @@ type MsgClient interface {
 	// WithdrawAllRewards defines a method to withdraw rewards of delegator from
 	// all the validators and Eden/EdenB commitment.
 	WithdrawAllRewards(ctx context.Context, in *MsgWithdrawAllRewards, opts ...grpc.CallOption) (*MsgWithdrawAllRewardsResponse, error)
+	UnjailGovernor(ctx context.Context, in *MsgUnjailGovernor, opts ...grpc.CallOption) (*MsgUnjailGovernorResponse, error)
 }
 
 type msgClient struct {
@@ -76,6 +77,15 @@ func (c *msgClient) WithdrawAllRewards(ctx context.Context, in *MsgWithdrawAllRe
 	return out, nil
 }
 
+func (c *msgClient) UnjailGovernor(ctx context.Context, in *MsgUnjailGovernor, opts ...grpc.CallOption) (*MsgUnjailGovernorResponse, error) {
+	out := new(MsgUnjailGovernorResponse)
+	err := c.cc.Invoke(ctx, "/elys.estaking.Msg/UnjailGovernor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -92,6 +102,7 @@ type MsgServer interface {
 	// WithdrawAllRewards defines a method to withdraw rewards of delegator from
 	// all the validators and Eden/EdenB commitment.
 	WithdrawAllRewards(context.Context, *MsgWithdrawAllRewards) (*MsgWithdrawAllRewardsResponse, error)
+	UnjailGovernor(context.Context, *MsgUnjailGovernor) (*MsgUnjailGovernorResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -110,6 +121,9 @@ func (UnimplementedMsgServer) WithdrawElysStakingRewards(context.Context, *MsgWi
 }
 func (UnimplementedMsgServer) WithdrawAllRewards(context.Context, *MsgWithdrawAllRewards) (*MsgWithdrawAllRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawAllRewards not implemented")
+}
+func (UnimplementedMsgServer) UnjailGovernor(context.Context, *MsgUnjailGovernor) (*MsgUnjailGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnjailGovernor not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -196,6 +210,24 @@ func _Msg_WithdrawAllRewards_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UnjailGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnjailGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnjailGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.estaking.Msg/UnjailGovernor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnjailGovernor(ctx, req.(*MsgUnjailGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -218,6 +250,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithdrawAllRewards",
 			Handler:    _Msg_WithdrawAllRewards_Handler,
+		},
+		{
+			MethodName: "UnjailGovernor",
+			Handler:    _Msg_UnjailGovernor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,7 +11,7 @@ import "elys/perpetual/pool.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -34,9 +34,9 @@ service Query {
                                    "{amm_pool_id}/{pagination.key}";
   }
 
-  // Retuns the total number of open and lifetime mtps.
-  rpc GetStatus(StatusRequest) returns (StatusResponse) {
-    option (google.api.http).get = "/elys-network/elys/perpetual/status";
+  rpc PerpetualCounter(PerpetualCounterRequest)
+      returns (PerpetualCounterResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/counter/{id}";
   }
 
   // Queries a list of mtp positions for a given address.
@@ -88,6 +88,12 @@ service Query {
       returns (QueryCloseEstimationResponse) {
     option (google.api.http).get =
         "/elys-network/elys/perpetual/close-estimation/{position_id}";
+  }
+
+  rpc OpenEstimationByFinal(QueryOpenEstimationByFinalRequest)
+      returns (QueryOpenEstimationByFinalResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/perpetual/open-estimation-by-final";
   }
 }
 
@@ -169,11 +175,10 @@ message PositionsByPoolResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message StatusRequest {}
+message PerpetualCounterRequest { uint64 id = 1; }
 
-message StatusResponse {
-  uint64 open_mtp_count = 1;
-  uint64 lifetime_mtp_count = 2;
+message PerpetualCounterResponse {
+  PerpetualCounter result = 1 [ (gogoproto.nullable) = false ];
 }
 
 message PositionsForAddressRequest {
@@ -220,6 +225,7 @@ message QueryAllPoolResponse {
 message MTPRequest {
   string address = 1;
   uint64 id = 2;
+  uint64 pool_id = 3;
 }
 
 message MTPResponse { MtpAndPrice mtp = 1; }
@@ -231,16 +237,15 @@ message QueryOpenEstimationRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string trading_asset = 3;
-  cosmos.base.v1beta1.Coin collateral = 4 [ (gogoproto.nullable) = false ];
-  string address = 5;
-  string take_profit_price = 6 [
+  cosmos.base.v1beta1.Coin collateral = 3 [ (gogoproto.nullable) = false ];
+  string address = 4;
+  string take_profit_price = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 7;
-  string limit_price = 8 [
+  uint64 poolId = 6;
+  string limit_price = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -312,59 +317,74 @@ message QueryOpenEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string swap_fees = 20 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fees = 21 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message PoolResponse {
   uint64 amm_pool_id = 1;
-  string health = 2 [
+  string base_asset_liabilities_ratio = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string borrow_interest_rate = 3 [
+  string quote_asset_liabilities_ratio = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets_long = 4 [ (gogoproto.nullable) = false ];
-  repeated PoolAsset pool_assets_short = 5 [ (gogoproto.nullable) = false ];
-  int64 last_height_borrow_interest_rate_computed = 6;
+  string borrow_interest_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAsset pool_assets_long = 5 [ (gogoproto.nullable) = false ];
+  repeated PoolAsset pool_assets_short = 6 [ (gogoproto.nullable) = false ];
+  int64 last_height_borrow_interest_rate_computed = 7;
   // funding rate, if positive longs pay shorts, if negative shorts pay longs
-  string funding_rate = 7 [
+  string funding_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string net_open_interest = 8 [
+  string net_open_interest = 9 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // Rate at which long pays/receive from short
   // if negative longs pay, if positive long receives
-  string long_rate = 9 [
+  string long_rate = 10 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string short_rate = 10 [
+  string short_rate = 11 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin total_liabilities = 11
+  cosmos.base.v1beta1.Coin total_liabilities = 12
       [ (gogoproto.nullable) = false ];
-  string total_long_open_interest = 12 [
+  string total_long_open_interest = 13 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string total_short_open_interest = 13 [
+  string total_short_open_interest = 14 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string leverage_max = 14 [
+  string leverage_max = 15 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -379,6 +399,7 @@ message QueryCloseEstimationRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message QueryCloseEstimationResponse {
@@ -420,6 +441,100 @@ message QueryCloseEstimationResponse {
     (gogoproto.nullable) = false
   ];
   string slippage = 14 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryOpenEstimationByFinalRequest {
+  Position position = 1;
+  string leverage = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin final_amount = 3 [ (gogoproto.nullable) = false ];
+  string address = 4;
+  string take_profit_price = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 poolId = 6;
+  string collateral_denom = 7;
+}
+
+message QueryOpenEstimationByFinalResponse {
+  Position position = 1;
+  string effective_leverage = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral = 3 [ (gogoproto.nullable) = false ];
+  string hourly_interest_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin position_size = 5 [ (gogoproto.nullable) = false ];
+  string open_price = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_price = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string liquidation_price = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin estimated_pnl = 9 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin available_liquidity = 10
+      [ (gogoproto.nullable) = false ];
+  string slippage = 11 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_rate = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string funding_rate = 13 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string price_impact = 14 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin custody = 15 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin liabilities = 16 [ (gogoproto.nullable) = false ];
+  string limit_price = 17 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_breaking_fee = 18 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fees = 19 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fees = 20 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

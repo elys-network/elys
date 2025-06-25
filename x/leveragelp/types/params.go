@@ -1,8 +1,10 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -18,6 +20,8 @@ func NewParams() Params {
 		NumberPerBlock:      (int64)(1000),
 		EnabledPools:        []uint64(nil),
 		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
+		StopLossEnabled:     true,
+		LiabilitiesFactor:   sdkmath.LegacyMustNewDecFromStr("1.0"),
 	}
 }
 
@@ -33,9 +37,6 @@ func (p Params) Validate() error {
 	}
 	if !p.LeverageMax.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("leverage max must be greater than 1: %s", p.LeverageMax.String())
-	}
-	if p.LeverageMax.GT(sdkmath.LegacyNewDec(10)) {
-		return fmt.Errorf("leverage max too large: %s", p.LeverageMax.String())
 	}
 	if p.EpochLength <= 0 {
 		return fmt.Errorf("epoch length should be positive: %d", p.EpochLength)
@@ -67,6 +68,19 @@ func (p Params) Validate() error {
 	if p.ExitBuffer.IsNil() {
 		return fmt.Errorf("exit buffer must be not nil")
 	}
+
+	if p.LiabilitiesFactor.IsNil() {
+		return fmt.Errorf("liabilities factor must be not nil")
+	}
+
+	if !p.LiabilitiesFactor.IsPositive() {
+		return fmt.Errorf("liabilities factor must be positive: %s", p.LiabilitiesFactor.String())
+	}
+
+	if p.LiabilitiesFactor.GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("liabilities factor must be less than or equal to 1: %s", p.LiabilitiesFactor.String())
+	}
+
 	return nil
 }
 
@@ -79,4 +93,16 @@ func containsDuplicates(arr []uint64) bool {
 		valueMap[num] = struct{}{}
 	}
 	return false
+}
+
+func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.SafetyFactor)
+}
+
+func (p Params) GetBigDecPoolOpenThreshold() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.PoolOpenThreshold)
+}
+
+func (p Params) GetBigDecExitBuffer() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ExitBuffer)
 }

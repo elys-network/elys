@@ -5,9 +5,9 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -143,14 +143,6 @@ func TestMsgUpdateParams(t *testing.T) {
 				msg.Authority = "invalid_address"
 			},
 			errMsg: "invalid creator address",
-		},
-		{
-			name: "invalid params",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-				msg.Params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
-			},
-			errMsg: "invalid params",
 		},
 	}
 	for _, tt := range tests {
@@ -387,6 +379,41 @@ func TestMsgClaimRewards(t *testing.T) {
 				msg.Ids = []uint64{1, 2}
 			},
 			errMsg: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setter()
+			err := msg.ValidateBasic()
+			if tt.errMsg != "" {
+				require.ErrorContains(t, err, tt.errMsg)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgClaimAllRewards(t *testing.T) {
+	msg := types.NewMsgClaimAllUserRewards(sample.AccAddress())
+
+	tests := []struct {
+		name   string
+		setter func()
+		errMsg string
+	}{
+		{
+			name: "success",
+			setter: func() {
+			},
+			errMsg: "",
+		},
+		{
+			name: "invalid sender address",
+			setter: func() {
+				msg.Sender = "invalid_address"
+			},
+			errMsg: "invalid sender address",
 		},
 	}
 	for _, tt := range tests {

@@ -2,13 +2,14 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
+	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
@@ -30,12 +31,12 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	closingRatio := msg.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	if closingRatio.GT(math.LegacyOneDec()) {
+	closingRatio := osmomath.BigDecFromSDKInt(msg.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
+	if closingRatio.GT(osmomath.OneBigDec()) {
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, stopLossReached, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -47,10 +48,13 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
+		sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
 		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
+		sdk.NewAttribute("exit_slippage_fee", exitSlippageFeeOnClosingPosition.String()),
+		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
 	))
 	return &types.MsgCloseResponse{}, nil
 }

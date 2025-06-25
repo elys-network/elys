@@ -1,22 +1,21 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/burner/keeper"
-	"github.com/elys-network/elys/x/burner/types"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/burner/keeper"
+	"github.com/elys-network/elys/v6/x/burner/types"
 	"github.com/stretchr/testify/require"
 )
 
 func createNHistory(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.History {
 	items := make([]types.History, n)
 	for i := range items {
-		items[i].Timestamp = strconv.Itoa(i)
-		items[i].Denom = strconv.Itoa(i)
+		items[i].Block = uint64(i)
+		items[i].BurnedCoins = sdk.NewCoins(sdk.NewInt64Coin("uatom", int64(i)))
 
 		keeper.SetHistory(ctx, items[i])
 	}
@@ -27,10 +26,7 @@ func TestHistoryGet(t *testing.T) {
 	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetHistory(ctx,
-			item.Timestamp,
-			item.Denom,
-		)
+		rst, found := keeper.GetHistory(ctx, item.Block)
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -43,14 +39,8 @@ func TestHistoryRemove(t *testing.T) {
 	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveHistory(ctx,
-			item.Timestamp,
-			item.Denom,
-		)
-		_, found := keeper.GetHistory(ctx,
-			item.Timestamp,
-			item.Denom,
-		)
+		keeper.RemoveHistory(ctx, item.Block)
+		_, found := keeper.GetHistory(ctx, item.Block)
 		require.False(t, found)
 	}
 }

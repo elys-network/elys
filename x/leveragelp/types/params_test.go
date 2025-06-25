@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,12 +38,6 @@ func TestValidateLeverageMax(t *testing.T) {
 				params.LeverageMax = sdkmath.LegacyMustNewDecFromStr("0.5")
 			},
 			err: "leverage max must be greater than 1",
-		}, {
-			name: "LeverageMax is 100",
-			setter: func() {
-				params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
-			},
-			err: "leverage max too large",
 		},
 	}
 	for _, tt := range tests {

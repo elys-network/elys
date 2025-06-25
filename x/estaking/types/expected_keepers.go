@@ -7,10 +7,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
-	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	tokenomictypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -42,6 +42,7 @@ type DistrKeeper interface {
 	IncrementValidatorPeriod(ctx context.Context, val stakingtypes.ValidatorI) (uint64, error)
 	CalculateDelegationRewards(ctx context.Context, val stakingtypes.ValidatorI, del stakingtypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins, err error)
 	GetDelegatorStartingInfo(ctx context.Context, val sdk.ValAddress, del sdk.AccAddress) (period disttypes.DelegatorStartingInfo, err error)
+	HasDelegatorStartingInfo(ctx context.Context, val sdk.ValAddress, del sdk.AccAddress) (bool, error)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
@@ -63,4 +64,8 @@ type AssetProfileKeeper interface {
 
 type ParameterKeeper interface {
 	GetParams(ctx sdk.Context) (params parametertypes.Params)
+}
+
+type ConsumerKeeper interface {
+	Unjail(sdkCtx context.Context, addr sdk.ConsAddress) error
 }

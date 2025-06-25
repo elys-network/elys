@@ -1,17 +1,18 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/testutil/sample"
 	"time"
+
+	"github.com/elys-network/elys/v6/testutil/sample"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/stablestake/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestDebt() {
@@ -25,7 +26,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 	}{
 		{
 			desc:              "successful debt process",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
@@ -48,7 +49,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
-			shareDenom := types.GetShareDenom()
+			shareDenom := types.GetShareDenomForPool(1)
 
 			// Set an entity to assetprofile
 			entry := assetprofiletypes.Entry{
@@ -70,20 +71,20 @@ func (suite *KeeperTestSuite) TestDebt() {
 			)
 			suite.Require().NoError(err)
 
-			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = math.NewInt(10)
-			params.InterestRate = math.LegacyNewDec(10)
-			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+			pool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			pool.NetAmount = math.NewInt(10)
+			pool.InterestRate = math.LegacyNewDec(10)
+			suite.app.StablestakeKeeper.SetPool(suite.ctx, pool)
 
-			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)), 1)
+			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)), 1, 1)
 			suite.Require().NoError(err)
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365)).WithBlockHeight(10)
 
 			// Pay partial
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)), 1)
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)), 1, 1)
 			suite.Require().NoError(err)
 
-			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender, 1, ptypes.BaseCurrency)
+			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender, 1, 1)
 			suite.Require().Equal(res.Borrowed.String(), "1000")
 			suite.Require().Equal(res.InterestStacked.String(), "10000")
 			suite.Require().Equal(res.InterestPaid.String(), "10")
@@ -91,9 +92,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Len(allDebts, 1)
 
 			// Pay rest, ensure we don't pay multiple times
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1)
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1, 1)
 			suite.Require().NoError(err)
-			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
+			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender, 1)
 			suite.Require().Equal(res.Borrowed.String(), "0")
 			suite.Require().Equal(res.InterestStacked.String(), "0")
 			suite.Require().Equal(res.InterestPaid.String(), "0")
@@ -102,12 +103,12 @@ func (suite *KeeperTestSuite) TestDebt() {
 }
 
 func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
-	p := types.AmmPool{
+	borrowingPool := types.AmmPool{
 		Id:               1,
-		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000)},
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 	}
 
-	suite.app.StablestakeKeeper.SetAmmPool(suite.ctx, p)
+	suite.app.StablestakeKeeper.SetAmmPool(suite.ctx, borrowingPool)
 
 	debt := types.Debt{
 		Address:               sample.AccAddress(),
@@ -115,16 +116,96 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 		InterestPaid:          math.NewInt(10),
 		InterestStacked:       math.NewInt(50),
 		BorrowTime:            1,
-		LastInterestCalcTime:  1,
+		LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()) - 1,
 		LastInterestCalcBlock: 1,
+		PoolId:                1,
 	}
+
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
-	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, sdk.DefaultBondDenom)
+	debtRes, _ := suite.app.StablestakeKeeper.Debt(suite.ctx, &types.QueryDebtRequest{
+		Address: debt.GetOwnerAccount().String(),
+		PoolId:  1,
+	})
+	suite.Require().Equal(debt.Borrowed, debtRes.Debt.Borrowed)
+	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, 1)
 
 	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
 	suite.Assert().Equal(types.AmmPool{
 		Id:               1,
-		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 860)},
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 860)},
 	}, r)
+}
 
+func (suite *KeeperTestSuite) TestMove() {
+	debt := types.Debt{
+		Address:               sample.AccAddress(),
+		Borrowed:              math.NewInt(100),
+		InterestPaid:          math.NewInt(10),
+		InterestStacked:       math.NewInt(50),
+		BorrowTime:            1,
+		LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()) - 1,
+		LastInterestCalcBlock: 1,
+	}
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+
+	debts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
+	suite.Require().Len(debts, 1)
+	suite.Require().Equal(uint64(types.UsdcPoolId), debts[0].PoolId)
+
+	interest := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(10),
+		BlockTime:    suite.ctx.BlockTime().Unix(),
+		BlockHeight:  uint64(suite.ctx.BlockHeight()),
+		PoolId:       uint64(types.UsdcPoolId),
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, interest)
+	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
+	suite.app.StablestakeKeeper.TestnetMigrate(suite.ctx)
+	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
+	suite.Require().Len(interests, 0)
+}
+
+func (suite *KeeperTestSuite) TestGetInterestAtHeight() {
+	i := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(2),
+		BlockTime:    100,
+		BlockHeight:  1,
+		PoolId:       1,
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
+	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(i.InterestRate, interestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestBlock.BlockTime)
+	suite.Equal(i.BlockHeight, interestBlock.BlockHeight)
+	suite.Equal(i.PoolId, interestBlock.PoolId)
+
+	interestB, _ := suite.app.StablestakeKeeper.GetInterest(suite.ctx, &types.QueryGetInterestRequest{
+		PoolId:      1,
+		BlockHeight: 1,
+	})
+	suite.Equal(i.InterestRate, interestB.InterestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestB.InterestBlock.BlockTime)
+}
+
+func (suite *KeeperTestSuite) TestDeleteInterestBlock() {
+	i := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(2),
+		BlockTime:    100,
+		BlockHeight:  1,
+		PoolId:       1,
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
+	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(i.InterestRate, interestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestBlock.BlockTime)
+	suite.Equal(i.BlockHeight, interestBlock.BlockHeight)
+	suite.Equal(i.PoolId, interestBlock.PoolId)
+	suite.app.StablestakeKeeper.DeleteInterestForPool(suite.ctx, 1, 1)
+	interestBlock = suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(interestBlock, types.InterestBlock{})
+}
+
+func (suite *KeeperTestSuite) TestTestnetMigrate() {
+	suite.app.StablestakeKeeper.TestnetMigrate(suite.ctx)
 }

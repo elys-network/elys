@@ -1,6 +1,9 @@
 name: DevNet deploy
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - devnet
+      - main
 
 jobs:
   deploy:
@@ -16,6 +19,7 @@ jobs:
       VERSION:
       BINARY:
       DBENGINE: pebbledb
+      COSMWASM_VERSION:
       NAME_WITH_VERSION:
     steps:
       - name: Checking repository
@@ -37,21 +41,30 @@ jobs:
       - name: Setuping go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.23"
       - name: Building elys binary
+        env:
+          CGO_ENABLED: 1
         run: |
           echo Building elysd binary
+          
+          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
+          echo $COSMWASM_VERSION
 
-          sudo GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -mod=readonly -trimpath -o elysd -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=${NAME} \
+          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.a -O /usr/lib/libwasmvm.x86_64.a
+
+          sudo GOOS=linux GOARCH=amd64 go build -mod=readonly -trimpath -o elysd -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=${NAME} \
           -X github.com/cosmos/cosmos-sdk/version.AppName=${NAME} \
           -X github.com/cosmos/cosmos-sdk/version.ServerName=${BINARY} \
           -X github.com/cosmos/cosmos-sdk/version.ClientName=${BINARY} \
           -X github.com/cosmos/cosmos-sdk/version.Version=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
-          -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
-          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,${DBENGINE} \
-          " -tags "ledger,${DBENGINE}" ./cmd/${BINARY}
+          -X github.com/elys-network/elys/v6/app.NextVersion=${VERSION} \
+          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
+          -w -s \
+          -linkmode=external \
+          -extldflags '-Wl,-z,muldefs -static -lm'" -tags "ledger,${DBENGINE}" ./cmd/${BINARY}
           echo "Version of elysd: $(./elysd version)"
       - name: Compressing elys binary
         run: |
@@ -85,7 +98,7 @@ jobs:
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
-          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+25; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+40; exit }'; }
           extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables

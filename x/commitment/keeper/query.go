@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/commitment/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -59,5 +59,19 @@ func (k Keeper) Kol(goCtx context.Context, req *types.QueryKolRequest) (*types.Q
 		ElysAmount: kol.Amount,
 		Claimed:    kol.Claimed,
 		Refunded:   kol.Refunded,
+	}, nil
+}
+
+func (k Keeper) TotalSupply(goCtx context.Context, req *types.QueryTotalSupplyRequest) (*types.QueryTotalSupplyResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	supply := k.GetTotalSupply(ctx)
+	return &types.QueryTotalSupplyResponse{
+		TotalEden:       supply.TotalEdenSupply,
+		TotalEdenb:      supply.TotalEdenbSupply,
+		TotalEdenVested: supply.TotalEdenVested,
 	}, nil
 }

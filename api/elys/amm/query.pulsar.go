@@ -811,12 +811,14 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 var (
 	md_QueryGetPoolRequest         protoreflect.MessageDescriptor
 	fd_QueryGetPoolRequest_pool_id protoreflect.FieldDescriptor
+	fd_QueryGetPoolRequest_days    protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_amm_query_proto_init()
 	md_QueryGetPoolRequest = File_elys_amm_query_proto.Messages().ByName("QueryGetPoolRequest")
 	fd_QueryGetPoolRequest_pool_id = md_QueryGetPoolRequest.Fields().ByName("pool_id")
+	fd_QueryGetPoolRequest_days = md_QueryGetPoolRequest.Fields().ByName("days")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryGetPoolRequest)(nil)
@@ -890,6 +892,12 @@ func (x *fastReflection_QueryGetPoolRequest) Range(f func(protoreflect.FieldDesc
 			return
 		}
 	}
+	if x.Days != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Days)
+		if !f(fd_QueryGetPoolRequest_days, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -907,6 +915,8 @@ func (x *fastReflection_QueryGetPoolRequest) Has(fd protoreflect.FieldDescriptor
 	switch fd.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
 		return x.PoolId != uint64(0)
+	case "elys.amm.QueryGetPoolRequest.days":
+		return x.Days != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryGetPoolRequest"))
@@ -925,6 +935,8 @@ func (x *fastReflection_QueryGetPoolRequest) Clear(fd protoreflect.FieldDescript
 	switch fd.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
 		x.PoolId = uint64(0)
+	case "elys.amm.QueryGetPoolRequest.days":
+		x.Days = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryGetPoolRequest"))
@@ -943,6 +955,9 @@ func (x *fastReflection_QueryGetPoolRequest) Get(descriptor protoreflect.FieldDe
 	switch descriptor.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
 		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.amm.QueryGetPoolRequest.days":
+		value := x.Days
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -966,6 +981,8 @@ func (x *fastReflection_QueryGetPoolRequest) Set(fd protoreflect.FieldDescriptor
 	switch fd.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
 		x.PoolId = value.Uint()
+	case "elys.amm.QueryGetPoolRequest.days":
+		x.Days = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryGetPoolRequest"))
@@ -988,6 +1005,8 @@ func (x *fastReflection_QueryGetPoolRequest) Mutable(fd protoreflect.FieldDescri
 	switch fd.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
 		panic(fmt.Errorf("field pool_id of message elys.amm.QueryGetPoolRequest is not mutable"))
+	case "elys.amm.QueryGetPoolRequest.days":
+		panic(fmt.Errorf("field days of message elys.amm.QueryGetPoolRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryGetPoolRequest"))
@@ -1002,6 +1021,8 @@ func (x *fastReflection_QueryGetPoolRequest) Mutable(fd protoreflect.FieldDescri
 func (x *fastReflection_QueryGetPoolRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "elys.amm.QueryGetPoolRequest.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.amm.QueryGetPoolRequest.days":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -1075,6 +1096,9 @@ func (x *fastReflection_QueryGetPoolRequest) ProtoMethods() *protoiface.Methods 
 		if x.PoolId != 0 {
 			n += 1 + runtime.Sov(uint64(x.PoolId))
 		}
+		if x.Days != 0 {
+			n += 1 + runtime.Sov(uint64(x.Days))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1103,6 +1127,11 @@ func (x *fastReflection_QueryGetPoolRequest) ProtoMethods() *protoiface.Methods 
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Days != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Days))
+			i--
+			dAtA[i] = 0x10
 		}
 		if x.PoolId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
@@ -1173,6 +1202,25 @@ func (x *fastReflection_QueryGetPoolRequest) ProtoMethods() *protoiface.Methods 
 					b := dAtA[iNdEx]
 					iNdEx++
 					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Days", wireType)
+				}
+				x.Days = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Days |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -1728,12 +1776,14 @@ func (x *fastReflection_QueryGetPoolResponse) ProtoMethods() *protoiface.Methods
 
 var (
 	md_QueryAllPoolRequest            protoreflect.MessageDescriptor
+	fd_QueryAllPoolRequest_days       protoreflect.FieldDescriptor
 	fd_QueryAllPoolRequest_pagination protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_amm_query_proto_init()
 	md_QueryAllPoolRequest = File_elys_amm_query_proto.Messages().ByName("QueryAllPoolRequest")
+	fd_QueryAllPoolRequest_days = md_QueryAllPoolRequest.Fields().ByName("days")
 	fd_QueryAllPoolRequest_pagination = md_QueryAllPoolRequest.Fields().ByName("pagination")
 }
 
@@ -1802,6 +1852,12 @@ func (x *fastReflection_QueryAllPoolRequest) Interface() protoreflect.ProtoMessa
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryAllPoolRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Days != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Days)
+		if !f(fd_QueryAllPoolRequest_days, value) {
+			return
+		}
+	}
 	if x.Pagination != nil {
 		value := protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
 		if !f(fd_QueryAllPoolRequest_pagination, value) {
@@ -1823,6 +1879,8 @@ func (x *fastReflection_QueryAllPoolRequest) Range(f func(protoreflect.FieldDesc
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryAllPoolRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.amm.QueryAllPoolRequest.days":
+		return x.Days != uint64(0)
 	case "elys.amm.QueryAllPoolRequest.pagination":
 		return x.Pagination != nil
 	default:
@@ -1841,6 +1899,8 @@ func (x *fastReflection_QueryAllPoolRequest) Has(fd protoreflect.FieldDescriptor
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryAllPoolRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.amm.QueryAllPoolRequest.days":
+		x.Days = uint64(0)
 	case "elys.amm.QueryAllPoolRequest.pagination":
 		x.Pagination = nil
 	default:
@@ -1859,6 +1919,9 @@ func (x *fastReflection_QueryAllPoolRequest) Clear(fd protoreflect.FieldDescript
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryAllPoolRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.amm.QueryAllPoolRequest.days":
+		value := x.Days
+		return protoreflect.ValueOfUint64(value)
 	case "elys.amm.QueryAllPoolRequest.pagination":
 		value := x.Pagination
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
@@ -1882,6 +1945,8 @@ func (x *fastReflection_QueryAllPoolRequest) Get(descriptor protoreflect.FieldDe
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryAllPoolRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.amm.QueryAllPoolRequest.days":
+		x.Days = value.Uint()
 	case "elys.amm.QueryAllPoolRequest.pagination":
 		x.Pagination = value.Message().Interface().(*v1beta1.PageRequest)
 	default:
@@ -1909,6 +1974,8 @@ func (x *fastReflection_QueryAllPoolRequest) Mutable(fd protoreflect.FieldDescri
 			x.Pagination = new(v1beta1.PageRequest)
 		}
 		return protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
+	case "elys.amm.QueryAllPoolRequest.days":
+		panic(fmt.Errorf("field days of message elys.amm.QueryAllPoolRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryAllPoolRequest"))
@@ -1922,6 +1989,8 @@ func (x *fastReflection_QueryAllPoolRequest) Mutable(fd protoreflect.FieldDescri
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryAllPoolRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.amm.QueryAllPoolRequest.days":
+		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.amm.QueryAllPoolRequest.pagination":
 		m := new(v1beta1.PageRequest)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
@@ -1994,6 +2063,9 @@ func (x *fastReflection_QueryAllPoolRequest) ProtoMethods() *protoiface.Methods 
 		var n int
 		var l int
 		_ = l
+		if x.Days != 0 {
+			n += 1 + runtime.Sov(uint64(x.Days))
+		}
 		if x.Pagination != nil {
 			l = options.Size(x.Pagination)
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -2039,7 +2111,12 @@ func (x *fastReflection_QueryAllPoolRequest) ProtoMethods() *protoiface.Methods 
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
+		}
+		if x.Days != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Days))
+			i--
+			dAtA[i] = 0x8
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -2091,6 +2168,25 @@ func (x *fastReflection_QueryAllPoolRequest) ProtoMethods() *protoiface.Methods 
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Days", wireType)
+				}
+				x.Days = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Days |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
 				}
@@ -5372,6 +5468,643 @@ func (x *fastReflection_QuerySwapEstimationRequest) ProtoMethods() *protoiface.M
 	}
 }
 
+var _ protoreflect.List = (*_QuerySwapEstimationExactAmountOutRequest_1_list)(nil)
+
+type _QuerySwapEstimationExactAmountOutRequest_1_list struct {
+	list *[]*SwapAmountOutRoute
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*SwapAmountOutRoute)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*SwapAmountOutRoute)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) AppendMutable() protoreflect.Value {
+	v := new(SwapAmountOutRoute)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) NewElement() protoreflect.Value {
+	v := new(SwapAmountOutRoute)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QuerySwapEstimationExactAmountOutRequest_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_QuerySwapEstimationExactAmountOutRequest           protoreflect.MessageDescriptor
+	fd_QuerySwapEstimationExactAmountOutRequest_routes    protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutRequest_token_out protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutRequest_discount  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_amm_query_proto_init()
+	md_QuerySwapEstimationExactAmountOutRequest = File_elys_amm_query_proto.Messages().ByName("QuerySwapEstimationExactAmountOutRequest")
+	fd_QuerySwapEstimationExactAmountOutRequest_routes = md_QuerySwapEstimationExactAmountOutRequest.Fields().ByName("routes")
+	fd_QuerySwapEstimationExactAmountOutRequest_token_out = md_QuerySwapEstimationExactAmountOutRequest.Fields().ByName("token_out")
+	fd_QuerySwapEstimationExactAmountOutRequest_discount = md_QuerySwapEstimationExactAmountOutRequest.Fields().ByName("discount")
+}
+
+var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationExactAmountOutRequest)(nil)
+
+type fastReflection_QuerySwapEstimationExactAmountOutRequest QuerySwapEstimationExactAmountOutRequest
+
+func (x *QuerySwapEstimationExactAmountOutRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySwapEstimationExactAmountOutRequest)(x)
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_amm_query_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType{}
+
+type fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType struct{}
+
+func (x fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySwapEstimationExactAmountOutRequest)(nil)
+}
+func (x fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySwapEstimationExactAmountOutRequest)
+}
+func (x fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySwapEstimationExactAmountOutRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySwapEstimationExactAmountOutRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySwapEstimationExactAmountOutRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) New() protoreflect.Message {
+	return new(fastReflection_QuerySwapEstimationExactAmountOutRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Interface() protoreflect.ProtoMessage {
+	return (*QuerySwapEstimationExactAmountOutRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Routes) != 0 {
+		value := protoreflect.ValueOfList(&_QuerySwapEstimationExactAmountOutRequest_1_list{list: &x.Routes})
+		if !f(fd_QuerySwapEstimationExactAmountOutRequest_routes, value) {
+			return
+		}
+	}
+	if x.TokenOut != nil {
+		value := protoreflect.ValueOfMessage(x.TokenOut.ProtoReflect())
+		if !f(fd_QuerySwapEstimationExactAmountOutRequest_token_out, value) {
+			return
+		}
+	}
+	if x.Discount != "" {
+		value := protoreflect.ValueOfString(x.Discount)
+		if !f(fd_QuerySwapEstimationExactAmountOutRequest_discount, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		return len(x.Routes) != 0
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		return x.TokenOut != nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		return x.Discount != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		x.Routes = nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		x.TokenOut = nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		x.Discount = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		if len(x.Routes) == 0 {
+			return protoreflect.ValueOfList(&_QuerySwapEstimationExactAmountOutRequest_1_list{})
+		}
+		listValue := &_QuerySwapEstimationExactAmountOutRequest_1_list{list: &x.Routes}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		value := x.TokenOut
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		value := x.Discount
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		lv := value.List()
+		clv := lv.(*_QuerySwapEstimationExactAmountOutRequest_1_list)
+		x.Routes = *clv.list
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		x.TokenOut = value.Message().Interface().(*v1beta11.Coin)
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		x.Discount = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		if x.Routes == nil {
+			x.Routes = []*SwapAmountOutRoute{}
+		}
+		value := &_QuerySwapEstimationExactAmountOutRequest_1_list{list: &x.Routes}
+		return protoreflect.ValueOfList(value)
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		if x.TokenOut == nil {
+			x.TokenOut = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.TokenOut.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		panic(fmt.Errorf("field discount of message elys.amm.QuerySwapEstimationExactAmountOutRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.routes":
+		list := []*SwapAmountOutRoute{}
+		return protoreflect.ValueOfList(&_QuerySwapEstimationExactAmountOutRequest_1_list{list: &list})
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutRequest.discount":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.amm.QuerySwapEstimationExactAmountOutRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.Routes) > 0 {
+			for _, e := range x.Routes {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.TokenOut != nil {
+			l = options.Size(x.TokenOut)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Discount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Discount) > 0 {
+			i -= len(x.Discount)
+			copy(dAtA[i:], x.Discount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Discount)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if x.TokenOut != nil {
+			encoded, err := options.Marshal(x.TokenOut)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Routes) > 0 {
+			for iNdEx := len(x.Routes) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Routes[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySwapEstimationExactAmountOutRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySwapEstimationExactAmountOutRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Routes", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Routes = append(x.Routes, &SwapAmountOutRoute{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Routes[len(x.Routes)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenOut", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.TokenOut == nil {
+					x.TokenOut = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TokenOut); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Discount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Discount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var _ protoreflect.List = (*_QueryJoinPoolEstimationRequest_2_list)(nil)
 
 type _QueryJoinPoolEstimationRequest_2_list struct {
@@ -5445,7 +6178,7 @@ func (x *QueryJoinPoolEstimationRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryJoinPoolEstimationRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[11]
+	mi := &file_elys_amm_query_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5966,11 +6699,14 @@ func (x *_QueryJoinPoolEstimationResponse_2_list) IsValid() bool {
 }
 
 var (
-	md_QueryJoinPoolEstimationResponse                      protoreflect.MessageDescriptor
-	fd_QueryJoinPoolEstimationResponse_share_amount_out     protoreflect.FieldDescriptor
-	fd_QueryJoinPoolEstimationResponse_amounts_in           protoreflect.FieldDescriptor
-	fd_QueryJoinPoolEstimationResponse_slippage             protoreflect.FieldDescriptor
-	fd_QueryJoinPoolEstimationResponse_weight_balance_ratio protoreflect.FieldDescriptor
+	md_QueryJoinPoolEstimationResponse                              protoreflect.MessageDescriptor
+	fd_QueryJoinPoolEstimationResponse_share_amount_out             protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_amounts_in                   protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_slippage                     protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_weight_balance_ratio         protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_swap_fee                     protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_taker_fee                    protoreflect.FieldDescriptor
+	fd_QueryJoinPoolEstimationResponse_weight_balance_reward_amount protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -5980,6 +6716,9 @@ func init() {
 	fd_QueryJoinPoolEstimationResponse_amounts_in = md_QueryJoinPoolEstimationResponse.Fields().ByName("amounts_in")
 	fd_QueryJoinPoolEstimationResponse_slippage = md_QueryJoinPoolEstimationResponse.Fields().ByName("slippage")
 	fd_QueryJoinPoolEstimationResponse_weight_balance_ratio = md_QueryJoinPoolEstimationResponse.Fields().ByName("weight_balance_ratio")
+	fd_QueryJoinPoolEstimationResponse_swap_fee = md_QueryJoinPoolEstimationResponse.Fields().ByName("swap_fee")
+	fd_QueryJoinPoolEstimationResponse_taker_fee = md_QueryJoinPoolEstimationResponse.Fields().ByName("taker_fee")
+	fd_QueryJoinPoolEstimationResponse_weight_balance_reward_amount = md_QueryJoinPoolEstimationResponse.Fields().ByName("weight_balance_reward_amount")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryJoinPoolEstimationResponse)(nil)
@@ -5991,7 +6730,7 @@ func (x *QueryJoinPoolEstimationResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryJoinPoolEstimationResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[12]
+	mi := &file_elys_amm_query_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6071,6 +6810,24 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Range(f func(protorefle
 			return
 		}
 	}
+	if x.SwapFee != "" {
+		value := protoreflect.ValueOfString(x.SwapFee)
+		if !f(fd_QueryJoinPoolEstimationResponse_swap_fee, value) {
+			return
+		}
+	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QueryJoinPoolEstimationResponse_taker_fee, value) {
+			return
+		}
+	}
+	if x.WeightBalanceRewardAmount != nil {
+		value := protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
+		if !f(fd_QueryJoinPoolEstimationResponse_weight_balance_reward_amount, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -6094,6 +6851,12 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Has(fd protoreflect.Fie
 		return x.Slippage != ""
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		return x.WeightBalanceRatio != ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		return x.SwapFee != ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		return x.TakerFee != ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		return x.WeightBalanceRewardAmount != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6118,6 +6881,12 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Clear(fd protoreflect.F
 		x.Slippage = ""
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		x.SwapFee = ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		x.TakerFee = ""
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6149,6 +6918,15 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Get(descriptor protoref
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		value := x.WeightBalanceRatio
 		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		value := x.SwapFee
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		value := x.WeightBalanceRewardAmount
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6179,6 +6957,12 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Set(fd protoreflect.Fie
 		x.Slippage = value.Interface().(string)
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = value.Interface().(string)
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		x.SwapFee = value.Interface().(string)
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = value.Message().Interface().(*v1beta11.Coin)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6210,10 +6994,19 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) Mutable(fd protoreflect
 		}
 		value := &_QueryJoinPoolEstimationResponse_2_list{list: &x.AmountsIn}
 		return protoreflect.ValueOfList(value)
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		if x.WeightBalanceRewardAmount == nil {
+			x.WeightBalanceRewardAmount = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
 	case "elys.amm.QueryJoinPoolEstimationResponse.slippage":
 		panic(fmt.Errorf("field slippage of message elys.amm.QueryJoinPoolEstimationResponse is not mutable"))
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		panic(fmt.Errorf("field weight_balance_ratio of message elys.amm.QueryJoinPoolEstimationResponse is not mutable"))
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		panic(fmt.Errorf("field swap_fee of message elys.amm.QueryJoinPoolEstimationResponse is not mutable"))
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QueryJoinPoolEstimationResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6237,6 +7030,13 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) NewField(fd protoreflec
 		return protoreflect.ValueOfString("")
 	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_ratio":
 		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryJoinPoolEstimationResponse.swap_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryJoinPoolEstimationResponse.taker_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryJoinPoolEstimationResponse"))
@@ -6324,6 +7124,18 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) ProtoMethods() *protoif
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.SwapFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.WeightBalanceRewardAmount != nil {
+			l = options.Size(x.WeightBalanceRewardAmount)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -6352,6 +7164,34 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) ProtoMethods() *protoif
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.WeightBalanceRewardAmount != nil {
+			encoded, err := options.Marshal(x.WeightBalanceRewardAmount)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.SwapFee) > 0 {
+			i -= len(x.SwapFee)
+			copy(dAtA[i:], x.SwapFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SwapFee)))
+			i--
+			dAtA[i] = 0x2a
 		}
 		if len(x.WeightBalanceRatio) > 0 {
 			i -= len(x.WeightBalanceRatio)
@@ -6580,6 +7420,106 @@ func (x *fastReflection_QueryJoinPoolEstimationResponse) ProtoMethods() *protoif
 				}
 				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SwapFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SwapFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRewardAmount", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.WeightBalanceRewardAmount == nil {
+					x.WeightBalanceRewardAmount = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WeightBalanceRewardAmount); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -6639,7 +7579,7 @@ func (x *QueryExitPoolEstimationRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryExitPoolEstimationRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[13]
+	mi := &file_elys_amm_query_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7199,14 +8139,24 @@ func (x *_QueryExitPoolEstimationResponse_1_list) IsValid() bool {
 }
 
 var (
-	md_QueryExitPoolEstimationResponse             protoreflect.MessageDescriptor
-	fd_QueryExitPoolEstimationResponse_amounts_out protoreflect.FieldDescriptor
+	md_QueryExitPoolEstimationResponse                              protoreflect.MessageDescriptor
+	fd_QueryExitPoolEstimationResponse_amounts_out                  protoreflect.FieldDescriptor
+	fd_QueryExitPoolEstimationResponse_weight_balance_ratio         protoreflect.FieldDescriptor
+	fd_QueryExitPoolEstimationResponse_slippage                     protoreflect.FieldDescriptor
+	fd_QueryExitPoolEstimationResponse_swap_fee                     protoreflect.FieldDescriptor
+	fd_QueryExitPoolEstimationResponse_taker_fee                    protoreflect.FieldDescriptor
+	fd_QueryExitPoolEstimationResponse_weight_balance_reward_amount protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_amm_query_proto_init()
 	md_QueryExitPoolEstimationResponse = File_elys_amm_query_proto.Messages().ByName("QueryExitPoolEstimationResponse")
 	fd_QueryExitPoolEstimationResponse_amounts_out = md_QueryExitPoolEstimationResponse.Fields().ByName("amounts_out")
+	fd_QueryExitPoolEstimationResponse_weight_balance_ratio = md_QueryExitPoolEstimationResponse.Fields().ByName("weight_balance_ratio")
+	fd_QueryExitPoolEstimationResponse_slippage = md_QueryExitPoolEstimationResponse.Fields().ByName("slippage")
+	fd_QueryExitPoolEstimationResponse_swap_fee = md_QueryExitPoolEstimationResponse.Fields().ByName("swap_fee")
+	fd_QueryExitPoolEstimationResponse_taker_fee = md_QueryExitPoolEstimationResponse.Fields().ByName("taker_fee")
+	fd_QueryExitPoolEstimationResponse_weight_balance_reward_amount = md_QueryExitPoolEstimationResponse.Fields().ByName("weight_balance_reward_amount")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryExitPoolEstimationResponse)(nil)
@@ -7218,7 +8168,7 @@ func (x *QueryExitPoolEstimationResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryExitPoolEstimationResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[14]
+	mi := &file_elys_amm_query_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7280,6 +8230,36 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Range(f func(protorefle
 			return
 		}
 	}
+	if x.WeightBalanceRatio != "" {
+		value := protoreflect.ValueOfString(x.WeightBalanceRatio)
+		if !f(fd_QueryExitPoolEstimationResponse_weight_balance_ratio, value) {
+			return
+		}
+	}
+	if x.Slippage != "" {
+		value := protoreflect.ValueOfString(x.Slippage)
+		if !f(fd_QueryExitPoolEstimationResponse_slippage, value) {
+			return
+		}
+	}
+	if x.SwapFee != "" {
+		value := protoreflect.ValueOfString(x.SwapFee)
+		if !f(fd_QueryExitPoolEstimationResponse_swap_fee, value) {
+			return
+		}
+	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QueryExitPoolEstimationResponse_taker_fee, value) {
+			return
+		}
+	}
+	if x.WeightBalanceRewardAmount != nil {
+		value := protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
+		if !f(fd_QueryExitPoolEstimationResponse_weight_balance_reward_amount, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -7297,6 +8277,16 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Has(fd protoreflect.Fie
 	switch fd.FullName() {
 	case "elys.amm.QueryExitPoolEstimationResponse.amounts_out":
 		return len(x.AmountsOut) != 0
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		return x.WeightBalanceRatio != ""
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		return x.Slippage != ""
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		return x.SwapFee != ""
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		return x.TakerFee != ""
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		return x.WeightBalanceRewardAmount != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7315,6 +8305,16 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Clear(fd protoreflect.F
 	switch fd.FullName() {
 	case "elys.amm.QueryExitPoolEstimationResponse.amounts_out":
 		x.AmountsOut = nil
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		x.WeightBalanceRatio = ""
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		x.Slippage = ""
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		x.SwapFee = ""
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		x.TakerFee = ""
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7337,6 +8337,21 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Get(descriptor protoref
 		}
 		listValue := &_QueryExitPoolEstimationResponse_1_list{list: &x.AmountsOut}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		value := x.WeightBalanceRatio
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		value := x.Slippage
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		value := x.SwapFee
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		value := x.WeightBalanceRewardAmount
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7361,6 +8376,16 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Set(fd protoreflect.Fie
 		lv := value.List()
 		clv := lv.(*_QueryExitPoolEstimationResponse_1_list)
 		x.AmountsOut = *clv.list
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		x.WeightBalanceRatio = value.Interface().(string)
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		x.Slippage = value.Interface().(string)
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		x.SwapFee = value.Interface().(string)
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = value.Message().Interface().(*v1beta11.Coin)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7387,6 +8412,19 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) Mutable(fd protoreflect
 		}
 		value := &_QueryExitPoolEstimationResponse_1_list{list: &x.AmountsOut}
 		return protoreflect.ValueOfList(value)
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		if x.WeightBalanceRewardAmount == nil {
+			x.WeightBalanceRewardAmount = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		panic(fmt.Errorf("field weight_balance_ratio of message elys.amm.QueryExitPoolEstimationResponse is not mutable"))
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		panic(fmt.Errorf("field slippage of message elys.amm.QueryExitPoolEstimationResponse is not mutable"))
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		panic(fmt.Errorf("field swap_fee of message elys.amm.QueryExitPoolEstimationResponse is not mutable"))
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QueryExitPoolEstimationResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7403,6 +8441,17 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) NewField(fd protoreflec
 	case "elys.amm.QueryExitPoolEstimationResponse.amounts_out":
 		list := []*v1beta11.Coin{}
 		return protoreflect.ValueOfList(&_QueryExitPoolEstimationResponse_1_list{list: &list})
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryExitPoolEstimationResponse.slippage":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryExitPoolEstimationResponse.swap_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryExitPoolEstimationResponse.taker_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryExitPoolEstimationResponse"))
@@ -7478,6 +8527,26 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) ProtoMethods() *protoif
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		l = len(x.WeightBalanceRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Slippage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.SwapFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.WeightBalanceRewardAmount != nil {
+			l = options.Size(x.WeightBalanceRewardAmount)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -7506,6 +8575,48 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) ProtoMethods() *protoif
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.WeightBalanceRewardAmount != nil {
+			encoded, err := options.Marshal(x.WeightBalanceRewardAmount)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.SwapFee) > 0 {
+			i -= len(x.SwapFee)
+			copy(dAtA[i:], x.SwapFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SwapFee)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.Slippage) > 0 {
+			i -= len(x.Slippage)
+			copy(dAtA[i:], x.Slippage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Slippage)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.WeightBalanceRatio) > 0 {
+			i -= len(x.WeightBalanceRatio)
+			copy(dAtA[i:], x.WeightBalanceRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBalanceRatio)))
+			i--
+			dAtA[i] = 0x12
 		}
 		if len(x.AmountsOut) > 0 {
 			for iNdEx := len(x.AmountsOut) - 1; iNdEx >= 0; iNdEx-- {
@@ -7606,6 +8717,170 @@ func (x *fastReflection_QueryExitPoolEstimationResponse) ProtoMethods() *protoif
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Slippage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Slippage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SwapFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SwapFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRewardAmount", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.WeightBalanceRewardAmount == nil {
+					x.WeightBalanceRewardAmount = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WeightBalanceRewardAmount); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -7650,6 +8925,7 @@ var (
 	fd_QuerySwapEstimationResponse_available_liquidity  protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationResponse_slippage             protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationResponse_weight_balance_ratio protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationResponse_taker_fee            protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -7662,6 +8938,7 @@ func init() {
 	fd_QuerySwapEstimationResponse_available_liquidity = md_QuerySwapEstimationResponse.Fields().ByName("available_liquidity")
 	fd_QuerySwapEstimationResponse_slippage = md_QuerySwapEstimationResponse.Fields().ByName("slippage")
 	fd_QuerySwapEstimationResponse_weight_balance_ratio = md_QuerySwapEstimationResponse.Fields().ByName("weight_balance_ratio")
+	fd_QuerySwapEstimationResponse_taker_fee = md_QuerySwapEstimationResponse.Fields().ByName("taker_fee")
 }
 
 var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationResponse)(nil)
@@ -7673,7 +8950,7 @@ func (x *QuerySwapEstimationResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySwapEstimationResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[15]
+	mi := &file_elys_amm_query_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7771,6 +9048,12 @@ func (x *fastReflection_QuerySwapEstimationResponse) Range(f func(protoreflect.F
 			return
 		}
 	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QuerySwapEstimationResponse_taker_fee, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -7800,6 +9083,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Has(fd protoreflect.FieldDe
 		return x.Slippage != ""
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		return x.WeightBalanceRatio != ""
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		return x.TakerFee != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -7830,6 +9115,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Clear(fd protoreflect.Field
 		x.Slippage = ""
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = ""
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		x.TakerFee = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -7867,6 +9154,9 @@ func (x *fastReflection_QuerySwapEstimationResponse) Get(descriptor protoreflect
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		value := x.WeightBalanceRatio
 		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -7901,6 +9191,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Set(fd protoreflect.FieldDe
 		x.Slippage = value.Interface().(string)
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -7941,6 +9233,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Mutable(fd protoreflect.Fie
 		panic(fmt.Errorf("field slippage of message elys.amm.QuerySwapEstimationResponse is not mutable"))
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		panic(fmt.Errorf("field weight_balance_ratio of message elys.amm.QuerySwapEstimationResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QuerySwapEstimationResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -7969,6 +9263,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) NewField(fd protoreflect.Fi
 	case "elys.amm.QuerySwapEstimationResponse.slippage":
 		return protoreflect.ValueOfString("")
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -8067,6 +9363,10 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -8095,6 +9395,13 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x42
 		}
 		if len(x.WeightBalanceRatio) > 0 {
 			i -= len(x.WeightBalanceRatio)
@@ -8440,6 +9747,872 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 				}
 				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QuerySwapEstimationExactAmountOutResponse                      protoreflect.MessageDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_spot_price           protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_token_in             protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_swap_fee             protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_discount             protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_available_liquidity  protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_slippage             protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationExactAmountOutResponse_weight_balance_ratio protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_amm_query_proto_init()
+	md_QuerySwapEstimationExactAmountOutResponse = File_elys_amm_query_proto.Messages().ByName("QuerySwapEstimationExactAmountOutResponse")
+	fd_QuerySwapEstimationExactAmountOutResponse_spot_price = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("spot_price")
+	fd_QuerySwapEstimationExactAmountOutResponse_token_in = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("token_in")
+	fd_QuerySwapEstimationExactAmountOutResponse_swap_fee = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("swap_fee")
+	fd_QuerySwapEstimationExactAmountOutResponse_discount = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("discount")
+	fd_QuerySwapEstimationExactAmountOutResponse_available_liquidity = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("available_liquidity")
+	fd_QuerySwapEstimationExactAmountOutResponse_slippage = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("slippage")
+	fd_QuerySwapEstimationExactAmountOutResponse_weight_balance_ratio = md_QuerySwapEstimationExactAmountOutResponse.Fields().ByName("weight_balance_ratio")
+}
+
+var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationExactAmountOutResponse)(nil)
+
+type fastReflection_QuerySwapEstimationExactAmountOutResponse QuerySwapEstimationExactAmountOutResponse
+
+func (x *QuerySwapEstimationExactAmountOutResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySwapEstimationExactAmountOutResponse)(x)
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_amm_query_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType{}
+
+type fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType struct{}
+
+func (x fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySwapEstimationExactAmountOutResponse)(nil)
+}
+func (x fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySwapEstimationExactAmountOutResponse)
+}
+func (x fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySwapEstimationExactAmountOutResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySwapEstimationExactAmountOutResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySwapEstimationExactAmountOutResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) New() protoreflect.Message {
+	return new(fastReflection_QuerySwapEstimationExactAmountOutResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Interface() protoreflect.ProtoMessage {
+	return (*QuerySwapEstimationExactAmountOutResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.SpotPrice != "" {
+		value := protoreflect.ValueOfString(x.SpotPrice)
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_spot_price, value) {
+			return
+		}
+	}
+	if x.TokenIn != nil {
+		value := protoreflect.ValueOfMessage(x.TokenIn.ProtoReflect())
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_token_in, value) {
+			return
+		}
+	}
+	if x.SwapFee != "" {
+		value := protoreflect.ValueOfString(x.SwapFee)
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_swap_fee, value) {
+			return
+		}
+	}
+	if x.Discount != "" {
+		value := protoreflect.ValueOfString(x.Discount)
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_discount, value) {
+			return
+		}
+	}
+	if x.AvailableLiquidity != nil {
+		value := protoreflect.ValueOfMessage(x.AvailableLiquidity.ProtoReflect())
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_available_liquidity, value) {
+			return
+		}
+	}
+	if x.Slippage != "" {
+		value := protoreflect.ValueOfString(x.Slippage)
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_slippage, value) {
+			return
+		}
+	}
+	if x.WeightBalanceRatio != "" {
+		value := protoreflect.ValueOfString(x.WeightBalanceRatio)
+		if !f(fd_QuerySwapEstimationExactAmountOutResponse_weight_balance_ratio, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		return x.SpotPrice != ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		return x.TokenIn != nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		return x.SwapFee != ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		return x.Discount != ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		return x.AvailableLiquidity != nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		return x.Slippage != ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		return x.WeightBalanceRatio != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		x.SpotPrice = ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		x.TokenIn = nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		x.SwapFee = ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		x.Discount = ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		x.AvailableLiquidity = nil
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		x.Slippage = ""
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		x.WeightBalanceRatio = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		value := x.SpotPrice
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		value := x.TokenIn
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		value := x.SwapFee
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		value := x.Discount
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		value := x.AvailableLiquidity
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		value := x.Slippage
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		value := x.WeightBalanceRatio
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		x.SpotPrice = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		x.TokenIn = value.Message().Interface().(*v1beta11.Coin)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		x.SwapFee = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		x.Discount = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		x.AvailableLiquidity = value.Message().Interface().(*v1beta11.Coin)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		x.Slippage = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		x.WeightBalanceRatio = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		if x.TokenIn == nil {
+			x.TokenIn = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.TokenIn.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		if x.AvailableLiquidity == nil {
+			x.AvailableLiquidity = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.AvailableLiquidity.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		panic(fmt.Errorf("field spot_price of message elys.amm.QuerySwapEstimationExactAmountOutResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		panic(fmt.Errorf("field swap_fee of message elys.amm.QuerySwapEstimationExactAmountOutResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		panic(fmt.Errorf("field discount of message elys.amm.QuerySwapEstimationExactAmountOutResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		panic(fmt.Errorf("field slippage of message elys.amm.QuerySwapEstimationExactAmountOutResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		panic(fmt.Errorf("field weight_balance_ratio of message elys.amm.QuerySwapEstimationExactAmountOutResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.spot_price":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.swap_fee":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.discount":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.slippage":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationExactAmountOutResponse.weight_balance_ratio":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationExactAmountOutResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QuerySwapEstimationExactAmountOutResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.amm.QuerySwapEstimationExactAmountOutResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QuerySwapEstimationExactAmountOutResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.SpotPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.TokenIn != nil {
+			l = options.Size(x.TokenIn)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.SwapFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Discount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.AvailableLiquidity != nil {
+			l = options.Size(x.AvailableLiquidity)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Slippage)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightBalanceRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.WeightBalanceRatio) > 0 {
+			i -= len(x.WeightBalanceRatio)
+			copy(dAtA[i:], x.WeightBalanceRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBalanceRatio)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.Slippage) > 0 {
+			i -= len(x.Slippage)
+			copy(dAtA[i:], x.Slippage)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Slippage)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if x.AvailableLiquidity != nil {
+			encoded, err := options.Marshal(x.AvailableLiquidity)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.Discount) > 0 {
+			i -= len(x.Discount)
+			copy(dAtA[i:], x.Discount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Discount)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.SwapFee) > 0 {
+			i -= len(x.SwapFee)
+			copy(dAtA[i:], x.SwapFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SwapFee)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if x.TokenIn != nil {
+			encoded, err := options.Marshal(x.TokenIn)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.SpotPrice) > 0 {
+			i -= len(x.SpotPrice)
+			copy(dAtA[i:], x.SpotPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SpotPrice)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySwapEstimationExactAmountOutResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySwapEstimationExactAmountOutResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySwapEstimationExactAmountOutResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SpotPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SpotPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenIn", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.TokenIn == nil {
+					x.TokenIn = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TokenIn); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SwapFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SwapFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Discount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Discount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AvailableLiquidity", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.AvailableLiquidity == nil {
+					x.AvailableLiquidity = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AvailableLiquidity); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Slippage", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Slippage = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -8495,7 +10668,7 @@ func (x *QuerySlippageTrackRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySlippageTrackRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[16]
+	mi := &file_elys_amm_query_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8899,7 +11072,7 @@ func (x *QuerySlippageTrackResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySlippageTrackResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[17]
+	mi := &file_elys_amm_query_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9332,7 +11505,7 @@ func (x *QuerySlippageTrackAllRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySlippageTrackAllRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[18]
+	mi := &file_elys_amm_query_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9741,7 +11914,7 @@ func (x *QuerySlippageTrackAllResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySlippageTrackAllResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[19]
+	mi := &file_elys_amm_query_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10186,7 +12359,7 @@ func (x *QueryBalanceRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryBalanceRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[20]
+	mi := &file_elys_amm_query_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10668,7 +12841,7 @@ func (x *QueryBalanceResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryBalanceResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[21]
+	mi := &file_elys_amm_query_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11105,7 +13278,7 @@ func (x *QueryInRouteByDenomRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryInRouteByDenomRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[22]
+	mi := &file_elys_amm_query_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11638,7 +13811,7 @@ func (x *QueryInRouteByDenomResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryInRouteByDenomResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[23]
+	mi := &file_elys_amm_query_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12083,7 +14256,7 @@ func (x *QueryOutRouteByDenomRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryOutRouteByDenomRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[24]
+	mi := &file_elys_amm_query_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12616,7 +14789,7 @@ func (x *QueryOutRouteByDenomResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryOutRouteByDenomResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[25]
+	mi := &file_elys_amm_query_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13065,7 +15238,7 @@ func (x *QuerySwapEstimationByDenomRequest) ProtoReflect() protoreflect.Message 
 }
 
 func (x *QuerySwapEstimationByDenomRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[26]
+	mi := &file_elys_amm_query_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13769,17 +15942,19 @@ func (x *_QuerySwapEstimationByDenomResponse_2_list) IsValid() bool {
 }
 
 var (
-	md_QuerySwapEstimationByDenomResponse                      protoreflect.MessageDescriptor
-	fd_QuerySwapEstimationByDenomResponse_in_route             protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_out_route            protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_spot_price           protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_amount               protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_swap_fee             protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_discount             protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_available_liquidity  protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_weight_balance_ratio protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_slippage             protoreflect.FieldDescriptor
-	fd_QuerySwapEstimationByDenomResponse_price_impact         protoreflect.FieldDescriptor
+	md_QuerySwapEstimationByDenomResponse                              protoreflect.MessageDescriptor
+	fd_QuerySwapEstimationByDenomResponse_in_route                     protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_out_route                    protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_spot_price                   protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_amount                       protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_swap_fee                     protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_discount                     protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_available_liquidity          protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_weight_balance_ratio         protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_slippage                     protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_price_impact                 protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_weight_balance_reward_amount protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_taker_fee                    protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -13795,6 +15970,8 @@ func init() {
 	fd_QuerySwapEstimationByDenomResponse_weight_balance_ratio = md_QuerySwapEstimationByDenomResponse.Fields().ByName("weight_balance_ratio")
 	fd_QuerySwapEstimationByDenomResponse_slippage = md_QuerySwapEstimationByDenomResponse.Fields().ByName("slippage")
 	fd_QuerySwapEstimationByDenomResponse_price_impact = md_QuerySwapEstimationByDenomResponse.Fields().ByName("price_impact")
+	fd_QuerySwapEstimationByDenomResponse_weight_balance_reward_amount = md_QuerySwapEstimationByDenomResponse.Fields().ByName("weight_balance_reward_amount")
+	fd_QuerySwapEstimationByDenomResponse_taker_fee = md_QuerySwapEstimationByDenomResponse.Fields().ByName("taker_fee")
 }
 
 var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationByDenomResponse)(nil)
@@ -13806,7 +15983,7 @@ func (x *QuerySwapEstimationByDenomResponse) ProtoReflect() protoreflect.Message
 }
 
 func (x *QuerySwapEstimationByDenomResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[27]
+	mi := &file_elys_amm_query_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13922,6 +16099,18 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Range(f func(protore
 			return
 		}
 	}
+	if x.WeightBalanceRewardAmount != nil {
+		value := protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
+		if !f(fd_QuerySwapEstimationByDenomResponse_weight_balance_reward_amount, value) {
+			return
+		}
+	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QuerySwapEstimationByDenomResponse_taker_fee, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -13957,6 +16146,10 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Has(fd protoreflect.
 		return x.Slippage != ""
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		return x.PriceImpact != ""
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		return x.WeightBalanceRewardAmount != nil
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		return x.TakerFee != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -13993,6 +16186,10 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Clear(fd protoreflec
 		x.Slippage = ""
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		x.PriceImpact = ""
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = nil
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		x.TakerFee = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -14045,6 +16242,12 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Get(descriptor proto
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		value := x.PriceImpact
 		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		value := x.WeightBalanceRewardAmount
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -14089,6 +16292,10 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Set(fd protoreflect.
 		x.Slippage = value.Interface().(string)
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		x.PriceImpact = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		x.WeightBalanceRewardAmount = value.Message().Interface().(*v1beta11.Coin)
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -14131,6 +16338,11 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Mutable(fd protorefl
 			x.AvailableLiquidity = new(v1beta11.Coin)
 		}
 		return protoreflect.ValueOfMessage(x.AvailableLiquidity.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		if x.WeightBalanceRewardAmount == nil {
+			x.WeightBalanceRewardAmount = new(v1beta11.Coin)
+		}
+		return protoreflect.ValueOfMessage(x.WeightBalanceRewardAmount.ProtoReflect())
 	case "elys.amm.QuerySwapEstimationByDenomResponse.spot_price":
 		panic(fmt.Errorf("field spot_price of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
 	case "elys.amm.QuerySwapEstimationByDenomResponse.swap_fee":
@@ -14143,6 +16355,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Mutable(fd protorefl
 		panic(fmt.Errorf("field slippage of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		panic(fmt.Errorf("field price_impact of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -14179,6 +16393,11 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) NewField(fd protoref
 	case "elys.amm.QuerySwapEstimationByDenomResponse.slippage":
 		return protoreflect.ValueOfString("")
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
+		m := new(v1beta11.Coin)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -14293,6 +16512,14 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.WeightBalanceRewardAmount != nil {
+			l = options.Size(x.WeightBalanceRewardAmount)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -14321,6 +16548,27 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x62
+		}
+		if x.WeightBalanceRewardAmount != nil {
+			encoded, err := options.Marshal(x.WeightBalanceRewardAmount)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x5a
 		}
 		if len(x.PriceImpact) > 0 {
 			i -= len(x.PriceImpact)
@@ -14805,6 +17053,74 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 				}
 				x.PriceImpact = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRewardAmount", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.WeightBalanceRewardAmount == nil {
+					x.WeightBalanceRewardAmount = &v1beta11.Coin{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WeightBalanceRewardAmount); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 12:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -14862,7 +17178,7 @@ func (x *QueryAMMPriceRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryAMMPriceRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_amm_query_proto_msgTypes[28]
+	mi := &file_elys_amm_query_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -15339,6 +17655,894 @@ func (x *fastReflection_QueryAMMPriceRequest) ProtoMethods() *protoiface.Methods
 	}
 }
 
+var (
+	md_QueryWeightAndSlippageFeeRequest         protoreflect.MessageDescriptor
+	fd_QueryWeightAndSlippageFeeRequest_pool_id protoreflect.FieldDescriptor
+	fd_QueryWeightAndSlippageFeeRequest_date    protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_amm_query_proto_init()
+	md_QueryWeightAndSlippageFeeRequest = File_elys_amm_query_proto.Messages().ByName("QueryWeightAndSlippageFeeRequest")
+	fd_QueryWeightAndSlippageFeeRequest_pool_id = md_QueryWeightAndSlippageFeeRequest.Fields().ByName("pool_id")
+	fd_QueryWeightAndSlippageFeeRequest_date = md_QueryWeightAndSlippageFeeRequest.Fields().ByName("date")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryWeightAndSlippageFeeRequest)(nil)
+
+type fastReflection_QueryWeightAndSlippageFeeRequest QueryWeightAndSlippageFeeRequest
+
+func (x *QueryWeightAndSlippageFeeRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryWeightAndSlippageFeeRequest)(x)
+}
+
+func (x *QueryWeightAndSlippageFeeRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_amm_query_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryWeightAndSlippageFeeRequest_messageType fastReflection_QueryWeightAndSlippageFeeRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryWeightAndSlippageFeeRequest_messageType{}
+
+type fastReflection_QueryWeightAndSlippageFeeRequest_messageType struct{}
+
+func (x fastReflection_QueryWeightAndSlippageFeeRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryWeightAndSlippageFeeRequest)(nil)
+}
+func (x fastReflection_QueryWeightAndSlippageFeeRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryWeightAndSlippageFeeRequest)
+}
+func (x fastReflection_QueryWeightAndSlippageFeeRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryWeightAndSlippageFeeRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryWeightAndSlippageFeeRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryWeightAndSlippageFeeRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryWeightAndSlippageFeeRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryWeightAndSlippageFeeRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_QueryWeightAndSlippageFeeRequest_pool_id, value) {
+			return
+		}
+	}
+	if x.Date != "" {
+		value := protoreflect.ValueOfString(x.Date)
+		if !f(fd_QueryWeightAndSlippageFeeRequest_date, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		return x.PoolId != uint64(0)
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		return x.Date != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		x.PoolId = uint64(0)
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		x.Date = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		value := x.Date
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		x.PoolId = value.Uint()
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		x.Date = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.amm.QueryWeightAndSlippageFeeRequest is not mutable"))
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		panic(fmt.Errorf("field date of message elys.amm.QueryWeightAndSlippageFeeRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.amm.QueryWeightAndSlippageFeeRequest.date":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeRequest"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.amm.QueryWeightAndSlippageFeeRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryWeightAndSlippageFeeRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		l = len(x.Date)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Date) > 0 {
+			i -= len(x.Date)
+			copy(dAtA[i:], x.Date)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Date)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryWeightAndSlippageFeeRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryWeightAndSlippageFeeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Date", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Date = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryWeightAndSlippageFeeResponse       protoreflect.MessageDescriptor
+	fd_QueryWeightAndSlippageFeeResponse_value protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_amm_query_proto_init()
+	md_QueryWeightAndSlippageFeeResponse = File_elys_amm_query_proto.Messages().ByName("QueryWeightAndSlippageFeeResponse")
+	fd_QueryWeightAndSlippageFeeResponse_value = md_QueryWeightAndSlippageFeeResponse.Fields().ByName("value")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryWeightAndSlippageFeeResponse)(nil)
+
+type fastReflection_QueryWeightAndSlippageFeeResponse QueryWeightAndSlippageFeeResponse
+
+func (x *QueryWeightAndSlippageFeeResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryWeightAndSlippageFeeResponse)(x)
+}
+
+func (x *QueryWeightAndSlippageFeeResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_amm_query_proto_msgTypes[32]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryWeightAndSlippageFeeResponse_messageType fastReflection_QueryWeightAndSlippageFeeResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryWeightAndSlippageFeeResponse_messageType{}
+
+type fastReflection_QueryWeightAndSlippageFeeResponse_messageType struct{}
+
+func (x fastReflection_QueryWeightAndSlippageFeeResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryWeightAndSlippageFeeResponse)(nil)
+}
+func (x fastReflection_QueryWeightAndSlippageFeeResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryWeightAndSlippageFeeResponse)
+}
+func (x fastReflection_QueryWeightAndSlippageFeeResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryWeightAndSlippageFeeResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryWeightAndSlippageFeeResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryWeightAndSlippageFeeResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryWeightAndSlippageFeeResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryWeightAndSlippageFeeResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Value != "" {
+		value := protoreflect.ValueOfString(x.Value)
+		if !f(fd_QueryWeightAndSlippageFeeResponse_value, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		return x.Value != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		x.Value = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		value := x.Value
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		x.Value = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		panic(fmt.Errorf("field value of message elys.amm.QueryWeightAndSlippageFeeResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.QueryWeightAndSlippageFeeResponse.value":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QueryWeightAndSlippageFeeResponse"))
+		}
+		panic(fmt.Errorf("message elys.amm.QueryWeightAndSlippageFeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.amm.QueryWeightAndSlippageFeeResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryWeightAndSlippageFeeResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Value)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Value) > 0 {
+			i -= len(x.Value)
+			copy(dAtA[i:], x.Value)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Value)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryWeightAndSlippageFeeResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryWeightAndSlippageFeeResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryWeightAndSlippageFeeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Value = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -15422,6 +18626,7 @@ type QueryGetPoolRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Days   uint64 `protobuf:"varint,2,opt,name=days,proto3" json:"days,omitempty"`
 }
 
 func (x *QueryGetPoolRequest) Reset() {
@@ -15447,6 +18652,13 @@ func (*QueryGetPoolRequest) Descriptor() ([]byte, []int) {
 func (x *QueryGetPoolRequest) GetPoolId() uint64 {
 	if x != nil {
 		return x.PoolId
+	}
+	return 0
+}
+
+func (x *QueryGetPoolRequest) GetDays() uint64 {
+	if x != nil {
+		return x.Days
 	}
 	return 0
 }
@@ -15499,7 +18711,8 @@ type QueryAllPoolRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pagination *v1beta1.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Days       uint64               `protobuf:"varint,1,opt,name=days,proto3" json:"days,omitempty"`
+	Pagination *v1beta1.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (x *QueryAllPoolRequest) Reset() {
@@ -15520,6 +18733,13 @@ func (*QueryAllPoolRequest) ProtoMessage() {}
 // Deprecated: Use QueryAllPoolRequest.ProtoReflect.Descriptor instead.
 func (*QueryAllPoolRequest) Descriptor() ([]byte, []int) {
 	return file_elys_amm_query_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *QueryAllPoolRequest) GetDays() uint64 {
+	if x != nil {
+		return x.Days
+	}
+	return 0
 }
 
 func (x *QueryAllPoolRequest) GetPagination() *v1beta1.PageRequest {
@@ -15779,6 +18999,57 @@ func (x *QuerySwapEstimationRequest) GetDiscount() string {
 	return ""
 }
 
+type QuerySwapEstimationExactAmountOutRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Routes   []*SwapAmountOutRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+	TokenOut *v1beta11.Coin        `protobuf:"bytes,2,opt,name=token_out,json=tokenOut,proto3" json:"token_out,omitempty"`
+	Discount string                `protobuf:"bytes,3,opt,name=discount,proto3" json:"discount,omitempty"`
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) Reset() {
+	*x = QuerySwapEstimationExactAmountOutRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_amm_query_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuerySwapEstimationExactAmountOutRequest) ProtoMessage() {}
+
+// Deprecated: Use QuerySwapEstimationExactAmountOutRequest.ProtoReflect.Descriptor instead.
+func (*QuerySwapEstimationExactAmountOutRequest) Descriptor() ([]byte, []int) {
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) GetRoutes() []*SwapAmountOutRoute {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) GetTokenOut() *v1beta11.Coin {
+	if x != nil {
+		return x.TokenOut
+	}
+	return nil
+}
+
+func (x *QuerySwapEstimationExactAmountOutRequest) GetDiscount() string {
+	if x != nil {
+		return x.Discount
+	}
+	return ""
+}
+
 type QueryJoinPoolEstimationRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -15791,7 +19062,7 @@ type QueryJoinPoolEstimationRequest struct {
 func (x *QueryJoinPoolEstimationRequest) Reset() {
 	*x = QueryJoinPoolEstimationRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[11]
+		mi := &file_elys_amm_query_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15805,7 +19076,7 @@ func (*QueryJoinPoolEstimationRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryJoinPoolEstimationRequest.ProtoReflect.Descriptor instead.
 func (*QueryJoinPoolEstimationRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{11}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *QueryJoinPoolEstimationRequest) GetPoolId() uint64 {
@@ -15827,16 +19098,19 @@ type QueryJoinPoolEstimationResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ShareAmountOut     *v1beta11.Coin   `protobuf:"bytes,1,opt,name=share_amount_out,json=shareAmountOut,proto3" json:"share_amount_out,omitempty"`
-	AmountsIn          []*v1beta11.Coin `protobuf:"bytes,2,rep,name=amounts_in,json=amountsIn,proto3" json:"amounts_in,omitempty"`
-	Slippage           string           `protobuf:"bytes,3,opt,name=slippage,proto3" json:"slippage,omitempty"`
-	WeightBalanceRatio string           `protobuf:"bytes,4,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	ShareAmountOut            *v1beta11.Coin   `protobuf:"bytes,1,opt,name=share_amount_out,json=shareAmountOut,proto3" json:"share_amount_out,omitempty"`
+	AmountsIn                 []*v1beta11.Coin `protobuf:"bytes,2,rep,name=amounts_in,json=amountsIn,proto3" json:"amounts_in,omitempty"`
+	Slippage                  string           `protobuf:"bytes,3,opt,name=slippage,proto3" json:"slippage,omitempty"`
+	WeightBalanceRatio        string           `protobuf:"bytes,4,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	SwapFee                   string           `protobuf:"bytes,5,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
+	TakerFee                  string           `protobuf:"bytes,6,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
+	WeightBalanceRewardAmount *v1beta11.Coin   `protobuf:"bytes,7,opt,name=weight_balance_reward_amount,json=weightBalanceRewardAmount,proto3" json:"weight_balance_reward_amount,omitempty"`
 }
 
 func (x *QueryJoinPoolEstimationResponse) Reset() {
 	*x = QueryJoinPoolEstimationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[12]
+		mi := &file_elys_amm_query_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15850,7 +19124,7 @@ func (*QueryJoinPoolEstimationResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryJoinPoolEstimationResponse.ProtoReflect.Descriptor instead.
 func (*QueryJoinPoolEstimationResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{12}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *QueryJoinPoolEstimationResponse) GetShareAmountOut() *v1beta11.Coin {
@@ -15881,6 +19155,27 @@ func (x *QueryJoinPoolEstimationResponse) GetWeightBalanceRatio() string {
 	return ""
 }
 
+func (x *QueryJoinPoolEstimationResponse) GetSwapFee() string {
+	if x != nil {
+		return x.SwapFee
+	}
+	return ""
+}
+
+func (x *QueryJoinPoolEstimationResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
+	}
+	return ""
+}
+
+func (x *QueryJoinPoolEstimationResponse) GetWeightBalanceRewardAmount() *v1beta11.Coin {
+	if x != nil {
+		return x.WeightBalanceRewardAmount
+	}
+	return nil
+}
+
 type QueryExitPoolEstimationRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -15894,7 +19189,7 @@ type QueryExitPoolEstimationRequest struct {
 func (x *QueryExitPoolEstimationRequest) Reset() {
 	*x = QueryExitPoolEstimationRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[13]
+		mi := &file_elys_amm_query_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15908,7 +19203,7 @@ func (*QueryExitPoolEstimationRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryExitPoolEstimationRequest.ProtoReflect.Descriptor instead.
 func (*QueryExitPoolEstimationRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{13}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *QueryExitPoolEstimationRequest) GetPoolId() uint64 {
@@ -15937,13 +19232,18 @@ type QueryExitPoolEstimationResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AmountsOut []*v1beta11.Coin `protobuf:"bytes,1,rep,name=amounts_out,json=amountsOut,proto3" json:"amounts_out,omitempty"`
+	AmountsOut                []*v1beta11.Coin `protobuf:"bytes,1,rep,name=amounts_out,json=amountsOut,proto3" json:"amounts_out,omitempty"`
+	WeightBalanceRatio        string           `protobuf:"bytes,2,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	Slippage                  string           `protobuf:"bytes,3,opt,name=slippage,proto3" json:"slippage,omitempty"`
+	SwapFee                   string           `protobuf:"bytes,4,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
+	TakerFee                  string           `protobuf:"bytes,5,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
+	WeightBalanceRewardAmount *v1beta11.Coin   `protobuf:"bytes,6,opt,name=weight_balance_reward_amount,json=weightBalanceRewardAmount,proto3" json:"weight_balance_reward_amount,omitempty"`
 }
 
 func (x *QueryExitPoolEstimationResponse) Reset() {
 	*x = QueryExitPoolEstimationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[14]
+		mi := &file_elys_amm_query_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15957,12 +19257,47 @@ func (*QueryExitPoolEstimationResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryExitPoolEstimationResponse.ProtoReflect.Descriptor instead.
 func (*QueryExitPoolEstimationResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{14}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *QueryExitPoolEstimationResponse) GetAmountsOut() []*v1beta11.Coin {
 	if x != nil {
 		return x.AmountsOut
+	}
+	return nil
+}
+
+func (x *QueryExitPoolEstimationResponse) GetWeightBalanceRatio() string {
+	if x != nil {
+		return x.WeightBalanceRatio
+	}
+	return ""
+}
+
+func (x *QueryExitPoolEstimationResponse) GetSlippage() string {
+	if x != nil {
+		return x.Slippage
+	}
+	return ""
+}
+
+func (x *QueryExitPoolEstimationResponse) GetSwapFee() string {
+	if x != nil {
+		return x.SwapFee
+	}
+	return ""
+}
+
+func (x *QueryExitPoolEstimationResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
+	}
+	return ""
+}
+
+func (x *QueryExitPoolEstimationResponse) GetWeightBalanceRewardAmount() *v1beta11.Coin {
+	if x != nil {
+		return x.WeightBalanceRewardAmount
 	}
 	return nil
 }
@@ -15979,12 +19314,13 @@ type QuerySwapEstimationResponse struct {
 	AvailableLiquidity *v1beta11.Coin `protobuf:"bytes,5,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
 	Slippage           string         `protobuf:"bytes,6,opt,name=slippage,proto3" json:"slippage,omitempty"`
 	WeightBalanceRatio string         `protobuf:"bytes,7,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	TakerFee           string         `protobuf:"bytes,8,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
 }
 
 func (x *QuerySwapEstimationResponse) Reset() {
 	*x = QuerySwapEstimationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[15]
+		mi := &file_elys_amm_query_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15998,7 +19334,7 @@ func (*QuerySwapEstimationResponse) ProtoMessage() {}
 
 // Deprecated: Use QuerySwapEstimationResponse.ProtoReflect.Descriptor instead.
 func (*QuerySwapEstimationResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{15}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *QuerySwapEstimationResponse) GetSpotPrice() string {
@@ -16050,6 +19386,96 @@ func (x *QuerySwapEstimationResponse) GetWeightBalanceRatio() string {
 	return ""
 }
 
+func (x *QuerySwapEstimationResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
+	}
+	return ""
+}
+
+type QuerySwapEstimationExactAmountOutResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SpotPrice          string         `protobuf:"bytes,1,opt,name=spot_price,json=spotPrice,proto3" json:"spot_price,omitempty"`
+	TokenIn            *v1beta11.Coin `protobuf:"bytes,2,opt,name=token_in,json=tokenIn,proto3" json:"token_in,omitempty"`
+	SwapFee            string         `protobuf:"bytes,3,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
+	Discount           string         `protobuf:"bytes,4,opt,name=discount,proto3" json:"discount,omitempty"`
+	AvailableLiquidity *v1beta11.Coin `protobuf:"bytes,5,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
+	Slippage           string         `protobuf:"bytes,6,opt,name=slippage,proto3" json:"slippage,omitempty"`
+	WeightBalanceRatio string         `protobuf:"bytes,7,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) Reset() {
+	*x = QuerySwapEstimationExactAmountOutResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_amm_query_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuerySwapEstimationExactAmountOutResponse) ProtoMessage() {}
+
+// Deprecated: Use QuerySwapEstimationExactAmountOutResponse.ProtoReflect.Descriptor instead.
+func (*QuerySwapEstimationExactAmountOutResponse) Descriptor() ([]byte, []int) {
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetSpotPrice() string {
+	if x != nil {
+		return x.SpotPrice
+	}
+	return ""
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetTokenIn() *v1beta11.Coin {
+	if x != nil {
+		return x.TokenIn
+	}
+	return nil
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetSwapFee() string {
+	if x != nil {
+		return x.SwapFee
+	}
+	return ""
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetDiscount() string {
+	if x != nil {
+		return x.Discount
+	}
+	return ""
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetAvailableLiquidity() *v1beta11.Coin {
+	if x != nil {
+		return x.AvailableLiquidity
+	}
+	return nil
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetSlippage() string {
+	if x != nil {
+		return x.Slippage
+	}
+	return ""
+}
+
+func (x *QuerySwapEstimationExactAmountOutResponse) GetWeightBalanceRatio() string {
+	if x != nil {
+		return x.WeightBalanceRatio
+	}
+	return ""
+}
+
 type QuerySlippageTrackRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16061,7 +19487,7 @@ type QuerySlippageTrackRequest struct {
 func (x *QuerySlippageTrackRequest) Reset() {
 	*x = QuerySlippageTrackRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[16]
+		mi := &file_elys_amm_query_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16075,7 +19501,7 @@ func (*QuerySlippageTrackRequest) ProtoMessage() {}
 
 // Deprecated: Use QuerySlippageTrackRequest.ProtoReflect.Descriptor instead.
 func (*QuerySlippageTrackRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{16}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *QuerySlippageTrackRequest) GetPoolId() uint64 {
@@ -16096,7 +19522,7 @@ type QuerySlippageTrackResponse struct {
 func (x *QuerySlippageTrackResponse) Reset() {
 	*x = QuerySlippageTrackResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[17]
+		mi := &file_elys_amm_query_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16110,7 +19536,7 @@ func (*QuerySlippageTrackResponse) ProtoMessage() {}
 
 // Deprecated: Use QuerySlippageTrackResponse.ProtoReflect.Descriptor instead.
 func (*QuerySlippageTrackResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{17}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *QuerySlippageTrackResponse) GetTrack() *OraclePoolSlippageTrack {
@@ -16129,7 +19555,7 @@ type QuerySlippageTrackAllRequest struct {
 func (x *QuerySlippageTrackAllRequest) Reset() {
 	*x = QuerySlippageTrackAllRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[18]
+		mi := &file_elys_amm_query_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16143,7 +19569,7 @@ func (*QuerySlippageTrackAllRequest) ProtoMessage() {}
 
 // Deprecated: Use QuerySlippageTrackAllRequest.ProtoReflect.Descriptor instead.
 func (*QuerySlippageTrackAllRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{18}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{20}
 }
 
 type QuerySlippageTrackAllResponse struct {
@@ -16157,7 +19583,7 @@ type QuerySlippageTrackAllResponse struct {
 func (x *QuerySlippageTrackAllResponse) Reset() {
 	*x = QuerySlippageTrackAllResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[19]
+		mi := &file_elys_amm_query_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16171,7 +19597,7 @@ func (*QuerySlippageTrackAllResponse) ProtoMessage() {}
 
 // Deprecated: Use QuerySlippageTrackAllResponse.ProtoReflect.Descriptor instead.
 func (*QuerySlippageTrackAllResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{19}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *QuerySlippageTrackAllResponse) GetTracks() []*OraclePoolSlippageTrack {
@@ -16193,7 +19619,7 @@ type QueryBalanceRequest struct {
 func (x *QueryBalanceRequest) Reset() {
 	*x = QueryBalanceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[20]
+		mi := &file_elys_amm_query_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16207,7 +19633,7 @@ func (*QueryBalanceRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryBalanceRequest.ProtoReflect.Descriptor instead.
 func (*QueryBalanceRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{20}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *QueryBalanceRequest) GetAddress() string {
@@ -16235,7 +19661,7 @@ type QueryBalanceResponse struct {
 func (x *QueryBalanceResponse) Reset() {
 	*x = QueryBalanceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[21]
+		mi := &file_elys_amm_query_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16249,7 +19675,7 @@ func (*QueryBalanceResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryBalanceResponse.ProtoReflect.Descriptor instead.
 func (*QueryBalanceResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{21}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *QueryBalanceResponse) GetBalance() *v1beta11.Coin {
@@ -16271,7 +19697,7 @@ type QueryInRouteByDenomRequest struct {
 func (x *QueryInRouteByDenomRequest) Reset() {
 	*x = QueryInRouteByDenomRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[22]
+		mi := &file_elys_amm_query_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16285,7 +19711,7 @@ func (*QueryInRouteByDenomRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryInRouteByDenomRequest.ProtoReflect.Descriptor instead.
 func (*QueryInRouteByDenomRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{22}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *QueryInRouteByDenomRequest) GetDenomIn() string {
@@ -16313,7 +19739,7 @@ type QueryInRouteByDenomResponse struct {
 func (x *QueryInRouteByDenomResponse) Reset() {
 	*x = QueryInRouteByDenomResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[23]
+		mi := &file_elys_amm_query_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16327,7 +19753,7 @@ func (*QueryInRouteByDenomResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryInRouteByDenomResponse.ProtoReflect.Descriptor instead.
 func (*QueryInRouteByDenomResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{23}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *QueryInRouteByDenomResponse) GetInRoute() []*SwapAmountInRoute {
@@ -16349,7 +19775,7 @@ type QueryOutRouteByDenomRequest struct {
 func (x *QueryOutRouteByDenomRequest) Reset() {
 	*x = QueryOutRouteByDenomRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[24]
+		mi := &file_elys_amm_query_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16363,7 +19789,7 @@ func (*QueryOutRouteByDenomRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryOutRouteByDenomRequest.ProtoReflect.Descriptor instead.
 func (*QueryOutRouteByDenomRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{24}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *QueryOutRouteByDenomRequest) GetDenomOut() string {
@@ -16391,7 +19817,7 @@ type QueryOutRouteByDenomResponse struct {
 func (x *QueryOutRouteByDenomResponse) Reset() {
 	*x = QueryOutRouteByDenomResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[25]
+		mi := &file_elys_amm_query_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16405,7 +19831,7 @@ func (*QueryOutRouteByDenomResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryOutRouteByDenomResponse.ProtoReflect.Descriptor instead.
 func (*QueryOutRouteByDenomResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{25}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *QueryOutRouteByDenomResponse) GetOutRoute() []*SwapAmountOutRoute {
@@ -16429,7 +19855,7 @@ type QuerySwapEstimationByDenomRequest struct {
 func (x *QuerySwapEstimationByDenomRequest) Reset() {
 	*x = QuerySwapEstimationByDenomRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[26]
+		mi := &file_elys_amm_query_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16443,7 +19869,7 @@ func (*QuerySwapEstimationByDenomRequest) ProtoMessage() {}
 
 // Deprecated: Use QuerySwapEstimationByDenomRequest.ProtoReflect.Descriptor instead.
 func (*QuerySwapEstimationByDenomRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{26}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *QuerySwapEstimationByDenomRequest) GetAmount() *v1beta11.Coin {
@@ -16479,22 +19905,24 @@ type QuerySwapEstimationByDenomResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	InRoute            []*SwapAmountInRoute  `protobuf:"bytes,1,rep,name=in_route,json=inRoute,proto3" json:"in_route,omitempty"`
-	OutRoute           []*SwapAmountOutRoute `protobuf:"bytes,2,rep,name=out_route,json=outRoute,proto3" json:"out_route,omitempty"`
-	SpotPrice          string                `protobuf:"bytes,3,opt,name=spot_price,json=spotPrice,proto3" json:"spot_price,omitempty"`
-	Amount             *v1beta11.Coin        `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
-	SwapFee            string                `protobuf:"bytes,5,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
-	Discount           string                `protobuf:"bytes,6,opt,name=discount,proto3" json:"discount,omitempty"`
-	AvailableLiquidity *v1beta11.Coin        `protobuf:"bytes,7,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
-	WeightBalanceRatio string                `protobuf:"bytes,8,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
-	Slippage           string                `protobuf:"bytes,9,opt,name=slippage,proto3" json:"slippage,omitempty"`
-	PriceImpact        string                `protobuf:"bytes,10,opt,name=price_impact,json=priceImpact,proto3" json:"price_impact,omitempty"`
+	InRoute                   []*SwapAmountInRoute  `protobuf:"bytes,1,rep,name=in_route,json=inRoute,proto3" json:"in_route,omitempty"`
+	OutRoute                  []*SwapAmountOutRoute `protobuf:"bytes,2,rep,name=out_route,json=outRoute,proto3" json:"out_route,omitempty"`
+	SpotPrice                 string                `protobuf:"bytes,3,opt,name=spot_price,json=spotPrice,proto3" json:"spot_price,omitempty"`
+	Amount                    *v1beta11.Coin        `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	SwapFee                   string                `protobuf:"bytes,5,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
+	Discount                  string                `protobuf:"bytes,6,opt,name=discount,proto3" json:"discount,omitempty"`
+	AvailableLiquidity        *v1beta11.Coin        `protobuf:"bytes,7,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
+	WeightBalanceRatio        string                `protobuf:"bytes,8,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	Slippage                  string                `protobuf:"bytes,9,opt,name=slippage,proto3" json:"slippage,omitempty"`
+	PriceImpact               string                `protobuf:"bytes,10,opt,name=price_impact,json=priceImpact,proto3" json:"price_impact,omitempty"`
+	WeightBalanceRewardAmount *v1beta11.Coin        `protobuf:"bytes,11,opt,name=weight_balance_reward_amount,json=weightBalanceRewardAmount,proto3" json:"weight_balance_reward_amount,omitempty"`
+	TakerFee                  string                `protobuf:"bytes,12,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
 }
 
 func (x *QuerySwapEstimationByDenomResponse) Reset() {
 	*x = QuerySwapEstimationByDenomResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[27]
+		mi := &file_elys_amm_query_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16508,7 +19936,7 @@ func (*QuerySwapEstimationByDenomResponse) ProtoMessage() {}
 
 // Deprecated: Use QuerySwapEstimationByDenomResponse.ProtoReflect.Descriptor instead.
 func (*QuerySwapEstimationByDenomResponse) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{27}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *QuerySwapEstimationByDenomResponse) GetInRoute() []*SwapAmountInRoute {
@@ -16581,6 +20009,20 @@ func (x *QuerySwapEstimationByDenomResponse) GetPriceImpact() string {
 	return ""
 }
 
+func (x *QuerySwapEstimationByDenomResponse) GetWeightBalanceRewardAmount() *v1beta11.Coin {
+	if x != nil {
+		return x.WeightBalanceRewardAmount
+	}
+	return nil
+}
+
+func (x *QuerySwapEstimationByDenomResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
+	}
+	return ""
+}
+
 type QueryAMMPriceRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16593,7 +20035,7 @@ type QueryAMMPriceRequest struct {
 func (x *QueryAMMPriceRequest) Reset() {
 	*x = QueryAMMPriceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_amm_query_proto_msgTypes[28]
+		mi := &file_elys_amm_query_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -16607,7 +20049,7 @@ func (*QueryAMMPriceRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryAMMPriceRequest.ProtoReflect.Descriptor instead.
 func (*QueryAMMPriceRequest) Descriptor() ([]byte, []int) {
-	return file_elys_amm_query_proto_rawDescGZIP(), []int{28}
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *QueryAMMPriceRequest) GetTokenIn() *v1beta11.Coin {
@@ -16620,6 +20062,84 @@ func (x *QueryAMMPriceRequest) GetTokenIn() *v1beta11.Coin {
 func (x *QueryAMMPriceRequest) GetDiscount() string {
 	if x != nil {
 		return x.Discount
+	}
+	return ""
+}
+
+type QueryWeightAndSlippageFeeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Date   string `protobuf:"bytes,2,opt,name=date,proto3" json:"date,omitempty"`
+}
+
+func (x *QueryWeightAndSlippageFeeRequest) Reset() {
+	*x = QueryWeightAndSlippageFeeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_amm_query_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryWeightAndSlippageFeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryWeightAndSlippageFeeRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryWeightAndSlippageFeeRequest.ProtoReflect.Descriptor instead.
+func (*QueryWeightAndSlippageFeeRequest) Descriptor() ([]byte, []int) {
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *QueryWeightAndSlippageFeeRequest) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *QueryWeightAndSlippageFeeRequest) GetDate() string {
+	if x != nil {
+		return x.Date
+	}
+	return ""
+}
+
+type QueryWeightAndSlippageFeeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Value string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *QueryWeightAndSlippageFeeResponse) Reset() {
+	*x = QueryWeightAndSlippageFeeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_amm_query_proto_msgTypes[32]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryWeightAndSlippageFeeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryWeightAndSlippageFeeResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryWeightAndSlippageFeeResponse.ProtoReflect.Descriptor instead.
+func (*QueryWeightAndSlippageFeeResponse) Descriptor() ([]byte, []int) {
+	return file_elys_amm_query_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *QueryWeightAndSlippageFeeResponse) GetValue() string {
+	if x != nil {
+		return x.Value
 	}
 	return ""
 }
@@ -16654,422 +20174,574 @@ var file_elys_amm_query_proto_rawDesc = []byte{
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
 	0x6d, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06,
-	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x2e, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x42, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47,
 	0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a,
 	0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06,
-	0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x22, 0x7e, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47,
-	0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28,
-	0x0a, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x42, 0x04, 0xc8, 0xde,
-	0x1f, 0x00, 0x52, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0x3c, 0x0a, 0x0a, 0x65, 0x78, 0x74, 0x72,
-	0x61, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x78, 0x74, 0x72,
-	0x61, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x65, 0x78, 0x74,
-	0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x5d, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41,
-	0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a,
-	0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
-	0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61,
-	0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xc9, 0x01, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41,
-	0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28,
-	0x0a, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x42, 0x04, 0xc8, 0xde,
-	0x1f, 0x00, 0x52, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0x3e, 0x0a, 0x0b, 0x65, 0x78, 0x74, 0x72,
-	0x61, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x78, 0x74,
-	0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x65, 0x78,
-	0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69,
-	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x22, 0x35, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e,
-	0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x69, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x47, 0x0a, 0x0f, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x0e, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x22, 0x67, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xb2, 0x01, 0x0a,
-	0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x47, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4c,
-	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69,
-	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x22, 0xdc, 0x01, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45,
-	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x33, 0x0a, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61, 0x70,
-	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x52, 0x06, 0x72,
-	0x6f, 0x75, 0x74, 0x65, 0x73, 0x12, 0x3a, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69,
-	0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x79, 0x73, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x64, 0x61, 0x79, 0x73, 0x22, 0x7e, 0x0a, 0x14, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x28, 0x0a, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0x3c, 0x0a, 0x0a,
+	0x65, 0x78, 0x74, 0x72, 0x61, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x50, 0x6f, 0x6f, 0x6c,
+	0x45, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x09, 0x65, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x71, 0x0a, 0x13, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x79, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x04, 0x64, 0x61, 0x79, 0x73, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xc9, 0x01,
+	0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
+	0x50, 0x6f, 0x6f, 0x6c, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x04, 0x70, 0x6f, 0x6f, 0x6c,
+	0x12, 0x3e, 0x0a, 0x0b, 0x65, 0x78, 0x74, 0x72, 0x61, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
+	0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x65, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x73,
+	0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
+	0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x35, 0x0a, 0x1d, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x22, 0x69, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x47, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x22, 0x67, 0x0a, 0x1d, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a,
+	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71,
+	0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x22, 0xb2, 0x01, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c,
+	0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x47, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0e, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
+	0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
+	0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xdc, 0x01, 0x0a, 0x1a, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x33, 0x0a, 0x06, 0x72, 0x6f, 0x75, 0x74,
+	0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x52, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x12, 0x3a, 0x0a,
+	0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08,
+	0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xed, 0x01, 0x0a, 0x28, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x45, 0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x34, 0x0a, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
+	0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x52, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x12, 0x3c, 0x0a, 0x09, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08,
+	0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x79, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f,
+	0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f,
+	0x6c, 0x49, 0x64, 0x12, 0x3e, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69,
+	0x6e, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f,
-	0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49,
-	0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20,
+	0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x73, 0x49, 0x6e, 0x22, 0xe0, 0x04, 0x0a, 0x1f, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4a, 0x6f, 0x69,
+	0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x49, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65,
+	0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x0e, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f,
+	0x75, 0x74, 0x12, 0x3e, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69, 0x6e,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73,
+	0x49, 0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67,
+	0x65, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61,
+	0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63,
+	0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66,
+	0x65, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73, 0x77, 0x61,
+	0x70, 0x46, 0x65, 0x65, 0x12, 0x4e, 0x0a, 0x09, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65,
+	0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x74, 0x61, 0x6b, 0x65,
+	0x72, 0x46, 0x65, 0x65, 0x12, 0x60, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62,
+	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x19, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xb6, 0x01, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c,
+	0x49, 0x64, 0x12, 0x53, 0x0a, 0x0f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x12, 0x26, 0x0a, 0x0f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x5f, 0x6f, 0x75, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0d, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22,
+	0x97, 0x04, 0x0a, 0x1f, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f,
+	0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x6f,
+	0x75, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43,
+	0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x73, 0x4f, 0x75, 0x74, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f,
+	0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
 	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x22, 0x79, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f,
-	0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x3e, 0x0a, 0x0a, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
-	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
-	0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x49, 0x6e, 0x22, 0xe0, 0x02, 0x0a, 0x1f,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74,
-	0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x49, 0x0a, 0x10, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
-	0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
-	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x73, 0x68, 0x61, 0x72,
-	0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x12, 0x3e, 0x0a, 0x0a, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19,
-	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x49, 0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61,
+	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c,
 	0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
 	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
 	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
 	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67,
-	0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x22, 0xb6,
-	0x01, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
-	0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x53, 0x0a, 0x0f, 0x73, 0x68,
-	0x61, 0x72, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
-	0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74,
-	0x52, 0x0d, 0x73, 0x68, 0x61, 0x72, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x12,
-	0x26, 0x0a, 0x0f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x5f, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f,
-	0x75, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x63, 0x0a, 0x1f, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x0b, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x73, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
-	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
-	0x52, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x4f, 0x75, 0x74, 0x22, 0xd0, 0x04, 0x0a,
-	0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0a,
-	0x73, 0x70, 0x6f, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x09, 0x73, 0x70, 0x6f, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3c,
-	0x0a, 0x09, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
-	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde,
-	0x1f, 0x00, 0x52, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x12, 0x4c, 0x0a, 0x08,
-	0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
-	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
-	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
-	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x07, 0x73, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69,
-	0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x50, 0x0a, 0x13, 0x61, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
-	0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
-	0x6c, 0x65, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x4d, 0x0a, 0x08, 0x73,
-	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61,
+	0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07,
+	0x73, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x4e, 0x0a, 0x09, 0x74, 0x61, 0x6b, 0x65, 0x72,
+	0x5f, 0x66, 0x65, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x74,
+	0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x12, 0x60, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
+	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x19,
+	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xa0, 0x05, 0x0a, 0x1b, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70, 0x6f,
+	0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
 	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
 	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
 	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65,
-	0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
-	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
-	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x22,
-	0x34, 0x0a, 0x19, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65,
-	0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07,
-	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70,
-	0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x22, 0x5b, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c,
-	0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x3d, 0x0a, 0x05, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x4f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65,
-	0x54, 0x72, 0x61, 0x63, 0x6b, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x74, 0x72, 0x61,
-	0x63, 0x6b, 0x22, 0x1e, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70,
-	0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x22, 0x60, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70,
-	0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x3f, 0x0a, 0x06, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x73, 0x18, 0x01, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x4f,
-	0x72, 0x61, 0x63, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67,
-	0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x74, 0x72,
-	0x61, 0x63, 0x6b, 0x73, 0x22, 0x45, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x42, 0x61, 0x6c,
-	0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x51, 0x0a, 0x14, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x39, 0x0a, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
-	0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42,
-	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x54,
-	0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x5f, 0x6f, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x4f, 0x75, 0x74, 0x22, 0x55, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x52,
-	0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x08, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
-	0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x52, 0x6f, 0x75,
-	0x74, 0x65, 0x52, 0x07, 0x69, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x22, 0x55, 0x0a, 0x1b, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x4f, 0x75, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x49, 0x6e, 0x22, 0x59, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f,
-	0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x39, 0x0a, 0x09, 0x6f, 0x75, 0x74, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
-	0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x6f,
-	0x75, 0x74, 0x65, 0x52, 0x08, 0x6f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x22, 0xae, 0x01,
-	0x0a, 0x21, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x37, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20,
+	0x52, 0x09, 0x73, 0x70, 0x6f, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x4f, 0x75, 0x74, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61,
+	0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07,
+	0x73, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69,
+	0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x50, 0x0a, 0x13, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61,
+	0x62, 0x6c, 0x65, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
 	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04,
-	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x5f, 0x6f, 0x75, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x4f, 0x75, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x9b,
-	0x06, 0x0a, 0x22, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69,
-	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x08, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74,
-	0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61,
-	0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x52,
-	0x6f, 0x75, 0x74, 0x65, 0x52, 0x07, 0x69, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x39, 0x0a,
-	0x09, 0x6f, 0x75, 0x74, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61, 0x70,
-	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x52, 0x08,
-	0x6f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70, 0x6f, 0x74,
-	0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x09, 0x73, 0x70, 0x6f, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x37, 0x0a, 0x06, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
-	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x4c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70,
+	0x70, 0x61, 0x67, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73,
+	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18,
+	0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73, 0x77, 0x61, 0x70, 0x46, 0x65,
-	0x65, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x12, 0x50, 0x0a, 0x13, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x6c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
-	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12,
-	0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c,
-	0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e,
-	0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70,
-	0x61, 0x67, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4e, 0x0a, 0x09,
+	0x74, 0x61, 0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x22, 0xdc, 0x04, 0x0a,
+	0x29, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f,
+	0x75, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70,
+	0x6f, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x09, 0x73, 0x70, 0x6f, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3a, 0x0a, 0x08,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x6e, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70,
+	0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73,
+	0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x50, 0x0a, 0x13, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
+	0x6c, 0x65, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
+	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x12, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70,
+	0x61, 0x67, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
 	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
 	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
 	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c,
-	0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x54, 0x0a, 0x0c, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f,
-	0x69, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42,
+	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x22, 0x34, 0x0a, 0x19, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63,
+	0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49,
+	0x64, 0x22, 0x5b, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61,
+	0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3d, 0x0a, 0x05, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65,
+	0x50, 0x6f, 0x6f, 0x6c, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63,
+	0x6b, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x22, 0x1e,
+	0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54,
+	0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x60,
+	0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54,
+	0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3f, 0x0a, 0x06, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c,
+	0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61,
+	0x63, 0x6b, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x73,
+	0x22, 0x45, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x51, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x39, 0x0a, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x54, 0x0a, 0x1a, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4f, 0x75, 0x74,
+	0x22, 0x55, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65,
+	0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x36, 0x0a, 0x08, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61,
+	0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x52, 0x07,
+	0x69, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x22, 0x55, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f,
+	0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x4f, 0x75, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x49, 0x6e, 0x22, 0x59,
+	0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42,
+	0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x39,
+	0x0a, 0x09, 0x6f, 0x75, 0x74, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61,
+	0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x52,
+	0x08, 0x6f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x22, 0xae, 0x01, 0x0a, 0x21, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x37, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x5f, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4f, 0x75, 0x74,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0xcd, 0x07, 0x0a, 0x22, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x36, 0x0a, 0x08, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53,
+	0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65,
+	0x52, 0x07, 0x69, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x39, 0x0a, 0x09, 0x6f, 0x75, 0x74,
+	0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x52, 0x08, 0x6f, 0x75, 0x74, 0x52,
+	0x6f, 0x75, 0x74, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70, 0x6f, 0x74, 0x5f, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x09, 0x73, 0x70, 0x6f,
+	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x37, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12,
+	0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73, 0x77, 0x61, 0x70, 0x46, 0x65, 0x65, 0x12, 0x4d, 0x0a,
+	0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x50, 0x0a, 0x13,
+	0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x61, 0x76, 0x61, 0x69,
+	0x6c, 0x61, 0x62, 0x6c, 0x65, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x63,
+	0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
 	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
 	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
 	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x0b, 0x70, 0x72, 0x69, 0x63, 0x65, 0x49, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x22, 0xa1, 0x01, 0x0a,
-	0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x4d, 0x4d, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x3a, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69,
-	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f,
-	0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49,
-	0x6e, 0x12, 0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20,
+	0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61,
+	0x74, 0x69, 0x6f, 0x12, 0x4d, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61,
+	0x67, 0x65, 0x12, 0x54, 0x0a, 0x0c, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x69, 0x6d, 0x70, 0x61,
+	0x63, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x49, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x12, 0x60, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x19, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x4e, 0x0a, 0x09, 0x74, 0x61,
+	0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x22, 0xa1, 0x01, 0x0a, 0x14, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x41, 0x4d, 0x4d, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x3a, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
+	0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x6e, 0x12,
+	0x4d, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x4f,
+	0x0a, 0x20, 0x51, 0x75, 0x65, 0x72, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x41, 0x6e, 0x64,
+	0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x46, 0x65, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x64,
+	0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x22,
+	0x6c, 0x0a, 0x21, 0x51, 0x75, 0x65, 0x72, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x41, 0x6e,
+	0x64, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x46, 0x65, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x47, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
 	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x32, 0x98, 0x10, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x6c, 0x0a, 0x06, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x25, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1f, 0x12, 0x1d, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d,
-	0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x74, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c,
-	0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x32, 0xa0, 0x13,
+	0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x6c, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x25,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1f, 0x12, 0x1d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x7b, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1d, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65,
+	0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74,
+	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x70, 0x6f, 0x6f,
+	0x6c, 0x2f, 0x7b, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x7b, 0x64, 0x61, 0x79,
+	0x73, 0x7d, 0x12, 0x74, 0x0a, 0x07, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x6c, 0x6c, 0x12, 0x1d, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c,
+	0x6c, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c,
+	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2a, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x24, 0x12, 0x22, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x70, 0x6f, 0x6f,
+	0x6c, 0x2f, 0x7b, 0x64, 0x61, 0x79, 0x73, 0x7d, 0x12, 0x9b, 0x01, 0x0a, 0x0e, 0x44, 0x65, 0x6e,
+	0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x27, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x44,
+	0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71,
+	0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x36,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x30, 0x12, 0x2e, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x2f, 0x7b,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0x96, 0x01, 0x0a, 0x11, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x6c, 0x6c, 0x12, 0x27, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c,
+	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
 	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f,
-	0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0x6d,
-	0x0a, 0x07, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x6c, 0x6c, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f,
-	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x23, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1d,
-	0x12, 0x1b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0x9b, 0x01,
-	0x0a, 0x0e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
-	0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x44, 0x65, 0x6e,
-	0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x36, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x30, 0x12, 0x2e, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x61, 0x6d, 0x6d, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0x96, 0x01, 0x0a, 0x11,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x6c,
-	0x6c, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x12, 0x8d, 0x01, 0x0a, 0x0e, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74,
-	0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61,
-	0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69,
-	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77,
-	0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x9e, 0x01, 0x0a, 0x12, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f,
-	0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x65, 0x6c,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12,
+	0x8d, 0x01, 0x0a, 0x0e, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74,
+	0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f,
+	0x73, 0x77, 0x61, 0x70, 0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0xc8, 0x01, 0x0a, 0x1c, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x45, 0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74,
+	0x12, 0x32, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45,
+	0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75, 0x74, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x33, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x45, 0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x75,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3f, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x39, 0x12, 0x37, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x65,
+	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x65, 0x78, 0x61, 0x63, 0x74, 0x5f,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6f, 0x75, 0x74, 0x12, 0x9e, 0x01, 0x0a, 0x12, 0x4a,
+	0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c,
 	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4a, 0x6f, 0x69, 0x6e,
 	0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73,
-	0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d,
-	0x2f, 0x6a, 0x6f, 0x69, 0x6e, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x9e, 0x01, 0x0a, 0x12, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f,
-	0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x6a, 0x6f, 0x69, 0x6e, 0x5f, 0x70, 0x6f, 0x6f, 0x6c,
+	0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x9e, 0x01, 0x0a, 0x12,
+	0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65,
 	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69,
 	0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
-	0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x45,
-	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d,
-	0x6d, 0x2f, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x65, 0x73, 0x74, 0x69,
-	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x93, 0x01, 0x0a, 0x0d, 0x53, 0x6c, 0x69, 0x70, 0x70,
-	0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67,
-	0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c,
-	0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12,
+	0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x93, 0x01, 0x0a,
+	0x0d, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x12, 0x23,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
+	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61,
+	0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x2f, 0x7b, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69,
+	0x64, 0x7d, 0x12, 0x93, 0x01, 0x0a, 0x10, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54,
+	0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61,
+	0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65,
+	0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28,
+	0x12, 0x26, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67,
+	0x65, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x73, 0x12, 0x82, 0x01, 0x0a, 0x07, 0x42, 0x61, 0x6c,
+	0x61, 0x6e, 0x63, 0x65, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x38, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x32, 0x12, 0x30, 0x2f, 0x65, 0x6c,
 	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61,
-	0x63, 0x6b, 0x2f, 0x7b, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0x93, 0x01, 0x0a,
-	0x10, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c,
-	0x6c, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41,
-	0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61,
-	0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
-	0x6d, 0x6d, 0x2f, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x63,
-	0x6b, 0x73, 0x12, 0x82, 0x01, 0x0a, 0x07, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x1d,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x42,
-	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x42, 0x61,
-	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x38, 0x82,
-	0xd3, 0xe4, 0x93, 0x02, 0x32, 0x12, 0x30, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x62, 0x61,
-	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f,
-	0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0xa6, 0x01, 0x0a, 0x0e, 0x49, 0x6e, 0x52, 0x6f,
-	0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75,
-	0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72,
+	0x61, 0x6d, 0x6d, 0x2f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x2f, 0x7b, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0xa6, 0x01,
+	0x0a, 0x0e, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72,
 	0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x47, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x41, 0x12,
-	0x3f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65,
-	0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x5f, 0x69, 0x6e, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74, 0x7d,
-	0x12, 0xaa, 0x01, 0x0a, 0x0f, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52,
-	0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x48, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x42, 0x12, 0x40, 0x2f, 0x65, 0x6c,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
+	0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x6e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79,
+	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x47, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x41, 0x12, 0x3f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x69, 0x6e,
+	0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x2f,
+	0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x5f, 0x6f, 0x75, 0x74, 0x7d, 0x12, 0xaa, 0x01, 0x0a, 0x0f, 0x4f, 0x75, 0x74, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4f, 0x75, 0x74, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x48, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x42, 0x12, 0x40, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x6f, 0x75, 0x74, 0x5f, 0x72, 0x6f,
+	0x75, 0x74, 0x65, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x2f, 0x7b, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f,
+	0x69, 0x6e, 0x7d, 0x12, 0xab, 0x01, 0x0a, 0x15, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69,
+	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x2b, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77,
+	0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65,
+	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45,
+	0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31,
+	0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x65, 0x73,
+	0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x12, 0xac, 0x01, 0x0a, 0x14, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x41, 0x6e, 0x64, 0x53,
+	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x46, 0x65, 0x65, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x41, 0x6e, 0x64, 0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x46, 0x65, 0x65, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
+	0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x41, 0x6e, 0x64,
+	0x53, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x46, 0x65, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x3b, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x35, 0x12, 0x33, 0x2f, 0x65, 0x6c,
 	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x61, 0x6d, 0x6d, 0x2f, 0x6f, 0x75, 0x74, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x5f, 0x62, 0x79,
-	0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75,
-	0x74, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x69, 0x6e, 0x7d, 0x12, 0xab, 0x01,
-	0x0a, 0x15, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61,
-	0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69,
-	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
-	0x6d, 0x6d, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x65, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x42, 0x86, 0x01, 0x0a, 0x0c,
-	0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42, 0x0a, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c,
-	0x79, 0x73, 0x2e, 0x41, 0x6d, 0x6d, 0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d,
-	0x6d, 0xe2, 0x02, 0x14, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42,
-	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a,
-	0x3a, 0x41, 0x6d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x6d, 0x6d, 0x2f, 0x73, 0x61, 0x76, 0x65, 0x64, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x2f,
+	0x7b, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x7b, 0x64, 0x61, 0x74, 0x65, 0x7d,
+	0x42, 0x89, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
+	0x6d, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73,
+	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0xa2, 0x02, 0x03,
+	0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41, 0x6d, 0x6d, 0xca, 0x02,
+	0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02, 0x14, 0x45, 0x6c, 0x79, 0x73,
+	0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d, 0x6d, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -17084,112 +20756,127 @@ func file_elys_amm_query_proto_rawDescGZIP() []byte {
 	return file_elys_amm_query_proto_rawDescData
 }
 
-var file_elys_amm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_elys_amm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_elys_amm_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),                 // 0: elys.amm.QueryParamsRequest
-	(*QueryParamsResponse)(nil),                // 1: elys.amm.QueryParamsResponse
-	(*QueryGetPoolRequest)(nil),                // 2: elys.amm.QueryGetPoolRequest
-	(*QueryGetPoolResponse)(nil),               // 3: elys.amm.QueryGetPoolResponse
-	(*QueryAllPoolRequest)(nil),                // 4: elys.amm.QueryAllPoolRequest
-	(*QueryAllPoolResponse)(nil),               // 5: elys.amm.QueryAllPoolResponse
-	(*QueryGetDenomLiquidityRequest)(nil),      // 6: elys.amm.QueryGetDenomLiquidityRequest
-	(*QueryGetDenomLiquidityResponse)(nil),     // 7: elys.amm.QueryGetDenomLiquidityResponse
-	(*QueryAllDenomLiquidityRequest)(nil),      // 8: elys.amm.QueryAllDenomLiquidityRequest
-	(*QueryAllDenomLiquidityResponse)(nil),     // 9: elys.amm.QueryAllDenomLiquidityResponse
-	(*QuerySwapEstimationRequest)(nil),         // 10: elys.amm.QuerySwapEstimationRequest
-	(*QueryJoinPoolEstimationRequest)(nil),     // 11: elys.amm.QueryJoinPoolEstimationRequest
-	(*QueryJoinPoolEstimationResponse)(nil),    // 12: elys.amm.QueryJoinPoolEstimationResponse
-	(*QueryExitPoolEstimationRequest)(nil),     // 13: elys.amm.QueryExitPoolEstimationRequest
-	(*QueryExitPoolEstimationResponse)(nil),    // 14: elys.amm.QueryExitPoolEstimationResponse
-	(*QuerySwapEstimationResponse)(nil),        // 15: elys.amm.QuerySwapEstimationResponse
-	(*QuerySlippageTrackRequest)(nil),          // 16: elys.amm.QuerySlippageTrackRequest
-	(*QuerySlippageTrackResponse)(nil),         // 17: elys.amm.QuerySlippageTrackResponse
-	(*QuerySlippageTrackAllRequest)(nil),       // 18: elys.amm.QuerySlippageTrackAllRequest
-	(*QuerySlippageTrackAllResponse)(nil),      // 19: elys.amm.QuerySlippageTrackAllResponse
-	(*QueryBalanceRequest)(nil),                // 20: elys.amm.QueryBalanceRequest
-	(*QueryBalanceResponse)(nil),               // 21: elys.amm.QueryBalanceResponse
-	(*QueryInRouteByDenomRequest)(nil),         // 22: elys.amm.QueryInRouteByDenomRequest
-	(*QueryInRouteByDenomResponse)(nil),        // 23: elys.amm.QueryInRouteByDenomResponse
-	(*QueryOutRouteByDenomRequest)(nil),        // 24: elys.amm.QueryOutRouteByDenomRequest
-	(*QueryOutRouteByDenomResponse)(nil),       // 25: elys.amm.QueryOutRouteByDenomResponse
-	(*QuerySwapEstimationByDenomRequest)(nil),  // 26: elys.amm.QuerySwapEstimationByDenomRequest
-	(*QuerySwapEstimationByDenomResponse)(nil), // 27: elys.amm.QuerySwapEstimationByDenomResponse
-	(*QueryAMMPriceRequest)(nil),               // 28: elys.amm.QueryAMMPriceRequest
-	(*Params)(nil),                             // 29: elys.amm.Params
-	(*Pool)(nil),                               // 30: elys.amm.Pool
-	(*PoolExtraInfo)(nil),                      // 31: elys.amm.PoolExtraInfo
-	(*v1beta1.PageRequest)(nil),                // 32: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta1.PageResponse)(nil),               // 33: cosmos.base.query.v1beta1.PageResponse
-	(*DenomLiquidity)(nil),                     // 34: elys.amm.DenomLiquidity
-	(*SwapAmountInRoute)(nil),                  // 35: elys.amm.SwapAmountInRoute
-	(*v1beta11.Coin)(nil),                      // 36: cosmos.base.v1beta1.Coin
-	(*OraclePoolSlippageTrack)(nil),            // 37: elys.amm.OraclePoolSlippageTrack
-	(*SwapAmountOutRoute)(nil),                 // 38: elys.amm.SwapAmountOutRoute
+	(*QueryParamsRequest)(nil),                        // 0: elys.amm.QueryParamsRequest
+	(*QueryParamsResponse)(nil),                       // 1: elys.amm.QueryParamsResponse
+	(*QueryGetPoolRequest)(nil),                       // 2: elys.amm.QueryGetPoolRequest
+	(*QueryGetPoolResponse)(nil),                      // 3: elys.amm.QueryGetPoolResponse
+	(*QueryAllPoolRequest)(nil),                       // 4: elys.amm.QueryAllPoolRequest
+	(*QueryAllPoolResponse)(nil),                      // 5: elys.amm.QueryAllPoolResponse
+	(*QueryGetDenomLiquidityRequest)(nil),             // 6: elys.amm.QueryGetDenomLiquidityRequest
+	(*QueryGetDenomLiquidityResponse)(nil),            // 7: elys.amm.QueryGetDenomLiquidityResponse
+	(*QueryAllDenomLiquidityRequest)(nil),             // 8: elys.amm.QueryAllDenomLiquidityRequest
+	(*QueryAllDenomLiquidityResponse)(nil),            // 9: elys.amm.QueryAllDenomLiquidityResponse
+	(*QuerySwapEstimationRequest)(nil),                // 10: elys.amm.QuerySwapEstimationRequest
+	(*QuerySwapEstimationExactAmountOutRequest)(nil),  // 11: elys.amm.QuerySwapEstimationExactAmountOutRequest
+	(*QueryJoinPoolEstimationRequest)(nil),            // 12: elys.amm.QueryJoinPoolEstimationRequest
+	(*QueryJoinPoolEstimationResponse)(nil),           // 13: elys.amm.QueryJoinPoolEstimationResponse
+	(*QueryExitPoolEstimationRequest)(nil),            // 14: elys.amm.QueryExitPoolEstimationRequest
+	(*QueryExitPoolEstimationResponse)(nil),           // 15: elys.amm.QueryExitPoolEstimationResponse
+	(*QuerySwapEstimationResponse)(nil),               // 16: elys.amm.QuerySwapEstimationResponse
+	(*QuerySwapEstimationExactAmountOutResponse)(nil), // 17: elys.amm.QuerySwapEstimationExactAmountOutResponse
+	(*QuerySlippageTrackRequest)(nil),                 // 18: elys.amm.QuerySlippageTrackRequest
+	(*QuerySlippageTrackResponse)(nil),                // 19: elys.amm.QuerySlippageTrackResponse
+	(*QuerySlippageTrackAllRequest)(nil),              // 20: elys.amm.QuerySlippageTrackAllRequest
+	(*QuerySlippageTrackAllResponse)(nil),             // 21: elys.amm.QuerySlippageTrackAllResponse
+	(*QueryBalanceRequest)(nil),                       // 22: elys.amm.QueryBalanceRequest
+	(*QueryBalanceResponse)(nil),                      // 23: elys.amm.QueryBalanceResponse
+	(*QueryInRouteByDenomRequest)(nil),                // 24: elys.amm.QueryInRouteByDenomRequest
+	(*QueryInRouteByDenomResponse)(nil),               // 25: elys.amm.QueryInRouteByDenomResponse
+	(*QueryOutRouteByDenomRequest)(nil),               // 26: elys.amm.QueryOutRouteByDenomRequest
+	(*QueryOutRouteByDenomResponse)(nil),              // 27: elys.amm.QueryOutRouteByDenomResponse
+	(*QuerySwapEstimationByDenomRequest)(nil),         // 28: elys.amm.QuerySwapEstimationByDenomRequest
+	(*QuerySwapEstimationByDenomResponse)(nil),        // 29: elys.amm.QuerySwapEstimationByDenomResponse
+	(*QueryAMMPriceRequest)(nil),                      // 30: elys.amm.QueryAMMPriceRequest
+	(*QueryWeightAndSlippageFeeRequest)(nil),          // 31: elys.amm.QueryWeightAndSlippageFeeRequest
+	(*QueryWeightAndSlippageFeeResponse)(nil),         // 32: elys.amm.QueryWeightAndSlippageFeeResponse
+	(*Params)(nil),                                    // 33: elys.amm.Params
+	(*Pool)(nil),                                      // 34: elys.amm.Pool
+	(*PoolExtraInfo)(nil),                             // 35: elys.amm.PoolExtraInfo
+	(*v1beta1.PageRequest)(nil),                       // 36: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta1.PageResponse)(nil),                      // 37: cosmos.base.query.v1beta1.PageResponse
+	(*DenomLiquidity)(nil),                            // 38: elys.amm.DenomLiquidity
+	(*SwapAmountInRoute)(nil),                         // 39: elys.amm.SwapAmountInRoute
+	(*v1beta11.Coin)(nil),                             // 40: cosmos.base.v1beta1.Coin
+	(*SwapAmountOutRoute)(nil),                        // 41: elys.amm.SwapAmountOutRoute
+	(*OraclePoolSlippageTrack)(nil),                   // 42: elys.amm.OraclePoolSlippageTrack
 }
 var file_elys_amm_query_proto_depIdxs = []int32{
-	29, // 0: elys.amm.QueryParamsResponse.params:type_name -> elys.amm.Params
-	30, // 1: elys.amm.QueryGetPoolResponse.pool:type_name -> elys.amm.Pool
-	31, // 2: elys.amm.QueryGetPoolResponse.extra_info:type_name -> elys.amm.PoolExtraInfo
-	32, // 3: elys.amm.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	30, // 4: elys.amm.QueryAllPoolResponse.pool:type_name -> elys.amm.Pool
-	31, // 5: elys.amm.QueryAllPoolResponse.extra_infos:type_name -> elys.amm.PoolExtraInfo
-	33, // 6: elys.amm.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	34, // 7: elys.amm.QueryGetDenomLiquidityResponse.denom_liquidity:type_name -> elys.amm.DenomLiquidity
-	32, // 8: elys.amm.QueryAllDenomLiquidityRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	34, // 9: elys.amm.QueryAllDenomLiquidityResponse.denom_liquidity:type_name -> elys.amm.DenomLiquidity
-	33, // 10: elys.amm.QueryAllDenomLiquidityResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	35, // 11: elys.amm.QuerySwapEstimationRequest.routes:type_name -> elys.amm.SwapAmountInRoute
-	36, // 12: elys.amm.QuerySwapEstimationRequest.token_in:type_name -> cosmos.base.v1beta1.Coin
-	36, // 13: elys.amm.QueryJoinPoolEstimationRequest.amounts_in:type_name -> cosmos.base.v1beta1.Coin
-	36, // 14: elys.amm.QueryJoinPoolEstimationResponse.share_amount_out:type_name -> cosmos.base.v1beta1.Coin
-	36, // 15: elys.amm.QueryJoinPoolEstimationResponse.amounts_in:type_name -> cosmos.base.v1beta1.Coin
-	36, // 16: elys.amm.QueryExitPoolEstimationResponse.amounts_out:type_name -> cosmos.base.v1beta1.Coin
-	36, // 17: elys.amm.QuerySwapEstimationResponse.token_out:type_name -> cosmos.base.v1beta1.Coin
-	36, // 18: elys.amm.QuerySwapEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
-	37, // 19: elys.amm.QuerySlippageTrackResponse.track:type_name -> elys.amm.OraclePoolSlippageTrack
-	37, // 20: elys.amm.QuerySlippageTrackAllResponse.tracks:type_name -> elys.amm.OraclePoolSlippageTrack
-	36, // 21: elys.amm.QueryBalanceResponse.balance:type_name -> cosmos.base.v1beta1.Coin
-	35, // 22: elys.amm.QueryInRouteByDenomResponse.in_route:type_name -> elys.amm.SwapAmountInRoute
-	38, // 23: elys.amm.QueryOutRouteByDenomResponse.out_route:type_name -> elys.amm.SwapAmountOutRoute
-	36, // 24: elys.amm.QuerySwapEstimationByDenomRequest.amount:type_name -> cosmos.base.v1beta1.Coin
-	35, // 25: elys.amm.QuerySwapEstimationByDenomResponse.in_route:type_name -> elys.amm.SwapAmountInRoute
-	38, // 26: elys.amm.QuerySwapEstimationByDenomResponse.out_route:type_name -> elys.amm.SwapAmountOutRoute
-	36, // 27: elys.amm.QuerySwapEstimationByDenomResponse.amount:type_name -> cosmos.base.v1beta1.Coin
-	36, // 28: elys.amm.QuerySwapEstimationByDenomResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
-	36, // 29: elys.amm.QueryAMMPriceRequest.token_in:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 30: elys.amm.Query.Params:input_type -> elys.amm.QueryParamsRequest
-	2,  // 31: elys.amm.Query.Pool:input_type -> elys.amm.QueryGetPoolRequest
-	4,  // 32: elys.amm.Query.PoolAll:input_type -> elys.amm.QueryAllPoolRequest
-	6,  // 33: elys.amm.Query.DenomLiquidity:input_type -> elys.amm.QueryGetDenomLiquidityRequest
-	8,  // 34: elys.amm.Query.DenomLiquidityAll:input_type -> elys.amm.QueryAllDenomLiquidityRequest
-	10, // 35: elys.amm.Query.SwapEstimation:input_type -> elys.amm.QuerySwapEstimationRequest
-	11, // 36: elys.amm.Query.JoinPoolEstimation:input_type -> elys.amm.QueryJoinPoolEstimationRequest
-	13, // 37: elys.amm.Query.ExitPoolEstimation:input_type -> elys.amm.QueryExitPoolEstimationRequest
-	16, // 38: elys.amm.Query.SlippageTrack:input_type -> elys.amm.QuerySlippageTrackRequest
-	18, // 39: elys.amm.Query.SlippageTrackAll:input_type -> elys.amm.QuerySlippageTrackAllRequest
-	20, // 40: elys.amm.Query.Balance:input_type -> elys.amm.QueryBalanceRequest
-	22, // 41: elys.amm.Query.InRouteByDenom:input_type -> elys.amm.QueryInRouteByDenomRequest
-	24, // 42: elys.amm.Query.OutRouteByDenom:input_type -> elys.amm.QueryOutRouteByDenomRequest
-	26, // 43: elys.amm.Query.SwapEstimationByDenom:input_type -> elys.amm.QuerySwapEstimationByDenomRequest
-	1,  // 44: elys.amm.Query.Params:output_type -> elys.amm.QueryParamsResponse
-	3,  // 45: elys.amm.Query.Pool:output_type -> elys.amm.QueryGetPoolResponse
-	5,  // 46: elys.amm.Query.PoolAll:output_type -> elys.amm.QueryAllPoolResponse
-	7,  // 47: elys.amm.Query.DenomLiquidity:output_type -> elys.amm.QueryGetDenomLiquidityResponse
-	9,  // 48: elys.amm.Query.DenomLiquidityAll:output_type -> elys.amm.QueryAllDenomLiquidityResponse
-	15, // 49: elys.amm.Query.SwapEstimation:output_type -> elys.amm.QuerySwapEstimationResponse
-	12, // 50: elys.amm.Query.JoinPoolEstimation:output_type -> elys.amm.QueryJoinPoolEstimationResponse
-	14, // 51: elys.amm.Query.ExitPoolEstimation:output_type -> elys.amm.QueryExitPoolEstimationResponse
-	17, // 52: elys.amm.Query.SlippageTrack:output_type -> elys.amm.QuerySlippageTrackResponse
-	19, // 53: elys.amm.Query.SlippageTrackAll:output_type -> elys.amm.QuerySlippageTrackAllResponse
-	21, // 54: elys.amm.Query.Balance:output_type -> elys.amm.QueryBalanceResponse
-	23, // 55: elys.amm.Query.InRouteByDenom:output_type -> elys.amm.QueryInRouteByDenomResponse
-	25, // 56: elys.amm.Query.OutRouteByDenom:output_type -> elys.amm.QueryOutRouteByDenomResponse
-	27, // 57: elys.amm.Query.SwapEstimationByDenom:output_type -> elys.amm.QuerySwapEstimationByDenomResponse
-	44, // [44:58] is the sub-list for method output_type
-	30, // [30:44] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	33, // 0: elys.amm.QueryParamsResponse.params:type_name -> elys.amm.Params
+	34, // 1: elys.amm.QueryGetPoolResponse.pool:type_name -> elys.amm.Pool
+	35, // 2: elys.amm.QueryGetPoolResponse.extra_info:type_name -> elys.amm.PoolExtraInfo
+	36, // 3: elys.amm.QueryAllPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	34, // 4: elys.amm.QueryAllPoolResponse.pool:type_name -> elys.amm.Pool
+	35, // 5: elys.amm.QueryAllPoolResponse.extra_infos:type_name -> elys.amm.PoolExtraInfo
+	37, // 6: elys.amm.QueryAllPoolResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	38, // 7: elys.amm.QueryGetDenomLiquidityResponse.denom_liquidity:type_name -> elys.amm.DenomLiquidity
+	36, // 8: elys.amm.QueryAllDenomLiquidityRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	38, // 9: elys.amm.QueryAllDenomLiquidityResponse.denom_liquidity:type_name -> elys.amm.DenomLiquidity
+	37, // 10: elys.amm.QueryAllDenomLiquidityResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	39, // 11: elys.amm.QuerySwapEstimationRequest.routes:type_name -> elys.amm.SwapAmountInRoute
+	40, // 12: elys.amm.QuerySwapEstimationRequest.token_in:type_name -> cosmos.base.v1beta1.Coin
+	41, // 13: elys.amm.QuerySwapEstimationExactAmountOutRequest.routes:type_name -> elys.amm.SwapAmountOutRoute
+	40, // 14: elys.amm.QuerySwapEstimationExactAmountOutRequest.token_out:type_name -> cosmos.base.v1beta1.Coin
+	40, // 15: elys.amm.QueryJoinPoolEstimationRequest.amounts_in:type_name -> cosmos.base.v1beta1.Coin
+	40, // 16: elys.amm.QueryJoinPoolEstimationResponse.share_amount_out:type_name -> cosmos.base.v1beta1.Coin
+	40, // 17: elys.amm.QueryJoinPoolEstimationResponse.amounts_in:type_name -> cosmos.base.v1beta1.Coin
+	40, // 18: elys.amm.QueryJoinPoolEstimationResponse.weight_balance_reward_amount:type_name -> cosmos.base.v1beta1.Coin
+	40, // 19: elys.amm.QueryExitPoolEstimationResponse.amounts_out:type_name -> cosmos.base.v1beta1.Coin
+	40, // 20: elys.amm.QueryExitPoolEstimationResponse.weight_balance_reward_amount:type_name -> cosmos.base.v1beta1.Coin
+	40, // 21: elys.amm.QuerySwapEstimationResponse.token_out:type_name -> cosmos.base.v1beta1.Coin
+	40, // 22: elys.amm.QuerySwapEstimationResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	40, // 23: elys.amm.QuerySwapEstimationExactAmountOutResponse.token_in:type_name -> cosmos.base.v1beta1.Coin
+	40, // 24: elys.amm.QuerySwapEstimationExactAmountOutResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	42, // 25: elys.amm.QuerySlippageTrackResponse.track:type_name -> elys.amm.OraclePoolSlippageTrack
+	42, // 26: elys.amm.QuerySlippageTrackAllResponse.tracks:type_name -> elys.amm.OraclePoolSlippageTrack
+	40, // 27: elys.amm.QueryBalanceResponse.balance:type_name -> cosmos.base.v1beta1.Coin
+	39, // 28: elys.amm.QueryInRouteByDenomResponse.in_route:type_name -> elys.amm.SwapAmountInRoute
+	41, // 29: elys.amm.QueryOutRouteByDenomResponse.out_route:type_name -> elys.amm.SwapAmountOutRoute
+	40, // 30: elys.amm.QuerySwapEstimationByDenomRequest.amount:type_name -> cosmos.base.v1beta1.Coin
+	39, // 31: elys.amm.QuerySwapEstimationByDenomResponse.in_route:type_name -> elys.amm.SwapAmountInRoute
+	41, // 32: elys.amm.QuerySwapEstimationByDenomResponse.out_route:type_name -> elys.amm.SwapAmountOutRoute
+	40, // 33: elys.amm.QuerySwapEstimationByDenomResponse.amount:type_name -> cosmos.base.v1beta1.Coin
+	40, // 34: elys.amm.QuerySwapEstimationByDenomResponse.available_liquidity:type_name -> cosmos.base.v1beta1.Coin
+	40, // 35: elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount:type_name -> cosmos.base.v1beta1.Coin
+	40, // 36: elys.amm.QueryAMMPriceRequest.token_in:type_name -> cosmos.base.v1beta1.Coin
+	0,  // 37: elys.amm.Query.Params:input_type -> elys.amm.QueryParamsRequest
+	2,  // 38: elys.amm.Query.Pool:input_type -> elys.amm.QueryGetPoolRequest
+	4,  // 39: elys.amm.Query.PoolAll:input_type -> elys.amm.QueryAllPoolRequest
+	6,  // 40: elys.amm.Query.DenomLiquidity:input_type -> elys.amm.QueryGetDenomLiquidityRequest
+	8,  // 41: elys.amm.Query.DenomLiquidityAll:input_type -> elys.amm.QueryAllDenomLiquidityRequest
+	10, // 42: elys.amm.Query.SwapEstimation:input_type -> elys.amm.QuerySwapEstimationRequest
+	11, // 43: elys.amm.Query.SwapEstimationExactAmountOut:input_type -> elys.amm.QuerySwapEstimationExactAmountOutRequest
+	12, // 44: elys.amm.Query.JoinPoolEstimation:input_type -> elys.amm.QueryJoinPoolEstimationRequest
+	14, // 45: elys.amm.Query.ExitPoolEstimation:input_type -> elys.amm.QueryExitPoolEstimationRequest
+	18, // 46: elys.amm.Query.SlippageTrack:input_type -> elys.amm.QuerySlippageTrackRequest
+	20, // 47: elys.amm.Query.SlippageTrackAll:input_type -> elys.amm.QuerySlippageTrackAllRequest
+	22, // 48: elys.amm.Query.Balance:input_type -> elys.amm.QueryBalanceRequest
+	24, // 49: elys.amm.Query.InRouteByDenom:input_type -> elys.amm.QueryInRouteByDenomRequest
+	26, // 50: elys.amm.Query.OutRouteByDenom:input_type -> elys.amm.QueryOutRouteByDenomRequest
+	28, // 51: elys.amm.Query.SwapEstimationByDenom:input_type -> elys.amm.QuerySwapEstimationByDenomRequest
+	31, // 52: elys.amm.Query.WeightAndSlippageFee:input_type -> elys.amm.QueryWeightAndSlippageFeeRequest
+	1,  // 53: elys.amm.Query.Params:output_type -> elys.amm.QueryParamsResponse
+	3,  // 54: elys.amm.Query.Pool:output_type -> elys.amm.QueryGetPoolResponse
+	5,  // 55: elys.amm.Query.PoolAll:output_type -> elys.amm.QueryAllPoolResponse
+	7,  // 56: elys.amm.Query.DenomLiquidity:output_type -> elys.amm.QueryGetDenomLiquidityResponse
+	9,  // 57: elys.amm.Query.DenomLiquidityAll:output_type -> elys.amm.QueryAllDenomLiquidityResponse
+	16, // 58: elys.amm.Query.SwapEstimation:output_type -> elys.amm.QuerySwapEstimationResponse
+	17, // 59: elys.amm.Query.SwapEstimationExactAmountOut:output_type -> elys.amm.QuerySwapEstimationExactAmountOutResponse
+	13, // 60: elys.amm.Query.JoinPoolEstimation:output_type -> elys.amm.QueryJoinPoolEstimationResponse
+	15, // 61: elys.amm.Query.ExitPoolEstimation:output_type -> elys.amm.QueryExitPoolEstimationResponse
+	19, // 62: elys.amm.Query.SlippageTrack:output_type -> elys.amm.QuerySlippageTrackResponse
+	21, // 63: elys.amm.Query.SlippageTrackAll:output_type -> elys.amm.QuerySlippageTrackAllResponse
+	23, // 64: elys.amm.Query.Balance:output_type -> elys.amm.QueryBalanceResponse
+	25, // 65: elys.amm.Query.InRouteByDenom:output_type -> elys.amm.QueryInRouteByDenomResponse
+	27, // 66: elys.amm.Query.OutRouteByDenom:output_type -> elys.amm.QueryOutRouteByDenomResponse
+	29, // 67: elys.amm.Query.SwapEstimationByDenom:output_type -> elys.amm.QuerySwapEstimationByDenomResponse
+	32, // 68: elys.amm.Query.WeightAndSlippageFee:output_type -> elys.amm.QueryWeightAndSlippageFeeResponse
+	53, // [53:69] is the sub-list for method output_type
+	37, // [37:53] is the sub-list for method input_type
+	37, // [37:37] is the sub-list for extension type_name
+	37, // [37:37] is the sub-list for extension extendee
+	0,  // [0:37] is the sub-list for field type_name
 }
 
 func init() { file_elys_amm_query_proto_init() }
@@ -17337,7 +21024,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryJoinPoolEstimationRequest); i {
+			switch v := v.(*QuerySwapEstimationExactAmountOutRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17349,7 +21036,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryJoinPoolEstimationResponse); i {
+			switch v := v.(*QueryJoinPoolEstimationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17361,7 +21048,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryExitPoolEstimationRequest); i {
+			switch v := v.(*QueryJoinPoolEstimationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17373,7 +21060,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryExitPoolEstimationResponse); i {
+			switch v := v.(*QueryExitPoolEstimationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17385,7 +21072,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySwapEstimationResponse); i {
+			switch v := v.(*QueryExitPoolEstimationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17397,7 +21084,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySlippageTrackRequest); i {
+			switch v := v.(*QuerySwapEstimationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17409,7 +21096,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySlippageTrackResponse); i {
+			switch v := v.(*QuerySwapEstimationExactAmountOutResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17421,7 +21108,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySlippageTrackAllRequest); i {
+			switch v := v.(*QuerySlippageTrackRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17433,7 +21120,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySlippageTrackAllResponse); i {
+			switch v := v.(*QuerySlippageTrackResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17445,7 +21132,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryBalanceRequest); i {
+			switch v := v.(*QuerySlippageTrackAllRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17457,7 +21144,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryBalanceResponse); i {
+			switch v := v.(*QuerySlippageTrackAllResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17469,7 +21156,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryInRouteByDenomRequest); i {
+			switch v := v.(*QueryBalanceRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17481,7 +21168,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryInRouteByDenomResponse); i {
+			switch v := v.(*QueryBalanceResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17493,7 +21180,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryOutRouteByDenomRequest); i {
+			switch v := v.(*QueryInRouteByDenomRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17505,7 +21192,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryOutRouteByDenomResponse); i {
+			switch v := v.(*QueryInRouteByDenomResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17517,7 +21204,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySwapEstimationByDenomRequest); i {
+			switch v := v.(*QueryOutRouteByDenomRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17529,7 +21216,7 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySwapEstimationByDenomResponse); i {
+			switch v := v.(*QueryOutRouteByDenomResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17541,7 +21228,55 @@ func file_elys_amm_query_proto_init() {
 			}
 		}
 		file_elys_amm_query_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QuerySwapEstimationByDenomRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_amm_query_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QuerySwapEstimationByDenomResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_amm_query_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryAMMPriceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_amm_query_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryWeightAndSlippageFeeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_amm_query_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryWeightAndSlippageFeeResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -17559,7 +21294,7 @@ func file_elys_amm_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_amm_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

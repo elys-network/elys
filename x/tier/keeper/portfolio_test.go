@@ -6,26 +6,27 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 
-	assetprofilerkeeper "github.com/elys-network/elys/x/assetprofile/keeper"
-	profiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/tier/keeper"
-	"github.com/elys-network/elys/x/tier/types"
+	assetprofilerkeeper "github.com/elys-network/elys/v6/x/assetprofile/keeper"
+	profiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/tier/keeper"
+	"github.com/elys-network/elys/v6/x/tier/types"
 
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -114,7 +115,7 @@ func TestGetPortfolioNative(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdkmath.LegacyNewDec(101000))
+	require.Equal(t, portfolio, osmomath.NewBigDec(101000))
 }
 
 func TestGetPortfolioAmm(t *testing.T) {
@@ -183,7 +184,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, sender, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, sdkmath.LegacyNewDec(109000), portfolio)
+	require.Equal(t, osmomath.NewBigDec(109000), portfolio)
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -286,7 +287,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, sdkmath.LegacyNewDec(10099000), portfolio)
+	require.Equal(t, osmomath.NewBigDec(10099000), portfolio)
 }
 
 // TODO

@@ -3,7 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestCalcOutAmtGivenIn() {
@@ -18,7 +20,7 @@ func (suite *AmmKeeperTestSuite) TestCalcOutAmtGivenIn() {
 				suite.ResetSuite()
 			},
 			func() {
-				_, _, err := suite.app.AmmKeeper.CalcOutAmtGivenIn(suite.ctx, 0, suite.app.OracleKeeper, nil, sdk.Coins{}, "", math.LegacyZeroDec())
+				_, _, err := suite.app.AmmKeeper.CalcOutAmtGivenIn(suite.ctx, 0, suite.app.OracleKeeper, ammtypes.SnapshotPool{}, sdk.Coins{}, "", osmomath.ZeroBigDec())
 				suite.Require().Error(err)
 			},
 		},
@@ -32,9 +34,9 @@ func (suite *AmmKeeperTestSuite) TestCalcOutAmtGivenIn() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := math.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
-
-				_, _, err := suite.app.AmmKeeper.CalcOutAmtGivenIn(suite.ctx, pool.PoolId, suite.app.OracleKeeper, &pool, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000))), ptypes.ATOM, math.LegacyZeroDec())
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				snapshot := suite.app.AmmKeeper.GetPoolWithAccountedBalance(suite.ctx, pool.PoolId)
+				_, _, err := suite.app.AmmKeeper.CalcOutAmtGivenIn(suite.ctx, pool.PoolId, suite.app.OracleKeeper, snapshot, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000))), ptypes.ATOM, osmomath.ZeroBigDec())
 				suite.Require().NoError(err)
 			},
 		},

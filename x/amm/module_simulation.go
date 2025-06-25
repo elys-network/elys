@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	ammsimulation "github.com/elys-network/elys/x/amm/simulation"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	ammsimulation "github.com/elys-network/elys/v6/x/amm/simulation"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 // avoid unused import issue
@@ -66,7 +66,7 @@ func (am AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
 // ProposalContents doesn't return any content functions for governance proposals
-func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
+func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalMsg {
 	return nil
 }
 

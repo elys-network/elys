@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/elys-network/elys/api
+    default: github.com/elys-network/elys/v6/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto

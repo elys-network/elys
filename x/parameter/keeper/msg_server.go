@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 type msgServer struct {
@@ -70,4 +71,19 @@ func (k msgServer) UpdateTotalBlocksPerYear(goCtx context.Context, msg *types.Ms
 	params.TotalBlocksPerYear = msg.TotalBlocksPerYear
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateTotalBlocksPerYearResponse{}, nil
+}
+
+func (k msgServer) UpdateTakerFees(goCtx context.Context, msg *types.MsgUpdateTakerFees) (*types.MsgUpdateTakerFeesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if k.authority != msg.Creator {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
+
+	params := k.GetParams(ctx)
+	params.TakerFees = msg.TakerFees
+	params.EnableTakerFeeSwap = msg.EnableTakerFeeSwap
+	params.TakerFeeCollectionInterval = msg.TakerFeeCollectionInterval
+	k.SetParams(ctx, params)
+	return &types.MsgUpdateTakerFeesResponse{}, nil
 }

@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
-	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,18 +17,27 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	spotPrice, _, tokenOut, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, req.Discount, sdkmath.LegacyZeroDec())
+	// Even when multiple routes, taker Fee per route is params.TakerFee/TotalRoutes, so net taker fee will be params.TakerFee
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+
+	discountBigDec := osmomath.ZeroBigDec()
+	if !req.Discount.IsNil() {
+		discountBigDec = osmomath.BigDecFromDec(req.Discount)
+	}
+
+	spotPrice, _, tokenOut, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, discountBigDec, osmomath.ZeroBigDec())
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QuerySwapEstimationResponse{
-		SpotPrice:          spotPrice,
+		SpotPrice:          spotPrice.Dec(),
 		TokenOut:           tokenOut,
-		SwapFee:            swapFee,
-		Discount:           discount,
+		SwapFee:            swapFee.Dec(),
+		TakerFee:           takerFees,
+		Discount:           discount.Dec(),
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
+		Slippage:           slippage.Dec(),
+		WeightBalanceRatio: weightBonus.Dec(),
 	}, nil
 }

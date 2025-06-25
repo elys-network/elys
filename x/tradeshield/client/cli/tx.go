@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 var (
@@ -34,12 +34,14 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateSpotOrder())
 	cmd.AddCommand(CmdCancelSpotOrder())
 	cmd.AddCommand(CmdCancelSpotOrders())
+	cmd.AddCommand(CmdCancelAllSpotOrders())
 
 	cmd.AddCommand(CmdCreatePerpetualOpenOrder())
 	cmd.AddCommand(CmdCreatePerpetualCloseOrder())
 	cmd.AddCommand(CmdUpdatePerpetualOrder())
 	cmd.AddCommand(CmdCancelPerpetualOrder())
 	cmd.AddCommand(CmdCancelPerpetualOrders())
+	cmd.AddCommand(CmdCancelAllPerpetualOrders())
 
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdExecuteOrders())

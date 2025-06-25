@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestQuery() {
@@ -21,6 +21,7 @@ func (suite *AmmKeeperTestSuite) TestQuery() {
 			func() {
 				params := types.DefaultParams()
 				params.BaseAssets = nil
+				params.AllowedUpfrontSwapMakers = nil
 				response, err := suite.app.AmmKeeper.Params(suite.ctx, &types.QueryParamsRequest{})
 				suite.Require().NoError(err)
 				suite.Require().Equal(&types.QueryParamsResponse{Params: params}, response)

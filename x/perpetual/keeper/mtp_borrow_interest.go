@@ -1,31 +1,39 @@
 package keeper
 
 import (
+	"errors"
+	"strconv"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.Int {
+func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) (math.Int, error) {
 
-	err := mtp.UpdateMTPTakeProfitBorrowFactor()
+	err := k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
 	if err != nil {
-		panic(err)
+		return math.ZeroInt(), err
 	}
 
 	// This already gives a floor tested value for interest rate
 	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
-	return borrowInterestPayment
+	return borrowInterestPayment, nil
 }
 
-func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP) {
-	borrowInterestPaymentInt := k.GetBorrowInterestAmount(ctx, mtp)
+func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP) error {
+	borrowInterestPaymentInt, err := k.GetBorrowInterestAmount(ctx, mtp)
+	if err != nil {
+		return err
+	}
 	mtp.BorrowInterestUnpaidLiability = mtp.BorrowInterestUnpaidLiability.Add(borrowInterestPaymentInt)
 	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
+	return nil
 }
 
 // SettleMTPBorrowInterestUnpaidLiability  This does not update BorrowInterestUnpaidLiability, it should be done through UpdateMTPBorrowInterestUnpaidLiability beforehand
@@ -37,12 +45,12 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.ZeroInt(), math.ZeroInt(), true, nil
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	_, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
 
-	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice)
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceDenomRatio)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
@@ -56,16 +64,45 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		unpaidInterestLiabilities := math.ZeroInt()
 		if mtp.Position == types.Position_LONG {
 			// custody is in trading asset, liabilities needs to be in usdc,
-			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			unpaidInterestLiabilities = osmomath.BigDecFromSDKInt(unpaidInterestCustody).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 		} else {
 			// custody is in usdc, liabilities needs to be in trading asset,
-			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
+			if tradingAssetPriceDenomRatio.IsZero() {
+				return math.ZeroInt(), math.ZeroInt(), false, errors.New("trading asset price is zero in SettleMTPBorrowInterestUnpaidLiability")
+			}
+			borrowInterestPaymentInCustody = osmomath.BigDecFromSDKInt(unpaidInterestCustody).Quo(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities
 
 		// Since not enough custody left, we can only pay this much, position health goes to 0
 		borrowInterestPaymentInCustody = mtp.Custody
 		fullyPaid = false
+
+		insuranceBalance := k.bankKeeper.GetBalance(ctx, pool.GetInsuranceAccount(), mtp.CustodyAsset)
+		if insuranceBalance.Amount.GTE(unpaidInterestCustody) {
+			coin := sdk.NewCoin(mtp.CustodyAsset, unpaidInterestCustody)
+			err = k.SendToAmmPool(ctx, pool.GetInsuranceAccount(), ammPool, sdk.NewCoins(coin))
+			if err != nil {
+				return math.ZeroInt(), math.ZeroInt(), false, err
+			}
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventPaidFromInsuranceFund,
+				sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+				sdk.NewAttribute("owner", mtp.Address),
+				sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
+				sdk.NewAttribute("position", mtp.Position.String()),
+				sdk.NewAttribute("amount", coin.String()),
+			))
+		} else {
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventInsufficientInsuranceFund,
+				sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+				sdk.NewAttribute("owner", mtp.Address),
+				sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
+				sdk.NewAttribute("position", mtp.Position.String()),
+				sdk.NewAttribute("amount", insuranceBalance.String()),
+				sdk.NewAttribute("denom", mtp.CustodyAsset),
+				sdk.NewAttribute("unpaid_interest_custody", unpaidInterestCustody.String()),
+			))
+		}
 	}
 
 	mtp.BorrowInterestPaidCustody = mtp.BorrowInterestPaidCustody.Add(borrowInterestPaymentInCustody)
@@ -77,7 +114,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 	insuranceAmount := math.ZeroInt()
 	// if full interest is paid then only collect insurance fund
 	if fullyPaid {
-		insuranceAmount, err = k.CollectInsuranceFund(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, ammPool)
+		insuranceAmount, err = k.CollectInsuranceFund(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, ammPool, *pool)
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), fullyPaid, err
 		}

@@ -3,10 +3,19 @@ package types
 import (
 	"context"
 	sdkmath "cosmossdk.io/math"
+
+	"github.com/osmosis-labs/osmosis/osmomath"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 )
+
+type AmmKeeper interface {
+	GetParams(ctx sdk.Context) (params ammtypes.Params)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.SnapshotPool)
+}
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
@@ -32,11 +41,18 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
+	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
+	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, bool)
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+}
+
+// Have to do this way to avoid import cycle between types
+type LeverageLpKeeper interface {
+	GetEnabledPoolIds(ctx sdk.Context) []uint64
 }

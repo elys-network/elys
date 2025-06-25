@@ -8,9 +8,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -20,42 +20,31 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 	baseCurrency := entry.Denom
 
-	// Determine the type of position (long or short) and validate assets accordingly.
-	switch msg.Position {
-	case types.Position_LONG:
-		if err := types.CheckLongAssets(msg.Collateral.Denom, msg.TradingAsset, baseCurrency); err != nil {
-			return nil, err
-		}
-	case types.Position_SHORT:
-		if err := types.CheckShortAssets(msg.Collateral.Denom, msg.TradingAsset, baseCurrency); err != nil {
-			return nil, err
-		}
-	default:
-		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	pool, found := k.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("PoolId: %d", msg.PoolId))
 	}
 
-	params := k.GetParams(ctx)
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+	tradingAsset, err := pool.GetTradingAsset(baseCurrency)
 	if err != nil {
 		return nil, err
 	}
-	ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
-	if msg.Position == types.Position_LONG {
-		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
-			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
-		}
-		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.GTE(tradingAssetPrice) {
-			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
-		}
-		// no need to override msg.TakeProfitPrice as the above ratio check it
+
+	if err := msg.ValidatePosition(tradingAsset, baseCurrency); err != nil {
+		return nil, err
 	}
-	if msg.Position == types.Position_SHORT {
-		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
-			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
-		}
-		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.LTE(tradingAssetPrice) {
-			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
-		}
+
+	params := k.GetParams(ctx)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	if tradingAssetPrice.IsZero() {
+		return nil, errors.New("trading asset price is zero while opening perpetual")
+	}
+
+	if err = msg.ValidateTakeProfitAndStopLossPrice(params, tradingAssetPrice); err != nil {
+		return nil, err
 	}
 
 	if err = k.CheckUserAuthorization(ctx, msg); err != nil {
@@ -63,7 +52,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// check if existing mtp to consolidate
-	existingMtp := k.CheckSameAssetPosition(ctx, msg)
+	existingMtp := k.GetExistingPosition(ctx, msg)
 
 	if existingMtp == nil {
 		// opening new position
@@ -71,7 +60,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, errors.New("cannot open new position with leverage <= 1")
 		}
 		// Check if max positions are exceeded as we are opening new position, not updating old position
-		if err = k.CheckMaxOpenPositions(ctx); err != nil {
+		if err = k.CheckMaxOpenPositions(ctx, msg.PoolId); err != nil {
 			return nil, err
 		}
 	} else if msg.Leverage.Equal(math.LegacyZeroDec()) {
@@ -80,54 +69,51 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
 
-	poolId := msg.PoolId
-	// Get pool id, amm pool, and perpetual pool
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, errorsmod.Wrapf(err, "amm pool not found for pool %d", poolId)
-	}
-
-	if !ammPool.PoolParams.UseOracle {
-		return nil, types.ErrPoolHasToBeOracle
-	}
-
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
-	}
-
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
 
-	mtp, err := k.OpenDefineAssets(ctx, poolId, msg, baseCurrency)
+	proxyLeverage := GetProxyLeverage(msg.Position, msg.Leverage, pool)
+
+	// Define the assets
+	custodyAsset, liabilitiesAsset, err := msg.GetCustodyAndLiabilitiesAsset(tradingAsset, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
-	// calc and update open price
-	err = k.UpdateOpenPrice(ctx, mtp)
+	ammPool, err := k.GetAmmPool(ctx, msg.PoolId)
+	if err != nil {
+		return nil, errorsmod.Wrapf(err, "amm pool id %d", msg.PoolId)
+	}
+
+	// Initialize a new Perpetual Trading Position (MTP).
+	mtp := types.NewMTP(ctx, msg.Creator, msg.Collateral.Denom, tradingAsset, liabilitiesAsset, custodyAsset, msg.Position, msg.TakeProfitPrice, msg.PoolId)
+
+	err = k.ProcessOpen(ctx, &pool, &ammPool, mtp, proxyLeverage, msg.PoolId, msg, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	if existingMtp != nil {
-		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
+		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, baseCurrency)
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
 		return nil, err
+	}
+
+	// should not be checked before OpenConsolidate
+	denomPrice, err := k.GetDenomPrice(ctx, tradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	if mtp.GetMTPValue(denomPrice).LT(params.MinimumNotionalValue) {
+		return nil, fmt.Errorf("not enough notional value for the mtp: minimum %s, mtp: %s", params.MinimumNotionalValue.String(), mtp.GetMTPValue(denomPrice).String())
 	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		// pool values has been updated
-		pool, found = k.GetPool(ctx, poolId)
-		if !found {
-			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
-		}
-
-		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
+		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err
 		}
@@ -154,4 +140,25 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	return &types.MsgOpenResponse{
 		Id: mtp.Id,
 	}, nil
+}
+
+func GetProxyLeverage(position types.Position, leverage math.LegacyDec, pool types.Pool) math.LegacyDec {
+	// Determine the maximum leverage available for this pool and compute the effective leverage to be used.
+	// values for leverage other than 0 or  >1 are invalidated in validate basic
+	proxyLeverage := math.LegacyMinDec(leverage, pool.LeverageMax)
+
+	// just adding collateral
+	if leverage.IsZero() {
+		proxyLeverage = math.LegacyOneDec()
+	} else {
+		// opening position, for Short we add 1 because, say atom price 5 usdc, collateral 100 usdc, leverage 5, then liabilities will be 80 atom worth 400 usdc which would be position size
+		// User would be expecting position size of 100 atom / 500 usdc. So we increase the leverage from 5 to 6
+		// Because of this effective leverage for short has to be reduced by 1 in query
+		if position == types.Position_SHORT {
+			proxyLeverage = proxyLeverage.Add(math.LegacyOneDec())
+		}
+		// We don't need to do this for LONG as it gives desired position
+	}
+
+	return proxyLeverage
 }

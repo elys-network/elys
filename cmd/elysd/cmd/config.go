@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/v6/app"
 )
 
 func InitSDKConfig() {
@@ -18,5 +19,6 @@ func InitSDKConfig() {
 	config.SetBech32PrefixForAccount(app.AccountAddressPrefix, accountPubKeyPrefix)
 	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
 	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+	config.SetAddressVerifier(wasmTypes.VerifyAddressLen())
 	config.Seal()
 }

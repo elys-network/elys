@@ -1,10 +1,11 @@
 package types_test
 
 import (
-	"cosmossdk.io/math"
-	"github.com/elys-network/elys/x/stablestake/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"cosmossdk.io/math"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParams(t *testing.T) {
@@ -18,7 +19,7 @@ func TestParams(t *testing.T) {
 			name: "interest rate max is nil",
 			err:  "InterestRateMax",
 			runBefore: func() {
-				params.InterestRateMax = math.LegacyDec{}
+				params.LegacyInterestRateMax = math.LegacyDec{}
 			},
 		},
 		{

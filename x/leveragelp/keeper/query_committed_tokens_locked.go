@@ -3,8 +3,11 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/math"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/v6/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -22,26 +25,39 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 		return nil, err
 	}
 
-	positions, _, err := k.GetPositionsForAddress(ctx, address, nil)
-
+	positions, pageResponse, err := k.GetPositionsForAddress(ctx, address, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	totalLocked, totalCommitted := sdk.Coins{}, sdk.Coins{}
+	var positionCommitedTokens []types.PositionCommitedToken
+
 	for _, position := range positions {
 
 		commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 		tl, tc := commitments.CommittedTokensLocked(ctx)
+		if len(tl) == 0 {
+			tl = sdk.NewCoins(sdk.NewCoin(ammtypes.GetPoolShareDenom(position.AmmPoolId), math.ZeroInt()))
+		}
+		if len(tc) == 0 {
+			tc = sdk.NewCoins(sdk.NewCoin(ammtypes.GetPoolShareDenom(position.AmmPoolId), math.ZeroInt()))
+		}
 
-		totalLocked = totalLocked.Add(tl...)
-		totalCommitted = totalCommitted.Add(tc...)
+		positionCommitedToken := types.PositionCommitedToken{
+			AmmPoolId:       position.AmmPoolId,
+			PositionId:      position.Id,
+			BorrowPoolId:    position.BorrowPoolId,
+			CollateralDenom: position.Collateral.Denom,
+			LockedCommitted: tl[0],
+			TotalCommitted:  tc[0],
+		}
+		positionCommitedTokens = append(positionCommitedTokens, positionCommitedToken)
 
 	}
 
 	return &types.QueryCommittedTokensLockedResponse{
-		Address:         address.String(),
-		TotalCommitted:  totalCommitted,
-		LockedCommitted: totalLocked,
+		Address:               address.String(),
+		PositionCommitedToken: positionCommitedTokens,
+		Pagination:            pageResponse,
 	}, nil
 }

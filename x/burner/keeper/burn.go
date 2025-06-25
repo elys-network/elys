@@ -1,9 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/v6/x/burner/types"
 )
 
 // ShouldBurnTokens checks if tokens should be burned for the given epoch
@@ -14,61 +16,36 @@ func (k Keeper) ShouldBurnTokens(ctx sdk.Context, epochIdentifier string) bool {
 
 // BurnTokensForAllDenoms burns tokens for all denominations
 func (k Keeper) BurnTokensForAllDenoms(ctx sdk.Context) error {
-	balances := k.getPositiveBalances(ctx)
-	for denom, balance := range balances {
-		if err := k.burnTokensForDenom(ctx, balance, denom); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
-func (k Keeper) getPositiveBalances(ctx sdk.Context) map[string]sdk.Coins {
 	zeroAddress := types.GetZeroAddress()
-	balances := make(map[string]sdk.Coins)
+	coinsToBurn := sdk.NewCoins()
 	k.bankKeeper.IterateAllDenomMetaData(ctx, func(metadata banktypes.Metadata) bool {
 		// Get the balance of the zero address for this denom
 		balance := k.bankKeeper.GetBalance(ctx, zeroAddress, metadata.Base)
 		if balance.IsPositive() {
-			balances[metadata.Base] = sdk.NewCoins(balance)
+			coinsToBurn = coinsToBurn.Add(balance)
 		}
 		return false
 	})
-	return balances
-}
 
-func (k Keeper) burnTokensForDenom(ctx sdk.Context, balance sdk.Coins, denom string) error {
-	if err := k.sendCoinsFromZeroAddressToModule(ctx, balance); err != nil {
-		k.Logger(ctx).Error("Error sending coins and burning tokens", "denom", denom, "error", err)
-		return err
-	}
-	if err := k.burnCoins(ctx, balance); err != nil {
-		k.Logger(ctx).Error("Error burning tokens", "denom", denom, "error", err)
-		return err
-	}
-	k.Logger(ctx).Info("Burned tokens for denom", denom)
+	if !coinsToBurn.IsZero() {
+		if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, zeroAddress, types.ModuleName, coinsToBurn); err != nil {
+			k.Logger(ctx).Error(fmt.Sprintf("Error sending coins for burning tokens %s, err: %s", coinsToBurn.String(), err.Error()))
+			return err
+		}
+		if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, coinsToBurn); err != nil {
+			k.Logger(ctx).Error(fmt.Sprintf("Error burning tokens %s, err: %s", coinsToBurn.String(), err.Error()))
+			return err
+		}
+		k.Logger(ctx).Info("Burned tokens %s", coinsToBurn.String())
 
-	// check if balance has at least one coin
-	if len(balance) == 0 {
-		return nil
+		// Record a history item
+		history := types.History{
+			Block:       uint64(ctx.BlockHeight()),
+			BurnedCoins: coinsToBurn,
+		}
+		k.SetHistory(ctx, history)
 	}
-
-	// Record a history item
-	history := types.History{
-		Timestamp: ctx.BlockTime().String(),
-		Denom:     denom,
-		Amount:    balance[0].Amount.String(),
-	}
-	k.SetHistory(ctx, history)
 
 	return nil
-}
-
-func (k Keeper) sendCoinsFromZeroAddressToModule(ctx sdk.Context, coins sdk.Coins) error {
-	zeroAddress := types.GetZeroAddress()
-	return k.bankKeeper.SendCoinsFromAccountToModule(ctx, zeroAddress, types.ModuleName, coins)
-}
-
-func (k Keeper) burnCoins(ctx sdk.Context, coins sdk.Coins) error {
-	return k.bankKeeper.BurnCoins(ctx, types.ModuleName, coins)
 }

@@ -4,9 +4,9 @@ import (
 	"cosmossdk.io/core/store"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
+	estakingkeeper "github.com/elys-network/elys/v6/x/estaking/keeper"
 
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 )
 
 type (
@@ -25,7 +25,7 @@ type (
 		bankKeeper          types.BankKeeper
 		estakingKeeper      *estakingkeeper.Keeper
 
-		authority string // gov module addresss
+		authority string // gov module address
 	}
 )
 

@@ -9,7 +9,7 @@ import "gogoproto/gogo.proto";
 import "elys/commitment/params.proto";
 import "amino/amino.proto";
 
-option go_package = "github.com/elys-network/elys/x/commitment/types";
+option go_package = "github.com/elys-network/elys/v6/x/commitment/types";
 
 // GenesisState defines the commitment module's genesis state.
 message Commitments {
@@ -65,6 +65,11 @@ message TotalSupply {
     (gogoproto.nullable) = false
   ];
   string total_edenb_supply = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_eden_vested = 3 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

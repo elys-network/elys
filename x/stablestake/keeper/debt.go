@@ -7,12 +7,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) {
+func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) (debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(addr)
+	key := types.GetDebtKey(addr, poolId)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return types.Debt{
@@ -23,6 +24,7 @@ func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) 
 			BorrowTime:            uint64(ctx.BlockTime().Unix()),
 			LastInterestCalcTime:  uint64(ctx.BlockTime().Unix()),
 			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
+			PoolId:                poolId,
 		}
 	}
 
@@ -30,34 +32,34 @@ func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) 
 	return
 }
 
-func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
-	debt := k.getDebt(ctx, addr)
-	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
+func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) types.Debt {
+	debt := k.getDebt(ctx, addr, poolId)
+	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.GetBigDecBorrowed(), debt.PoolId))
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
 	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	return debt
 }
 
-func (k Keeper) GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
-	return k.getDebt(ctx, addr)
+func (k Keeper) GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) types.Debt {
+	return k.getDebt(ctx, addr, poolId)
 }
 
-func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) types.Debt {
-	debt := k.getDebt(ctx, addr)
-	debt = k.UpdateInterestStacked(ctx, debt, poolId, debtDenom)
+func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) types.Debt {
+	debt := k.getDebt(ctx, addr, poolId)
+	debt = k.UpdateInterestStacked(ctx, debt, borrowingForPool)
 	return debt
 }
 
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(debt.GetOwnerAccount())
+	key := types.GetDebtKey(debt.GetOwnerAccount(), debt.PoolId)
 	bz := k.cdc.MustMarshal(&debt)
 	store.Set(key, bz)
 }
 
 func (k Keeper) DeleteDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(debt.GetOwnerAccount())
+	key := types.GetDebtKey(debt.GetOwnerAccount(), debt.PoolId)
 	store.Delete(key)
 }
 
@@ -77,28 +79,49 @@ func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
 	return debts
 }
 
-func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
-	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
+func (k Keeper) SetInterestForPool(ctx sdk.Context, interest types.InterestBlock) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(interest.PoolId))
+	if store.Has(sdk.Uint64ToBigEndian(interest.BlockHeight - 1)) {
 		lastBlock := types.InterestBlock{}
-		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
+		bz := store.Get(sdk.Uint64ToBigEndian(interest.BlockHeight - 1))
 		k.cdc.MustUnmarshal(bz, &lastBlock)
 		interest.InterestRate = interest.InterestRate.Add(lastBlock.InterestRate)
 
 		bz = k.cdc.MustMarshal(&interest)
-		store.Set(sdk.Uint64ToBigEndian(block), bz)
+		store.Set(sdk.Uint64ToBigEndian(interest.BlockHeight), bz)
 	} else {
 		bz := k.cdc.MustMarshal(&interest)
-		store.Set(sdk.Uint64ToBigEndian(block), bz)
+		store.Set(sdk.Uint64ToBigEndian(interest.BlockHeight), bz)
 	}
 }
 
-func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+func (k Keeper) DeleteInterestForPool(ctx sdk.Context, delBlock int64, poolId uint64) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
 	if store.Has(key) {
-		store.Delete([]byte(key))
+		store.Delete(key)
 	}
+}
+
+func (k Keeper) GetAllInterestForPool(ctx sdk.Context, poolId uint64) []types.InterestBlock {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	interests := []types.InterestBlock{}
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.InterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+
+		// FIXME: remove this in the next upgrade
+		if interest.BlockHeight == 0 {
+			block := iterator.Key()
+			interest.BlockHeight = sdk.BigEndianToUint64(block)
+		}
+
+		interests = append(interests, interest)
+	}
+	return interests
 }
 
 func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
@@ -122,11 +145,11 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int {
+func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed osmomath.BigDec, poolId uint64) sdkmath.Int {
 	if startBlock == uint64(ctx.BlockHeight()) {
 		return sdkmath.ZeroInt()
 	}
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
@@ -140,14 +163,15 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-		totalInterestRate := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		totalInterestRate := endInterestBlock.GetBigDecInterestRate().Sub(startInterestBlock.GetBigDecInterestRate())
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
 		newInterest := borrowed.
 			Mul(totalInterestRate).
-			Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
-			Quo(sdkmath.LegacyNewDec(86400 * 365)).
+			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+			QuoInt64(numberOfBlocks).
+			QuoInt64(86400 * 365).
+			Dec().
 			RoundInt()
 		return newInterest
 	}
@@ -167,61 +191,83 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 			endInterestBlock := types.InterestBlock{}
 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-			totalInterest := endInterestBlock.InterestRate
+			totalInterest := endInterestBlock.GetBigDecInterestRate()
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 
 			newInterest := borrowed.Mul(totalInterest).
-				Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-				Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
-				Quo(sdkmath.LegacyNewDec(86400 * 365)).
+				MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+				QuoInt64(numberOfBlocks).
+				QuoInt64(86400 * 365).Dec().
 				RoundInt()
 			return newInterest
 		}
 	}
-	params := k.GetParams(ctx)
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return sdkmath.ZeroInt()
+	}
 	newInterest := borrowed.
-		Mul(params.InterestRate).
-		Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdkmath.LegacyNewDec(86400 * 365)).
+		Mul(pool.GetBigDecInterestRate()).
+		MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+		QuoInt64(86400 * 365).Dec().
 		RoundInt()
 	return newInterest
 }
 
-func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, poolId uint64, debtDenom string) types.Debt {
-	params := k.GetParams(ctx)
-	newInterest := k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
+func (k Keeper) GetInterestAtHeight(ctx sdk.Context, height uint64, poolId uint64) types.InterestBlock {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
+	key := sdk.Uint64ToBigEndian(height)
+	if store.Has(key) {
+		interest := types.InterestBlock{}
+		bz := store.Get(key)
+		k.cdc.MustUnmarshal(bz, &interest)
+		return interest
+	}
+	return types.InterestBlock{}
+}
+
+func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, borrowingForPool uint64) types.Debt {
+	pool, found := k.GetPool(ctx, debt.PoolId)
+	if !found {
+		return debt
+	}
+	newInterest := k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.GetBigDecBorrowed(), debt.PoolId)
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
 	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	k.SetDebt(ctx, debt)
 
-	params.TotalValue = params.TotalValue.Add(newInterest)
-	k.SetParams(ctx, params)
+	k.AddPoolLiabilities(ctx, borrowingForPool, sdk.NewCoin(pool.GetDepositDenom(), newInterest))
 
-	k.AddPoolLiabilities(ctx, poolId, sdk.NewCoin(debtDenom, newInterest))
-
+	pool.NetAmount = pool.NetAmount.Add(newInterest)
+	k.SetPool(ctx, pool)
 	return debt
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, borrowingForPool uint64) error {
-	depositDenom := k.GetDepositDenom(ctx)
+func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, borrowingForPool uint64) error {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return types.ErrPoolNotFound
+	}
+	depositDenom := pool.GetDepositDenom()
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
 
 	// For security reasons, we should avoid borrowing more than 90% in total to the stablestake pool.
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	params := k.GetParams(ctx)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
-	borrowed := params.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio)
+	// borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	// maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
+	borrowed := osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount).Add(amount.Amount))
+	maxAllowed := osmomath.BigDecFromSDKInt(pool.NetAmount).MulDec(pool.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}
 
-	debt := k.UpdateInterestAndGetDebt(ctx, addr, borrowingForPool, amount.Denom)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, poolId, borrowingForPool)
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
 
 	k.SetDebt(ctx, debt)
@@ -235,8 +281,12 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, bo
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
 }
 
-func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, repayingForPool uint64) error {
-	depositDenom := k.GetDepositDenom(ctx)
+func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, repayingForPool uint64) error {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return types.ErrPoolNotFound
+	}
+	depositDenom := pool.GetDepositDenom()
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
@@ -247,7 +297,7 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, rep
 	}
 
 	// calculate latest interest stacked
-	debt := k.UpdateInterestAndGetDebt(ctx, addr, repayingForPool, amount.Denom)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, poolId, repayingForPool)
 
 	// repay interest
 	interestPayAmount := debt.InterestStacked.Sub(debt.InterestPaid)
@@ -276,15 +326,22 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, rep
 		sdk.NewAttribute("address", addr.String()),
 		sdk.NewAttribute("amount", amount.String()),
 		sdk.NewAttribute("borrowed_left", debt.Borrowed.String()),
+		sdk.NewAttribute("interest_amt", interestPayAmount.String()),
 	))
 	return nil
 }
 
-func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error {
-	debt := k.UpdateInterestAndGetDebt(ctx, addr, unableToPayForPool, debtDenom)
+func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, unableToPayForPool uint64) error {
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, poolId, unableToPayForPool)
 	k.DeleteDebt(ctx, debt)
 
-	k.SubtractPoolLiabilities(ctx, unableToPayForPool, sdk.NewCoin(debtDenom, debt.GetTotalLiablities()))
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return types.ErrPoolNotFound
+	}
+	depositDenom := pool.GetDepositDenom()
+
+	k.SubtractPoolLiabilities(ctx, unableToPayForPool, sdk.NewCoin(depositDenom, debt.GetTotalLiablities()))
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
 		sdk.NewAttribute("address", addr.String()),
@@ -292,4 +349,96 @@ func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unabl
 		sdk.NewAttribute("borrowed_unpaid", debt.Borrowed.String()),
 	))
 	return nil
+}
+
+func (k Keeper) TestnetMigrate(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+
+	store = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
+	iterator = storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	totalValueUSD := sdkmath.ZeroInt()
+	totalValueAtom := sdkmath.ZeroInt()
+
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.Debt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+
+		if debt.Borrowed.IsZero() {
+			store.Delete(iterator.Key())
+		}
+		if debt.PoolId == types.UsdcPoolId {
+			totalValueUSD = totalValueUSD.Add(debt.Borrowed)
+			if debt.InterestStacked.LT(debt.Borrowed) {
+				totalValueUSD = totalValueUSD.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+			} else {
+				store.Delete(iterator.Key())
+			}
+		} else {
+			totalValueAtom = totalValueAtom.Add(debt.Borrowed)
+			if debt.InterestStacked.LT(debt.Borrowed) {
+				totalValueAtom = totalValueAtom.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+			} else {
+				store.Delete(iterator.Key())
+			}
+		}
+	}
+
+	params := k.GetParams(ctx)
+	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetLegacyDepositDenom(ctx))
+	pool := types.Pool{
+		Id:                   types.UsdcPoolId,
+		DepositDenom:         k.GetLegacyDepositDenom(ctx),
+		InterestRateDecrease: params.LegacyInterestRateDecrease,
+		InterestRateIncrease: params.LegacyInterestRateIncrease,
+		HealthGainFactor:     params.LegacyHealthGainFactor,
+		MaxLeverageRatio:     params.LegacyMaxLeverageRatio,
+		MaxWithdrawRatio:     params.LegacyMaxWithdrawRatio,
+		InterestRateMax:      params.LegacyInterestRateMax,
+		InterestRateMin:      params.LegacyInterestRateMin,
+		InterestRate:         params.LegacyInterestRate,
+		NetAmount:            totalValueUSD.Add(balance.Amount),
+	}
+	k.SetPool(ctx, pool)
+
+	atomPool, found := k.GetPool(ctx, 32768)
+	if found {
+		balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
+		atomPool.NetAmount = totalValueAtom.Add(balance.Amount)
+		k.SetPool(ctx, atomPool)
+	}
+}
+
+func (k Keeper) MoveAllInterest(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.InterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+		store.Delete(iterator.Key())
+	}
+}
+
+func (k Keeper) MoveAllDebt(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.Debt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+		debt.PoolId = types.UsdcPoolId
+
+		store.Delete(iterator.Key())
+		k.SetDebt(ctx, debt)
+	}
 }

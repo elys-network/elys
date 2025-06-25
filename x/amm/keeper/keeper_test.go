@@ -7,6 +7,7 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/math"
 
@@ -14,19 +15,19 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	"github.com/elys-network/elys/v6/x/amm/keeper"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/suite"
 )
 
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   math.LegacyDec
+	price   osmomath.BigDec
 }
 
 const (
@@ -38,27 +39,27 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"USDC": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   math.LegacyMustNewDecFromStr("3.0"),
+			price:   osmomath.MustNewBigDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   math.LegacyMustNewDecFromStr("1.0"),
+			price:   osmomath.MustNewBigDecFromStr("1.0"),
 		},
 	}
 )
@@ -209,7 +210,7 @@ func (suite *AmmKeeperTestSuite) SetupCoinPrices() {
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
-			Price:     v.price,
+			Price:     v.price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -217,7 +218,7 @@ func (suite *AmmKeeperTestSuite) SetupCoinPrices() {
 	}
 }
 
-func (suite *AmmKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) types.Pool {
+func (suite *AmmKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee osmomath.BigDec, asset2 string, baseTokenAmount, assetAmount math.Int) types.Pool {
 	poolAssets := []types.PoolAsset{
 		{
 			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
@@ -235,7 +236,7 @@ func (suite *AmmKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOra
 	})
 	poolParams := types.PoolParams{
 		UseOracle: useOracle,
-		SwapFee:   swapFee,
+		SwapFee:   swapFee.Dec(),
 		FeeDenom:  ptypes.BaseCurrency,
 	}
 

@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/masterchef"
+	"github.com/elys-network/elys/v6/api/elys/masterchef"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -32,6 +32,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "shows pool info",
 					Example:        "elysd q masterchef pool-info [id]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+				},
+				{
+					RpcMethod: "ListPoolInfos",
+					Use:       "list-pool-infos",
+					Short:     "shows all pool infos",
+					Example:   "elysd q masterchef list-pool-infos",
 				},
 				{
 					RpcMethod:      "PoolRewardInfo",
@@ -84,10 +90,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, // use custom command
 				},
 				{
-					RpcMethod: "Aprs",
-					Use:       "aprs",
-					Short:     "Query aprs",
-					Example:   "elysd q masterchef aprs",
+					RpcMethod:      "Aprs",
+					Use:            "aprs [days]",
+					Short:          "Query aprs",
+					Example:        "elysd q masterchef aprs [days]",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
 					RpcMethod: "AllLiquidityPoolTVL",
@@ -105,6 +112,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "calculate pool rewards",
 					Example:        "elysd q masterchef pool-rewards [ids]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_ids", Varargs: true}},
+				},
+				{
+					RpcMethod: "TotalPendingRewards",
+					Use:       "total-pending-rewards",
+					Short:     "show total pending rewards",
+				},
+				{
+					RpcMethod: "PendingRewards",
+					Use:       "pending-rewards",
+					Short:     "show pending rewards",
+					Example:   "elysd q masterchef pending-rewards",
 				},
 			},
 		},

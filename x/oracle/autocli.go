@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/oracle"
+	"github.com/elys-network/elys/v6/api/elys/oracle"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -17,17 +17,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "Params",
 					Use:       "params",
 					Short:     "shows the parameters of the module",
-				},
-				{
-					RpcMethod:      "BandPriceResult",
-					Use:            "band-price-result [request-id]",
-					Short:          "Query the BandPrice result data by id",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "request_id"}},
-				},
-				{
-					RpcMethod: "LastBandRequestId",
-					Use:       "last-band-request-id",
-					Short:     "Query the last request id returned by BandPrice ack packet",
 				},
 				{
 					RpcMethod:      "AssetInfo",

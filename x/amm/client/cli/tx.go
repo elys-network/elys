@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 const (
@@ -28,6 +28,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdCreatePool())
 	cmd.AddCommand(CmdJoinPool())
 	cmd.AddCommand(CmdExitPool())
+	cmd.AddCommand(CmdUpFrontSwapExactAmountIn())
 	cmd.AddCommand(CmdSwapExactAmountIn())
 	cmd.AddCommand(CmdSwapExactAmountOut())
 	cmd.AddCommand(CmdSwapByDenom())

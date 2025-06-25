@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
-	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerCreateSpotOrder() {
@@ -265,6 +265,76 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelSpotOrders() {
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelAllSpotOrders() {
+	addr := suite.AddAccounts(3, nil)
+
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func() *types.MsgCancelAllSpotOrders
+	}{
+		{
+			"No order for cancellation",
+			"spot order not found",
+			func() *types.MsgCancelAllSpotOrders {
+				return &types.MsgCancelAllSpotOrders{
+					Creator: addr[2].String(),
+				}
+			},
+		},
+		{
+			"Success: close multiple orders",
+			"",
+			func() *types.MsgCancelAllSpotOrders {
+				_, _, _ = suite.SetPerpetualPool(1)
+				_, _, _ = suite.SetPerpetualPool(2)
+
+				openOrderMsg := &types.MsgCreateSpotOrder{
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
+					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
+					OrderTargetDenom: "uatom",
+				}
+				openOrderMsg2 := &types.MsgCreateSpotOrder{
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(15),
+					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
+					OrderTargetDenom: "uatom",
+				}
+				msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
+				_, err := msgSrvr.CreateSpotOrder(suite.ctx, openOrderMsg)
+				suite.Require().NoError(err)
+				_, err = msgSrvr.CreateSpotOrder(suite.ctx, openOrderMsg2)
+				suite.Require().NoError(err)
+
+				return &types.MsgCancelAllSpotOrders{
+					Creator: addr[2].String(),
+				}
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			msg := tc.prerequisiteFunction()
+			msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
+			_, err := msgSrvr.CancelAllSpotOrders(suite.ctx, msg)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				status := types.Status_PENDING
+				orders, _, err := suite.app.TradeshieldKeeper.GetPendingSpotOrdersForAddress(suite.ctx, msg.Creator, &status, nil)
+				suite.Require().NoError(err)
+				suite.Require().Empty(orders, "All orders should be cancelled")
 			}
 		})
 	}

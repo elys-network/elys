@@ -31,6 +31,9 @@ type QueryClient interface {
 	AirDrop(ctx context.Context, in *QueryAirDropRequest, opts ...grpc.CallOption) (*QueryAirDropResponse, error)
 	TotalAirdropClaimed(ctx context.Context, in *QueryTotalAirDropClaimedRequest, opts ...grpc.CallOption) (*QueryTotalAirDropClaimedResponse, error)
 	Kol(ctx context.Context, in *QueryKolRequest, opts ...grpc.CallOption) (*QueryKolResponse, error)
+	TotalSupply(ctx context.Context, in *QueryTotalSupplyRequest, opts ...grpc.CallOption) (*QueryTotalSupplyResponse, error)
+	RewardProgram(ctx context.Context, in *QueryRewardProgramRequest, opts ...grpc.CallOption) (*QueryRewardProgramResponse, error)
+	TotalRewardProgramClaimed(ctx context.Context, in *QueryTotalRewardProgramClaimedRequest, opts ...grpc.CallOption) (*QueryTotalRewardProgramClaimedResponse, error)
 }
 
 type queryClient struct {
@@ -113,6 +116,33 @@ func (c *queryClient) Kol(ctx context.Context, in *QueryKolRequest, opts ...grpc
 	return out, nil
 }
 
+func (c *queryClient) TotalSupply(ctx context.Context, in *QueryTotalSupplyRequest, opts ...grpc.CallOption) (*QueryTotalSupplyResponse, error) {
+	out := new(QueryTotalSupplyResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/TotalSupply", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) RewardProgram(ctx context.Context, in *QueryRewardProgramRequest, opts ...grpc.CallOption) (*QueryRewardProgramResponse, error) {
+	out := new(QueryRewardProgramResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/RewardProgram", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) TotalRewardProgramClaimed(ctx context.Context, in *QueryTotalRewardProgramClaimedRequest, opts ...grpc.CallOption) (*QueryTotalRewardProgramClaimedResponse, error) {
+	out := new(QueryTotalRewardProgramClaimedResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/TotalRewardProgramClaimed", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -130,6 +160,9 @@ type QueryServer interface {
 	AirDrop(context.Context, *QueryAirDropRequest) (*QueryAirDropResponse, error)
 	TotalAirdropClaimed(context.Context, *QueryTotalAirDropClaimedRequest) (*QueryTotalAirDropClaimedResponse, error)
 	Kol(context.Context, *QueryKolRequest) (*QueryKolResponse, error)
+	TotalSupply(context.Context, *QueryTotalSupplyRequest) (*QueryTotalSupplyResponse, error)
+	RewardProgram(context.Context, *QueryRewardProgramRequest) (*QueryRewardProgramResponse, error)
+	TotalRewardProgramClaimed(context.Context, *QueryTotalRewardProgramClaimedRequest) (*QueryTotalRewardProgramClaimedResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -160,6 +193,15 @@ func (UnimplementedQueryServer) TotalAirdropClaimed(context.Context, *QueryTotal
 }
 func (UnimplementedQueryServer) Kol(context.Context, *QueryKolRequest) (*QueryKolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Kol not implemented")
+}
+func (UnimplementedQueryServer) TotalSupply(context.Context, *QueryTotalSupplyRequest) (*QueryTotalSupplyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalSupply not implemented")
+}
+func (UnimplementedQueryServer) RewardProgram(context.Context, *QueryRewardProgramRequest) (*QueryRewardProgramResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RewardProgram not implemented")
+}
+func (UnimplementedQueryServer) TotalRewardProgramClaimed(context.Context, *QueryTotalRewardProgramClaimedRequest) (*QueryTotalRewardProgramClaimedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalRewardProgramClaimed not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -318,6 +360,60 @@ func _Query_Kol_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_TotalSupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalSupplyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TotalSupply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/TotalSupply",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TotalSupply(ctx, req.(*QueryTotalSupplyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_RewardProgram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRewardProgramRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RewardProgram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/RewardProgram",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RewardProgram(ctx, req.(*QueryRewardProgramRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_TotalRewardProgramClaimed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalRewardProgramClaimedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TotalRewardProgramClaimed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/TotalRewardProgramClaimed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TotalRewardProgramClaimed(ctx, req.(*QueryTotalRewardProgramClaimedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -356,6 +452,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Kol",
 			Handler:    _Query_Kol_Handler,
+		},
+		{
+			MethodName: "TotalSupply",
+			Handler:    _Query_TotalSupply_Handler,
+		},
+		{
+			MethodName: "RewardProgram",
+			Handler:    _Query_RewardProgram_Handler,
+		},
+		{
+			MethodName: "TotalRewardProgramClaimed",
+			Handler:    _Query_TotalRewardProgramClaimed_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

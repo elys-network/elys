@@ -1,21 +1,22 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v6/app"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -118,7 +119,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		types.TakeProfitPriceDefault,
 		sdkmath.LegacyZeroDec(),
@@ -144,7 +144,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	// Set params
 	params = mk.GetParams(ctx)
-	params.BorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	err = mk.SetParams(ctx, &params)
 	suite.Require().NoError(err)
@@ -171,8 +170,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		BorrowInterestPaidCustody:     sdkmath.NewInt(4998625),
 		BorrowInterestUnpaidLiability: sdkmath.NewInt(0),
 		Custody:                       sdkmath.NewInt(481521968),
-		TakeProfitLiabilities:         sdkmath.NewInt(473929244),
-		TakeProfitCustody:             sdkmath.NewInt(486520593),
 		MtpHealth:                     sdkmath.LegacyMustNewDecFromStr("1.221533382716049383"),
 		Position:                      types.Position_LONG,
 		Id:                            uint64(1),
@@ -271,8 +268,8 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -305,7 +302,6 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		sdkmath.LegacyMustNewDecFromStr("8"),
 		sdkmath.LegacyZeroDec(),
@@ -452,13 +448,13 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
@@ -466,7 +462,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		types.Position_LONG,
 		sdkmath.LegacyNewDec(5),
 		1,
-		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		tradingAssetPrice.MulInt64(10),
 		tradingAssetPrice.QuoInt64(2),

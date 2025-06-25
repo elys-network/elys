@@ -7,20 +7,14 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 
 const (
-	LocalNetVersion = "v999999"
-	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
+	NewMaxBytes = 5 * 1024 * 1024 // 5MB
 )
-
-// make sure to update these when you upgrade the version
-var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
@@ -38,6 +32,23 @@ func generateUpgradeVersion() string {
 		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
 	}
 	majorVersion := strings.TrimPrefix(parts[0], "v")
+	minorVersion := parts[1]
+	// required for testnet
+	patchParts := strings.Split(parts[2], "-")
+	rcVersion := ""
+	if len(patchParts) > 1 {
+		rcVersion = strings.Join(patchParts[1:], "-")
+	}
+	// testnet
+	if rcVersion != "" {
+		if minorVersion != "0" && minorVersion != "999999" {
+			return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
+		}
+		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
+	}
+	if minorVersion != "0" && minorVersion != "999999" {
+		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
+	}
 	return fmt.Sprintf("v%s", majorVersion)
 }
 
@@ -51,13 +62,21 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
+			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-				// Add any logic here to run when the chain is upgraded to the new version
+			//oracleParams := app.OracleKeeper.GetParams(ctx)
+			//if len(oracleParams.MandatoryList) == 0 {
+			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//}
 
+			if ctx.ChainID() == "elysicstestnet-1" {
+				app.GovKeeper.Proposals.Remove(ctx, 87)
 			}
 
-			return app.mm.RunMigrations(ctx, app.configurator, vm)
+			return vm, vmErr
 		},
 	)
 }
@@ -76,8 +95,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			// Added: []string{},
-			// Deleted: []string{},
+			//Added: []string{ibchookstypes.StoreKey, packetforwardtypes.StoreKey},
+			//Renamed: []storetypes.StoreRename{},
+			//Deleted: []string{ibcfeetypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

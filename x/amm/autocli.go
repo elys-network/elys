@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/api/elys/amm"
+	"github.com/elys-network/elys/v6/api/elys/amm"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -20,14 +20,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Pool",
-					Use:            "show-pool [pool-id]",
+					Use:            "show-pool [pool-id] [days]",
 					Short:          "shows a pool",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "days"}},
 				},
 				{
-					RpcMethod: "PoolAll",
-					Use:       "list-pool",
-					Short:     "list all pool",
+					RpcMethod:      "PoolAll",
+					Use:            "list-pool [days]",
+					Short:          "list all pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
 					RpcMethod:      "DenomLiquidity",
@@ -46,6 +47,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query SwapEstimation",
 					Example:        "elysd q amm swap-estimation 100token 1 token_out1 2 token_out2 ...",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "token_in"}, {ProtoField: "discount"}, {ProtoField: "routes", Varargs: true}},
+				},
+				{
+					RpcMethod:      "SwapEstimationExactAmountOut",
+					Use:            "swap-estimation-exact-amount-out [token-out] [discount] {pool_id token_in_denom}...",
+					Short:          "Query SwapEstimationExactAmountOut",
+					Example:        "elysd q amm swap-estimation-exact-amount-out 100token_out 1 token_in1 2 token_in2 ...",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "token_out"}, {ProtoField: "discount"}, {ProtoField: "routes", Varargs: true}},
 				},
 				{
 					RpcMethod:      "JoinPoolEstimation",
@@ -100,6 +108,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query swap-estimation-by-denom",
 					Example:        "elysd q amm swap-estimation-by-denom 100uatom uatom uosmo",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom_in"}, {ProtoField: "denom_out"}},
+				},
+				{
+					RpcMethod:      "WeightAndSlippageFee",
+					Use:            "weight-and-slippage-fee [pool-id] [date]",
+					Short:          "Query weight and slippage fee",
+					Example:        "elysd q amm weight-and-slippage-fee 1 2022-01-01",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "date"}},
 				},
 			},
 		},

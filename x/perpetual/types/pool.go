@@ -1,17 +1,23 @@
 package types
 
 import (
+	"errors"
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
 	p := Pool{
 		AmmPoolId:                            ammPool.PoolId,
-		Health:                               math.LegacyOneDec(),
+		BaseAssetLiabilitiesRatio:            math.LegacyZeroDec(),
+		QuoteAssetLiabilitiesRatio:           math.LegacyZeroDec(),
 		BorrowInterestRate:                   math.LegacyZeroDec(),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},
@@ -81,38 +87,6 @@ func (p *Pool) UpdateCollateral(assetDenom string, amount math.Int, isIncrease b
 		poolAsset.Collateral = poolAsset.Collateral.Add(amount)
 	} else {
 		poolAsset.Collateral = poolAsset.Collateral.Sub(amount)
-	}
-
-	return nil
-}
-
-// Update the asset take profit liabilities
-func (p *Pool) UpdateTakeProfitLiabilities(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.TakeProfitLiabilities = poolAsset.TakeProfitLiabilities.Add(amount)
-	} else {
-		poolAsset.TakeProfitLiabilities = poolAsset.TakeProfitLiabilities.Sub(amount)
-	}
-
-	return nil
-}
-
-// Update the asset take profit custody
-func (p *Pool) UpdateTakeProfitCustody(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.TakeProfitCustody = poolAsset.TakeProfitCustody.Add(amount)
-	} else {
-		poolAsset.TakeProfitCustody = poolAsset.TakeProfitCustody.Sub(amount)
 	}
 
 	return nil
@@ -191,4 +165,45 @@ func (pool Pool) GetNetOpenInterest() math.Int {
 	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest)
 
 	return netOpenInterest
+}
+
+func (p Pool) GetBigDecBorrowInterestRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestRate)
+}
+
+func (p Pool) GetBigDecFundingRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.FundingRate)
+}
+
+func (p PoolAsset) GetBigDecLiabilities() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.Liabilities)
+}
+
+func (pool Pool) GetInsuranceAccount() sdk.AccAddress {
+	return authtypes.NewModuleAddress(fmt.Sprintf("perpetual/pool/insurance_fund/%d", pool.AmmPoolId))
+}
+
+func (perpetualPool Pool) GetPerpetualPoolBalancesByPosition(denom string, position Position) (math.Int, math.Int) {
+	poolAsset := perpetualPool.GetPoolAsset(position, denom)
+	return poolAsset.Liabilities, poolAsset.Custody
+}
+
+// Get Perpetual Pool Balance
+func (perpetualPool Pool) GetPerpetualPoolBalances(denom string) (math.Int, math.Int) {
+	liabilitiesLong, custodyLong := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_LONG)
+	liabilitiesShort, custodyShort := perpetualPool.GetPerpetualPoolBalancesByPosition(denom, Position_SHORT)
+
+	totalLiabilities := liabilitiesLong.Add(liabilitiesShort)
+	totalCustody := custodyLong.Add(custodyShort)
+
+	return totalLiabilities, totalCustody
+}
+
+func (p Pool) GetTradingAsset(baseCurrency string) (string, error) {
+	for _, asset := range p.PoolAssetsLong {
+		if asset.AssetDenom != baseCurrency {
+			return asset.AssetDenom, nil
+		}
+	}
+	return "", errors.New("trading asset not found")
 }

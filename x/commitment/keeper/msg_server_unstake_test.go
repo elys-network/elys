@@ -6,12 +6,12 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/v6/app"
 
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
+	"github.com/elys-network/elys/v6/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -63,7 +63,7 @@ func TestKeeper_UnstakeWithElys(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithElys tests the Unstake function with elys tokens and negative amount
+// TestKeeper_UnstakeWithElysNegativeAmount tests the Unstake function with elys tokens and negative amount
 func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)
@@ -112,7 +112,7 @@ func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithUncommit tests the Unstake function with uncommitting tokens and invalid validator address
+// TestKeeper_UnstakeWithUncommitInvalidValidatorAddress tests the Unstake function with uncommitting tokens and invalid validator address
 func TestKeeper_UnstakeWithUncommitInvalidValidatorAddress(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)
@@ -209,7 +209,7 @@ func TestKeeper_UnstakeWithUncommit(t *testing.T) {
 	require.Error(t, err)
 }
 
-// TestKeeper_UnstakeWithUncommit tests the Unstake function with uncommitting tokens and negative amount
+// TestKeeper_UnstakeWithUncommitNegativeAmount tests the Unstake function with uncommitting tokens and negative amount
 func TestKeeper_UnstakeWithUncommitNegativeAmount(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(false)

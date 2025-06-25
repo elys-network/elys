@@ -6,8 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
 	"github.com/spf13/cobra"
 )
 
@@ -17,8 +17,8 @@ func CmdApr() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "apr",
 		Short:   "calculate APR",
-		Example: "elysd q masterchef apr [withdraw-type] [denom]",
-		Args:    cobra.ExactArgs(2),
+		Example: "elysd q masterchef apr [withdraw-type] [denom] [days]",
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -30,10 +30,15 @@ func CmdApr() *cobra.Command {
 			}
 
 			denom := args[1]
+			days, err := strconv.Atoi(args[2])
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryAprRequest{
 				WithdrawType: commitmenttypes.EarnType(withdrawType),
 				Denom:        denom,
+				Days:         uint64(days),
 			}
 
 			res, err := queryClient.Apr(context.Background(), params)

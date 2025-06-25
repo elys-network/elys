@@ -5,8 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	"github.com/elys-network/elys/x/estaking/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // EndBlocker of incentive module
@@ -113,7 +114,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	}
 	stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
-	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
+	providerEdenAmount := osmomath.BigDecFromSDKInt(stakersEdenAmount).Mul(params.GetBigDecProviderStakingRewardsPortion()).Dec().TruncateInt()
 	err := k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerToSendToProviderName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, providerEdenAmount)))
 	if err != nil {
 		return err
@@ -132,17 +133,18 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	}
 
 	// Maximum eden APR - 30% by default
-	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
-		MulInt(totalElysEdenStake).
+	stakersMaxEdenAmount := osmomath.BigDecFromDec(params.MaxEdenRewardAprStakers).
+		Mul(osmomath.BigDecFromSDKInt(totalElysEdenEdenBStake)).
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.TruncateInt())
+	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.Dec().TruncateInt())
 
 	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
-	stakersEdenBAmount := math.LegacyNewDecFromInt(totalElysEdenEdenBStake).
-		Mul(params.EdenBoostApr).
+	stakersEdenBAmount := osmomath.BigDecFromSDKInt(totalElysEdenStake).
+		Mul(params.GetBigDecEdenBoostApr()).
 		QuoInt64(totalBlocksPerYear).
+		Dec().
 		RoundInt()
 
 	consumerCoins := sdk.NewCoins(

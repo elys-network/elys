@@ -19,6 +19,7 @@ var (
 	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
+	_ sdk.Msg = &MsgClaimAllUserRewards{}
 )
 
 func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
@@ -199,6 +200,20 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 		} else {
 			poolIdsMap[id] = true
 		}
+	}
+	return nil
+}
+
+func NewMsgClaimAllUserRewards(signer string) *MsgClaimAllUserRewards {
+	return &MsgClaimAllUserRewards{
+		Sender: signer,
+	}
+}
+
+func (msg *MsgClaimAllUserRewards) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

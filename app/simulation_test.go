@@ -13,6 +13,7 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	evidencetypes "cosmossdk.io/x/evidence/types"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -31,7 +32,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	"github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/v6/app"
 	"github.com/stretchr/testify/require"
 )
 
@@ -94,6 +95,7 @@ func BenchmarkSimulation(b *testing.B) {
 		map[int64]bool{},
 		dir,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(b, app.Name, bApp.Name())
 
@@ -173,6 +175,7 @@ func TestAppStateDeterminism(t *testing.T) {
 				map[int64]bool{},
 				dir,
 				appOptions,
+				[]wasmkeeper.Option{},
 			)
 
 			fmt.Printf(
@@ -247,6 +250,7 @@ func TestAppImportExport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -305,6 +309,7 @@ func TestAppImportExport(t *testing.T) {
 		map[int64]bool{},
 		newDir,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -395,6 +400,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -458,6 +464,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 

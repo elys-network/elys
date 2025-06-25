@@ -10,6 +10,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (p *Pool) addToPoolAssetBalances(coins sdk.Coins) error {
@@ -45,7 +46,7 @@ func (p Pool) parsePoolAssets(tokensA sdk.Coins, tokenBDenom string) (
 	if len(tokensA) != 1 {
 		return tokenA, Aasset, Basset, errors.New("expected tokensB to be of length one")
 	}
-	Aasset, Basset, err = p.parsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
+	Aasset, Basset, err = p.ParsePoolAssetsByDenoms(tokensA[0].Denom, tokenBDenom)
 	if err != nil {
 		return sdk.Coin{}, PoolAsset{}, PoolAsset{}, err
 	}
@@ -62,7 +63,7 @@ func (p Pool) parsePoolAssetsCoins(tokensA sdk.Coins, tokensB sdk.Coins) (
 	return Aasset, Basset, err
 }
 
-func (p Pool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+func (p Pool) ParsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
 	Aasset PoolAsset, Basset PoolAsset, err error,
 ) {
 	Aasset, found1 := GetPoolAssetByDenom(p.PoolAssets, tokenADenom)
@@ -153,13 +154,21 @@ func (p *Pool) IncreaseLiquidity(sharesAmt sdkmath.Int, coinsIn sdk.Coins) error
 }
 
 func (p *Pool) DecreaseLiquidity(sharesAmt sdkmath.Int, coinsIn sdk.Coins) error {
+	if sharesAmt.IsNil() || sharesAmt.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "invalid shares amount: %s", sharesAmt.String())
+	}
+
+	if err := coinsIn.Validate(); err != nil {
+		return errorsmod.Wrapf(err, "invalid coins input: %s", coinsIn.String())
+	}
+
 	err := p.subtractFromPoolAssetBalances(coinsIn)
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(err, "failed to subtract from pool asset balances: %s", coinsIn.String())
 	}
 	p.SubtractTotalShares(sharesAmt)
 	if p.TotalShares.IsNegative() {
-		return fmt.Errorf("can't subtract %s, pool total shares going negative", sharesAmt.String())
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "pool total shares would become negative after subtracting %s", sharesAmt.String())
 	}
 	return nil
 }
@@ -168,11 +177,11 @@ func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 	// Check that PoolAsset exists.
 	assetIndex, existingAsset, err := p.GetPoolAssetAndIndex(coin.Denom)
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(err, "failed to get pool asset for denom: %s", coin.Denom)
 	}
 
 	if coin.Amount.LTE(sdkmath.ZeroInt()) {
-		return errors.New("can't set the pool's balance of a token to be zero or negative")
+		return errorsmod.Wrapf(ErrInvalidMathApprox, "cannot set pool balance to zero or negative for denom: %s", coin.Denom)
 	}
 
 	// Update the supply of the asset
@@ -260,8 +269,8 @@ func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount sdkmath.Int) (neededLpL
 	totalSharesAmount := pool.GetTotalShares()
 	// shareRatio is the desired number of shares, divided by the total number of
 	// shares currently in the pool. It is intended to be used in scenarios where you want
-	shareRatio := sdkmath.LegacyNewDecFromBigInt(shareOutAmount.BigInt()).QuoInt(totalSharesAmount.Amount)
-	if shareRatio.LTE(sdkmath.LegacyZeroDec()) {
+	shareRatio := osmomath.BigDecFromSDKInt(shareOutAmount).Quo(osmomath.BigDecFromSDKInt(totalSharesAmount.Amount))
+	if shareRatio.LTE(osmomath.ZeroBigDec()) {
 		return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted. "+
 			"(debug: getMaximalNoSwapLPAmount share ratio is zero or negative)")
 	}
@@ -271,7 +280,7 @@ func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount sdkmath.Int) (neededLpL
 
 	for _, coin := range poolLiquidity {
 		// (coin.Amt * shareRatio).Ceil()
-		neededAmt := sdkmath.LegacyNewDecFromBigInt(coin.Amount.BigInt()).Mul(shareRatio).Ceil().RoundInt()
+		neededAmt := osmomath.BigDecFromSDKInt(coin.Amount).Mul(shareRatio).Ceil().Dec().RoundInt()
 		if neededAmt.LTE(sdkmath.ZeroInt()) {
 			return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted")
 		}
@@ -285,28 +294,30 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper,
+	snapshot SnapshotPool,
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
+	takerFees osmomath.BigDec,
 	applyWeightBreakingFee bool,
-) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, applyWeightBreakingFee)
+) (exitedCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
+	return p.CalcExitPool(ctx, oracleKeeper, snapshot, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 }
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (osmomath.BigDec, error) {
 	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
 	// E.g. JUNO / USDT / USDC (30:30:30)
 	// TVL = USDC_USDT_liquidity * 90 / 60
 
-	oracleAssetsTVL := sdkmath.LegacyZeroDec()
+	oracleAssetsTVL := osmomath.ZeroBigDec()
 	totalWeight := sdkmath.ZeroInt()
 	oracleAssetsWeight := sdkmath.ZeroInt()
 	for _, asset := range p.PoolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice := oracleKeeper.GetDenomPrice(ctx, asset.Token.Denom)
 		totalWeight = totalWeight.Add(asset.Weight)
 		if tokenPrice.IsZero() {
 			if p.PoolParams.UseOracle {
-				return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
+				return osmomath.ZeroBigDec(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
 			}
 		} else {
 			amount := asset.Token.Amount
@@ -316,42 +327,42 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 					amount = accountedPoolAmt
 				}
 			}
-			v := amount.ToLegacyDec().Mul(tokenPrice)
+			v := osmomath.BigDecFromSDKInt(amount).Mul(tokenPrice)
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
 		}
 	}
 
 	if oracleAssetsWeight.IsZero() {
-		return sdkmath.LegacyZeroDec(), nil
+		return osmomath.ZeroBigDec(), nil
 	}
 
-	return oracleAssetsTVL.Mul(sdkmath.LegacyNewDecFromInt(totalWeight)).Quo(sdkmath.LegacyNewDecFromInt(oracleAssetsWeight)), nil
+	return oracleAssetsTVL.Mul(osmomath.BigDecFromSDKInt(totalWeight)).Quo(osmomath.BigDecFromSDKInt(oracleAssetsWeight)), nil
 }
 
-func (p *Pool) LpTokenPriceForShare(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) LpTokenPriceForShare(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (osmomath.BigDec, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 	// Ensure ammPool.TotalShares is not zero to avoid division by zero
 	if p.TotalShares.IsZero() {
-		return sdkmath.LegacyOneDec(), nil
+		return osmomath.OneBigDec(), nil
 	}
-	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
+	lpTokenPrice := ammPoolTvl.Mul(osmomath.BigDecFromSDKInt(OneShare)).Quo(osmomath.BigDecFromSDKInt(p.TotalShares.Amount))
 	return lpTokenPrice, nil
 }
 
-func (p *Pool) LpTokenPriceForBaseUnits(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) LpTokenPriceForBaseUnits(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (osmomath.BigDec, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 	// Ensure ammPool.TotalShares is not zero to avoid division by zero
 	if p.TotalShares.IsZero() {
-		return sdkmath.LegacyOneDec(), nil
+		return osmomath.OneBigDec(), nil
 	}
-	lpTokenPrice := ammPoolTvl.Quo(p.TotalShares.Amount.ToLegacyDec())
+	lpTokenPrice := ammPoolTvl.Quo(osmomath.BigDecFromSDKInt(p.TotalShares.Amount))
 	return lpTokenPrice, nil
 }
 
@@ -370,11 +381,19 @@ func (pool Pool) Validate() error {
 	return nil
 }
 
-func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (sdkmath.LegacyDec, error) {
+func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (osmomath.BigDec, error) {
 	for _, poolAsset := range pool.PoolAssets {
 		if poolAsset.Token.Denom == asset {
-			return poolAsset.ExternalLiquidityRatio, nil
+			return osmomath.BigDecFromDec(poolAsset.ExternalLiquidityRatio), nil
 		}
 	}
-	return sdkmath.LegacyZeroDec(), errors.New("asset not found in the pool")
+	return osmomath.ZeroBigDec(), errors.New("asset not found in the pool")
+}
+
+func (p Pool) GetBigDecTotalWeight() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.TotalWeight)
+}
+
+func (p PoolExtraInfo) GetBigDecLpTokenPrice() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.LpTokenPrice)
 }

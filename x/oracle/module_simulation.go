@@ -1,16 +1,17 @@
 package oracle
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"math/rand"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/testutil/sample"
-	oraclesimulation "github.com/elys-network/elys/x/oracle/simulation"
-	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/elys-network/elys/v6/testutil/sample"
+	oraclesimulation "github.com/elys-network/elys/v6/x/oracle/simulation"
+	"github.com/elys-network/elys/v6/x/oracle/types"
 )
 
 // avoid unused import issue

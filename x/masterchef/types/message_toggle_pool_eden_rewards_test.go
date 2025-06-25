@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -18,12 +18,14 @@ func TestMsgTogglePoolEdenRewards_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgTogglePoolEdenRewards{
 				Authority: "invalid_address",
+				PoolId:    1,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgTogglePoolEdenRewards{
 				Authority: sample.AccAddress(),
+				PoolId:    1,
 			},
 		},
 	}

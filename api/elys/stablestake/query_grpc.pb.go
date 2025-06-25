@@ -22,8 +22,15 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(ctx context.Context, in *QueryBorrowRatioRequest, opts ...grpc.CallOption) (*QueryBorrowRatioResponse, error)
+	// Queries a single pool given its index.
+	Pool(ctx context.Context, in *QueryGetPoolRequest, opts ...grpc.CallOption) (*QueryGetPoolResponse, error)
+	// Queries a list of all pools.
+	Pools(ctx context.Context, in *QueryAllPoolRequest, opts ...grpc.CallOption) (*QueryAllPoolResponse, error)
 	AmmPool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error)
 	AllAmmPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error)
+	Debt(ctx context.Context, in *QueryDebtRequest, opts ...grpc.CallOption) (*QueryDebtResponse, error)
+	GetInterest(ctx context.Context, in *QueryGetInterestRequest, opts ...grpc.CallOption) (*QueryGetInterestResponse, error)
+	MaxBondableAmount(ctx context.Context, in *MaxBondableAmountRequest, opts ...grpc.CallOption) (*MaxBondableAmountResponse, error)
 }
 
 type queryClient struct {
@@ -52,6 +59,24 @@ func (c *queryClient) BorrowRatio(ctx context.Context, in *QueryBorrowRatioReque
 	return out, nil
 }
 
+func (c *queryClient) Pool(ctx context.Context, in *QueryGetPoolRequest, opts ...grpc.CallOption) (*QueryGetPoolResponse, error) {
+	out := new(QueryGetPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Pool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Pools(ctx context.Context, in *QueryAllPoolRequest, opts ...grpc.CallOption) (*QueryAllPoolResponse, error) {
+	out := new(QueryAllPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Pools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) AmmPool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error) {
 	out := new(QueryAmmPoolResponse)
 	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/AmmPool", in, out, opts...)
@@ -70,6 +95,33 @@ func (c *queryClient) AllAmmPools(ctx context.Context, in *QueryAllAmmPoolsReque
 	return out, nil
 }
 
+func (c *queryClient) Debt(ctx context.Context, in *QueryDebtRequest, opts ...grpc.CallOption) (*QueryDebtResponse, error) {
+	out := new(QueryDebtResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Debt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetInterest(ctx context.Context, in *QueryGetInterestRequest, opts ...grpc.CallOption) (*QueryGetInterestResponse, error) {
+	out := new(QueryGetInterestResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/GetInterest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) MaxBondableAmount(ctx context.Context, in *MaxBondableAmountRequest, opts ...grpc.CallOption) (*MaxBondableAmountResponse, error) {
+	out := new(MaxBondableAmountResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/MaxBondableAmount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -78,8 +130,15 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error)
+	// Queries a single pool given its index.
+	Pool(context.Context, *QueryGetPoolRequest) (*QueryGetPoolResponse, error)
+	// Queries a list of all pools.
+	Pools(context.Context, *QueryAllPoolRequest) (*QueryAllPoolResponse, error)
 	AmmPool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error)
 	AllAmmPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error)
+	Debt(context.Context, *QueryDebtRequest) (*QueryDebtResponse, error)
+	GetInterest(context.Context, *QueryGetInterestRequest) (*QueryGetInterestResponse, error)
+	MaxBondableAmount(context.Context, *MaxBondableAmountRequest) (*MaxBondableAmountResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -93,11 +152,26 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BorrowRatio not implemented")
 }
+func (UnimplementedQueryServer) Pool(context.Context, *QueryGetPoolRequest) (*QueryGetPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pool not implemented")
+}
+func (UnimplementedQueryServer) Pools(context.Context, *QueryAllPoolRequest) (*QueryAllPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pools not implemented")
+}
 func (UnimplementedQueryServer) AmmPool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AmmPool not implemented")
 }
 func (UnimplementedQueryServer) AllAmmPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllAmmPools not implemented")
+}
+func (UnimplementedQueryServer) Debt(context.Context, *QueryDebtRequest) (*QueryDebtResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Debt not implemented")
+}
+func (UnimplementedQueryServer) GetInterest(context.Context, *QueryGetInterestRequest) (*QueryGetInterestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInterest not implemented")
+}
+func (UnimplementedQueryServer) MaxBondableAmount(context.Context, *MaxBondableAmountRequest) (*MaxBondableAmountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MaxBondableAmount not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -148,6 +222,42 @@ func _Query_BorrowRatio_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/Pool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pool(ctx, req.(*QueryGetPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Pools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/Pools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pools(ctx, req.(*QueryAllPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_AmmPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAmmPoolRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +294,60 @@ func _Query_AllAmmPools_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Debt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDebtRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Debt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/Debt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Debt(ctx, req.(*QueryDebtRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetInterest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetInterestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetInterest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/GetInterest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetInterest(ctx, req.(*QueryGetInterestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_MaxBondableAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MaxBondableAmountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MaxBondableAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/MaxBondableAmount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MaxBondableAmount(ctx, req.(*MaxBondableAmountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -200,12 +364,32 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_BorrowRatio_Handler,
 		},
 		{
+			MethodName: "Pool",
+			Handler:    _Query_Pool_Handler,
+		},
+		{
+			MethodName: "Pools",
+			Handler:    _Query_Pools_Handler,
+		},
+		{
 			MethodName: "AmmPool",
 			Handler:    _Query_AmmPool_Handler,
 		},
 		{
 			MethodName: "AllAmmPools",
 			Handler:    _Query_AllAmmPools_Handler,
+		},
+		{
+			MethodName: "Debt",
+			Handler:    _Query_Debt_Handler,
+		},
+		{
+			MethodName: "GetInterest",
+			Handler:    _Query_GetInterest_Handler,
+		},
+		{
+			MethodName: "MaxBondableAmount",
+			Handler:    _Query_MaxBondableAmount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

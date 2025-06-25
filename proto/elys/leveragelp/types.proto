@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.leveragelp;
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v6/x/leveragelp/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -38,38 +38,7 @@ message Position {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-}
-
-message LegacyPosition {
-  string address = 1;
-  cosmos.base.v1beta1.Coin collateral = 2 [ (gogoproto.nullable) = false ];
-  string liabilities = 3 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ]; // For recording
-  string leverage = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string leveraged_lp_amount = 5 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string position_health = 6 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 id = 7;
-  uint64 amm_pool_id = 8;
-  string stop_loss_price = 9 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  uint64 borrow_pool_id = 9;
 }
 
 message QueryPosition {

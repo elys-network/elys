@@ -1,40 +1,75 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/v6/utils"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) GetTokenARate(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
 	tokenA string,
 	tokenB string,
-	accPoolKeeper AccountedPoolKeeper,
-) (rate sdkmath.LegacyDec, err error) {
+) (rate osmomath.BigDec, err error) {
 	// balancer pricing if normal amm pool
 	if !p.PoolParams.UseOracle {
-		Aasset, Basset, err := p.parsePoolAssetsByDenoms(tokenA, tokenB)
+		Aasset, Basset, err := p.ParsePoolAssetsByDenoms(tokenA, tokenB)
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "failed to parse pool assets for tokens %s and %s", tokenA, tokenB)
 		}
 		return CalculateTokenARate(
-			Aasset.Token.Amount.ToLegacyDec(), Aasset.Weight.ToLegacyDec(),
-			Basset.Token.Amount.ToLegacyDec(), Basset.Weight.ToLegacyDec(),
+			osmomath.BigDecFromSDKInt(Aasset.Token.Amount), osmomath.BigDecFromSDKInt(Aasset.Weight),
+			osmomath.BigDecFromSDKInt(Basset.Token.Amount), osmomath.BigDecFromSDKInt(Basset.Weight),
 		), nil
 	}
 
-	priceA := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenA)
+	priceA := oracleKeeper.GetDenomPrice(ctx, tokenA)
 	if priceA.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenA)
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token price not set or zero for token: %s", tokenA)
 	}
-	priceB := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenB)
+	priceB := oracleKeeper.GetDenomPrice(ctx, tokenB)
 	if priceB.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenB)
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token price not set or zero for token: %s", tokenB)
 	}
 
 	return priceA.Quo(priceB), nil
+}
+
+func (p *Pool) GetTokenARateNormalized(
+	ctx sdk.Context,
+	oracleKeeper OracleKeeper,
+	tokenA string,
+	tokenB string,
+) (rate osmomath.BigDec, err error) {
+	// Get the base rate without normalization
+	baseRate, err := p.GetTokenARate(ctx, oracleKeeper, tokenA, tokenB)
+	if err != nil {
+		return osmomath.ZeroBigDec(), err
+	}
+
+	// Get token decimals from oracle keeper
+	infoA, found := oracleKeeper.GetAssetInfo(ctx, tokenA)
+	if !found {
+		return osmomath.ZeroBigDec(), fmt.Errorf("asset info not found for token: %s", tokenA)
+	}
+	infoB, found := oracleKeeper.GetAssetInfo(ctx, tokenB)
+	if !found {
+		return osmomath.ZeroBigDec(), fmt.Errorf("asset info not found for token: %s", tokenB)
+	}
+
+	// Calculate decimal adjustment factor
+	decimalDiff := int(infoB.Decimal) - int(infoA.Decimal)
+	if decimalDiff > 0 {
+		// If tokenB has more decimals, divide by 10^diff
+		return baseRate.QuoInt64(utils.Pow10Int64((uint64(decimalDiff)))), nil
+	} else if decimalDiff < 0 {
+		// If tokenA has more decimals, multiply by 10^|diff|
+		return baseRate.MulInt64(utils.Pow10Int64(uint64(-decimalDiff))), nil
+	}
+	// If decimals are equal, return base rate as is
+	return baseRate, nil
 }

@@ -4,7 +4,7 @@ package elys.leveragelp;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v6/x/leveragelp/types";
 
 message Pool {
   uint64 amm_pool_id = 1;
@@ -28,6 +28,7 @@ message Pool {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  repeated AssetLeverageAmount asset_leverage_amounts = 6;
 }
 
 message LegacyPool {
@@ -45,6 +46,15 @@ message LegacyPool {
   string leverage_max = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message AssetLeverageAmount {
+  string denom = 1;
+  string leveraged_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }

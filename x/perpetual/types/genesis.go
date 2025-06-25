@@ -35,7 +35,7 @@ func (gs GenesisState) Validate() error {
 	mtpIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.MtpList {
-		key := GetMTPKey(elem.GetAccountAddress(), elem.Id)
+		key := GetMTPKey(elem.GetAccountAddress(), elem.AmmPoolId, elem.Id)
 		index := string(key)
 		if _, ok := mtpIndexMap[index]; ok {
 			return errors.New("duplicated index for pool")

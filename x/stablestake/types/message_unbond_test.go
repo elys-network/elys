@@ -1,11 +1,12 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"testing"
 
-	"github.com/elys-network/elys/testutil/sample"
+	"cosmossdk.io/math"
+
+	"github.com/elys-network/elys/v6/testutil/sample"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -75,11 +76,13 @@ func TestNewMsgUnbond(t *testing.T) {
 	got := NewMsgUnbond(
 		accAdress,
 		amount,
+		UsdcPoolId,
 	)
 
 	want := &MsgUnbond{
 		Creator: accAdress,
 		Amount:  amount,
+		PoolId:  UsdcPoolId,
 	}
 
 	assert.Equal(t, want, got)

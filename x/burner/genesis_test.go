@@ -3,10 +3,12 @@ package burner_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/testutil/nullify"
-	"github.com/elys-network/elys/x/burner"
-	"github.com/elys-network/elys/x/burner/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	"github.com/elys-network/elys/v6/testutil/nullify"
+	"github.com/elys-network/elys/v6/x/burner"
+	"github.com/elys-network/elys/v6/x/burner/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,12 +18,12 @@ func TestGenesis(t *testing.T) {
 
 		HistoryList: []types.History{
 			{
-				Timestamp: "0",
-				Denom:     "0",
+				Block:       1,
+				BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1)},
 			},
 			{
-				Timestamp: "1",
-				Denom:     "1",
+				Block:       2,
+				BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state

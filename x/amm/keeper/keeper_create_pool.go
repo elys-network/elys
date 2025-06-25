@@ -6,10 +6,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/amm/utils"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v6/x/amm/utils"
+	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
@@ -74,6 +74,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		}
 	}
 
+	//err = k.UpdateOraclePoolId(ctx, poolId)
+	//if err != nil {
+	//	return 0, err
+	//}
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil
 }
@@ -91,7 +95,7 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if tvl.IsPositive() {
-		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShare.ToLegacyDec()).RoundInt())
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShareBigDec).Dec().RoundInt())
 	}
 
 	// Mint the initial pool shares token to the sender
@@ -125,6 +129,10 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		Symbol:  poolShareDisplayDenom,
 	})
 
+	err = pool.Validate()
+	if err != nil {
+		return err
+	}
 	k.SetPool(ctx, *pool)
 
 	if k.hooks != nil {

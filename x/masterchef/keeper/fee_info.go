@@ -5,10 +5,11 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/v6/x/masterchef/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol sdkmath.LegacyDec, gas bool) {
+func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol osmomath.BigDec, gas bool) {
 	// Get the current block time and format it as a string
 	currentTime := ctx.BlockTime()
 	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
@@ -16,26 +17,26 @@ func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol sdkmath.Legacy
 	info := k.GetFeeInfo(ctx, dateString)
 
 	if gas {
-		info.GasLp = info.GasLp.Add(lp.TruncateInt())
-		info.GasStakers = info.GasStakers.Add(stakers.TruncateInt())
-		info.GasProtocol = info.GasProtocol.Add(protocol.TruncateInt())
+		info.GasLp = info.GasLp.Add(lp.Dec().TruncateInt())
+		info.GasStakers = info.GasStakers.Add(stakers.Dec().TruncateInt())
+		info.GasProtocol = info.GasProtocol.Add(protocol.Dec().TruncateInt())
 	} else {
-		info.DexLp = info.DexLp.Add(lp.TruncateInt())
-		info.DexStakers = info.DexStakers.Add(stakers.TruncateInt())
-		info.DexProtocol = info.DexProtocol.Add(protocol.TruncateInt())
+		info.DexLp = info.DexLp.Add(lp.Dec().TruncateInt())
+		info.DexStakers = info.DexStakers.Add(stakers.Dec().TruncateInt())
+		info.DexProtocol = info.DexProtocol.Add(protocol.Dec().TruncateInt())
 	}
 
 	k.SetFeeInfo(ctx, info, dateString)
 }
 
-func (k Keeper) AddEdenInfo(ctx sdk.Context, eden sdkmath.LegacyDec) {
+func (k Keeper) AddEdenInfo(ctx sdk.Context, eden osmomath.BigDec) {
 	// Get the current block time and format it as a string
 	currentTime := ctx.BlockTime()
 	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
 
 	info := k.GetFeeInfo(ctx, dateString)
 
-	info.EdenLp = info.EdenLp.Add(eden.TruncateInt())
+	info.EdenLp = info.EdenLp.Add(eden.Dec().TruncateInt())
 
 	k.SetFeeInfo(ctx, info, dateString)
 }
@@ -108,12 +109,12 @@ func (k Keeper) GetAllFeeInfos(ctx sdk.Context) (list []types.FeeInfo) {
 }
 
 // Returns last 7 days average of staker fees collected
-func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context) sdkmath.LegacyDec {
+func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context, days int) osmomath.BigDec {
 	start := ctx.BlockTime()
 	count := sdkmath.ZeroInt()
 	total := sdkmath.ZeroInt()
 
-	for i := 0; i < 7; i++ {
+	for i := 0; i < days; i++ {
 		date := start.AddDate(0, 0, i*-1).Format("2006-01-02")
 		info := k.GetFeeInfo(ctx, date)
 
@@ -125,7 +126,7 @@ func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context) sdkmath.LegacyDec {
 	}
 
 	if count.IsZero() {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
-	return sdkmath.LegacyNewDecFromInt(total).Quo(sdkmath.LegacyNewDecFromInt(count))
+	return osmomath.BigDecFromSDKInt(total).Quo(osmomath.BigDecFromSDKInt(count))
 }

@@ -1,11 +1,12 @@
 package keeper
 
 import (
-	simapp "github.com/elys-network/elys/app"
 	"testing"
 
+	simapp "github.com/elys-network/elys/v6/app"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
+	"github.com/elys-network/elys/v6/x/perpetual/keeper"
 )
 
 func PerpetualKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {

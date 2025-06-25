@@ -7,8 +7,9 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *TestSuite) TestSwapInAmtGivenOut() {
@@ -20,8 +21,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		thresholdWeightDiff    sdkmath.LegacyDec
 		tokenOut               sdk.Coin
 		inTokenDenom           string
-		swapFee                sdkmath.LegacyDec
-		expRecoveryBonus       sdkmath.LegacyDec
+		swapFee                osmomath.BigDec
+		expRecoveryBonus       osmomath.BigDec
 		expTokenIn             sdk.Coin
 		expErr                 bool
 	}{
@@ -56,8 +57,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),                // 20%
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
-			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0"),
+			swapFee:                osmomath.ZeroBigDec(),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0"),
 			expTokenIn:             sdk.NewInt64Coin("uusdt", 101010110),
 			expErr:                 false,
 		},
@@ -92,8 +93,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),                // 20%
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
-			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006413552900341021"),
+			swapFee:                osmomath.ZeroBigDec(),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006413552900341021378397588793524980"),
 			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008668),
 			expErr:                 false,
 		},
@@ -128,8 +129,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),    // 20%
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
-			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.001558845726811990"),
+			swapFee:                osmomath.ZeroBigDec(),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0.001558845726811989564600000000000000"),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348300),
 			expErr:                 false,
 		},
@@ -164,8 +165,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),    // 20%
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
-			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			swapFee:                osmomath.NewBigDecWithPrec(1, 2), // 1%
+			expRecoveryBonus:       osmomath.ZeroBigDec(),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075037),
 			expErr:                 false,
 		},
@@ -187,8 +188,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),
 			tokenOut:               sdk.NewInt64Coin("uusdt", 0),
 			inTokenDenom:           ptypes.BaseCurrency,
-			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2),
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			swapFee:                osmomath.NewBigDecWithPrec(1, 2),
+			expRecoveryBonus:       osmomath.ZeroBigDec(),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			expErr:                 true,
 		},
@@ -225,7 +226,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			params.WeightBreakingFeeMultiplier = sdkmath.LegacyNewDecWithPrec(2, 4)
 			params.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
 			params.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(50, 2)  // 50%
-			tokenOut, _, _, weightBonus, _, _, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, sdkmath.LegacyOneDec(), params)
+			snapshot := types.SnapshotPool{pool}
+			tokenOut, _, _, weightBonus, _, _, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, snapshot, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, osmomath.OneBigDec(), params, osmomath.ZeroBigDec())
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "amount too low")
