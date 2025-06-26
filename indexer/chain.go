@@ -6,7 +6,6 @@ import (
 
 	comethttp "github.com/cometbft/cometbft/rpc/client/http"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -29,15 +28,15 @@ func GetCurrentChainHeight() uint64 {
 
 func SetupChainClients() {
 	var err error
-	GrpcClient, err = grpc.NewClient(GrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
+	//GrpcClient, err = grpc.NewClient(GrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//if err != nil {
+	//	log.Fatalf("did not connect: %v", err)
+	//}
 
 	RPCClient, err = comethttp.New(RPCEndPoint, "/websocket")
 	if err != nil {
 		log.Fatalf("Tendermint RPC client creation failed: %v", err)
 	}
 
-	TxClient = tx.NewServiceClient(GrpcClient)
+	//TxClient = tx.NewServiceClient(GrpcClient)
 }
