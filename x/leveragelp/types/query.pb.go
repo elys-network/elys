@@ -2288,6 +2288,7 @@ func _Query_CommittedTokensLocked_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.leveragelp.Query",
 	HandlerType: (*QueryServer)(nil),

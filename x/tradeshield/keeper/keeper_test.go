@@ -185,6 +185,10 @@ func (suite *TradeshieldKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress
 func (suite *TradeshieldKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Pool, sdk.AccAddress, ammtypes.Pool) {
 	ctx := suite.ctx
 	k := suite.app.PerpetualKeeper
+
+	params := k.GetParams(ctx)
+	params.EnabledPools = append(params.EnabledPools, poolId)
+	k.SetParams(ctx, &params)
 	//prices
 	suite.SetupCoinPrices()
 	suite.SetupAssetProfile()

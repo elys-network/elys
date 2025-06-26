@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
@@ -80,6 +81,6 @@ func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool 
 	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
+func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error {
 	return h.k.PerpetualUpdates(ctx, ammPool, perpetualPool)
 }
