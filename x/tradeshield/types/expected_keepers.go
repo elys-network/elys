@@ -50,4 +50,6 @@ type PerpetualKeeper interface {
 	GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (sdkmath.LegacyDec, osmomath.BigDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
 	GetTradingAsset(ctx sdk.Context, poolId uint64) (string, error)
+	IsWhitelistingEnabled(ctx sdk.Context) bool
+	CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool
 }

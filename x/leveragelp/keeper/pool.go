@@ -88,3 +88,30 @@ func (k Keeper) SetLeveragedAmount(ctx sdk.Context) {
 		k.SetPool(ctx, pool)
 	}
 }
+
+func (k Keeper) V21Migration(ctx sdk.Context) {
+	pool, found := k.GetPool(ctx, 2)
+	if !found {
+		return
+	}
+	pool.LeveragedLpAmount = sdkmath.NewInt(0)
+	k.SetPool(ctx, pool)
+
+	iterator := k.GetPositionIterator(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		if position.AmmPoolId == 2 {
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
+
+			pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
+			pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
+			k.SetPool(ctx, pool)
+		}
+	}
+}

@@ -268,8 +268,8 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -447,8 +447,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)

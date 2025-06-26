@@ -12,6 +12,11 @@ import (
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 	addr := suite.AddAccounts(3, nil)
 
+	perpParams := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	perpParams.EnabledPools = []uint64{1}
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
+	suite.Require().NoError(err)
+
 	testCases := []struct {
 		name                  string
 		expectErrMsg          string
