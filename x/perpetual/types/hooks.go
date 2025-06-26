@@ -1,6 +1,7 @@
 package types
 
 import (
+	math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 )
@@ -17,11 +18,7 @@ type PerpetualHooks interface {
 
 	// AfterPerpetualPositionClosed is called after a position gets closed.
 	// This should be used to update pool health
-	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
-
-	// AfterPositionDestroyed is called after a position gets destroyed.
-	// This is used in tradeshield to delete close positions orders
-	AfterPositionDestroyed(ctx sdk.Context, owner sdk.AccAddress, poolId uint64, positionId uint64) error
+	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error
 }
 
 var _ PerpetualHooks = MultiPerpetualHooks{}
@@ -64,19 +61,9 @@ func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, amm
 	return nil
 }
 
-func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
+func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error {
 	for i := range h {
-		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (h MultiPerpetualHooks) AfterPositionDestroyed(ctx sdk.Context, owner sdk.AccAddress, poolId uint64, positionId uint64) error {
-	for i := range h {
-		err := h[i].AfterPositionDestroyed(ctx, owner, poolId, positionId)
+		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender, closingRatio, positionId)
 		if err != nil {
 			return err
 		}

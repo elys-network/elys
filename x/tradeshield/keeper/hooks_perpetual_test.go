@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/v6/x/tradeshield/types"
 )
 
-func (suite *TradeshieldKeeperTestSuite) TestPerpetualHooks_AfterPositionDestroyed() {
+func (suite *TradeshieldKeeperTestSuite) TestPerpetualHooks_AfterPerpetualPositionClosed() {
 	// Setup accounts and pool
 	addresses := suite.AddAccounts(2, nil)
 	owner := addresses[0]
@@ -80,9 +80,11 @@ func (suite *TradeshieldKeeperTestSuite) TestPerpetualHooks_AfterPositionDestroy
 	}
 	suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, openPositionOrder)
 
+	perpetualPool, _, ammPool := suite.SetPerpetualPool(poolId)
+
 	// Execute the hook
 	perpetualHooks := suite.app.TradeshieldKeeper.PerpetualHooks()
-	err := perpetualHooks.AfterPositionDestroyed(suite.ctx, owner, poolId, positionId)
+	err := perpetualHooks.AfterPerpetualPositionClosed(suite.ctx, ammPool, perpetualPool, owner, math.LegacyOneDec(), positionId)
 
 	// Verify the result
 	suite.Require().NoError(err)

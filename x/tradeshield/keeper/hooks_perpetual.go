@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
@@ -29,14 +30,12 @@ func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool 
 	return nil
 }
 
-func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
-	return nil
-}
-
-func (h PerpetualHooks) AfterPositionDestroyed(ctx sdk.Context, owner sdk.AccAddress, poolId uint64, positionId uint64) error {
-	_, err := h.k.DeletePendingPerpetualOrdersForAddressAndPool(ctx, owner, poolId, positionId)
-	if err != nil {
-		return err
+func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error {
+	if closingRatio.Equal(math.LegacyOneDec()) {
+		_, err := h.k.DeletePendingPerpetualOrdersForAddressAndPool(ctx, sender, perpetualPool.AmmPoolId, positionId)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
