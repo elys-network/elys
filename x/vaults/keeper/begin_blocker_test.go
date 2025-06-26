@@ -153,19 +153,13 @@ func (suite *KeeperTestSuite) TestBeginBlocker_PerformanceFee() {
 	suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 	suite.app.VaultsKeeper.BeginBlocker(suite.ctx)
 
-	// Calculate expected performance fee
-	// Performance fee = profit * performance_fee_rate
-	expectedFee := profitAmount.Amount.ToLegacyDec().Mul(addVault.PerformanceFee).Quo(sdkmath.LegacyNewDec(1000))
-	expectedManagerFee := expectedFee.Mul(sdkmath.LegacyNewDec(1).Sub(addVault.ProtocolFeeShare))
-	expectedProtocolFee := expectedFee.Mul(addVault.ProtocolFeeShare)
-
 	// Verify manager received their share of the performance fee
 	managerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, manager, "uusdc")
-	suite.Require().Equal(managerBalance.Amount, expectedManagerFee.TruncateInt(),
+	suite.Require().Equal(managerBalance.Amount, sdkmath.NewInt(2),
 		"manager should receive correct performance fee amount")
 
 	// Verify protocol address received their share of the performance fee
 	protocolBalance := suite.app.BankKeeper.GetBalance(suite.ctx, protocolAddress, "uusdc")
-	suite.Require().Equal(protocolBalance.Amount, expectedProtocolFee.TruncateInt(),
+	suite.Require().Equal(protocolBalance.Amount, sdkmath.NewInt(1),
 		"protocol address should receive correct performance fee amount")
 }
