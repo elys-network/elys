@@ -11,17 +11,14 @@ import (
 )
 
 const (
-	OrderTypeLimitOpen  = int16(1)
-	OrderTypeLimitClose = int16(2)
-	LONG                = "LONG"
-	SHORT               = "SHORT"
+	LONG  = "LONG"
+	SHORT = "SHORT"
 )
 
 type PerpetualOrder struct {
 	OwnerAddress     string    `json:"owner_address"`
 	PoolID           int64     `json:"pool_id"`
 	OrderID          int64     `json:"order_id"`
-	OrderType        int16     `json:"order_type"`
 	IsLong           bool      `json:"is_long"`
 	Leverage         string    `json:"leverage"`
 	CollateralAmount string    `json:"collateral_amount"`
@@ -39,10 +36,10 @@ func CreatePerpetualOrder(order *PerpetualOrder) error {
 	// The SQL statement for insertion.
 	// We use RETURNING to get the database-generated timestamps.
 	sqlStatement := `
-        INSERT INTO tradeshield.perpetual_orders (
-            owner_address, pool_id, order_id, order_type, is_long, leverage, 
+        INSERT INTO tradeshield.perpetual_open_orders (
+            owner_address, pool_id, order_id, is_long, leverage, 
             collateral_amount, collateral_denom, price, take_profit_price, stop_loss_price
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING created_at, updated_at`
 
 	// Execute the query
@@ -51,7 +48,6 @@ func CreatePerpetualOrder(order *PerpetualOrder) error {
 		order.OwnerAddress,
 		order.PoolID,
 		order.OrderID,
-		order.OrderType,
 		order.IsLong,
 		order.Leverage,
 		order.CollateralAmount,
@@ -75,10 +71,10 @@ func CreatePerpetualOrder(order *PerpetualOrder) error {
 func GetPerpetualOrder(ownerAddress string, poolID int64, orderID int64) (*PerpetualOrder, error) {
 	// The SQL statement for selection.
 	sqlStatement := `
-        SELECT owner_address, pool_id, order_id, order_type, is_long, leverage, 
+        SELECT owner_address, pool_id, order_id, is_long, leverage, 
                collateral_amount, collateral_denom, price, take_profit_price, 
                stop_loss_price, created_at, updated_at 
-        FROM tradeshield.perpetual_orders 
+        FROM tradeshield.perpetual_open_orders 
         WHERE owner_address = $1 AND pool_id = $2 AND order_id = $3`
 
 	order := &PerpetualOrder{}
@@ -89,7 +85,6 @@ func GetPerpetualOrder(ownerAddress string, poolID int64, orderID int64) (*Perpe
 		&order.OwnerAddress,
 		&order.PoolID,
 		&order.OrderID,
-		&order.OrderType,
 		&order.IsLong,
 		&order.Leverage,
 		&order.CollateralAmount,
@@ -121,10 +116,10 @@ func UpdatePerpetualOrder(ownerAddress string, poolID int64, orderID int64, newP
 	// The SQL statement for updating.
 	// We also update the 'updated_at' timestamp to the current time.
 	sqlStatement := `
-        UPDATE tradeshield.perpetual_orders
+        UPDATE tradeshield.perpetual_open_orders
         SET price = $4, stop_loss_price = $5, updated_at = CURRENT_TIMESTAMP
         WHERE owner_address = $1 AND pool_id = $2 AND order_id = $3
-        RETURNING owner_address, pool_id, order_id, order_type, is_long, leverage,
+        RETURNING owner_address, pool_id, order_id, is_long, leverage,
                   collateral_amount, collateral_denom, price, take_profit_price, 
                   stop_loss_price, created_at, updated_at`
 
@@ -135,7 +130,6 @@ func UpdatePerpetualOrder(ownerAddress string, poolID int64, orderID int64, newP
 		&updatedOrder.OwnerAddress,
 		&updatedOrder.PoolID,
 		&updatedOrder.OrderID,
-		&updatedOrder.OrderType,
 		&updatedOrder.IsLong,
 		&updatedOrder.Leverage,
 		&updatedOrder.CollateralAmount,
@@ -165,7 +159,7 @@ func UpdatePerpetualOrder(ownerAddress string, poolID int64, orderID int64, newP
 func DeletePerpetualOrder(ownerAddress string, poolID int64, orderID int64) error {
 	// The SQL statement for deletion.
 	sqlStatement := `
-        DELETE FROM tradeshield.perpetual_orders 
+        DELETE FROM tradeshield.perpetual_open_orders 
         WHERE owner_address = $1 AND pool_id = $2 AND order_id = $3`
 
 	// Exec executes a query without returning any rows.
@@ -200,20 +194,18 @@ func GetOrderBook(poolID int64, isLong bool, limit, offset int) ([]PerpetualOrde
 		sortOrder = "DESC" // For longs/bids
 	}
 
-	orderType := OrderTypeLimitOpen
-
 	// Append LIMIT and OFFSET for pagination.
 	// We add a secondary sort on created_at to ensure deterministic ordering (FIFO) for orders at the same price.
 	sqlStatement := fmt.Sprintf(`
-		SELECT owner_address, pool_id, order_id, order_type, is_long, leverage,
+		SELECT owner_address, pool_id, order_id, is_long, leverage,
 			   collateral_amount, collateral_denom, price, take_profit_price, 
 			   stop_loss_price, created_at, updated_at 
-		FROM tradeshield.perpetual_orders 
-		WHERE pool_id = $1 AND order_type = $2 AND is_long = $3
+		FROM tradeshield.perpetual_open_orders 
+		WHERE pool_id = $1 AND is_long = $2
 		ORDER BY price %s, created_at ASC
 		LIMIT $4 OFFSET $5`, sortOrder)
 
-	rows, err := db.DataBase.Query(sqlStatement, poolID, orderType, isLong, limit, offset)
+	rows, err := db.DataBase.Query(sqlStatement, poolID, isLong, limit, offset)
 	if err != nil {
 		log.Printf("Error querying order book: %v", err)
 		return nil, err
@@ -227,7 +219,6 @@ func GetOrderBook(poolID int64, isLong bool, limit, offset int) ([]PerpetualOrde
 			&order.OwnerAddress,
 			&order.PoolID,
 			&order.OrderID,
-			&order.OrderType,
 			&order.IsLong,
 			&order.Leverage,
 			&order.CollateralAmount,

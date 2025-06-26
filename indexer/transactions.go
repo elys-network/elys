@@ -55,7 +55,6 @@ func ProcessTransactions(blockHeight int64) {
 						OwnerAddress:     attributes[1].Value,
 						PoolID:           poolId,
 						OrderID:          orderId,
-						OrderType:        tradeshield.OrderTypeLimitOpen,
 						IsLong:           attributes[9].Value == tradeshield.LONG,
 						Leverage:         attributes[6].Value,
 						CollateralAmount: attributes[4].Value,

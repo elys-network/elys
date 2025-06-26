@@ -13,12 +13,11 @@ CREATE TABLE IF NOT EXISTS chain.block
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS tradeshield.perpetual_orders
+CREATE TABLE IF NOT EXISTS tradeshield.perpetual_open_orders
 (
     owner_address     VARCHAR(255)    NOT NULL,
     pool_id           BIGINT          NOT NULL,
     order_id          BIGINT          NOT NULL,
-    order_type        SMALLINT        NOT NULL,
     is_long           bool            NOT NULL,
     leverage          NUMERIC(24, 18) NOT NULL,
     collateral_amount NUMERIC         NOT NULL,
@@ -31,7 +30,7 @@ CREATE TABLE IF NOT EXISTS tradeshield.perpetual_orders
     PRIMARY KEY (owner_address, pool_id, order_id)
 );
 
-CREATE INDEX tradeshield_perpetual_order_book ON tradeshield.perpetual_orders (pool_id, order_type, is_long, price);
+CREATE INDEX tradeshield_perpetual_order_book ON tradeshield.perpetual_open_orders (pool_id, is_long, price);
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
     RETURNS TRIGGER AS
@@ -44,7 +43,7 @@ $$ language 'plpgsql';
 
 CREATE TRIGGER update_ts_perpetual_orders_updated_at
     BEFORE UPDATE
-    ON tradeshield.perpetual_orders
+    ON tradeshield.perpetual_open_orders
     FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
@@ -55,4 +54,4 @@ CREATE TRIGGER update_chain_block_updated_at
 EXECUTE FUNCTION update_updated_at_column();
 
 GRANT ALL ON chain.block TO elys;
-GRANT ALL ON tradeshield.perpetual_orders TO elys;
+GRANT ALL ON tradeshield.perpetual_open_orders TO elys;
