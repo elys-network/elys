@@ -30,6 +30,12 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Prevent changing Eden and EdenB validators
+	oldParams := k.GetParams(ctx)
+	req.Params.EdenCommitVal = oldParams.EdenCommitVal
+	req.Params.EdenbCommitVal = oldParams.EdenbCommitVal
+
 	k.SetParams(ctx, req.Params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
