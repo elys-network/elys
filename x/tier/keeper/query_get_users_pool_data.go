@@ -26,7 +26,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	listCommitments, pagination, err := k.commitement.GetAllCommitmentsWithPagination(ctx, req.Pagination)
+	listCommitments, pagination, err := k.commitment.GetAllCommitmentsWithPagination(ctx, req.Pagination)
 
 	if err != nil {
 		return nil, err
