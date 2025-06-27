@@ -21,7 +21,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		return nil, err
 	}
 
-	mtp, err := k.Keeper.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.Keeper.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}

@@ -31,8 +31,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
@@ -72,7 +72,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		},
 		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
-			"amount too low",
+			"mtp health would be too low for safety factor",
 			func() {
 				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
 				msg.Collateral.Denom = ptypes.BaseCurrency
