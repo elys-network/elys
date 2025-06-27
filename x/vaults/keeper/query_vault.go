@@ -21,12 +21,12 @@ func (k Keeper) Vault(goCtx context.Context, req *types.QueryVaultRequest) (*typ
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	vault, found := k.GetVault(ctx, req.VaultId)
-	if !found {
-		return nil, status.Error(codes.NotFound, "vault not found")
+	vaultAndData, err := k.GetVaultAndData(ctx, req.VaultId)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryVaultResponse{Vault: vault}, nil
+	return &types.QueryVaultResponse{Vault: vaultAndData}, nil
 }
 
 func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*types.QueryVaultsResponse, error) {
@@ -35,7 +35,45 @@ func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*t
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryVaultsResponse{Vaults: k.GetAllVaults(ctx)}, nil
+	vaults := k.GetAllVaults(ctx)
+	vaultsAndData := []types.VaultAndData{}
+	for _, vault := range vaults {
+		vaultAndData, err := k.GetVaultAndData(ctx, vault.Id)
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		vaultsAndData = append(vaultsAndData, vaultAndData)
+	}
+
+	return &types.QueryVaultsResponse{Vaults: vaultsAndData}, nil
+}
+
+func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64) (types.VaultAndData, error) {
+	vault, found := k.GetVault(ctx, vaultId)
+	if !found {
+		return types.VaultAndData{}, status.Error(codes.NotFound, "vault not found")
+	}
+
+	edenApr := k.EdenApr(ctx, vaultId)
+	pnlApr := k.GetPnlApr(ctx, vaultId)
+	totalDepositsUsd, _ := k.VaultUsdValue(ctx, vaultId)
+	// Deposit denom usd value
+	balance := k.bk.GetBalance(ctx, types.NewVaultAddress(vaultId), vault.DepositDenom)
+	depositDenomUsdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, balance.Amount)
+	depositsUsed := depositDenomUsdValue.Quo(totalDepositsUsd.Sub(depositDenomUsdValue))
+	positions, err := k.GetVaultPositions(ctx, vaultId)
+	if err != nil {
+		return types.VaultAndData{}, err
+	}
+
+	return types.VaultAndData{
+		Vault:            &vault,
+		EdenApr:          edenApr.Dec(),
+		PnlApr:           pnlApr,
+		TotalDepositsUsd: totalDepositsUsd.Dec(),
+		DepositsUsed:     depositsUsed.Dec(),
+		Positions:        positions,
+	}, nil
 }
 
 func (k Keeper) VaultValue(goCtx context.Context, req *types.QueryVaultValue) (*types.QueryVaultValueResponse, error) {
@@ -112,3 +150,46 @@ func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) ([]types.Posi
 	}
 	return positions, nil
 }
+
+func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
+	edenApr := osmomath.ZeroBigDec()
+	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, "usdc")
+
+	tvl, err := k.VaultUsdValue(ctx, vaultId)
+	if err != nil {
+		return osmomath.ZeroBigDec()
+	}
+
+	firstAccum := k.FirstPoolRewardsAccum(ctx, vaultId)
+	lastAccum := k.LastPoolRewardsAccum(ctx, vaultId)
+	if lastAccum.Timestamp == 0 {
+		return osmomath.ZeroBigDec()
+	}
+
+	if firstAccum.Timestamp == lastAccum.Timestamp {
+		edenApr = lastAccum.EdenReward.
+			MulInt64(int64(totalBlocksPerYear)).
+			Mul(usdcDenomPrice).
+			Quo(tvl)
+	} else {
+		duration := lastAccum.Timestamp - firstAccum.Timestamp
+		secondsInYear := int64(86400 * 360)
+
+		edenApr = lastAccum.EdenReward.Sub(firstAccum.EdenReward).
+			MulInt64(secondsInYear).
+			QuoInt64(int64(duration)).
+			Mul(usdcDenomPrice).
+			Quo(tvl).Dec()
+	}
+	return edenApr
+}
+
+// func (k Keeper) PnlApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
+// 	vault, found := k.GetVault(ctx, vaultId)
+// 	if !found {
+// 		return osmomath.ZeroBigDec()
+// 	}
+// 	pnlApr := k.GetPnlApr(ctx, vaultId)
+// 	return pnlApr
+// }
