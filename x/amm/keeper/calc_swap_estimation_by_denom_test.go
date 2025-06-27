@@ -106,7 +106,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
-		ptypes.Elys, "uusda", ptypes.BaseCurrency,
+		ptypes.Elys, "uusda", []string{ptypes.BaseCurrency},
 		"",
 		osmomath.ZeroBigDec(),
 		1,
@@ -121,7 +121,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
-		ptypes.Elys, "uusda", ptypes.BaseCurrency,
+		ptypes.Elys, "uusda", []string{ptypes.BaseCurrency},
 		"",
 		osmomath.ZeroBigDec(),
 		1,
@@ -136,7 +136,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	amount = sdk.NewCoin("invalid", sdkmath.NewInt(1000))
 	_, _, _, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx, amount,
-		ptypes.Elys, "uusda", ptypes.BaseCurrency,
+		ptypes.Elys, "uusda", []string{ptypes.BaseCurrency},
 		"",
 		osmomath.ZeroBigDec(),
 		1,
