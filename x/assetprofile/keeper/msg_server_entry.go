@@ -26,7 +26,7 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != entry.Authority {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -83,7 +83,7 @@ func (k msgServer) DeleteEntry(goCtx context.Context, msg *types.MsgDeleteEntry)
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != entry.Authority {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}

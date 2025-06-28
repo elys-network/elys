@@ -50,7 +50,7 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -79,7 +79,7 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -97,7 +97,7 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Sender != airdrop.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
