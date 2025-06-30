@@ -33,6 +33,7 @@ func NewParams() Params {
 		EnabledPools:                        []uint64(nil),
 		MinimumNotionalValue:                math.LegacyNewDec(0),
 		LongMinimumLiabilityAmount:          math.NewInt(1),
+		ExitBuffer:                          math.LegacyMustNewDecFromStr("0.15"),
 	}
 }
 
@@ -116,6 +117,10 @@ func (p Params) Validate() error {
 
 	if containsDuplicates(p.EnabledPools) {
 		return errors.New("array must not contain duplicate values")
+	}
+
+	if err := CheckLegacyDecNilAndNegative(p.ExitBuffer, "ExitBuffer"); err != nil {
+		return err
 	}
 	return nil
 }

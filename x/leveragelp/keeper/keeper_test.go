@@ -404,19 +404,19 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        osmomath.BigDec
+		expectedValue        math.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			osmomath.ZeroBigDec(),
+			math.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.OneBigDec(),
+			math.LegacyOneDec(),
 		},
 		{
 			"success",
@@ -424,7 +424,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.BigDecFromSDKInt(totalShares.Sub(leveragelpAmount)).Quo(osmomath.BigDecFromSDKInt(totalShares)),
+			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().Quo(totalShares.ToLegacyDec()),
 		},
 	}
 

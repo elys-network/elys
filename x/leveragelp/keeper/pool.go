@@ -110,7 +110,7 @@ func (k Keeper) V21Migration(ctx sdk.Context) {
 			}
 
 			pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
-			pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
+			pool.Health = k.CalculatePoolHealth(ctx, &pool)
 			k.SetPool(ctx, pool)
 		}
 	}

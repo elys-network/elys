@@ -3,14 +3,13 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // GetMTPHealth Health = custody / liabilities
 // It's responsibility of outer function to update mtp.BorrowInterestUnpaidLiability using UpdateMTPBorrowInterestUnpaidLiability
-func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
+func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
 
 	if mtp.Custody.LTE(math.ZeroInt()) {
 		return math.LegacyZeroDec(), nil

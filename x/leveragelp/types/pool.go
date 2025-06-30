@@ -9,13 +9,13 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func NewPool(poolId uint64, maxLeverage sdkmath.LegacyDec) Pool {
+func NewPool(poolId uint64, maxLeverage, maxLeveragelpRatio sdkmath.LegacyDec) Pool {
 	return Pool{
 		AmmPoolId:          poolId,
-		Health:             sdkmath.LegacyNewDec(100),
+		Health:             sdkmath.LegacyOneDec(),
 		LeveragedLpAmount:  sdkmath.ZeroInt(),
 		LeverageMax:        maxLeverage,
-		MaxLeveragelpRatio: sdkmath.LegacyMustNewDecFromStr("0.6"),
+		MaxLeveragelpRatio: maxLeveragelpRatio,
 	}
 }
 

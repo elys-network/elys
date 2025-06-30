@@ -127,6 +127,11 @@ message MsgUpdateStopLossResponse {}
 
 message AddPool {
   uint64 amm_pool_id = 1;
+  string pool_max_leverage_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   string leverage_max = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

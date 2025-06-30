@@ -37,7 +37,7 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 	maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
 	leverage := sdkmath.LegacyMinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
 
-	newPool := types.NewPool(ammPool.PoolId, leverage)
+	newPool := types.NewPool(ammPool.PoolId, leverage, msg.Pool.PoolMaxLeverageRatio)
 	for _, asset := range ammPool.PoolAssets {
 		newPool.AssetLeverageAmounts = append(newPool.AssetLeverageAmounts, &types.AssetLeverageAmount{
 			Denom:           asset.Token.Denom,
