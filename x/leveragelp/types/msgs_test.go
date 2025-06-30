@@ -244,7 +244,7 @@ func TestMsgAddPool(t *testing.T) {
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
 
 			},
-			errMsg: "leverage should be more than or equal to 1",
+			errMsg: "LeverageMax is negative",
 		},
 		{
 			name: "leverage is 1",
