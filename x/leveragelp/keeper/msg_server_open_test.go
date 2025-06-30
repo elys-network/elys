@@ -227,7 +227,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrPoolNotCreatedForBorrow.Error(),
 			func() {
-				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 		{"Base currency not found",
@@ -257,7 +259,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			errors.New("pool health too low to open new positions").Error(),
 			func() {
 				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
-				suite.SetPoolThreshold(sdkmath.LegacyOneDec())
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.001")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 		{"Low Balance of creator",
@@ -272,7 +276,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			"insufficient funds",
 			func() {
-				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 		{"Borrowing more than allowed",
@@ -287,7 +293,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			"stable stake pool max borrow capacity used up",
 			func() {
-				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 		{"Position safety factor too low",
@@ -335,7 +343,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.1"))
-				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 		{"Add on already open position Long but with different leverage 10",
@@ -408,7 +418,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			errors.New("pool health too low to open new positions").Error(),
 			func() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.0"))
-				suite.SetPoolThreshold(sdkmath.LegacyOneDec())
+				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 	}

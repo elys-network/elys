@@ -144,15 +144,6 @@ func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetPoolThreshold(value math.LegacyDec) {
-	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
-	params.PoolOpenThreshold = value
-	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (suite *KeeperTestSuite) SetSafetyFactor(value math.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.SafetyFactor = value
