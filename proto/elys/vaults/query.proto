@@ -39,6 +39,20 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/vaults/vault_positions/{vault_id}";
   }
+
+  // DepositEstimation queries the estimated deposit amount for a vault.
+  rpc DepositEstimation(QueryDepositEstimationRequest)
+      returns (QueryDepositEstimationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/deposit_estimation/{vault_id}/{amount}";
+  }
+
+  // WithdrawEstimation queries the estimated withdraw amount for a vault.
+  rpc WithdrawEstimation(QueryWithdrawEstimationRequest)
+      returns (QueryWithdrawEstimationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/withdraw_estimation/{vault_id}/{shares_amount}";
+  }
 }
 
 
@@ -115,4 +129,48 @@ message QueryVaultPositionsRequest { uint64 vault_id = 1; }
 
 message QueryVaultPositionsResponse {
   repeated PositionToken positions = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryDepositEstimationRequest {
+  uint64 vault_id = 1;
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryDepositEstimationResponse {
+  string shares_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string shares_usd_value = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWithdrawEstimationRequest {
+  uint64 vault_id = 1;
+  string shares_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWithdrawEstimationResponse {
+  string amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string usd_value = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

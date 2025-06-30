@@ -40,6 +40,18 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Shows the positions of the vault",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
 				},
+				{
+					RpcMethod:      "DepositEstimation",
+					Use:            "deposit-estimation <vault-id> <amount>",
+					Short:          "Shows the estimated deposit amount for a vault",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "amount"}},
+				},
+				{
+					RpcMethod:      "WithdrawEstimation",
+					Use:            "withdraw-estimation <vault-id> <shares-amount>",
+					Short:          "Shows the estimated withdraw amount for a vault",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "shares_amount"}},
+				},
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

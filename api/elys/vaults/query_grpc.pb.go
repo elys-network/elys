@@ -28,6 +28,10 @@ type QueryClient interface {
 	VaultValue(ctx context.Context, in *QueryVaultValue, opts ...grpc.CallOption) (*QueryVaultValueResponse, error)
 	// VaultPositions queries the positions of a vault.
 	VaultPositions(ctx context.Context, in *QueryVaultPositionsRequest, opts ...grpc.CallOption) (*QueryVaultPositionsResponse, error)
+	// DepositEstimation queries the estimated deposit amount for a vault.
+	DepositEstimation(ctx context.Context, in *QueryDepositEstimationRequest, opts ...grpc.CallOption) (*QueryDepositEstimationResponse, error)
+	// WithdrawEstimation queries the estimated withdraw amount for a vault.
+	WithdrawEstimation(ctx context.Context, in *QueryWithdrawEstimationRequest, opts ...grpc.CallOption) (*QueryWithdrawEstimationResponse, error)
 }
 
 type queryClient struct {
@@ -83,6 +87,24 @@ func (c *queryClient) VaultPositions(ctx context.Context, in *QueryVaultPosition
 	return out, nil
 }
 
+func (c *queryClient) DepositEstimation(ctx context.Context, in *QueryDepositEstimationRequest, opts ...grpc.CallOption) (*QueryDepositEstimationResponse, error) {
+	out := new(QueryDepositEstimationResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Query/DepositEstimation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) WithdrawEstimation(ctx context.Context, in *QueryWithdrawEstimationRequest, opts ...grpc.CallOption) (*QueryWithdrawEstimationResponse, error) {
+	out := new(QueryWithdrawEstimationResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Query/WithdrawEstimation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -97,6 +119,10 @@ type QueryServer interface {
 	VaultValue(context.Context, *QueryVaultValue) (*QueryVaultValueResponse, error)
 	// VaultPositions queries the positions of a vault.
 	VaultPositions(context.Context, *QueryVaultPositionsRequest) (*QueryVaultPositionsResponse, error)
+	// DepositEstimation queries the estimated deposit amount for a vault.
+	DepositEstimation(context.Context, *QueryDepositEstimationRequest) (*QueryDepositEstimationResponse, error)
+	// WithdrawEstimation queries the estimated withdraw amount for a vault.
+	WithdrawEstimation(context.Context, *QueryWithdrawEstimationRequest) (*QueryWithdrawEstimationResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -118,6 +144,12 @@ func (UnimplementedQueryServer) VaultValue(context.Context, *QueryVaultValue) (*
 }
 func (UnimplementedQueryServer) VaultPositions(context.Context, *QueryVaultPositionsRequest) (*QueryVaultPositionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VaultPositions not implemented")
+}
+func (UnimplementedQueryServer) DepositEstimation(context.Context, *QueryDepositEstimationRequest) (*QueryDepositEstimationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DepositEstimation not implemented")
+}
+func (UnimplementedQueryServer) WithdrawEstimation(context.Context, *QueryWithdrawEstimationRequest) (*QueryWithdrawEstimationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawEstimation not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -222,6 +254,42 @@ func _Query_VaultPositions_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_DepositEstimation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDepositEstimationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DepositEstimation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Query/DepositEstimation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DepositEstimation(ctx, req.(*QueryDepositEstimationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_WithdrawEstimation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWithdrawEstimationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).WithdrawEstimation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Query/WithdrawEstimation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).WithdrawEstimation(ctx, req.(*QueryWithdrawEstimationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -248,6 +316,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VaultPositions",
 			Handler:    _Query_VaultPositions_Handler,
+		},
+		{
+			MethodName: "DepositEstimation",
+			Handler:    _Query_DepositEstimation_Handler,
+		},
+		{
+			MethodName: "WithdrawEstimation",
+			Handler:    _Query_WithdrawEstimation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
