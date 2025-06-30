@@ -65,6 +65,28 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
+			for _, profile := range app.AssetprofileKeeper.GetAllEntry(ctx) {
+				if profile.DisplayName == "WBTC" || profile.DisplayName == "wBTC" {
+					profile.DisplayName = "BTC"
+				}
+				if profile.DisplayName == "WETH" || profile.DisplayName == "wETH" {
+					profile.DisplayName = "ETH"
+				}
+			}
+
+			for _, assetInfo := range app.LegacyOracleKeepper.GetAllAssetInfo(ctx) {
+				if assetInfo.Display == "WBTC" || assetInfo.Display == "wBTC" {
+					assetInfo.Display = "BTC"
+					assetInfo.BandTicker = "BTC"
+					assetInfo.ElysTicker = "BTC"
+				}
+				if assetInfo.Display == "WETH" || assetInfo.Display == "wETH" {
+					assetInfo.Display = "ETH"
+					assetInfo.BandTicker = "ETH"
+					assetInfo.ElysTicker = "ETH"
+				}
+			}
+
 			oracleParams := app.OracleKeeper.GetParams(ctx)
 			if len(oracleParams.MandatoryList) == 0 {
 				err := app.ojoOracleMigration(ctx, plan.Height+1)

@@ -191,7 +191,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		ExternLiquidityProvider: "gate",
 	},
 	{
-		BaseDenom:       "WBTC",
+		BaseDenom:       "BTC",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "BTC",
 		QuoteProxyDenom: "USDT",
@@ -203,7 +203,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		ExternLiquidityProvider: "binance",
 	},
 	{
-		BaseDenom:       "WETH",
+		BaseDenom:       "ETH",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "ETH",
 		QuoteProxyDenom: "USDT",
