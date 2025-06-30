@@ -59,9 +59,9 @@ func (suite *KeeperTestSuite) TestVaultQuery() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().NotNil(resp)
-				suite.Require().Equal(uint64(1), resp.Vault.Id)
-				suite.Require().Equal("uusdc", resp.Vault.DepositDenom)
-				suite.Require().Equal(sdkmath.LegacyNewDec(1000000), resp.Vault.MaxAmountUsd)
+				suite.Require().Equal(uint64(1), resp.Vault.Vault.Id)
+				suite.Require().Equal("uusdc", resp.Vault.Vault.DepositDenom)
+				suite.Require().Equal(sdkmath.LegacyNewDec(1000000), resp.Vault.Vault.MaxAmountUsd)
 			}
 		})
 	}

@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"strings"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	tiertypes "github.com/elys-network/elys/v6/x/tier/types"
 	"github.com/elys-network/elys/v6/x/vaults/types"
 )
@@ -55,7 +57,7 @@ func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64) (types.VaultAnd
 	}
 
 	edenApr := k.EdenApr(ctx, vaultId)
-	pnlApr := k.GetPnlApr(ctx, vaultId)
+	//pnlApr := k.GetPnlApr(ctx, vaultId)
 	totalDepositsUsd, _ := k.VaultUsdValue(ctx, vaultId)
 	// Deposit denom usd value
 	balance := k.bk.GetBalance(ctx, types.NewVaultAddress(vaultId), vault.DepositDenom)
@@ -67,9 +69,9 @@ func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64) (types.VaultAnd
 	}
 
 	return types.VaultAndData{
-		Vault:            &vault,
-		EdenApr:          edenApr.Dec(),
-		PnlApr:           pnlApr,
+		Vault:   &vault,
+		EdenApr: edenApr.Dec(),
+		//	PnlApr:           pnlApr,
 		TotalDepositsUsd: totalDepositsUsd.Dec(),
 		DepositsUsed:     depositsUsed.Dec(),
 		Positions:        positions,
@@ -154,7 +156,7 @@ func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) ([]types.Posi
 func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 	edenApr := osmomath.ZeroBigDec()
 	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
-	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, "usdc")
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, ptypes.BaseCurrency)
 
 	tvl, err := k.VaultUsdValue(ctx, vaultId)
 	if err != nil {
@@ -168,19 +170,19 @@ func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 	}
 
 	if firstAccum.Timestamp == lastAccum.Timestamp {
-		edenApr = lastAccum.EdenReward.
-			MulInt64(int64(totalBlocksPerYear)).
-			Mul(usdcDenomPrice).
-			Quo(tvl)
+		edenApr = osmomath.BigDecFromDec(lastAccum.EdenReward.
+			Mul(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(int64(totalBlocksPerYear)))).
+			Mul(usdcDenomPrice.Dec()).
+			Quo(tvl.Dec()))
 	} else {
 		duration := lastAccum.Timestamp - firstAccum.Timestamp
 		secondsInYear := int64(86400 * 360)
 
-		edenApr = lastAccum.EdenReward.Sub(firstAccum.EdenReward).
-			MulInt64(secondsInYear).
-			QuoInt64(int64(duration)).
-			Mul(usdcDenomPrice).
-			Quo(tvl).Dec()
+		edenApr = osmomath.BigDecFromDec(lastAccum.EdenReward.Sub(firstAccum.EdenReward).
+			Mul(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(secondsInYear))).
+			Quo(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(int64(duration)))).
+			Mul(usdcDenomPrice.Dec()).
+			Quo(tvl.Dec()))
 	}
 	return edenApr
 }

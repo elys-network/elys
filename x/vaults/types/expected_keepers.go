@@ -103,3 +103,7 @@ type ParamSubspace interface {
 	Get(context.Context, []byte, interface{})
 	Set(context.Context, []byte, interface{})
 }
+
+type OracleKeeper interface {
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
+}

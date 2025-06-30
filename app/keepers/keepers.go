@@ -739,6 +739,7 @@ func NewAppKeeper(
 		app.ParameterKeeper,
 		app.MasterchefKeeper,
 		app.AssetprofileKeeper,
+		app.OracleKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
