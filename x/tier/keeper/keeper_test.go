@@ -235,8 +235,9 @@ func (suite *TierKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOr
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:            poolId,
+			LeverageMax:          math.LegacyMustNewDecFromStr("10"),
+			PoolMaxLeverageRatio: math.LegacyMustNewDecFromStr("0.99"),
 		},
 	}
 

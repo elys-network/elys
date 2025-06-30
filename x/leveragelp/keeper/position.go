@@ -313,7 +313,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if found {
 				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
-				pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
+				pool.Health = k.CalculatePoolHealth(ctx, &pool)
 				k.SetPool(ctx, pool)
 			}
 

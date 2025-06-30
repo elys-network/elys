@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"errors"
 	"fmt"
 
 	storetypes "cosmossdk.io/core/store"
@@ -36,24 +35,20 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.P
 	return nil, nil
 }
 
-// TODO simplify this design. Double check happening, one at pool level, one at global level
-func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
+func (k Keeper) CheckMaxLeverageRatio(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "leverage lp pool: %d", poolId)
 	}
 
-	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
-		return errors.New("pool health too low to open new positions")
-	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
 	}
 
-	poolLeveragelpRatio := pool.GetBigDecLeveragedLpAmount().Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
+	poolLeverageRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	if poolLeveragelpRatio.GT(pool.GetBigDecMaxLeveragelpRatio()) {
+	if poolLeverageRatio.GTE(pool.MaxLeveragelpRatio) {
 		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil

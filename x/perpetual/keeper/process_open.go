@@ -76,7 +76,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 	}
 
 	// Update the MTP health.
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp)
 	if err != nil {
 		return err
 	}

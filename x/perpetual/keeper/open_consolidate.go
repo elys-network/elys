@@ -52,7 +52,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		existingMtp.TakeProfitPrice = msg.TakeProfitPrice
 	}
 
-	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
+	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		}
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, true); err != nil {
 		return nil, err
 	}
 
