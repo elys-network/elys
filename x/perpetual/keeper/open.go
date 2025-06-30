@@ -69,7 +69,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId, true); err != nil {
 		return nil, err
 	}
 
@@ -98,7 +98,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, baseCurrency)
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId, true); err != nil {
 		return nil, err
 	}
 

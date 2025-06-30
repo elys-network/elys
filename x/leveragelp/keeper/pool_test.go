@@ -16,7 +16,7 @@ import (
 func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
-		items[i] = types.NewPool((uint64)(i), math.LegacyMustNewDecFromStr("10"))
+		items[i] = types.NewPool((uint64)(i), math.LegacyMustNewDecFromStr("10"), math.LegacyMustNewDecFromStr("0.6"))
 
 		keeper.SetPool(ctx, items[i])
 	}
