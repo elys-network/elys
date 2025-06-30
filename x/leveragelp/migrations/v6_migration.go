@@ -23,7 +23,7 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 			return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 		}
 		pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
-		pool.Health = m.keeper.CalculatePoolHealth(ctx, &pool).Dec()
+		pool.Health = m.keeper.CalculatePoolHealth(ctx, &pool)
 		m.keeper.SetPool(ctx, pool)
 	}
 	return nil
