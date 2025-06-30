@@ -256,11 +256,11 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			errors.New("pool health too low to open new positions").Error(),
+			errors.New("pool is unhealthy: pool is already leveraged at maximum value").Error(),
 			func() {
 				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
 				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
-				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.001")
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.00000000000000001")
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
@@ -415,11 +415,11 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			errors.New("pool health too low to open new positions").Error(),
+			errors.New("pool is unhealthy: pool is already leveraged at maximum value").Error(),
 			func() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.0"))
 				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
-				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.8")
+				pool.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.00000000000000001")
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
