@@ -111,6 +111,10 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	vault.WithdrawalUsdValue = vault.WithdrawalUsdValue.Add(usdValue.Dec())
 	k.SetVault(ctx, vault)
 
+	userData, _ := k.GetUserData(ctx, creator.String(), req.VaultId)
+	userData.TotalWithdrawalsUsd = userData.TotalWithdrawalsUsd.Add(usdValue.Dec())
+	k.SetUserData(ctx, creator.String(), req.VaultId, userData)
+
 	k.AfterWithdraw(ctx, req.VaultId, creator, req.Shares)
 
 	return &types.MsgWithdrawResponse{}, nil

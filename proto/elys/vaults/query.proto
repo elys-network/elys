@@ -53,6 +53,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/vaults/withdraw_estimation/{vault_id}/{shares_amount}";
   }
+
+  // PnL queries the PnL of a user.
+  rpc PnL(QueryPnLRequest) returns (QueryPnLResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/pnl/{address}";
+  }
 }
 
 
@@ -173,4 +179,31 @@ message QueryWithdrawEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryPnLRequest {
+  string address = 1;
+}
+
+message QueryPnLResponse {
+  repeated PnlResponse pnls = 1 [ (gogoproto.nullable) = false ];
+}
+
+message PnlResponse {
+  string pnl_usd = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_usd_value = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string current_balance_usd = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 vault_id = 4;
 }

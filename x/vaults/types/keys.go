@@ -32,8 +32,11 @@ func GetVaultKey(key uint64) []byte {
 	return append(VaultKeyPrefix, sdk.Uint64ToBigEndian(key)...)
 }
 
-func GetUserDataKey(key string) []byte {
-	return append(UserDataKeyPrefix, []byte(key)...)
+func GetUserDataKey(address string, vaultId uint64) []byte {
+	key := append(UserDataKeyPrefix, []byte(address)...)
+	key = append(key, []byte("/")...)
+	key = append(key, sdk.Uint64ToBigEndian(vaultId)...)
+	return key
 }
 
 func GetPoolInfoKey(key uint64) []byte {

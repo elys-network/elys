@@ -192,6 +192,34 @@ func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 	return edenApr
 }
 
+func (k Keeper) PnL(goCtx context.Context, req *types.QueryPnLRequest) (*types.QueryPnLResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	vaults := k.GetAllVaults(ctx)
+	pnls := []types.PnlResponse{}
+	for _, vault := range vaults {
+		userData, _ := k.GetUserData(ctx, req.Address, vault.Id)
+		// get vault usd value
+		balances := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
+		currentBalanceUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
+		profitAndLossUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
+		edenUsdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, balances.Amount)
+
+		pnls = append(pnls, types.PnlResponse{
+			PnlUsd:            userData.PnlUsd.Dec(),
+			EdenUsdValue:      userData.EdenUsdValue.Dec(),
+			CurrentBalanceUsd: userData.CurrentBalanceUsd.Dec(),
+		})
+	}
+
+	return &types.QueryPnLResponse{
+		Pnls: pnls,
+	}, nil
+}
+
 // func (k Keeper) PnlApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 // 	vault, found := k.GetVault(ctx, vaultId)
 // 	if !found {

@@ -85,6 +85,10 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(usdValue.Dec())
 	k.SetVault(ctx, vault)
 
+	userData, _ := k.GetUserData(ctx, depositer.String(), vault.Id)
+	userData.TotalDepositsUsd = userData.TotalDepositsUsd.Add(usdValue.Dec())
+	k.SetUserData(ctx, depositer.String(), vault.Id, userData)
+
 	k.AfterDeposit(ctx, vault.Id, depositer, shareAmount)
 
 	return &types.MsgDepositResponse{
