@@ -144,15 +144,6 @@ func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetPoolThreshold(value math.LegacyDec) {
-	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
-	params.PoolOpenThreshold = value
-	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (suite *KeeperTestSuite) SetSafetyFactor(value math.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.SafetyFactor = value
@@ -404,19 +395,19 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        osmomath.BigDec
+		expectedValue        math.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			osmomath.ZeroBigDec(),
+			math.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.OneBigDec(),
+			math.LegacyOneDec(),
 		},
 		{
 			"success",
@@ -424,7 +415,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.BigDecFromSDKInt(totalShares.Sub(leveragelpAmount)).Quo(osmomath.BigDecFromSDKInt(totalShares)),
+			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().Quo(totalShares.ToLegacyDec()),
 		},
 	}
 

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -72,8 +73,9 @@ func (app *ElysApp) setUpgradeHandler() {
 			//	}
 			//}
 
-			if ctx.ChainID() == "elysicstestnet-1" {
-				app.GovKeeper.Proposals.Remove(ctx, 87)
+			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
+				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
+				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 
 			return vm, vmErr

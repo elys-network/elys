@@ -18,7 +18,7 @@ import (
 func TestPool_InitiatePoolInvalid(t *testing.T) {
 	ctx := sdk.Context{} // mock or setup a context
 
-	pool := types.NewPool(1, math.LegacyNewDec(10))
+	pool := types.NewPool(1, math.LegacyNewDec(10), math.LegacyMustNewDecFromStr("0.6"))
 	err := pool.InitiatePool(ctx, nil)
 	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
 

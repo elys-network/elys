@@ -55,8 +55,9 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 	enablePoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyNewDec(10),
+			AmmPoolId:            poolId,
+			LeverageMax:          sdkmath.LegacyNewDec(10),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
