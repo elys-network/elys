@@ -218,6 +218,8 @@ func TestMsgAddPool(t *testing.T) {
 			name: "success",
 			setter: func() {
 				msg.Authority = sample.AccAddress()
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(3)
+				msg.Pool.PoolMaxLeverageRatio = sdkmath.LegacyOneDec().QuoInt64(3)
 			},
 			errMsg: "",
 		},
@@ -237,9 +239,10 @@ func TestMsgAddPool(t *testing.T) {
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
-			name: "leverage is < 0",
+			name: "LeverageMax is negative",
 			setter: func() {
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
+
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},

@@ -59,8 +59,9 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		enablePoolMsg := types.MsgAddPool{
 			Authority: authtypes.NewModuleAddress("gov").String(),
 			Pool: types.AddPool{
-				AmmPoolId:   poolId,
-				LeverageMax: sdkmath.LegacyNewDec(10),
+				AmmPoolId:            poolId,
+				LeverageMax:          sdkmath.LegacyNewDec(10),
+				PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
 			},
 		}
 		msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
@@ -191,6 +192,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 }
 
 func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
+	suite.ResetSuite()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency

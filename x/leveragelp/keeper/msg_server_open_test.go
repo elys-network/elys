@@ -81,8 +81,9 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	addPoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:            poolId,
+			LeverageMax:          sdkmath.LegacyMustNewDecFromStr("10"),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &addPoolMsg)
