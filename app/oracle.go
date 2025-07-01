@@ -280,6 +280,26 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		},
 		ExternLiquidityProvider: "binance",
 	},
+	{
+		BaseDenom:  "LINK",
+		QuoteDenom: "USDT",
+		Providers: []string{
+			"binance",
+			"gate",
+			"mexc",
+		},
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:  "ONDO",
+		QuoteDenom: "USDT",
+		Providers: []string{
+			"binance",
+			"gate",
+			"mexc",
+		},
+		ExternLiquidityProvider: "binance",
+	},
 }
 
 func addDenomToList(denom, display string, decimal uint64, denomList []ojooracletypes.Denom, rewardBand []ojooracletypes.RewardBand, deviationThreshold []ojooracletypes.CurrencyDeviationThreshold) ([]ojooracletypes.Denom, []ojooracletypes.RewardBand, []ojooracletypes.CurrencyDeviationThreshold) {

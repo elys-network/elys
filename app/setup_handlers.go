@@ -8,7 +8,6 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -73,6 +72,7 @@ func (app *ElysApp) setUpgradeHandler() {
 				if profile.DisplayName == "WETH" || profile.DisplayName == "wETH" {
 					profile.DisplayName = "ETH"
 				}
+				app.AssetprofileKeeper.SetEntry(ctx, profile)
 			}
 
 			for _, assetInfo := range app.LegacyOracleKeepper.GetAllAssetInfo(ctx) {
@@ -86,6 +86,17 @@ func (app *ElysApp) setUpgradeHandler() {
 					assetInfo.BandTicker = "ETH"
 					assetInfo.ElysTicker = "ETH"
 				}
+				app.LegacyOracleKeepper.SetAssetInfo(ctx, assetInfo)
+			}
+
+			for _, price := range app.LegacyOracleKeepper.GetAllAssetPrice(ctx, "WBTC") {
+				price.Asset = "BTC"
+				app.LegacyOracleKeepper.SetPrice(ctx, price)
+			}
+
+			for _, price := range app.LegacyOracleKeepper.GetAllAssetPrice(ctx, "WETH") {
+				price.Asset = "ETH"
+				app.LegacyOracleKeepper.SetPrice(ctx, price)
 			}
 
 			oracleParams := app.OracleKeeper.GetParams(ctx)
