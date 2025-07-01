@@ -137,11 +137,6 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 }
 
 func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string) (*types.MtpAndPrice, error) {
-	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return &types.MtpAndPrice{}, fmt.Errorf("amm pool %d not found", mtp.AmmPoolId)
-	}
-
 	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
@@ -157,7 +152,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 		return nil, err
 	}
 
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}

@@ -120,7 +120,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp)
 	if err != nil {
 		return err
 	}

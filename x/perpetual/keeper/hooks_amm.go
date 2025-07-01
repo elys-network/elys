@@ -30,7 +30,7 @@ func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool 
 func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
 	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		// It is possible that this pool haven't been enabled
+		// It is possible that this pool hasn't been enabled
 		return nil
 	}
 
@@ -39,7 +39,7 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
 	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		// It is possible that this pool haven't been enabled
+		// It is possible that this pool hasn't been enabled
 		return nil
 	}
 
@@ -61,7 +61,7 @@ func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
 	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		// It is possible that this pool haven't been enabled
+		// It is possible that this pool hasn't been enabled
 		return nil
 	}
 
@@ -82,7 +82,7 @@ func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammt
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}

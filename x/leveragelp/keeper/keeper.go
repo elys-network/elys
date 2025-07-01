@@ -111,22 +111,21 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 }
 
 func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) {
-	pool.Health = k.CalculatePoolHealth(ctx, pool).Dec()
+	pool.Health = k.CalculatePoolHealth(ctx, pool)
 	k.SetPool(ctx, *pool)
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) osmomath.BigDec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.LegacyDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return osmomath.ZeroBigDec()
+		return math.LegacyZeroDec()
 	}
 
 	if ammPool.TotalShares.Amount.IsZero() {
-		return osmomath.OneBigDec()
+		return math.LegacyOneDec()
 	}
 
-	return osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount)).
-		Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
+	return (ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount)).ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 }
 
 func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) storetypes.Iterator {

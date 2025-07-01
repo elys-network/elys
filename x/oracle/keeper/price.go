@@ -9,6 +9,7 @@ import (
 	"github.com/elys-network/elys/v6/utils"
 	"github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
+	"sort"
 )
 
 // SetPrice set a specific price in the store from its index
@@ -130,4 +131,22 @@ func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 		return osmomath.BigDecFromDec(price).QuoInt64(utils.Pow10Int64(info.Decimal))
 	}
 	return osmomath.BigDecFromDec(price).Quo(utils.Pow10(info.Decimal))
+}
+
+func (k Keeper) DeleteAXLPrices(ctx sdk.Context) {
+	allAssetPrice := k.GetAllAssetPrice(ctx, "AXL")
+	total := len(allAssetPrice)
+
+	// Need to sort it because order fetched from GetAllAssetPrice will not be in ascending order - depending on source
+	// If we remove the source then this should not be needed
+	sort.Slice(allAssetPrice, func(i, j int) bool {
+		return allAssetPrice[i].Timestamp < allAssetPrice[j].Timestamp
+	})
+
+	for i, price := range allAssetPrice {
+		// We don't remove the last element
+		if i < total-1 {
+			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
+		}
+	}
 }

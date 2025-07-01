@@ -66,7 +66,7 @@ func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSp
 		return nil, types.ErrSpotOrderNotFound
 	}
 
-	// Checks if the the msg creator is the same as the current owner
+	// Checks if the msg creator is the same as the current owner
 	if msg.OwnerAddress != order.OwnerAddress {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
