@@ -110,29 +110,29 @@ func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
 	}
 
 	// Calculate perpetual fees in USD
-	perpFeesValueInUSD := osmomath.ZeroBigDec()
+	perpFeesValueInUSD := math.LegacyZeroDec()
 	if perpetualFees.IsPositive() {
 		perpetualFeesCoins := ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpetualFees))
-		perpFeesValueInUSD = k.amm.CalculateCoinsUSDValue(ctx, perpetualFeesCoins)
+		perpFeesValueInUSD = k.amm.CalculateCoinsUSDValue(ctx, perpetualFeesCoins).Dec()
 	}
 
 	// Calculate taker fees in USD
-	takerFeesAmountInUSD := osmomath.ZeroBigDec()
+	takerFeesAmountInUSD := math.LegacyZeroDec()
 	if takersFee.IsPositive() {
 		takerFeesInCoins := ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
-		takerFeesAmountInUSD = k.amm.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
+		takerFeesAmountInUSD = k.amm.CalculateCoinsUSDValue(ctx, takerFeesInCoins).Dec()
 	}
 
 	// Calculate slippage amount in USD
-	slippageAmountInUSD := osmomath.ZeroBigDec()
+	slippageAmountInUSD := math.LegacyZeroDec()
 	if isSwapGivenIn {
-		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenOut.Denom, slippageAmount.Dec().TruncateInt())
+		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenOut.Denom, slippageAmount.Dec().TruncateInt()).Dec()
 	} else {
-		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt()).Dec()
 	}
 
 	// Calculate weight breaking fees in USD
-	weightBreakingFeesAmountInUSD := osmomath.ZeroBigDec()
+	weightBreakingFeesAmountInUSD := math.LegacyZeroDec()
 	if !weightBreakingFee.IsZero() {
 		var weightBreakingFeeAmount math.Int
 		if isSwapGivenIn {
@@ -140,7 +140,7 @@ func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
 		} else {
 			weightBreakingFeeAmount = oracleInAmount.Mul(weightBreakingFee).Dec().RoundInt()
 		}
-		weightBreakingFeesAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, weightBreakingFeeAmount)
+		weightBreakingFeesAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, weightBreakingFeeAmount).Dec()
 	}
 
 	// Emit the event if any fees are non-zero
