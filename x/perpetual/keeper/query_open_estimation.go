@@ -129,7 +129,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool, req.Address)
+			custodyAmount, slippage, _, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -142,7 +142,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
 			amountIn := eta.MulInt(req.Collateral.Amount).TruncateInt()
-			liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
+			liabilities, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -158,7 +158,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		// Collateral will be in base currency
 		amountOut := eta.MulInt(req.Collateral.Amount).TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
-		liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
+		liabilities, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
 		}
