@@ -17,8 +17,6 @@ func (k Keeper) GetUserData(ctx sdk.Context, address string, vaultId uint64) (us
 		return types.UserData{
 			TotalDepositsUsd:    sdkmath.LegacyZeroDec(),
 			TotalWithdrawalsUsd: sdkmath.LegacyZeroDec(),
-			CurrentBalanceUsd:   sdkmath.LegacyZeroDec(),
-			PnlUsd:              sdkmath.LegacyZeroDec(),
 			EdenUsdValue:        sdkmath.LegacyZeroDec(),
 			EdenAmount:          sdkmath.ZeroInt(),
 		}, false

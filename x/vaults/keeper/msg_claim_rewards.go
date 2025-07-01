@@ -7,6 +7,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/vaults/types"
 )
 
@@ -34,6 +35,14 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 				err := k.commitment.SendCoinsFromModuleToAccount(ctx, vaultRewardCollectorAddress, recipient, sdk.NewCoins(coin))
 				if err != nil {
 					return err
+				}
+
+				if coin.Denom == ptypes.Eden {
+					edenUsdValue := k.amm.CalculateUSDValue(ctx, coin.Denom, coin.Amount)
+					userData, _ := k.GetUserData(ctx, recipient.String(), poolId)
+					userData.EdenUsdValue = userData.EdenUsdValue.Add(edenUsdValue.Dec())
+					userData.EdenAmount = userData.EdenAmount.Add(coin.Amount)
+					k.SetUserData(ctx, recipient.String(), poolId, userData)
 				}
 			}
 		}

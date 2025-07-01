@@ -44,14 +44,14 @@ service Query {
   rpc DepositEstimation(QueryDepositEstimationRequest)
       returns (QueryDepositEstimationResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/vaults/deposit_estimation/{vault_id}/{amount}";
+        "/elys-network/elys/vaults/deposit_estimation";
   }
 
   // WithdrawEstimation queries the estimated withdraw amount for a vault.
   rpc WithdrawEstimation(QueryWithdrawEstimationRequest)
       returns (QueryWithdrawEstimationResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/vaults/withdraw_estimation/{vault_id}/{shares_amount}";
+        "/elys-network/elys/vaults/withdraw_estimation";
   }
 
   // PnL queries the PnL of a user.
@@ -206,4 +206,9 @@ message PnlResponse {
     (gogoproto.nullable) = false
   ];
   uint64 vault_id = 4;
+  string eden_amount = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

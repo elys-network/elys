@@ -203,15 +203,36 @@ func (k Keeper) PnL(goCtx context.Context, req *types.QueryPnLRequest) (*types.Q
 	for _, vault := range vaults {
 		userData, _ := k.GetUserData(ctx, req.Address, vault.Id)
 		// get vault usd value
-		balances := k.bk.GetAllBalances(ctx, types.NewVaultAddress(vault.Id))
+		commitments := k.commitment.GetCommitments(ctx, types.NewVaultAddress(vault.Id))
+		shareAmount := sdkmath.ZeroInt()
+		for _, commitment := range commitments.CommittedTokens {
+			if commitment.Denom == types.GetShareDenomForVault(vault.Id) {
+				shareAmount = shareAmount.Add(commitment.Amount)
+			}
+		}
+		vaultValue, err := k.VaultUsdValue(ctx, vault.Id)
+		if err != nil {
+			return nil, err
+		}
+		totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForVault(vault.Id)).Amount
+
+		shareUsdValue := vaultValue.Dec().Mul(shareAmount.ToLegacyDec().Quo(sdkmath.LegacyNewDecFromInt(totalShares)))
 		currentBalanceUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
-		profitAndLossUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
-		edenUsdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, balances.Amount)
+		profitAndLossUsd := shareUsdValue.Sub(currentBalanceUsd)
+
+		unclaimedEden, found := k.GetUserRewardInfo(ctx, sdk.MustAccAddressFromBech32(req.Address), vault.Id, ptypes.Eden)
+		if found && !unclaimedEden.RewardPending.IsZero() {
+			edenUsdValue := k.amm.CalculateUSDValue(ctx, ptypes.Eden, unclaimedEden.RewardPending.TruncateInt())
+			userData.EdenUsdValue = userData.EdenUsdValue.Add(edenUsdValue.Dec())
+			userData.EdenAmount = userData.EdenAmount.Add(unclaimedEden.RewardPending.TruncateInt())
+		}
 
 		pnls = append(pnls, types.PnlResponse{
-			PnlUsd:            userData.PnlUsd.Dec(),
-			EdenUsdValue:      userData.EdenUsdValue.Dec(),
-			CurrentBalanceUsd: userData.CurrentBalanceUsd.Dec(),
+			PnlUsd:            profitAndLossUsd,
+			EdenUsdValue:      userData.EdenUsdValue,
+			CurrentBalanceUsd: currentBalanceUsd,
+			VaultId:           vault.Id,
+			EdenAmount:        userData.EdenAmount,
 		})
 	}
 
