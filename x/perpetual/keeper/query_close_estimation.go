@@ -77,7 +77,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		closingRatio = req.CloseAmount.ToLegacyDec().Quo(maxCloseAmount.ToLegacyDec())
 	}
 
-	repayAmount, payingLiabilities, slippage, weightBreakingFee, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
+	repayAmount, payingLiabilities, slippage, _, weightBreakingFee, _, _, _, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}

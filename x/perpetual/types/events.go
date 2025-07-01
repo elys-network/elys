@@ -31,7 +31,7 @@ func EmitPerpetualFeesEvent(ctx sdk.Context, perpFee, slippage, weightBreakingFe
 func NewPerpFeeEvent(perpFee, slippage, weightBreakingFee, takerFees string) sdk.Event {
 	return sdk.NewEvent(
 		EventPerpetualFees,
-		sdk.NewAttribute("denom", "USD"),
+		sdk.NewAttribute("value", "USD"),
 		sdk.NewAttribute(AttributeKeyPerpFee, perpFee),
 		sdk.NewAttribute(AttributeKeySlippage, slippage),
 		sdk.NewAttribute(AttributeKeyWeightBreakingFee, weightBreakingFee),

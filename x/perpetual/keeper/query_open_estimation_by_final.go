@@ -114,7 +114,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		// LONG: if collateral is base, and input is custody, then EstimateSwapGivenOut(total_input_custody) = collateral * lev
 		if mtp.CollateralAsset == baseCurrency {
 			var collateralLiab math.Int
-			collateralLiab, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, req.FinalAmount, mtp.CollateralAsset, ammPool, req.Address, false)
+			collateralLiab, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, req.FinalAmount, mtp.CollateralAsset, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -128,7 +128,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		if mtp.CollateralAsset != baseCurrency {
 			collateral := math.LegacyNewDecFromInt(req.FinalAmount.Amount).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
-			liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.FinalAmount.Denom, req.FinalAmount.Amount.Sub(collateral)), baseCurrency, ammPool, req.Address, false)
+			liabilities, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.FinalAmount.Denom, req.FinalAmount.Amount.Sub(collateral)), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
@@ -138,7 +138,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev)
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address, false)
+		liabilities, slippage, _, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
 		}

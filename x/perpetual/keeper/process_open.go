@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -26,7 +27,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 		// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
 		if mtp.CollateralAsset != baseCurrency {
 			custodyAmtToken := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			borrowingAmount, _, _, _, _, err := k.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, *ammPool, mtp.Address, true)
+			borrowingAmount, _, _, _, _, _, _, err := k.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
@@ -42,10 +43,13 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 		// If position is long, calculate custody amount in custody asset
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, _, _, _, _, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, *ammPool, mtp.Address, true)
+			slippageAmount, weightBreakingFee := osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+			perpetualFees, takerFees := math.LegacyZeroDec(), math.LegacyZeroDec()
+			custodyAmount, _, slippageAmount, weightBreakingFee, perpetualFees, takerFees, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
+			k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, leveragedAmtTokenIn, sdk.NewCoin(mtp.CustodyAsset, custodyAmount), slippageAmount, weightBreakingFee, perpetualFees, takerFees, osmomath.ZeroBigDec(), true)
 		}
 	case types.Position_SHORT:
 		if mtp.CollateralAsset != baseCurrency {
