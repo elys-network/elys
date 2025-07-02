@@ -112,6 +112,8 @@ func (app *ElysApp) setUpgradeHandler() {
 				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 
+			app.OracleKeeper.DeleteAXLPrices(ctx)
+
 			return vm, vmErr
 		},
 	)

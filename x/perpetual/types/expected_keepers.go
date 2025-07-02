@@ -35,6 +35,8 @@ type AmmKeeper interface {
 
 	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
+	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) osmomath.BigDec
 }
 
 type BankKeeper interface {
