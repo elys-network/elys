@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -105,11 +104,6 @@ func (app *ElysApp) setUpgradeHandler() {
 				if err != nil {
 					return nil, err
 				}
-			}
-
-			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
-				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
-				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 
 			return vm, vmErr
