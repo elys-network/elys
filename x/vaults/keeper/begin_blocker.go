@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"strconv"
 	"strings"
 
 	"cosmossdk.io/math"
@@ -48,6 +49,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 				continue
 			}
 			profit := currentValue.Dec().Sub(vault.SumOfDepositsUsdValue).Add(vault.WithdrawalUsdValue)
+			k.TrackVaultPnL(ctx, strconv.FormatUint(vault.Id, 10), profit)
 			if profit.IsPositive() {
 				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
 				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)

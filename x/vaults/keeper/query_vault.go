@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
@@ -23,7 +24,7 @@ func (k Keeper) Vault(goCtx context.Context, req *types.QueryVaultRequest) (*typ
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	vaultAndData, err := k.GetVaultAndData(ctx, req.VaultId)
+	vaultAndData, err := k.GetVaultAndData(ctx, req.VaultId, req.Days)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -40,7 +41,7 @@ func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*t
 	vaults := k.GetAllVaults(ctx)
 	vaultsAndData := []types.VaultAndData{}
 	for _, vault := range vaults {
-		vaultAndData, err := k.GetVaultAndData(ctx, vault.Id)
+		vaultAndData, err := k.GetVaultAndData(ctx, vault.Id, req.Days)
 		if err != nil {
 			return nil, status.Error(codes.Internal, err.Error())
 		}
@@ -50,14 +51,14 @@ func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*t
 	return &types.QueryVaultsResponse{Vaults: vaultsAndData}, nil
 }
 
-func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64) (types.VaultAndData, error) {
+func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64, days uint64) (types.VaultAndData, error) {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		return types.VaultAndData{}, status.Error(codes.NotFound, "vault not found")
 	}
 
 	edenApr := k.EdenApr(ctx, vaultId)
-	//pnlApr := k.GetPnlApr(ctx, vaultId)
+	pnlUsd := k.GetPnlTotal(ctx, strconv.FormatUint(vaultId, 10), int(days))
 	totalDepositsUsd, _ := k.VaultUsdValue(ctx, vaultId)
 	// Deposit denom usd value
 	balance := k.bk.GetBalance(ctx, types.NewVaultAddress(vaultId), vault.DepositDenom)
@@ -74,9 +75,9 @@ func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64) (types.VaultAnd
 	}
 
 	return types.VaultAndData{
-		Vault:   &vault,
-		EdenApr: edenApr.Dec(),
-		//	PnlApr:           pnlApr,
+		Vault:            &vault,
+		EdenApr:          edenApr.Dec(),
+		PnlUsd:           pnlUsd.Dec(),
 		TotalDepositsUsd: totalDepositsUsd.Dec(),
 		DepositsUsed:     depositsUsed.Dec(),
 		Positions:        positions,

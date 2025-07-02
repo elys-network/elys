@@ -56,11 +56,9 @@ service Query {
 
   // PnL queries the PnL of a user.
   rpc PnL(QueryPnLRequest) returns (QueryPnLResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/vaults/pnl/{address}";
+    option (google.api.http).get = "/elys-network/elys/vaults/pnl/{address}";
   }
 }
-
 
 message VaultAndData {
   Vault vault = 1;
@@ -69,7 +67,7 @@ message VaultAndData {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string pnl_apr = 3 [
+  string pnl_usd = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -97,11 +95,16 @@ message QueryParamsResponse {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryVaultRequest { uint64 vault_id = 1; }
+message QueryVaultRequest {
+  uint64 vault_id = 1;
+  uint64 days = 2;
+}
 
-message QueryVaultResponse { VaultAndData vault = 1 [ (gogoproto.nullable) = false ]; }
+message QueryVaultResponse {
+  VaultAndData vault = 1 [ (gogoproto.nullable) = false ];
+}
 
-message QueryVaultsRequest {}
+message QueryVaultsRequest { uint64 days = 1; }
 
 message QueryVaultsResponse {
   repeated VaultAndData vaults = 1 [ (gogoproto.nullable) = false ];
@@ -181,9 +184,7 @@ message QueryWithdrawEstimationResponse {
   ];
 }
 
-message QueryPnLRequest {
-  string address = 1;
-}
+message QueryPnLRequest { string address = 1; }
 
 message QueryPnLResponse {
   repeated PnlResponse pnls = 1 [ (gogoproto.nullable) = false ];

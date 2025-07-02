@@ -83,3 +83,13 @@ message UserData {
     (gogoproto.nullable) = false
   ];
 }
+
+message VaultPnL {
+  string vault_id = 1;
+  string pnl_usd = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string date = 3;
+}

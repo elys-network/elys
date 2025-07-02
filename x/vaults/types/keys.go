@@ -26,6 +26,7 @@ var (
 	PoolRewardInfoKeyPrefix   = []byte{0x05}
 	UserRewardInfoKeyPrefix   = []byte{0x06}
 	PoolRewardsAccumKeyPrefix = []byte{0x07}
+	VaultPnLPrefix            = []byte{0x08}
 )
 
 func GetVaultKey(key uint64) []byte {
@@ -78,4 +79,10 @@ func GetPoolRewardsAccumKey(poolId uint64, timestamp uint64) []byte {
 	key := GetPoolRewardsAccumPrefix(poolId)
 	key = append(key, []byte("/")...)
 	return append(key, sdk.Uint64ToBigEndian(timestamp)...)
+}
+
+func GetVaultPnLKey(vaultId string, date string) []byte {
+	key := []byte(vaultId)
+	key = append(key, []byte("/")...)
+	return append(key, []byte(date)...)
 }
