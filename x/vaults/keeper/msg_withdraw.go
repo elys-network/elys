@@ -6,6 +6,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/vaults/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -94,13 +95,6 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 		}
 	}
 
-	err = k.bk.SendCoins(ctx, vaultAddress, creator, toSendCoins)
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO: Add an option to withdraw in usdc
-
 	// Set withdrawal usd value
 	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
 	if err != nil {
@@ -117,5 +111,49 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 
 	k.AfterWithdraw(ctx, req.VaultId, creator, req.Shares)
 
-	return &types.MsgWithdrawResponse{}, nil
+	// Swap all toSendCoins to deposit denom
+	if req.SwapToDepositDenom {
+		toSendCoins, err = k.SwapToDepositDenom(ctx, vault.DepositDenom, toSendCoins, vaultAddress, creator)
+		if err != nil {
+			return nil, err
+		}
+		return &types.MsgWithdrawResponse{
+			VaultId: req.VaultId,
+			Amount:  toSendCoins,
+		}, nil
+	}
+
+	err = k.bk.SendCoins(ctx, vaultAddress, creator, toSendCoins)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgWithdrawResponse{
+		VaultId: req.VaultId,
+		Amount:  toSendCoins,
+	}, nil
+}
+
+func (k Keeper) SwapToDepositDenom(ctx sdk.Context, depositDenom string, toSendCoins sdk.Coins, vaultAddress sdk.AccAddress, recipient sdk.AccAddress) (sdk.Coins, error) {
+
+	for _, coin := range toSendCoins {
+		if coin.Denom != depositDenom {
+			swap, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+				Sender:    vaultAddress.String(),
+				Amount:    coin,
+				DenomIn:   coin.Denom,
+				DenomOut:  depositDenom,
+				Recipient: recipient.String(),
+				// MinAmount: sdk.NewInt(0)
+				// MaxAmount: ,
+			})
+			if err != nil {
+				return nil, err
+			}
+			toSendCoins = toSendCoins.Sub(coin)
+			toSendCoins = toSendCoins.Add(swap.Amount)
+		}
+	}
+
+	return toSendCoins, nil
 }

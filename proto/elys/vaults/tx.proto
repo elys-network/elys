@@ -115,6 +115,7 @@ message MsgWithdraw {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  bool swap_to_deposit_denom = 4;
 }
 
 // MsgWithdrawResponse defines the response structure for withdrawal
