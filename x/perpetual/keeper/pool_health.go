@@ -11,20 +11,27 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
+func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64, openedPosition bool) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
-	maxLiabilitiesThreshold := k.GetPoolMaxLiabilitiesThreshold(ctx)
-	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+	params := k.GetParams(ctx)
+
+	maxLiabilitiesRatioAllowed := math.LegacyZeroDec()
+	if openedPosition {
+		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold
+	} else {
+		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold.Add(params.ExitBuffer)
+	}
+
+	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
 	}
-	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)
@@ -84,7 +91,7 @@ func (k Keeper) CheckMinimumCustodyAmt(ctx sdk.Context, poolId uint64) error {
 		return err
 	}
 	for _, ammPoolAsset := range ammPool.PoolAssets {
-		_, totalCustody, _, _ := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
+		_, totalCustody := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
 		if ammPoolAsset.Token.Amount.LT(totalCustody) {
 			return fmt.Errorf("real amm pool (id: %d) balance (%s) is less than total custody (%s)", poolId, ammPoolAsset.Token.String(), totalCustody.String())
 		}
@@ -100,10 +107,10 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 	}
 	baseCurrency := entry.Denom
 
-	totalLiabilities := osmomath.ZeroBigDec()
+	totalLiabilities := math.ZeroInt()
 	for _, poolAsset := range pool.PoolAssetsLong {
 		// for long, liabilities will always be in base currency
-		totalLiabilities = totalLiabilities.Add(poolAsset.GetBigDecLiabilities())
+		totalLiabilities = totalLiabilities.Add(poolAsset.Liabilities)
 	}
 
 	tradingAsset := ""
@@ -121,8 +128,8 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits)
+		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits).Dec().TruncateInt()
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
-	return sdk.NewCoin(baseCurrency, totalLiabilities.Dec().TruncateInt()), nil
+	return sdk.NewCoin(baseCurrency, totalLiabilities), nil
 }

@@ -26,6 +26,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: sample.AccAddress(),
 					Id:      uint64(10),
 					Amount:  math.NewInt(12000),
+					PoolId:  1,
 				}
 			},
 			"mtp not found",
@@ -44,7 +45,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -57,9 +57,10 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(500),
+					PoolId:  ammPool.PoolId,
 				}
 			},
-			"unable to find base currency entry",
+			"asset info uusdc not found",
 			math.NewInt(0),
 		},
 		{
@@ -77,7 +78,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -90,6 +90,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(50000000000000), // same as with amount 399
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -110,7 +111,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -131,10 +131,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(107),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
-			math.NewInt(31), // less than at the same price
+			math.NewInt(30), // less than at the same price
 		},
 		{
 			"Close at take profit price",
@@ -151,7 +152,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -172,6 +172,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -192,7 +193,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.0"),
@@ -213,6 +213,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -233,7 +234,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(2),
 					Position:        types.Position_LONG,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -244,6 +244,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(699),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -262,7 +263,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -273,6 +273,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"",
@@ -331,7 +332,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Leverage:        math.LegacyNewDec(5),
 					Position:        types.Position_SHORT,
 					PoolId:          ammPool.PoolId,
-					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
@@ -348,6 +348,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Creator: positionCreator.String(),
 					Id:      position.Id,
 					Amount:  math.NewInt(900),
+					PoolId:  ammPool.PoolId,
 				}
 			},
 			"not enough liquidity",

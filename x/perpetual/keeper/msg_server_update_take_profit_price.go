@@ -15,7 +15,7 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 
 	// Load existing mtp
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -60,26 +60,6 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	}
 
 	mtp.TakeProfitPrice = msg.Price
-	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, mtp)
-	if err != nil {
-		return nil, err
-	}
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp)
-	if err != nil {
-		return nil, err
-	}
-
-	// All take profit liability has to be in liabilities asset
-	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
-	if err != nil {
-		return nil, err
-	}
-
-	// All take profit custody has to be in custody asset
-	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
-	if err != nil {
-		return nil, err
-	}
 
 	err = k.SetMTP(ctx, &mtp)
 	if err != nil {
@@ -89,7 +69,7 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err
 		}

@@ -31,9 +31,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amm_pool_id"}},
 				},
 				{
-					RpcMethod: "PerpetualCounter",
-					Use:       "counter [id]",
-					Short:     "Query total open positions for a pool",
+					RpcMethod:      "PerpetualCounter",
+					Use:            "counter [id]",
+					Short:          "Query total open positions for a pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
 				{
 					RpcMethod:      "GetPositionsForAddress",
@@ -65,19 +66,23 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "MTP",
-					Use:            "get-mtp [address] [id]",
+					Use:            "get-mtp [address] [id] [pool-id]",
 					Short:          "Query mtp",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}, {ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod: "OpenEstimation",
 					Skip:      true, // use custom command
 				},
 				{
+					RpcMethod: "OpenEstimationByFinal",
+					Skip:      true, // use custom command
+				},
+				{
 					RpcMethod:      "CloseEstimation",
-					Use:            "close-estimation [address] [position-id] [closing-amount]",
+					Use:            "close-estimation [address] [position-id] [closing-amount] [pool-id]",
 					Short:          "Query close-estimation",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}, {ProtoField: "close_amount"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}, {ProtoField: "close_amount"}, {ProtoField: "pool_id"}},
 				},
 			},
 		},

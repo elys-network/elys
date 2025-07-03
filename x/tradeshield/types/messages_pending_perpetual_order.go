@@ -1,7 +1,9 @@
 package types
 
 import (
+	"errors"
 	"fmt"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"slices"
 
 	errorsmod "cosmossdk.io/errors"
@@ -16,7 +18,6 @@ func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
 	triggerPrice math.LegacyDec,
 	collateral sdk.Coin,
-	tradingAsset string,
 	position PerpetualPosition,
 	leverage math.LegacyDec,
 	takeProfitPrice math.LegacyDec,
@@ -27,7 +28,6 @@ func NewMsgCreatePerpetualOpenOrder(
 		TriggerPrice:    triggerPrice,
 		Collateral:      collateral,
 		OwnerAddress:    ownerAddress,
-		TradingAsset:    tradingAsset,
 		Position:        position,
 		Leverage:        leverage,
 		TakeProfitPrice: takeProfitPrice,
@@ -46,13 +46,17 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return err
 	}
 
-	// Validate collateral
-	if !msg.Collateral.IsValid() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
+	if msg.TriggerPrice.IsZero() {
+		return errors.New("invalid trigger price")
 	}
 
-	if err = sdk.ValidateDenom(msg.TradingAsset); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
+	// Validate collateral
+	if err = msg.Collateral.Validate(); err != nil {
+		return errorsmod.Wrap(err, "invalid collateral")
+	}
+
+	if msg.Collateral.IsZero() {
+		return errors.New("collateral cannot be 0")
 	}
 
 	if msg.Position != PerpetualPosition_LONG && msg.Position != PerpetualPosition_SHORT {
@@ -61,6 +65,10 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 
 	if err = CheckLegacyDecNilAndNegative(msg.Leverage, "Leverage"); err != nil {
 		return err
+	}
+
+	if !(msg.Leverage.GT(math.LegacyOneDec()) || msg.Leverage.IsZero()) {
+		return errorsmod.Wrapf(perpetualtypes.ErrInvalidLeverage, "leverage (%s) can only be 0 (to add collateral) or > 1 to open positions", msg.Leverage.String())
 	}
 
 	if err = CheckLegacyDecNilAndNegative(msg.TakeProfitPrice, "TakeProfitPrice"); err != nil {
@@ -76,10 +84,10 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "pool ID cannot be zero")
 	}
 
-	if msg.Position == PerpetualPosition_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
+	if msg.Position == PerpetualPosition_LONG && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
 		return fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG")
 	}
-	if msg.Position == PerpetualPosition_SHORT && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
+	if msg.Position == PerpetualPosition_SHORT && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
 		return fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
 	}
 	return nil
@@ -160,6 +168,22 @@ func (msg *MsgCancelPerpetualOrder) ValidateBasic() error {
 	// Validate order ID
 	if msg.OrderId == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be 0")
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgCancelAllPerpetualOrders{}
+
+func NewMsgCancelAllPerpetualOrders(ownerAddress string) *MsgCancelAllPerpetualOrders {
+	return &MsgCancelAllPerpetualOrders{
+		OwnerAddress: ownerAddress,
+	}
+}
+
+func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
 	return nil
 }

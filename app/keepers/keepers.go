@@ -119,7 +119,7 @@ type AppKeepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    ICSStakingKeeper
+	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        *govkeeper.Keeper
@@ -296,16 +296,14 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.StakingKeeper = NewICSStakingKeeper(
-		stakingkeeper.NewKeeper(
-			appCodec,
-			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
-			app.AccountKeeper,
-			app.BankKeeper,
-			authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
-		),
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
@@ -320,7 +318,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -336,11 +334,12 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
 		app.TokenomicsKeeper,
+		&app.ConsumerKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -348,10 +347,9 @@ func NewAppKeeper(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
-		&app.ConsumerKeeper,
+		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-
 	groupConfig := group.DefaultConfig()
 	/*
 		Example of setting group params:
@@ -503,17 +501,6 @@ func NewAppKeeper(
 		wasmOpts...,
 	)
 
-	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
-		&app.ConsumerKeeper,
-		app.SlashingKeeper,
-		app.AccountKeeper.AddressCodec(),
-		runtime.ProvideCometInfoService(),
-	)
-	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.EvidenceKeeper = *evidenceKeeper
-
 	app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 		appCodec,
 		app.keys[ccvconsumertypes.StoreKey],
@@ -534,8 +521,31 @@ func NewAppKeeper(
 		address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
+	app.ConsumerKeeper.SetStandaloneStakingKeeper(app.StakingKeeper)
+
+	// consumer keeper satisfies the staking keeper interface
+	// of the slashing module
+	app.SlashingKeeper = slashingkeeper.NewKeeper(
+		appCodec,
+		legacyAmino,
+		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
+		&app.ConsumerKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
+
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
+		&app.ConsumerKeeper,
+		app.SlashingKeeper,
+		app.AccountKeeper.AddressCodec(),
+		runtime.ProvideCometInfoService(),
+	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
 
 	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
@@ -655,7 +665,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
@@ -682,6 +692,8 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
+	app.StablestakeKeeper.SetLeverageLpKeeper(app.LeveragelpKeeper)
+
 	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
@@ -692,7 +704,7 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		app.MasterchefKeeper,
 		app.CommitmentKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,

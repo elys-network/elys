@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/elys-network/elys/v6/utils"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -19,6 +20,7 @@ var (
 	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
+	_ sdk.Msg = &MsgClaimAllUserRewards{}
 )
 
 func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
@@ -127,8 +129,18 @@ func (msg *MsgAddPool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
+	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.LeverageMax, "LeverageMax"); err != nil {
+		return err
+	}
 	if msg.Pool.LeverageMax.LTE(math.LegacyOneDec()) {
 		return ErrLeverageTooSmall
+	}
+
+	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.PoolMaxLeverageRatio, "PoolMaxLeverageRatio"); err != nil {
+		return err
+	}
+	if !msg.Pool.PoolMaxLeverageRatio.GT(math.LegacyZeroDec()) || !msg.Pool.PoolMaxLeverageRatio.LT(math.LegacyOneDec()) {
+		return errors.New("invalid pool max leverage ratio")
 	}
 	return nil
 }
@@ -199,6 +211,20 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 		} else {
 			poolIdsMap[id] = true
 		}
+	}
+	return nil
+}
+
+func NewMsgClaimAllUserRewards(signer string) *MsgClaimAllUserRewards {
+	return &MsgClaimAllUserRewards{
+		Sender: signer,
+	}
+}
+
+func (msg *MsgClaimAllUserRewards) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

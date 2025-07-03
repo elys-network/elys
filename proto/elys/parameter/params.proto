@@ -51,4 +51,6 @@ message Params {
     (gogoproto.nullable) = false
   ];
   string taker_fee_collection_address = 7;
+  bool enable_taker_fee_swap = 8;
+  uint64 taker_fee_collection_interval = 9;
 }

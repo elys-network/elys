@@ -48,7 +48,7 @@ func (k msgServer) UpdateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -79,7 +79,7 @@ func (k msgServer) DeleteTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}

@@ -35,6 +35,8 @@ type AmmKeeper interface {
 
 	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
+	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) osmomath.BigDec
 }
 
 type BankKeeper interface {
@@ -60,7 +62,7 @@ type AssetProfileKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)

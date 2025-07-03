@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,6 +30,12 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Prevent changing Eden and EdenB validators
+	oldParams := k.GetParams(ctx)
+	req.Params.EdenCommitVal = oldParams.EdenCommitVal
+	req.Params.EdenbCommitVal = oldParams.EdenbCommitVal
+
 	k.SetParams(ctx, req.Params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
@@ -131,4 +139,55 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		return nil, err
 	}
 	return &types.MsgWithdrawAllRewardsResponse{Amount: rewards}, nil
+}
+
+func (k msgServer) UnjailGovernor(goCtx context.Context, msg *types.MsgUnjailGovernor) (*types.MsgUnjailGovernorResponse, error) {
+	sender, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	validatorAddr := sdk.ValAddress(sender)
+
+	validator, err := k.Validator(ctx, validatorAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	// cannot be unjailed if no self-delegation exists
+	// k.Delegation sends err as nil if no delegations are found
+	selfDel, err := k.Keeper.Keeper.Delegation(ctx, sender, validatorAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	if selfDel == nil {
+		return nil, errors.New("governor has no self-delegation; cannot be unjailed")
+	}
+
+	tokens := validator.TokensFromShares(selfDel.GetShares()).TruncateInt()
+	minSelfBond := validator.GetMinSelfDelegation()
+	if tokens.LT(minSelfBond) {
+		return nil, fmt.Errorf("governor's self delegation less than minimum; cannot be unjailed: %s less than %s", tokens.String(), minSelfBond.String())
+	}
+
+	// cannot be unjailed if not jailed
+	if !validator.IsJailed() {
+		return nil, errors.New("governor not jailed; cannot be unjailed")
+	}
+
+	consAddr, err := validator.GetConsAddr()
+	if err != nil {
+		return nil, err
+	}
+
+	// Though we do have staking keeper in estaking keeper and we can directly call Unjail of staking keeper,
+	// calling through Consumer Keeper seems to be more appropriate as it have extra checks for PreCCV, etc.
+	if err = k.Keeper.ConsumerKeeper.Unjail(ctx, consAddr); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUnjailGovernorResponse{}, nil
 }

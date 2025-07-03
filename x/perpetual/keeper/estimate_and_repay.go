@@ -21,10 +21,12 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 		return math.Int{}, math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
 	}
 
-	repayAmount, payingLiabilities, _, _, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
+	repayAmount, payingLiabilities, _, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), err
 	}
+	k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false)
+
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), err
@@ -45,7 +47,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
-func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee osmomath.BigDec, err error) {
+func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, slippageAmount, weightBreakingFee, repayOracleAmount osmomath.BigDec, perpetualFees, takerFees math.LegacyDec, err error) {
 	// init repay amount
 	// For long this will be in trading asset (custody asset is trading asset)
 	// For short this will be in USDC (custody asset is USDC)
@@ -58,17 +60,17 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 
 	if mtp.Position == types.Position_LONG {
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
+		repayAmount, slippage, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
+		repayAmount, slippage, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 

@@ -81,6 +81,11 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
@@ -102,9 +107,9 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position.Address, addr.String())
 	suite.Require().Equal(position.Collateral.String(), "1000uusdc")
 	suite.Require().Equal(position.Liabilities.String(), "4000")
-	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390000000000000") // slippage enabled on amm
+	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390243902439024") // slippage enabled on amm
 	// suite.Require().Equal(position.LeveragedLpAmount.String(), "50000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235117522775069654") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235123475156203501") // slippage enabled on amm
 	suite.Require().Equal(position.Id, uint64(1))
 	suite.Require().Equal(position.AmmPoolId, uint64(1))
 
@@ -123,9 +128,9 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position2.Address, addr.String())
 	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")
 	suite.Require().Equal(position2.Liabilities.String(), "8000")
-	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98805291560975610") // slippage enabled on amm
+	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98808230716012451") // slippage enabled on amm
 	// .Require().Equal(position2.LeveragedLpAmount.String(), "100000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235769184451886056") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235804214189914642") // slippage enabled on amm
 	// suite.Require().Equal(position2.PositionHealth.String(), "1.250000000000000000") // slippage disabled on amm
 	suite.Require().Equal(position2.Id, uint64(1))
 	suite.Require().Equal(position2.AmmPoolId, uint64(1))

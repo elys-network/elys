@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -13,12 +14,8 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999999"
-	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
+	NewMaxBytes = 5 * 1024 * 1024 // 5MB
 )
-
-// make sure to update these when you upgrade the version
-var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
@@ -75,6 +72,13 @@ func (app *ElysApp) setUpgradeHandler() {
 			//		return nil, err
 			//	}
 			//}
+
+			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
+				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
+				app.LeveragelpKeeper.SetPool(ctx, pool)
+			}
+
+			app.OracleKeeper.DeleteAXLPrices(ctx)
 
 			return vm, vmErr
 		},

@@ -22,9 +22,9 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
-			sdk.NewCoin(ptypes.ATOM, issueAmount),
-			sdk.NewCoin(ptypes.Elys, issueAmount),
-			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+			sdk.NewCoin(ptypes.ATOM, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.Elys, issueAmount.MulRaw(100)),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount.MulRaw(100)),
 		)
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 		if err != nil {
@@ -44,23 +44,24 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
+				Token:  sdk.NewCoin(asset1, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
+				Token:  sdk.NewCoin(asset2, issueAmount),
 				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
+	suite.Require().NoError(err)
 	if createAmmPool {
-		poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-		suite.Require().NoError(err)
 		enablePoolMsg := types.MsgAddPool{
 			Authority: authtypes.NewModuleAddress("gov").String(),
 			Pool: types.AddPool{
-				AmmPoolId:   poolId,
-				LeverageMax: sdkmath.LegacyNewDec(10),
+				AmmPoolId:            poolId,
+				LeverageMax:          sdkmath.LegacyNewDec(10),
+				PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
 			},
 		}
 		msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
@@ -68,13 +69,19 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		suite.Require().NoError(err)
 
 	}
+
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
-	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)
+	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
 	}
@@ -174,6 +181,76 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.ClaimRewards(suite.ctx, tc.input)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
+	suite.ResetSuite()
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
+	asset1 := ptypes.ATOM
+	asset2 := ptypes.BaseCurrency
+	leverage := osmomath.MustNewBigDecFromStr("2.0")
+	collateralAmount := sdkmath.NewInt(10000000)
+	testCases := []struct {
+		name                 string
+		input                *types.MsgClaimAllUserRewards
+		expectErr            bool
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{"module is out of funds",
+			&types.MsgClaimAllUserRewards{
+				Sender: addresses[0].String(),
+			},
+			true,
+			"insufficient funds",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
+				openPosition(suite, addresses[0], collateralAmount, leverage)
+				moduleAddress := address.Module("masterchef")
+				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, moduleAddress)
+				err := suite.app.BankKeeper.SendCoins(suite.ctx, moduleAddress, addresses[2], balances)
+				if err != nil {
+					panic(err)
+				}
+				positonAddress := types.GetPositionAddress(1)
+				suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, mastercheftypes.UserRewardInfo{
+					User:          positonAddress.String(),
+					PoolId:        1,
+					RewardDenom:   "uusdc",
+					RewardPending: sdkmath.LegacyMustNewDecFromStr("100"),
+				})
+			},
+		},
+		{"positive case",
+			&types.MsgClaimAllUserRewards{
+				Sender: addresses[0].String(),
+			},
+			false,
+			"",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
+				openPosition(suite, addresses[0], collateralAmount, leverage)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+			_, err := msgServer.ClaimAllUserRewards(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

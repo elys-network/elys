@@ -29,6 +29,8 @@ service Msg {
   rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc UpdateEnabledPools(MsgUpdateEnabledPools)
       returns (MsgUpdateEnabledPoolsResponse);
+  rpc ClaimAllUserRewards(MsgClaimAllUserRewards)
+      returns (MsgClaimAllUserRewardsResponse);
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
@@ -125,6 +127,11 @@ message MsgUpdateStopLossResponse {}
 
 message AddPool {
   uint64 amm_pool_id = 1;
+  string pool_max_leverage_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   string leverage_max = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -193,3 +200,11 @@ message MsgUpdateEnabledPools {
 }
 
 message MsgUpdateEnabledPoolsResponse {}
+
+message MsgClaimAllUserRewards {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "leveragelp/MsgClaimAllUserRewards";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgClaimAllUserRewardsResponse {}

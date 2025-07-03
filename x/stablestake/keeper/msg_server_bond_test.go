@@ -19,7 +19,16 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 		expSenderBalance  sdk.Coins
 		expSenderCommit   sdk.Coin
 		expPass           bool
+		setup             func()
 	}{
+		{
+			desc:              "bonding more than allowed",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_00)},
+			bondAmount:        math.NewInt(1000_000_0),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
+			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenomForPool(1), 10000),
+			expPass:           false,
+		},
 		{
 			desc:              "successful bonding process",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},

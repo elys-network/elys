@@ -31,7 +31,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 				return nil, fmt.Errorf("amm pool %d not found", pool.AmmPoolId)
 			}
 
-			err = k.hooks.AfterParamsChange(ctx, ammPool, pool, msg.Params.EnableTakeProfitCustodyLiabilities)
+			err = k.hooks.AfterParamsChange(ctx, ammPool, pool)
 			if err != nil {
 				return nil, err
 			}

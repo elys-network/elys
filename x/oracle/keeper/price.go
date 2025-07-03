@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -8,6 +9,7 @@ import (
 	"github.com/elys-network/elys/v6/utils"
 	"github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
+	"sort"
 )
 
 // SetPrice set a specific price in the store from its index
@@ -80,48 +82,40 @@ func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
 	return
 }
 
-// MigrateAllLegacyPrices migrates all legacy prices
-func (k Keeper) MigrateAllLegacyPrices(ctx sdk.Context) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
+func (k Keeper) GetAllAssetPrice(ctx sdk.Context, asset string) (list []types.Price) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PriceKeyPrefixAsset(asset))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPrice
+		var val types.Price
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		k.SetPrice(ctx, types.Price{
-			Asset:       val.Asset,
-			Price:       val.Price,
-			Source:      val.Source,
-			Provider:    val.Provider,
-			Timestamp:   val.Timestamp,
-			BlockHeight: uint64(ctx.BlockHeight()),
-		})
+		list = append(list, val)
 	}
 
 	return
 }
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool) {
+func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool) {
 	// try out elys source
 	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)
 	if found {
-		return osmomath.BigDecFromDec(val.Price), true
+		return val.Price, true
 	}
 
 	// try out band source
 	val, found = k.GetLatestPriceFromAssetAndSource(ctx, asset, types.BAND)
 	if found {
-		return osmomath.BigDecFromDec(val.Price), true
+		return val.Price, true
 	}
 
 	// find from any source if band source does not exist
 	price, found := k.GetLatestPriceFromAnySource(ctx, asset)
 	if found {
-		return osmomath.BigDecFromDec(price.Price), true
+		return price.Price, true
 	}
-	return osmomath.BigDec{}, false
+	return math.LegacyDec{}, false
 }
 
 func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
@@ -134,7 +128,25 @@ func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 		return osmomath.ZeroBigDec()
 	}
 	if info.Decimal <= 18 {
-		return price.QuoInt64(utils.Pow10Int64(info.Decimal))
+		return osmomath.BigDecFromDec(price).QuoInt64(utils.Pow10Int64(info.Decimal))
 	}
-	return price.Quo(utils.Pow10(info.Decimal))
+	return osmomath.BigDecFromDec(price).Quo(utils.Pow10(info.Decimal))
+}
+
+func (k Keeper) DeleteAXLPrices(ctx sdk.Context) {
+	allAssetPrice := k.GetAllAssetPrice(ctx, "AXL")
+	total := len(allAssetPrice)
+
+	// Need to sort it because order fetched from GetAllAssetPrice will not be in ascending order - depending on source
+	// If we remove the source then this should not be needed
+	sort.Slice(allAssetPrice, func(i, j int) bool {
+		return allAssetPrice[i].Timestamp < allAssetPrice[j].Timestamp
+	})
+
+	for i, price := range allAssetPrice {
+		// We don't remove the last element
+		if i < total-1 {
+			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
+		}
+	}
 }

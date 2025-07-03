@@ -30,6 +30,8 @@ service Msg {
   // all the validators and Eden/EdenB commitment.
   rpc WithdrawAllRewards(MsgWithdrawAllRewards)
       returns (MsgWithdrawAllRewardsResponse);
+
+  rpc UnjailGovernor(MsgUnjailGovernor) returns (MsgUnjailGovernorResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -100,3 +102,11 @@ message MsgWithdrawAllRewardsResponse {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
+
+message MsgUnjailGovernor {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "estaking/MsgUnjailGovernor";
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgUnjailGovernorResponse {}

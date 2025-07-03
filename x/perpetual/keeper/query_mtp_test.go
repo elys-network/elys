@@ -24,7 +24,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_Successful() {
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -36,6 +35,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_Successful() {
 	response, err := k.MTP(ctx, &types.MTPRequest{
 		Address: firstPositionCreator.String(),
 		Id:      firstPosition.Id,
+		PoolId:  firstPool,
 	})
 
 	suite.Require().Nil(err)
@@ -92,7 +92,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_BaseCurrencyNotFound() {
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -106,6 +105,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_BaseCurrencyNotFound() {
 	_, err = k.MTP(ctx, &types.MTPRequest{
 		Address: firstPositionCreator.String(),
 		Id:      firstPosition.Id,
+		PoolId:  firstPool,
 	})
 
 	suite.Require().ErrorContains(err, "base currency not found")
@@ -127,7 +127,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_ErrFillMTPData() {
 		Leverage:        math.LegacyNewDec(5),
 		Position:        types.Position_SHORT,
 		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 		StopLossPrice:   math.LegacyZeroDec(),

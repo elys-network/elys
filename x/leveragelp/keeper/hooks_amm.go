@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
@@ -20,15 +19,16 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 
 	for _, asset := range ammPool.PoolAssets {
 		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
-			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+			reducedLiabilities := params.LiabilitiesFactor.Mul(math.LegacyNewDecFromInt(liabilties.Amount))
+			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(reducedLiabilities.TruncateInt()) {
 				return fmt.Errorf("insufficient amount of %s after the operation for leveragelp", asset.Token.Denom)
 			}
 		}
 	}
 
-	ratio := leveragePool.GetBigDecLeveragedLpAmount().Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
+	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	maxRatio := osmomath.OneBigDec().Sub(params.GetBigDecPoolOpenThreshold()).Add(params.GetBigDecExitBuffer())
+	maxRatio := leveragePool.MaxLeveragelpRatio.Add(params.ExitBuffer)
 	if ratio.GT(maxRatio) {
 		return fmt.Errorf("operation not allowed: pool leverage position becomes %s (> %s)", ratio.String(), maxRatio.String())
 	}

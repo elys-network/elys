@@ -78,6 +78,11 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
+	leverageParams := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	leverageParams.EnabledPools = []uint64{1}
+	err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &leverageParams)
+	suite.Require().NoError(err)
+
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
@@ -97,7 +102,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
-	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666912249")
+	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253084466940841678")
 
 	suite.Require().Equal(position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
@@ -106,7 +111,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		Position: &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100278"),
+			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940493900624814"),
 		},
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671232"),
 		InterestRateHourUsd: sdkmath.LegacyMustNewDecFromStr("0.000000068493150684"),

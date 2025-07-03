@@ -218,6 +218,8 @@ func TestMsgAddPool(t *testing.T) {
 			name: "success",
 			setter: func() {
 				msg.Authority = sample.AccAddress()
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(3)
+				msg.Pool.PoolMaxLeverageRatio = sdkmath.LegacyOneDec().QuoInt64(3)
 			},
 			errMsg: "",
 		},
@@ -237,11 +239,12 @@ func TestMsgAddPool(t *testing.T) {
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
-			name: "leverage is < 0",
+			name: "LeverageMax is negative",
 			setter: func() {
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
+
 			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
+			errMsg: "LeverageMax is negative",
 		},
 		{
 			name: "leverage is 1",
@@ -379,6 +382,41 @@ func TestMsgClaimRewards(t *testing.T) {
 				msg.Ids = []uint64{1, 2}
 			},
 			errMsg: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setter()
+			err := msg.ValidateBasic()
+			if tt.errMsg != "" {
+				require.ErrorContains(t, err, tt.errMsg)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgClaimAllRewards(t *testing.T) {
+	msg := types.NewMsgClaimAllUserRewards(sample.AccAddress())
+
+	tests := []struct {
+		name   string
+		setter func()
+		errMsg string
+	}{
+		{
+			name: "success",
+			setter: func() {
+			},
+			errMsg: "",
+		},
+		{
+			name: "invalid sender address",
+			setter: func() {
+				msg.Sender = "invalid_address"
+			},
+			errMsg: "invalid sender address",
 		},
 	}
 	for _, tt := range tests {

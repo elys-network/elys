@@ -14,7 +14,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 	suite.ResetSuite()
 	addr := suite.AddAccounts(1, nil)
 	positionCreator := addr[0]
-	pool, _, ammPool := suite.SetPerpetualPool(1)
+	_, _, ammPool := suite.SetPerpetualPool(1)
 	tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	openPositionMsg := &types.MsgOpen{
@@ -22,7 +22,6 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_LONG,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -33,7 +32,6 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_SHORT,
 		PoolId:          ammPool.PoolId,
-		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(4),
 		StopLossPrice:   math.LegacyZeroDec(),
@@ -43,9 +41,9 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 	suite.Require().NoError(err)
 	_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg2)
 	suite.Require().NoError(err)
-	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, mtpOpenResponse.Id)
+	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, ammPool.PoolId, positionCreator, mtpOpenResponse.Id)
 	suite.Require().NoError(err)
-	pool, _ = suite.app.PerpetualKeeper.GetPool(suite.ctx, mtp.Id)
+	pool, _ := suite.app.PerpetualKeeper.GetPool(suite.ctx, mtp.Id)
 	ammPool, _ = suite.app.PerpetualKeeper.GetAmmPool(suite.ctx, mtp.AmmPoolId)
 	return mtp, pool, ammPool, addr[0]
 }
@@ -64,7 +62,7 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 			func() {
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 			},
-			"unable to find base currency entry",
+			"asset info uusdc not found",
 			math.NewInt(0),
 		},
 		{

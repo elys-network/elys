@@ -90,6 +90,19 @@ func (suite *KeeperTestSuite) SetupTest() {
 		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
 	})
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		NetAmount:            math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		Id:                   2,
+		DepositDenom:         ptypes.ATOM,
+	})
 }
 
 func (suite *KeeperTestSuite) ResetSuite() {
@@ -125,15 +138,6 @@ func (suite *KeeperTestSuite) DisableWhiteListing() {
 func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.MaxOpenPositions = value
-	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (suite *KeeperTestSuite) SetPoolThreshold(value math.LegacyDec) {
-	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
-	params.PoolOpenThreshold = value
 	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
 	if err != nil {
 		panic(err)
@@ -391,19 +395,19 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        osmomath.BigDec
+		expectedValue        math.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			osmomath.ZeroBigDec(),
+			math.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.OneBigDec(),
+			math.LegacyOneDec(),
 		},
 		{
 			"success",
@@ -411,7 +415,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.BigDecFromSDKInt(totalShares.Sub(leveragelpAmount)).Quo(osmomath.BigDecFromSDKInt(totalShares)),
+			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().Quo(totalShares.ToLegacyDec()),
 		},
 	}
 
