@@ -134,7 +134,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(31), // less than at the same price
+			math.NewInt(30), // less than at the same price
 		},
 		{
 			"Close at take profit price",
