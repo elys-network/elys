@@ -1,6 +1,8 @@
 package types
 
 import (
+	"slices"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -103,7 +105,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 				return errorsmod.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
 			}
 			if c.CommittedTokens[i].Amount.IsZero() {
-				c.CommittedTokens = append(c.CommittedTokens[:i], c.CommittedTokens[i+1:]...)
+				c.CommittedTokens = slices.Delete(c.CommittedTokens, i, i+1)
 			}
 			return nil
 		}
