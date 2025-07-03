@@ -14,7 +14,7 @@ func (p Pool) CalcGivenOutSlippage(
 	tokensOut sdk.Coins,
 	tokenInDenom string,
 ) (osmomath.BigDec, error) {
-	balancerInCoin, _, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, osmomath.ZeroBigDec())
+	_, _, balancerInAmount, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, osmomath.ZeroBigDec())
 	if err != nil {
 		return osmomath.ZeroBigDec(), err
 	}
@@ -36,8 +36,7 @@ func (p Pool) CalcGivenOutSlippage(
 
 	// in amount is calculated in this formula
 	oracleInAmount := osmomath.BigDecFromSDKInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
-	balancerIn := osmomath.BigDecFromSDKInt(balancerInCoin.Amount)
-	balancerSlippage := balancerIn.Sub(oracleInAmount)
+	balancerSlippage := balancerInAmount.Sub(oracleInAmount)
 	if balancerSlippage.IsNegative() {
 		return osmomath.ZeroBigDec(), nil
 	}
@@ -57,7 +56,7 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		balancerInCoin, slippage, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee)
+		balancerInCoin, slippage, _, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee)
 		if err != nil {
 			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
