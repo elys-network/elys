@@ -116,7 +116,7 @@ func (p *Pool) JoinPool(
 		normalizedWeights := NormalizedWeights(p.PoolAssets)
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
+				_, slippage, _, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
 				if err == nil {
 					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
 				}
