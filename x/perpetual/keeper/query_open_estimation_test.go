@@ -12,8 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	simapp "github.com/elys-network/elys/v6/app"
@@ -269,14 +269,12 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyMustNewDecFromStr("4.39"),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     math.LegacyMustNewDecFromStr("4.39"),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
@@ -417,14 +415,12 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyNewDec(5),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     math.LegacyNewDec(5),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
