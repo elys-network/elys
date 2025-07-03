@@ -23,13 +23,16 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		return nil, err
 	}
 
-	// retrieve base currency denom
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	baseAssetsDenoms := k.GetParams(ctx).BaseAssets
+	if len(baseAssetsDenoms) == 0 {
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if !found {
+			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		}
+		baseAssetsDenoms = []string{baseCurrency}
 	}
 
-	inRoute, outRoute, _, spotPrice, _, _, _, slippage, weightBonus, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, osmomath.ZeroBigDec(), 0)
+	inRoute, outRoute, _, spotPrice, _, _, _, slippage, weightBonus, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseAssetsDenoms, msg.Sender, osmomath.ZeroBigDec(), 0)
 	if err != nil {
 		return nil, err
 	}
