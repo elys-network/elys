@@ -94,6 +94,7 @@ func (k Keeper) DeletePendingPerpetualOrdersForAddressAndPool(ctx sdk.Context, u
 		if order.Status == types.Status_PENDING && order.PositionId == positionId &&
 			(order.PerpetualOrderType == types.PerpetualOrderType_LIMITCLOSE || order.PerpetualOrderType == types.PerpetualOrderType_STOPLOSSPERP) {
 			store.Delete(types.GetPendingPerpetualOrderKeyBytes(user, poolId, order.OrderId))
+			ctx.EventManager().EmitEvent(types.NewDeletePendingPerpetualOrderEvt(order))
 		}
 	}
 
@@ -321,6 +322,9 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 	// Remove the order from the pending order list
 	k.RemovePendingPerpetualOrder(ctx, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PoolId, order.OrderId)
+
+	// emit event for limit close order executed
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitClosePerpetualOrderEvt(order, closeAmount.String()))
 
 	return nil
 }

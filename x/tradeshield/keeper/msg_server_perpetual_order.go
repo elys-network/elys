@@ -73,6 +73,9 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 
+	// emit event for limit open order created
+	ctx.EventManager().EmitEvent(types.NewCreatePerpetualOpenOrderEvt(pendingPerpetualOrder))
+
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: pendingPerpetualOrder.OrderId,
 	}, nil
@@ -101,6 +104,9 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 		ctx,
 		pendingPerpetualOrder,
 	)
+
+	// emit event for limit close order created
+	ctx.EventManager().EmitEvent(types.NewCreatePerpetualCloseOrderEvt(pendingPerpetualOrder))
 
 	return &types.MsgCreatePerpetualCloseOrderResponse{
 		OrderId: id,
@@ -138,6 +144,9 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 	// update the order
 	order.TriggerPrice = msg.TriggerPrice
 	k.SetPendingPerpetualOrder(ctx, order)
+
+	// emit event for limit open order updated
+	ctx.EventManager().EmitEvent(types.NewUpdatePerpetualOrderEvt(order, msg.TriggerPrice.String()))
 
 	return &types.MsgUpdatePerpetualOrderResponse{}, nil
 }
