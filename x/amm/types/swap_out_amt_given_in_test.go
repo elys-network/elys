@@ -504,8 +504,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                osmomath.ZeroBigDec(),
-			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006347556007845347575802896806993218"),
-			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054944),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006347556166012823775991851250568676"),
+			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054949),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -541,7 +541,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			outTokenDenom:          "uusdt",
 			swapFee:                osmomath.ZeroBigDec(),
 			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0.001558845726811989564600000000000000"),
-			expTokenOut:            sdk.NewInt64Coin("uusdt", 98687060),
+			expTokenOut:            sdk.NewInt64Coin("uusdt", 98687066),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based

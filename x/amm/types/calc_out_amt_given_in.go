@@ -15,10 +15,10 @@ func (p Pool) CalcOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,
-) (sdk.Coin, osmomath.BigDec, error) {
+) (sdk.Coin, osmomath.BigDec, osmomath.BigDec, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 	outWeight := osmomath.BigDecFromSDKInt(poolAssetOut.Weight)
 	inWeight := osmomath.BigDecFromSDKInt(poolAssetIn.Weight)
@@ -26,11 +26,11 @@ func (p Pool) CalcOutAmtGivenIn(
 	if p.PoolParams.UseOracle {
 		_, poolAssetIn, poolAssetOut, err = snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
 		if err != nil {
-			return sdk.Coin{}, osmomath.ZeroBigDec(), err
+			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
-			return sdk.Coin{}, osmomath.ZeroBigDec(), err
+			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		inWeight = oracleWeights[0].Weight
 		outWeight = oracleWeights[1].Weight
@@ -53,23 +53,23 @@ func (p Pool) CalcOutAmtGivenIn(
 		outWeight,
 	)
 	if err != nil {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	if tokenAmountOut.IsZero() {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), ErrTokenOutAmountZero
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrTokenOutAmountZero
 	}
 
 	rate, err := p.GetTokenARate(ctx, oracle, tokenIn.Denom, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	amountOutWithoutSlippage := tokenAmountInAfterFee.Mul(rate)
 
 	// check if amountOutWithoutSlippage is zero to avoid division by zero
 	if amountOutWithoutSlippage.IsZero() {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
 	}
 
 	slippage := osmomath.OneBigDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
@@ -77,8 +77,8 @@ func (p Pool) CalcOutAmtGivenIn(
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.Dec().TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), ErrTokenOutAmountZero
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrTokenOutAmountZero
 	}
 
-	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, nil
+	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, tokenAmountOut, nil
 }
