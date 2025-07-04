@@ -90,7 +90,7 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return tokenIn.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), oracleIn, perpetualFees.Dec(), takersFee.Dec(), nil
 }
 
-func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
+func (k Keeper) CalculatePerpetualFees(
 	ctx sdk.Context,
 	poolIsOracle bool,
 	tokenIn sdk.Coin,
@@ -101,7 +101,7 @@ func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
 	takersFee math.LegacyDec,
 	oracleInAmount osmomath.BigDec,
 	isSwapGivenIn bool,
-) {
+) (perpFees types.PerpetualFees) {
 
 	// Determine the source of fees based on isSwapGivenIn
 	takeFeesFrom := sdk.Coins{tokenIn}
@@ -110,29 +110,27 @@ func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
 	}
 
 	// Calculate perpetual fees in USD
-	perpFeesValueInUSD := math.LegacyZeroDec()
+	perpFeesCoins := sdk.Coins{}
 	if perpetualFees.IsPositive() {
-		perpetualFeesCoins := ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpetualFees))
-		perpFeesValueInUSD = k.amm.CalculateCoinsUSDValue(ctx, perpetualFeesCoins).Dec()
+		perpFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpetualFees))
 	}
 
 	// Calculate taker fees in USD
-	takerFeesAmountInUSD := math.LegacyZeroDec()
+	takerFeesCoins := sdk.Coins{}
 	if takersFee.IsPositive() {
-		takerFeesInCoins := ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
-		takerFeesAmountInUSD = k.amm.CalculateCoinsUSDValue(ctx, takerFeesInCoins).Dec()
+		takerFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
 	}
 
 	// Calculate slippage amount in USD
-	slippageAmountInUSD := math.LegacyZeroDec()
+	slippageCoins := sdk.Coins{}
 	if isSwapGivenIn {
-		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenOut.Denom, slippageAmount.Dec().TruncateInt()).Dec()
+		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenOut.Denom, slippageAmount.Dec().TruncateInt()))
 	} else {
-		slippageAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt()).Dec()
+		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenIn.Denom, slippageAmount.Dec().TruncateInt()))
 	}
 
 	// Calculate weight breaking fees in USD
-	weightBreakingFeesAmountInUSD := math.LegacyZeroDec()
+	weightBreakingFeesCoins := sdk.Coins{}
 	if !weightBreakingFee.IsZero() {
 		var weightBreakingFeeAmount math.Int
 		if isSwapGivenIn {
@@ -140,17 +138,15 @@ func (k Keeper) CalculateAndEmitPerpetualFeesEvent(
 		} else {
 			weightBreakingFeeAmount = oracleInAmount.Mul(weightBreakingFee).Dec().RoundInt()
 		}
-		weightBreakingFeesAmountInUSD = k.amm.CalculateUSDValue(ctx, tokenIn.Denom, weightBreakingFeeAmount).Dec()
+		weightBreakingFeesCoins = append(weightBreakingFeesCoins, sdk.NewCoin(tokenIn.Denom, weightBreakingFeeAmount))
 	}
 
-	// Emit the event if any fees are non-zero
-	if !(perpFeesValueInUSD.IsZero() && slippageAmountInUSD.IsZero() && weightBreakingFeesAmountInUSD.IsZero() && takerFeesAmountInUSD.IsZero()) {
-		types.EmitPerpetualFeesEvent(
-			ctx,
-			perpFeesValueInUSD.String(),
-			slippageAmountInUSD.String(),
-			weightBreakingFeesAmountInUSD.String(),
-			takerFeesAmountInUSD.String(),
-		)
-	}
+	perpFees = types.NewPerpetualFees(
+		perpFeesCoins,
+		slippageCoins,
+		weightBreakingFeesCoins,
+		takerFeesCoins,
+	)
+
+	return perpFees
 }
