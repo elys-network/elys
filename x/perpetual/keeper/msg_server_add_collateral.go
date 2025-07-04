@@ -2,15 +2,16 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"strconv"
+
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
-	"strconv"
 )
 
 func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
@@ -51,7 +52,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			return nil, err
 		}
 
-		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +63,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		if forceClosed {
-			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins)
 			// hooks are being called inside MTPTriggerChecksAndUpdates
 			return &types.MsgAddCollateralResponse{}, nil
 		}
@@ -112,6 +113,8 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			}
 		}
 
+		perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAddCollateral,
 			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 			sdk.NewAttribute("owner", mtp.Address),
@@ -127,6 +130,10 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 			sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 			sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
+			sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeTakerFees, takerFeesInUsd.String()),
 		))
 
 	} else {

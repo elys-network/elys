@@ -8,7 +8,10 @@ import (
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees) {
+
+	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("owner", mtp.Address),
@@ -27,5 +30,9 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
 		sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
 		sdk.NewAttribute("trigger", trigger),
+		sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeTakerFees, takerFeesInUsd.String()),
 	))
 }

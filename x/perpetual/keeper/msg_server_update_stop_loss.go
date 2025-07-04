@@ -31,7 +31,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, errorsmod.Wrap(err, "amm pool not found")
 	}
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	if forceClosed {
-		k.EmitForceClose(ctx, "update_stop_loss", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+		k.EmitForceClose(ctx, "update_stop_loss", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins)
 		return &types.MsgUpdateStopLossResponse{}, nil
 	}
 
@@ -63,6 +63,8 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, err
 	}
 
+	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+
 	event := sdk.NewEvent(types.EventUpdateStopLoss,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("owner", mtp.Address),
@@ -72,6 +74,10 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
+		sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeTakerFees, takerFeesInUsd.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 
