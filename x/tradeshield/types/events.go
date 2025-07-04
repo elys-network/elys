@@ -207,7 +207,6 @@ func NewCreatePerpetualCloseOrderEvt(order PerpetualOrder) sdk.Event {
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
-		sdk.NewAttribute("position", order.Position.String()),
 	)
 }
 

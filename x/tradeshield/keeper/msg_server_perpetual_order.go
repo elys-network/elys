@@ -105,6 +105,8 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 		pendingPerpetualOrder,
 	)
 
+	pendingPerpetualOrder.OrderId = id
+
 	// emit event for limit close order created
 	ctx.EventManager().EmitEvent(types.NewCreatePerpetualCloseOrderEvt(pendingPerpetualOrder))
 
