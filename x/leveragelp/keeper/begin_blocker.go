@@ -105,6 +105,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
 		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),

@@ -59,12 +59,14 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 
 	}
 
-	event := sdk.NewEvent(types.EventOpen,
+	event := sdk.NewEvent(types.EventOpenConsolidate,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("leverage_lp_amount", position.LeveragedLpAmount.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 
