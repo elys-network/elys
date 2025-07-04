@@ -3,10 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	storetypes "cosmossdk.io/core/store"
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/v6/utils"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/leveragelp/types"
@@ -21,18 +19,15 @@ func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) erro
 	return nil
 }
 
-func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
-	positions, _, err := k.GetPositionsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator), &query.PageRequest{})
-	if err != nil {
-		return nil, err
-	}
+func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Position {
+	positions := k.GetPositionsForPoolAndAddress(ctx, msg.AmmPoolId, sdk.MustAccAddressFromBech32(msg.Creator))
 	for _, position := range positions {
-		if position.AmmPoolId == msg.AmmPoolId && position.Collateral.Denom == msg.CollateralAsset {
-			return position, nil
+		if position.Collateral.Denom == msg.CollateralAsset {
+			return &position
 		}
 	}
 
-	return nil, nil
+	return nil
 }
 
 func (k Keeper) CheckMaxLeverageRatio(ctx sdk.Context, poolId uint64) error {
@@ -54,13 +49,13 @@ func (k Keeper) CheckMaxLeverageRatio(ctx sdk.Context, poolId uint64) error {
 	return nil
 }
 
-func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context) error {
+func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context, poolId uint64) error {
 
-	openPositions := k.GetOpenPositionCount(ctx)
+	poolCounter := k.GetPositionCounter(ctx, poolId)
 	maxOpenPositions := k.GetMaxOpenPositions(ctx)
 
-	if openPositions >= maxOpenPositions {
-		return errorsmod.Wrap(types.ErrMaxOpenPositions, fmt.Sprintf("cannot open new positions, open positions %d - max positions %d", openPositions, maxOpenPositions))
+	if poolCounter.TotalOpen >= maxOpenPositions {
+		return errorsmod.Wrap(types.ErrMaxOpenPositions, fmt.Sprintf("cannot open new positions, open positions %d - max positions %d", poolCounter.TotalOpen, maxOpenPositions))
 	}
 	return nil
 }
@@ -73,7 +68,7 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 	return ammPool, nil
 }
 
-func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types.Position) ([]*types.QueryPosition, error) {
+func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []types.Position) ([]*types.QueryPosition, error) {
 	updatedLeveragePositions := []*types.QueryPosition{}
 	for _, position := range positions {
 
@@ -129,28 +124,4 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 	}
 
 	return positions_and_interest, nil
-}
-
-// migrating eixsting position and setting position health to max dec when liablities is zero
-func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
-	iterator := k.GetPositionIterator(ctx)
-	defer func(iterator storetypes.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err == nil {
-			positionHealth, err := k.GetPositionHealth(ctx, position)
-			if err == nil {
-				position.PositionHealth = positionHealth.Dec()
-				k.SetPosition(ctx, &position)
-			}
-		}
-	}
 }

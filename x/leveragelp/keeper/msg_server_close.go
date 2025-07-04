@@ -16,7 +16,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	position, err := k.GetPosition(ctx, creator, msg.Id)
+	position, err := k.GetPosition(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}

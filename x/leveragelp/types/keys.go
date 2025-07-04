@@ -20,14 +20,15 @@ const (
 const MaxPageLimit = 50000
 
 var (
-	PositionPrefix          = []byte{0x01}
-	PositionCountPrefix     = []byte{0x02}
-	OpenPositionCountPrefix = []byte{0x04}
-	WhitelistPrefix         = []byte{0x05}
-	SQBeginBlockPrefix      = []byte{0x06}
-	LiquidationSortPrefix   = []byte{0x07} // Position liquidation sort prefix
-	StopLossSortPrefix      = []byte{0x08} // Position stop loss sort prefix
-	OffsetKeyPrefix         = []byte{0x09}
+	LegacyPositionPrefix          = []byte{0x01}
+	LegacyPositionCountPrefix     = []byte{0x02}
+	LegacyOpenPositionCountPrefix = []byte{0x04}
+
+	WhitelistPrefix       = []byte{0x05}
+	PositionPrefix        = []byte{0x06}
+	PositionCounterPrefix = []byte{0x07}
+
+	OffsetKeyPrefix = []byte{0x09}
 )
 
 func KeyPrefix(p string) []byte {
@@ -50,10 +51,25 @@ func GetWhitelistKey(acc sdk.AccAddress) []byte {
 	return append(WhitelistPrefix, address.MustLengthPrefix(acc)...)
 }
 
-func GetPositionKey(creator sdk.AccAddress, id uint64) []byte {
-	return append(PositionPrefix, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
+func GetPoolPrefixKey(poolId uint64) []byte {
+	key := append(PositionPrefix, sdk.Uint64ToBigEndian(poolId)...)
+	key = append(key, []byte("/")...)
+	return key
 }
 
-func GetPositionPrefixForAddress(creator sdk.AccAddress) []byte {
-	return append(PositionPrefix, address.MustLengthPrefix(creator)...)
+func GetPoolCreatorPrefixKey(poolId uint64, creator sdk.AccAddress) []byte {
+	key := GetPoolPrefixKey(poolId)
+	key = append(key, address.MustLengthPrefix(creator)...)
+	key = append(key, []byte("/")...)
+	return key
+}
+
+func GetPositionKey(poolId uint64, creator sdk.AccAddress, id uint64) []byte {
+	key := GetPoolCreatorPrefixKey(poolId, creator)
+	key = append(key, sdk.Uint64ToBigEndian(id)...)
+	return key
+}
+
+func GetPositionCounterKey(poolId uint64) []byte {
+	return append(PositionPrefix, sdk.Uint64ToBigEndian(poolId)...)
 }

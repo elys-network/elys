@@ -21,6 +21,13 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	params := k.GetParams(ctx)
 
 	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
+
+		// number of elements here will be equal to the number of leverage lp enabled pools
+		totalOpen := uint64(0)
+		for _, elem := range k.GetAllPositionCounters(ctx) {
+			totalOpen = totalOpen + elem.TotalOpen
+		}
+
 		pageReq := &query.PageRequest{
 			Limit:      uint64(params.NumberPerBlock),
 			CountTotal: true,
@@ -32,7 +39,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			ctx.Logger().Error(errorsmod.Wrap(err, "error fetching paginated positions").Error())
 			return
 		}
-		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
+		if offset+uint64(params.NumberPerBlock) >= totalOpen {
 			k.DeleteOffset(ctx)
 		} else {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
@@ -46,7 +53,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			}
 
 			cacheContextForUnhealthy, writeForUnhealthy := ctx.CacheContext()
-			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, position, pool)
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, &position, pool)
 			if err == nil {
 				writeForUnhealthy()
 				continue
@@ -58,7 +65,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					continue
 				}
 				cacheContextForStopLoss, writeForStopLoss := ctx.CacheContext()
-				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, position, pool, ammPool)
+				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, &position, pool, ammPool)
 				if err == nil {
 					writeForStopLoss()
 				}

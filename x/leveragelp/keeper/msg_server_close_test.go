@@ -112,6 +112,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.NewInt(0),
+				PoolId:   1,
 			},
 			true,
 			types.ErrPositionDoesNotExist.Error(),
@@ -125,6 +126,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.NewInt(0),
+				PoolId:   1,
 			},
 			true,
 			"your funds will be locked for 1 hour",
@@ -148,6 +150,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -175,6 +178,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.MulRaw(2),
+				PoolId:   1,
 			},
 			true,
 			"invalid closing ratio for leverage lp",
@@ -202,6 +206,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2000000),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -222,7 +227,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(1000000 * time.Hour)
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
@@ -231,6 +236,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2000000),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -251,7 +257,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(1000000 * time.Hour)
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
@@ -260,6 +266,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -280,7 +287,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(time.Hour)
 			},
 			func() {
-				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				actualShares, ok := sdkmath.NewIntFromString("9991380952380952380")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
@@ -291,13 +298,14 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.LegacyMustNewDecFromStr("9991380952380952380").TruncateInt(),
+				PoolId:   1,
 			},
 			false,
 			"",
 			func() {
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},

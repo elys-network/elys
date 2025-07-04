@@ -15,4 +15,6 @@ message GenesisState {
   repeated Pool pool_list = 2 [ (gogoproto.nullable) = false ];
   repeated Position position_list = 3 [ (gogoproto.nullable) = false ];
   repeated string address_whitelist = 4;
+  repeated PositionCounter position_counter = 5
+      [ (gogoproto.nullable) = false ];
 }

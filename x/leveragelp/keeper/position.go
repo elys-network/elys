@@ -1,26 +1,22 @@
 package keeper
 
 import (
-	"fmt"
-
-	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) (types.Position, error) {
+func (k Keeper) GetPosition(ctx sdk.Context, poolId uint64, positionAddress sdk.AccAddress, id uint64) (types.Position, error) {
 	var position types.Position
-	key := types.GetPositionKey(positionAddress, id)
+	key := types.GetPositionKey(poolId, positionAddress, id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return position, types.ErrPositionDoesNotExist
@@ -34,60 +30,52 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 
 func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	count := k.GetPositionCount(ctx)
-	openCount := k.GetOpenPositionCount(ctx)
 	creator := sdk.MustAccAddressFromBech32(position.Address)
 
 	if position.Id == 0 {
-		// increment global id count
-		count++
-		position.Id = count
-		k.SetPositionCount(ctx, count)
-		// increment open position count
-		openCount++
-		k.SetOpenPositionCount(ctx, openCount)
+		positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
+		positionCounter.Counter++
+		positionCounter.TotalOpen++
+		k.SetPositionCounter(ctx, positionCounter)
+
+		position.Id = positionCounter.Counter
 	}
 
-	key := types.GetPositionKey(creator, position.Id)
+	key := types.GetPositionKey(position.AmmPoolId, creator, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
 }
 
-func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) error {
+func (k Keeper) DestroyPosition(ctx sdk.Context, position types.Position) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
-	key := types.GetPositionKey(positionAddress, id)
+	key := types.GetPositionKey(position.AmmPoolId, position.GetOwnerAddress(), position.Id)
 	if !store.Has(key) {
 		return types.ErrPositionDoesNotExist
 	}
 	store.Delete(key)
 
-	// decrement open position count
-	openCount := k.GetOpenPositionCount(ctx)
-	if openCount != 0 {
-		openCount--
-	}
-
-	// Set open Position count
-	k.SetOpenPositionCount(ctx, openCount)
+	positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
+	positionCounter.TotalOpen--
+	k.SetPositionCounter(ctx, positionCounter)
 
 	return nil
 }
 
 // Set Open Position count
-func (k Keeper) SetOpenPositionCount(ctx sdk.Context, count uint64) {
+func (k Keeper) SetLegacyOpenPositionCount(ctx sdk.Context, count uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.OpenPositionCountPrefix, types.GetUint64Bytes(count))
+	store.Set(types.LegacyOpenPositionCountPrefix, types.GetUint64Bytes(count))
 }
 
 // Set Position count
-func (k Keeper) SetPositionCount(ctx sdk.Context, count uint64) {
+func (k Keeper) SetLegacyPositionCount(ctx sdk.Context, count uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.PositionCountPrefix, types.GetUint64Bytes(count))
+	store.Set(types.LegacyPositionCountPrefix, types.GetUint64Bytes(count))
 }
 
-func (k Keeper) GetPositionCount(ctx sdk.Context) uint64 {
+func (k Keeper) GetLegacyPositionCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.PositionCountPrefix)
+	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.LegacyPositionCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -116,25 +104,10 @@ func (k Keeper) DeleteOffset(ctx sdk.Context) {
 	store.Delete(types.OffsetKeyPrefix)
 }
 
-func (k Keeper) GetOpenPositionCount(ctx sdk.Context) uint64 {
-	var count uint64
-	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.OpenPositionCountPrefix)
-	if countBz == nil {
-		count = 0
-	} else {
-		count = types.GetUint64FromBytes(countBz)
-	}
-	return count
-}
-
-func (k Keeper) GetPositionIterator(ctx sdk.Context) storetypes.Iterator {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return storetypes.KVStorePrefixIterator(store, types.PositionPrefix)
-}
-
 func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	var positions []types.Position
-	iterator := k.GetPositionIterator(ctx)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PositionPrefix)
 	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
@@ -155,8 +128,8 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	return positions
 }
 
-func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
-	var positionList []*types.Position
+func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]types.Position, *query.PageResponse, error) {
+	var positionList []types.Position
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	positionStore := prefix.NewStore(store, types.PositionPrefix)
 
@@ -178,18 +151,18 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 		}
 		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 		position.Liabilities = debt.GetTotalLiablities()
-		positionList = append(positionList, &position)
+		positionList = append(positionList, position)
 		return nil
 	})
 
 	return positionList, pageRes, err
 }
 
-func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
-	var positions []*types.Position
+func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]types.Position, *query.PageResponse, error) {
+	var positions []types.Position
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	positionStore := prefix.NewStore(store, types.PositionPrefix)
+	positionStore := prefix.NewStore(store, types.GetPoolPrefixKey(ammPoolId))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -206,7 +179,7 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 		err := k.cdc.Unmarshal(value, &position)
 		if err == nil {
 			if accumulate && position.AmmPoolId == ammPoolId {
-				positions = append(positions, &position)
+				positions = append(positions, position)
 				return true, nil
 			}
 		}
@@ -216,35 +189,40 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
-	var positions []*types.Position
+func (k Keeper) GetPositionsForPoolAndAddress(ctx sdk.Context, poolId uint64, positionAddress sdk.AccAddress) []types.Position {
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPoolCreatorPrefixKey(poolId, positionAddress))
+	defer iterator.Close()
 
-	if pagination == nil {
-		pagination = &query.PageRequest{
-			Limit: types.MaxPageLimit,
-		}
-	}
-
-	if pagination.Limit > types.MaxPageLimit {
-		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
-	}
-
-	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+	var positionList []types.Position
+	for ; iterator.Valid(); iterator.Next() {
 		var position types.Position
-		k.cdc.MustUnmarshal(value, &position)
-		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
-		position.Liabilities = debt.GetTotalLiablities()
-		positions = append(positions, &position)
-		return nil
-	})
-	if err != nil {
-		return nil, nil, err
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		positionList = append(positionList, position)
 	}
 
-	return positions, pageRes, nil
+	return positionList
+}
+
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress) []types.Position {
+
+	allPools := k.GetAllPools(ctx)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	var positionList []types.Position
+
+	for _, pool := range allPools {
+		iterator := storetypes.KVStorePrefixIterator(store, types.GetPoolCreatorPrefixKey(pool.AmmPoolId, positionAddress))
+		for ; iterator.Valid(); iterator.Next() {
+			var position types.Position
+			k.cdc.MustUnmarshal(iterator.Value(), &position)
+			positionList = append(positionList, position)
+		}
+		iterator.Close()
+	}
+
+	return positionList
 }
 
 // GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
@@ -278,9 +256,9 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (osm
 	return health, nil
 }
 
-func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {
+func (k Keeper) GetPositionWithId(ctx sdk.Context, poolId uint64, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPositionKey(positionAddress, Id)
+	key := types.GetPositionKey(poolId, positionAddress, Id)
 	if !store.Has(key) {
 		return nil, false
 	}
@@ -290,130 +268,26 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddres
 	return &position, true
 }
 
-func (k Keeper) MigrateData(ctx sdk.Context) {
-	iterator := k.GetPositionIterator(ctx)
-	defer func(iterator storetypes.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err == nil {
-			leveragedLpAmount := sdkmath.ZeroInt()
-			commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
-
-			for _, commitment := range commitments.CommittedTokens {
-				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
-			}
-			pool, found := k.GetPool(ctx, position.AmmPoolId)
-			if found {
-				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
-				pool.Health = k.CalculatePoolHealth(ctx, &pool)
-				k.SetPool(ctx, pool)
-			}
-
-			// Repay any balance, delete position
-			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
-			repayAmount := debt.GetTotalLiablities()
-
-			// Check if position has enough coins to repay else repay partial
-			bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
-			userAmount := sdkmath.ZeroInt()
-			if bal.Amount.LT(repayAmount) {
-				repayAmount = bal.Amount
-			} else {
-				userAmount = bal.Amount.Sub(repayAmount)
-			}
-
-			if repayAmount.IsPositive() {
-				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.BorrowPoolId, position.AmmPoolId)
-			} else {
-				userAmount = bal.Amount
-			}
-
-			positionOwner := sdk.MustAccAddressFromBech32(position.Address)
-			if userAmount.IsPositive() {
-				k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
-			}
-
-			if leveragedLpAmount.IsZero() {
-				// Repay any balance, delete position
-				k.DestroyPosition(ctx, positionOwner, position.Id)
-			} else {
-				// Repay any balance and update position value
-				position.LeveragedLpAmount = leveragedLpAmount
-				k.SetPosition(ctx, &position)
-			}
-		}
-	}
-}
-
-func (k Keeper) SetAllPositions(ctx sdk.Context) {
-	iterator := k.GetPositionIterator(ctx)
+func (k Keeper) MigrateToNewKeys(ctx sdk.Context) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.LegacyPositionPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var position types.Position
 		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		leveragedLpAmount := sdkmath.ZeroInt()
-		commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 
-		poolDenom := ammtypes.GetPoolShareDenom(position.AmmPoolId)
-		for _, commitment := range commitments.CommittedTokens {
-			if poolDenom == commitment.Denom {
-				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
-			}
-		}
-
-		// Set correct lev amount
-		position.LeveragedLpAmount = leveragedLpAmount
-		position.BorrowPoolId = stabletypes.UsdcPoolId
 		k.SetPosition(ctx, &position)
+
+		positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
+		positionCounter.TotalOpen++
+		k.SetPositionCounter(ctx, positionCounter)
 	}
 
-	// Pool liabilities are reset in stablestake migration
-	k.V18MigratonPoolLiabilities(ctx)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		// After setting pool liabilities
-		balance := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
-		if balance.IsPositive() {
-			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
-			totalLiab := debt.GetTotalLiablities()
-			if totalLiab.GT(balance.Amount) {
-				totalLiab = balance.Amount
-			}
-			if totalLiab.IsPositive() {
-				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, totalLiab), position.AmmPoolId, position.BorrowPoolId)
-			}
-			if balance.Amount.GT(totalLiab) {
-				payToUser := balance.Amount.Sub(totalLiab)
-				k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(position.Address), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, payToUser)})
-			}
-		}
-
-		if position.LeveragedLpAmount.IsZero() {
-			k.DestroyPosition(ctx, sdk.MustAccAddressFromBech32(position.Address), position.Id)
-		}
-	}
-}
-
-func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
-	iterator := k.GetPositionIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.UsdcPoolId)
-		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
-		k.SetPosition(ctx, &position)
+	count := k.GetLegacyPositionCount(ctx) + 1
+	// we don't know whats the latest counter for the pool, we can count though but simplest would be just to set from global value of legacy
+	for _, positionCounter := range k.GetAllPositionCounters(ctx) {
+		positionCounter.Counter = count
+		k.SetPositionCounter(ctx, positionCounter)
 	}
 }

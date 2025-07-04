@@ -18,7 +18,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, errors.New("stop loss price not enabled")
 	}
 
-	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)
+	position, found := k.GetPositionWithId(ctx, msg.PoolId, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPositionDoesNotExist, fmt.Sprintf("positionId: %d", msg.Position))
 

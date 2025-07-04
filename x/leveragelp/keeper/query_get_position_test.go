@@ -101,15 +101,15 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	}, 1)
 
-	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
+	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id, PoolId: position.AmmPoolId})
 	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666912249")
 
-	suite.Require().Equal(position, res.Position.Position)
+	suite.Require().Equal(*position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
 
 	expected := types.PositionAndInterest{
 		Position: &types.QueryPosition{
-			Position:         position,
+			Position:         *position,
 			UpdatedLeverage:  updated_leverage,
 			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100278"),
 		},

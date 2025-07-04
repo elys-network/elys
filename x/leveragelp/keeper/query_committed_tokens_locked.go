@@ -25,10 +25,7 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 		return nil, err
 	}
 
-	positions, pageResponse, err := k.GetPositionsForAddress(ctx, address, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
+	positions := k.GetPositionsForAddress(ctx, address)
 
 	var positionCommitedTokens []types.PositionCommitedToken
 
@@ -58,6 +55,5 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 	return &types.QueryCommittedTokensLockedResponse{
 		Address:               address.String(),
 		PositionCommitedToken: positionCommitedTokens,
-		Pagination:            pageResponse,
 	}, nil
 }

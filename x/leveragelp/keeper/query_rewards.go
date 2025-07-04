@@ -15,18 +15,18 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	creator := sdk.MustAccAddressFromBech32(req.Address)
+
+	userPositions := k.GetPositionsForAddress(ctx, creator)
 
 	totalRewards := sdk.Coins{}
 	rewardInfos := []*types.RewardInfo{}
-	for _, id := range req.Ids {
-		creator := sdk.MustAccAddressFromBech32(req.Address)
-		position, err := k.GetPosition(ctx, creator, id)
-		if err != nil {
-			return &types.QueryRewardsResponse{}, nil
-		}
+	for _, position := range userPositions {
+
 		coins := k.masterchefKeeper.UserPoolPendingReward(ctx, position.GetPositionAddress(), position.AmmPoolId)
 		rewardInfos = append(rewardInfos, &types.RewardInfo{
-			PositionId: id,
+			PoolId:     position.AmmPoolId,
+			PositionId: position.Id,
 			Reward:     coins,
 		})
 		totalRewards = totalRewards.Add(coins...)

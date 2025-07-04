@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (m Migrator) V11Migration(ctx sdk.Context) error {
+func (m Migrator) V23Migration(ctx sdk.Context) error {
+	m.keeper.MigrateToNewKeys(ctx)
 	return nil
 }

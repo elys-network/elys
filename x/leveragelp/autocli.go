@@ -31,9 +31,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amm_pool_id"}},
 				},
 				{
-					RpcMethod: "GetStatus",
-					Use:       "get-status",
-					Short:     "Query get-status",
+					RpcMethod:      "GetCounter",
+					Use:            "counter [pool_id]",
+					Short:          "Query counter",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod:      "QueryPositionsForAddress",
@@ -71,9 +72,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "LiquidationPrice",
-					Use:            "liquidation-price [address] [position_id]",
+					Use:            "liquidation-price [address] [position_id] [pool_id]",
 					Short:          "Query liquidation price",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}, {ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod: "OpenEst",
@@ -81,15 +82,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "CloseEst",
-					Use:            "close-estimation [owner] [pool_id] [lp_amount]",
+					Use:            "close-estimation [owner] [pool_id] [lp_amount] [pool_id]",
 					Short:          "Query close estimation",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner"}, {ProtoField: "id"}, {ProtoField: "lp_amount"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner"}, {ProtoField: "id"}, {ProtoField: "lp_amount"}, {ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod:      "Rewards",
-					Use:            "rewards [address] [position-ids]",
+					Use:            "rewards [address]",
 					Short:          "Query rewards for position ids owned by address",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "ids", Varargs: true}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
 				},
 				{
 					RpcMethod:      "CommittedTokensLocked",

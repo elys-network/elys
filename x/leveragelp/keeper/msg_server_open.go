@@ -69,10 +69,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Check if it is the same direction position for the same trader.
-	if position, err := k.CheckSamePosition(ctx, msg); position != nil {
-		if err != nil {
-			return nil, err
-		}
+	if position := k.CheckSamePosition(ctx, msg); position != nil {
 		response, err := k.OpenConsolidate(ctx, position, msg)
 		if err != nil {
 			return nil, err
@@ -83,7 +80,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return response, nil
 	}
 
-	if err := k.CheckMaxOpenPositions(ctx); err != nil {
+	if err := k.CheckMaxOpenPositions(ctx, msg.AmmPoolId); err != nil {
 		return nil, err
 	}
 

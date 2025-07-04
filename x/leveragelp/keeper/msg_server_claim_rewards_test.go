@@ -122,8 +122,9 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	}{
 		{"position not found",
 			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+				Sender:     addresses[0].String(),
+				PositionId: 1,
+				PoolId:     1,
 			},
 			true,
 			types.ErrPositionDoesNotExist.Error(),
@@ -135,8 +136,9 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 		},
 		{"module is out of funds",
 			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+				Sender:     addresses[0].String(),
+				PositionId: 1,
+				PoolId:     1,
 			},
 			true,
 			"insufficient funds",
@@ -162,8 +164,9 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 		},
 		{"positive case",
 			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+				Sender:     addresses[0].String(),
+				PositionId: 1,
+				PoolId:     1,
 			},
 			false,
 			"",

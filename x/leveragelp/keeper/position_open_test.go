@@ -123,7 +123,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	})
 	suite.Require().NoError(err)
-	position2, err := k.GetPosition(suite.ctx, position.GetOwnerAddress(), position.Id)
+	position2, err := k.GetPosition(suite.ctx, 1, position.GetOwnerAddress(), position.Id)
 	suite.Require().NoError(err)
 	suite.Require().Equal(position2.Address, addr.String())
 	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")

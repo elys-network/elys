@@ -218,7 +218,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		if err != nil {
 			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
-		err = k.DestroyPosition(ctx, positionOwner, position.Id)
+		err = k.DestroyPosition(ctx, *position)
 		if err != nil {
 			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}

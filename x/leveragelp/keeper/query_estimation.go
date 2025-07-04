@@ -46,7 +46,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 
 	ctx, _ := sdk.UnwrapSDKContext(goCtx).CacheContext()
 	owner := sdk.MustAccAddressFromBech32(req.Owner)
-	position, err := k.GetPosition(ctx, owner, req.Id)
+	position, err := k.GetPosition(ctx, req.PoolId, owner, req.Id)
 	if err != nil {
 		return nil, err
 	}

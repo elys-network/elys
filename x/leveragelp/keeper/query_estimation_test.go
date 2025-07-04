@@ -109,6 +109,7 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		Owner:    addr.String(),
 		Id:       position.Id,
 		LpAmount: sdkmath.NewInt(10000000000000000),
+		PoolId:   1,
 	})
 	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
