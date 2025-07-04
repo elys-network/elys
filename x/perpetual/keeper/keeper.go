@@ -136,6 +136,12 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return err
 	}
 
+	// send fees to masterchef and taker collection address
+	err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, liabilitiesInCollateral, mtp.CollateralAsset, ammPool)
+	if err != nil {
+		return err
+	}
+
 	err = pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
 		return nil
@@ -283,6 +289,42 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 
 	}
 	return insuranceAmount, nil
+}
+
+func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool) error {
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, senderAddress)
+	params := k.GetParams(ctx)
+	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
+	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+	sendToTakerCollection := takersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+
+	if sendToMasterchef.IsPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
+		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
+		err := k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return err
+		}
+
+		err = k.amm.OnCollectFee(ctx, *ammPool, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return err
+		}
+	}
+
+	if sendToTakerCollection.IsPositive() {
+		takerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return err
+		}
+		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
+		err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Set the perpetual hooks.
