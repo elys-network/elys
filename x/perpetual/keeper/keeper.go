@@ -140,6 +140,12 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return types.PerpetualFees{}, err
 	}
 
+	// send fees to masterchef and taker collection address
+	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, liabilitiesInCollateral, mtp.CollateralAsset, ammPool)
+	if err != nil {
+		return err
+	}
+
 	err = pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
 		return types.PerpetualFees{}, err
@@ -287,6 +293,46 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 
 	}
 	return insuranceAmount, nil
+}
+
+func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool) (math.Int, error) {
+	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, tierAddress)
+	params := k.GetParams(ctx)
+	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
+	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+	sendToTakerCollection := takersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+
+	if sendToMasterchef.IsPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
+		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
+		err := k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+
+		err = k.amm.OnCollectFee(ctx, *ammPool, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+	}
+
+	if sendToTakerCollection.IsPositive() {
+		takerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
+		err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+	}
+	return sendToMasterchef.Add(sendToTakerCollection), nil
 }
 
 // Set the perpetual hooks.

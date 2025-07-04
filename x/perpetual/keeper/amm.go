@@ -38,17 +38,10 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	}
 	params := k.GetParams(ctx)
 
-	addr, err := sdk.AccAddressFromBech32(owner)
-	if err != nil {
-		addr = sdk.AccAddress{}
-	}
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
-	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// Estimate swap
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
 	tokensIn := sdk.Coins{tokenInAmount}
-	tokenOut, slippage, slippageAmount, weightBalanceBonus, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensIn, tokenOutDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
+	tokenOut, slippage, slippageAmount, weightBalanceBonus, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensIn, tokenOutDenom, osmomath.ZeroBigDec(), params.GetBigDecWeightBreakingFeeFactor(), osmomath.ZeroBigDec())
 	if err != nil {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
@@ -56,6 +49,15 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	if tokenOut.IsZero() {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
+
+	// send for query purpose only
+	addr, err := sdk.AccAddressFromBech32(owner)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
+	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
+	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 
 	return tokenOut.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), perpetualFees.Dec(), takersFee.Dec(), nil
 }
@@ -68,17 +70,9 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	params := k.GetParams(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
 
-	addr, err := sdk.AccAddressFromBech32(owner)
-	if err != nil {
-		addr = sdk.AccAddress{}
-	}
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
-	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
-
 	// Estimate swap
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
-	tokenIn, slippage, slippageAmount, weightBalanceBonus, oracleIn, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensOut, tokenInDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
+	tokenIn, slippage, slippageAmount, weightBalanceBonus, oracleIn, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensOut, tokenInDenom, osmomath.ZeroBigDec(), params.GetBigDecWeightBreakingFeeFactor(), osmomath.ZeroBigDec())
 	if err != nil {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
@@ -86,6 +80,15 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	if tokenIn.IsZero() {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyDec{}, math.LegacyDec{}, errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
+
+	// send for query purpose only
+	addr, err := sdk.AccAddressFromBech32(owner)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
+	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
+	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 
 	return tokenIn.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), oracleIn, perpetualFees.Dec(), takersFee.Dec(), nil
 }
