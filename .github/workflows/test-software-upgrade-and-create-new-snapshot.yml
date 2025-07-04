@@ -93,23 +93,6 @@ jobs:
           NEW_BINARY_PATH=./build/elysd
           echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
 
-      - name: Check submit new proposal from cache exists
-        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
-        id: cache-submit-new-proposal
-        with:
-          path: |
-            /home/runner/.elys
-            /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
-          lookup-only: true
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
-
       - name: Retrieve snapshot info and set snapshot path
         run: |
           # use mainnet for main branch otherwise use testnet snapshot data
@@ -156,12 +139,10 @@ jobs:
           fi
 
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Download snapshot
         run: |
           curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
@@ -170,7 +151,6 @@ jobs:
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
@@ -178,7 +158,6 @@ jobs:
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Create second validator
         run: |
@@ -186,14 +165,12 @@ jobs:
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Prepare validator data
         run: |
           ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} prepare-validator-data \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         run: |
@@ -202,39 +179,6 @@ jobs:
             ${NEW_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
-
-      - name: Save submit new proposal to cache
-        uses: elys-network/actions-cache-s3/save@eba1d2b54699fda7ee03d826049bc67dcf514887
-        with:
-          path: |
-            /home/runner/.elys
-            /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
-
-      - name: Restore submit new proposal from cache
-        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
-        with:
-          path: |
-            /home/runner/.elys
-            /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
-        if: steps.cache-submit-new-proposal.outputs.cache-hit == 'true'
 
       - name: Upgrade to new binary
         run: |
@@ -242,34 +186,3 @@ jobs:
             ${NEW_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-
-      - name: Create new snapshot file
-        run: |
-          SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
-          SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
-          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
-          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
-          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
-          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          cd /home/runner
-          tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
-
-      - name: Upload snapshot
-        env:
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          RCLONE_CONFIG_R2_TYPE: s3
-          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
-          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY }}
-          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_KEY }}
-          RCLONE_CONFIG_R2_REGION: enam
-          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-        run: |
-          # install rclone
-          curl https://rclone.org/install.sh | sudo bash
-
-          # copy snapshot to r2
-          rclone -vv copy "${NEW_SNAPSHOT_PATH}" r2:${R2_BUCKET_NAME}/
-
-      - name: Info about the snapshot
-        run: |
-          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_FILENAME"

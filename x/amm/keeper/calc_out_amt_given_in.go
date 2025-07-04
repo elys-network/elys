@@ -17,10 +17,10 @@ func (k Keeper) CalcOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,
-) (sdk.Coin, osmomath.BigDec, error) {
+) (sdk.Coin, osmomath.BigDec, osmomath.BigDec, error) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
 	return p.CalcOutAmtGivenIn(ctx, oracle, snapshot, tokensIn, tokenOutDenom, swapFee)
