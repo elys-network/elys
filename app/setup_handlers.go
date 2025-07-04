@@ -13,10 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 )
 
-const (
-	NewMaxBytes = 5 * 1024 * 1024 // 5MB
-)
-
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
 	currentVersion := version.Version

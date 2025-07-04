@@ -71,5 +71,5 @@ func GetPositionKey(poolId uint64, creator sdk.AccAddress, id uint64) []byte {
 }
 
 func GetPositionCounterKey(poolId uint64) []byte {
-	return append(PositionPrefix, sdk.Uint64ToBigEndian(poolId)...)
+	return append(PositionCounterPrefix, sdk.Uint64ToBigEndian(poolId)...)
 }
