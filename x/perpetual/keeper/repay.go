@@ -15,6 +15,17 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		if err != nil {
 			return err
 		}
+
+		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+		if err != nil {
+			return err
+		}
+		// send fees to masterchef and taker collection address
+		err = k.SendFeesToMasterchefAndTakerCollection(ctx, ammPoolAddr, returnAmount, mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
