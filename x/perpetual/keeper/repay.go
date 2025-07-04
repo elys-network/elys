@@ -21,7 +21,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			return err
 		}
 		// send fees to masterchef and taker collection address
-		err = k.SendFeesToMasterchefAndTakerCollection(ctx, ammPoolAddr, returnAmount, mtp.CustodyAsset, ammPool)
+		err = k.SendFeesToMasterchefAndTakerCollection(ctx, ammPoolAddr, mtp.Address, returnAmount, mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}

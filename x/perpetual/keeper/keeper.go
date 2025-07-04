@@ -137,7 +137,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	// send fees to masterchef and taker collection address
-	err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, liabilitiesInCollateral, mtp.CollateralAsset, ammPool)
+	err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, liabilitiesInCollateral, mtp.CollateralAsset, ammPool)
 	if err != nil {
 		return err
 	}
@@ -291,8 +291,12 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	return insuranceAmount, nil
 }
 
-func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool) error {
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, senderAddress)
+func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool) error {
+	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
+	if err != nil {
+		return err
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, tierAddress)
 	params := k.GetParams(ctx)
 	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
 	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
