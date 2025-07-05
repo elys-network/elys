@@ -53,7 +53,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 	order2 := types.PerpetualOrderExtraInfo{
 		PerpetualOrder: &types.PerpetualOrder{
 			OrderId:            2,
-			OwnerAddress:       "dummy_address",
+			OwnerAddress:       sdk.AccAddress([]byte("dummy_address")).String(),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
 			TriggerPrice:       math.LegacyNewDec(2),
@@ -89,7 +89,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 		{
 			desc: "valid request",
 			request: &types.QueryPendingPerpetualOrderForAddressRequest{
-				Address: "dummy_address",
+				Address: sdk.AccAddress([]byte("dummy_address")).String(),
 				Status:  types.Status_EXECUTED,
 			},
 			response: &types.QueryPendingPerpetualOrderForAddressResponse{

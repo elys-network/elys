@@ -31,9 +31,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "PendingPerpetualOrder",
-					Use:            "show-pending-perpetual-order [id]",
+					Use:            "show-pending-perpetual-order [owner-address] [pool-id] [order-id]",
 					Short:          "shows a pending-perpetual-order",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner_address"}, {ProtoField: "pool_id"}, {ProtoField: "order_id"}},
 				},
 				{
 					RpcMethod: "PendingPerpetualOrderAll",
