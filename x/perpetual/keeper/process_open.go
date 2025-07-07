@@ -49,6 +49,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 			if err != nil {
 				return err
 			}
+			k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippageAmount, weightBreakingFee, custodyAmount, mtp.CustodyAsset)
 			k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, leveragedAmtTokenIn, sdk.NewCoin(mtp.CustodyAsset, custodyAmount), slippageAmount, weightBreakingFee, perpetualFees, takerFees, osmomath.ZeroBigDec(), true)
 		}
 	case types.Position_SHORT:
