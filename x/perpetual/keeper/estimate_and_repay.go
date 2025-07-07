@@ -26,6 +26,15 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
 	perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false, false)
+	// Track slippage and weight breaking fee slippage in amm via perpetual
+	for _, coin := range perpFees.SlippageFees {
+		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+	}
+	for _, coin := range perpFees.WeightBreakingFees {
+		if coin.Amount.IsPositive() {
+			k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+		}
+	}
 
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
