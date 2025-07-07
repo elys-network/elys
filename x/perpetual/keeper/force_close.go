@@ -7,11 +7,11 @@ import (
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool) (math.Int, math.Int, error) {
+func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool) (math.Int, math.Int, types.PerpetualFees, error) {
 	// Estimate swap and repay
-	repayAmt, returnAmount, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, math.LegacyOneDec())
+	repayAmt, returnAmount, perpetualFeesCoins, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, math.LegacyOneDec())
 	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), types.NewPerpetualFeesWithEmptyCoins(), err
 	}
 
 	address := sdk.MustAccAddressFromBech32(mtp.Address)
@@ -19,9 +19,9 @@ func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, am
 	if k.hooks != nil {
 		err = k.hooks.AfterPerpetualPositionClosed(ctx, *ammPool, *pool, address, math.LegacyOneDec(), mtp.Id)
 		if err != nil {
-			return math.Int{}, math.Int{}, err
+			return math.Int{}, math.Int{}, types.PerpetualFees{}, err
 		}
 	}
 
-	return repayAmt, returnAmount, nil
+	return repayAmt, returnAmount, perpetualFeesCoins, nil
 }

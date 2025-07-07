@@ -15,35 +15,44 @@ import (
 
 // EstimateAndRepay ammPool has to be pointer because RemoveFromPoolBalance (in Repay) updates pool assets
 // Important to send pointer mtp and pool
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, types.PerpetualFees, error) {
 
 	if closingRatio.LTE(math.LegacyZeroDec()) || closingRatio.GT(math.LegacyOneDec()) {
-		return math.Int{}, math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
+		return math.Int{}, math.Int{}, types.PerpetualFees{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
 	}
-
+	zeroPerpFees := types.NewPerpetualFeesWithEmptyCoins()
 	repayAmount, payingLiabilities, _, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
 	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
-	k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false)
+	perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false, false)
+	// Track slippage and weight breaking fee slippage in amm via perpetual
+	for _, coin := range perpFees.SlippageFees {
+		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+	}
+	for _, coin := range perpFees.WeightBreakingFees {
+		if coin.Amount.IsPositive() {
+			k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+		}
+	}
 
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return math.Int{}, math.Int{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return math.Int{}, math.Int{}, types.PerpetualFees{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees); err != nil {
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
 
-	return repayAmount, returnAmount, nil
+	return repayAmount, returnAmount, perpFees, nil
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
