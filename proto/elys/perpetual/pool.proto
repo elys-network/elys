@@ -134,14 +134,3 @@ message PerpetualCounter {
   uint64 counter = 2;
   uint64 total_open = 3;
 }
-
-message PerpetualFees {
-  repeated cosmos.base.v1beta1.Coin perp_fees = 1
-      [ (gogoproto.nullable) = false ];
-  repeated cosmos.base.v1beta1.Coin slippage_fees = 2
-      [ (gogoproto.nullable) = false ];
-  repeated cosmos.base.v1beta1.Coin weight_breaking_fees = 3
-      [ (gogoproto.nullable) = false ];
-  repeated cosmos.base.v1beta1.Coin taker_fees = 4
-      [ (gogoproto.nullable) = false ];
-}
