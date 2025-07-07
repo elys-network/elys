@@ -40,7 +40,6 @@ type AmmKeeper interface {
 	OnCollectFee(ctx sdk.Context, pool ammtypes.Pool, fee sdk.Coins) error
 	TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, token sdk.Coin)
 	TrackSlippage(ctx sdk.Context, poolId uint64, amount sdk.Coin)
-	GetParams(ctx sdk.Context) (params ammtypes.Params)
 }
 
 type BankKeeper interface {
