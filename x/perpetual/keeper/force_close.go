@@ -17,7 +17,7 @@ func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, am
 	address := sdk.MustAccAddressFromBech32(mtp.Address)
 	// EpochHooks after perpetual position closed
 	if k.hooks != nil {
-		err = k.hooks.AfterPerpetualPositionClosed(ctx, *ammPool, *pool, address)
+		err = k.hooks.AfterPerpetualPositionClosed(ctx, *ammPool, *pool, address, math.LegacyOneDec(), mtp.Id)
 		if err != nil {
 			return math.Int{}, math.Int{}, types.PerpetualFees{}, err
 		}

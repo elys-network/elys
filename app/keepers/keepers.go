@@ -832,6 +832,7 @@ func NewAppKeeper(
 			// insert perpetual hooks receivers here
 			app.AccountedPoolKeeper.PerpetualHooks(),
 			app.TierKeeper.PerpetualHooks(),
+			app.TradeshieldKeeper.PerpetualHooks(),
 		),
 	)
 

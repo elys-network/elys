@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/json"
+	"os"
 	"strconv"
 
 	"strings"
@@ -17,7 +19,7 @@ var _ = strconv.Itoa(0)
 
 func CmdExecuteOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "execute-orders [spot-order-ids] [perpetual-order-ids]",
+		Use:   "execute-orders [spot-order-ids] [perpetual-orders.json]",
 		Short: "Verify that submitted orders meet the criteria for execution and process those that do, while skipping those that don't.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -33,17 +35,10 @@ func CmdExecuteOrders() *cobra.Command {
 				}
 				argSpotOrderIds[i] = value
 			}
-			argCastPerpetualOrderIds := strings.Split(args[1], listSeparator)
-			if len(argCastPerpetualOrderIds) == 1 && argCastPerpetualOrderIds[0] == "" {
-				argCastPerpetualOrderIds = []string{}
-			}
-			argPerpetualOrderIds := make([]uint64, len(argCastPerpetualOrderIds))
-			for i, arg := range argCastPerpetualOrderIds {
-				value, err := cast.ToUint64E(arg)
-				if err != nil {
-					return err
-				}
-				argPerpetualOrderIds[i] = value
+
+			argPerpetualOrderKeys, err := readPerpetualOrderKeyJSON(args[1])
+			if err != nil {
+				return err
 			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -54,7 +49,7 @@ func CmdExecuteOrders() *cobra.Command {
 			msg := types.NewMsgExecuteOrders(
 				clientCtx.GetFromAddress().String(),
 				argSpotOrderIds,
-				argPerpetualOrderIds,
+				argPerpetualOrderKeys,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -66,4 +61,18 @@ func CmdExecuteOrders() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func readPerpetualOrderKeyJSON(filename string) ([]types.PerpetualOrderKey, error) {
+	var perpetualOrderKeys []types.PerpetualOrderKey
+	bz, err := os.ReadFile(filename)
+	if err != nil {
+		return []types.PerpetualOrderKey{}, err
+	}
+	err = json.Unmarshal(bz, &perpetualOrderKeys)
+	if err != nil {
+		return []types.PerpetualOrderKey{}, err
+	}
+
+	return perpetualOrderKeys, nil
 }
