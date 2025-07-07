@@ -64,7 +64,6 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
-		k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippage, weightBreakingFee, repayAmount, mtp.CustodyAsset)
 	}
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
@@ -73,8 +72,8 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
-		k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippage, weightBreakingFee, repayAmount, mtp.CustodyAsset)
 	}
+	k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippage, weightBreakingFee, repayAmount, mtp.CustodyAsset)
 
 	return
 
