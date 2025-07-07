@@ -338,14 +338,8 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 func (k Keeper) TrackSlippageAndWeightBreakingSlippage(ctx sdk.Context, ammPool *ammtypes.Pool, slippageAmount osmomath.BigDec, weightBreakingFee osmomath.BigDec, inAmount math.Int, denom string) {
 	// track slippage and weight breaking fee slippage in amm via perpetual
 	weightRecoveryFeeAmount := osmomath.BigDecFromSDKInt(inAmount).Mul(weightBreakingFee.Mul(osmomath.OneBigDec().Sub(k.amm.GetParams(ctx).GetBigDecWeightBreakingFeePortion())))
-	if weightRecoveryFeeAmount.IsPositive() {
-		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, weightRecoveryFeeAmount.Dec().TruncateInt()))
-	}
 	k.amm.TrackSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, slippageAmount.Dec().RoundInt()))
-
-	if ammPool.PoolParams.UseOracle {
-		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, slippageAmount.Dec().RoundInt()))
-	}
+	k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, slippageAmount.Add(weightRecoveryFeeAmount).Dec().RoundInt()))
 }
 
 // Set the perpetual hooks.
