@@ -104,6 +104,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			if err != nil {
 				return err
 			}
+			// track slippage and weight breaking fee slippage in amm via perpetual
+			k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippageAmount, weightBreakingFee, liabilities, baseCurrency)
 			k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(baseCurrency, liabilities), liabilitiesInCollateralTokenOut, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false)
 		}
 	}
@@ -117,6 +119,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			if err != nil {
 				return err
 			}
+			// track slippage and weight breaking fee slippage in amm via perpetual
+			k.TrackSlippageAndWeightBreakingSlippage(ctx, ammPool, slippageAmount, weightBreakingFee, liabilities, mtp.LiabilitiesAsset)
 			k.CalculateAndEmitPerpetualFeesEvent(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.LiabilitiesAsset, liabilities), liabilitiesInCollateralTokenIn, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false)
 		}
 	}
@@ -329,6 +333,19 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 		}
 	}
 	return sendToMasterchef.Add(sendToTakerCollection), nil
+}
+
+func (k Keeper) TrackSlippageAndWeightBreakingSlippage(ctx sdk.Context, ammPool *ammtypes.Pool, slippageAmount osmomath.BigDec, weightBreakingFee osmomath.BigDec, inAmount math.Int, denom string) {
+	// track slippage and weight breaking fee slippage in amm via perpetual
+	weightRecoveryFeeAmount := osmomath.BigDecFromSDKInt(inAmount).Mul(weightBreakingFee.Mul(osmomath.OneBigDec().Sub(k.amm.GetParams(ctx).GetBigDecWeightBreakingFeePortion())))
+	if weightRecoveryFeeAmount.IsPositive() {
+		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, weightRecoveryFeeAmount.Dec().TruncateInt()))
+	}
+	k.amm.TrackSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, slippageAmount.Dec().RoundInt()))
+
+	if ammPool.PoolParams.UseOracle {
+		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, sdk.NewCoin(denom, slippageAmount.Dec().RoundInt()))
+	}
 }
 
 // Set the perpetual hooks.
