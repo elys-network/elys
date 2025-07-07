@@ -55,7 +55,7 @@ jobs:
           echo "current version: ${ELYS_VERSION}"
           echo "upgrade_version: $upgrade_version"
 
-          GOV_ID=111
+          GOV_ID=112
 
           # vote on proposal
           ${ELYSD} tx gov vote $GOV_ID yes --from=proposer1 $OPTIONS
