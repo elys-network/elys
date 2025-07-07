@@ -125,6 +125,16 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		}
 	}
 
+	// Track slippage and weight breaking fee slippage in amm via perpetual
+	for _, coin := range totalPerpFees.SlippageFees {
+		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+	}
+	for _, coin := range totalPerpFees.WeightBreakingFees {
+		if coin.Amount.IsPositive() {
+			k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+		}
+	}
+
 	mtp.Collateral = collateralAmount
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount

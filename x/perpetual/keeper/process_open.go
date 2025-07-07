@@ -52,6 +52,15 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 			}
 			fees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, leveragedAmtTokenIn, sdk.NewCoin(mtp.CustodyAsset, custodyAmount), slippageAmount, weightBreakingFee, perpetualFees, takerFees, osmomath.ZeroBigDec(), true, false)
 			totalPerpFees = totalPerpFees.Add(fees)
+			// Track slippage and weight breaking fee slippage in amm via perpetual
+			for _, coin := range fees.SlippageFees {
+				k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+			}
+			for _, coin := range fees.WeightBreakingFees {
+				if coin.Amount.IsPositive() {
+					k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+				}
+			}
 		}
 	case types.Position_SHORT:
 		if mtp.CollateralAsset != baseCurrency {
