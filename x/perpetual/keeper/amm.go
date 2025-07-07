@@ -93,6 +93,8 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return tokenIn.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), oracleIn, perpetualFees.Dec(), takersFee.Dec(), nil
 }
 
+// CalculatePerpetualFees calculates the perpetual fees, slippage fees, weight breaking fees, and taker fees for a swap.
+// Pass calculatePerpAndTakerFees as false to exclude perp and taker fees for the swap
 func (k Keeper) CalculatePerpetualFees(
 	ctx sdk.Context,
 	poolIsOracle bool,
@@ -104,13 +106,13 @@ func (k Keeper) CalculatePerpetualFees(
 	takersFee math.LegacyDec,
 	oracleInAmount osmomath.BigDec,
 	isSwapGivenIn bool,
-	calculatePerpAndWeightBreakingFees bool,
+	calculatePerpAndTakerFees bool,
 ) (perpFees types.PerpetualFees) {
 
 	perpFeesCoins := sdk.Coins{}
 	takerFeesCoins := sdk.Coins{}
 
-	if calculatePerpAndWeightBreakingFees {
+	if calculatePerpAndTakerFees {
 
 		// Determine the source of fees based on isSwapGivenIn
 		takeFeesFrom := sdk.Coins{tokenIn}
@@ -132,9 +134,9 @@ func (k Keeper) CalculatePerpetualFees(
 	// Calculate slippage amount in USD
 	slippageCoins := sdk.Coins{}
 	if isSwapGivenIn {
-		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenOut.Denom, slippageAmount.Dec().TruncateInt()))
+		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenOut.Denom, slippageAmount.Dec().RoundInt()))
 	} else {
-		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenIn.Denom, slippageAmount.Dec().TruncateInt()))
+		slippageCoins = append(slippageCoins, sdk.NewCoin(tokenIn.Denom, slippageAmount.Dec().RoundInt()))
 	}
 
 	// Calculate weight breaking fees in USD
