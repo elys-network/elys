@@ -104,24 +104,29 @@ func (k Keeper) CalculatePerpetualFees(
 	takersFee math.LegacyDec,
 	oracleInAmount osmomath.BigDec,
 	isSwapGivenIn bool,
+	calculatePerpAndWeightBreakingFees bool,
 ) (perpFees types.PerpetualFees) {
 
-	// Determine the source of fees based on isSwapGivenIn
-	takeFeesFrom := sdk.Coins{tokenIn}
-	if !isSwapGivenIn && poolIsOracle {
-		takeFeesFrom = sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount.Dec().TruncateInt()))
-	}
-
-	// Calculate perpetual fees in USD
 	perpFeesCoins := sdk.Coins{}
-	if perpetualFees.IsPositive() {
-		perpFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpetualFees))
-	}
-
-	// Calculate taker fees in USD
 	takerFeesCoins := sdk.Coins{}
-	if takersFee.IsPositive() {
-		takerFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
+
+	if calculatePerpAndWeightBreakingFees {
+
+		// Determine the source of fees based on isSwapGivenIn
+		takeFeesFrom := sdk.Coins{tokenIn}
+		if !isSwapGivenIn && poolIsOracle {
+			takeFeesFrom = sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount.Dec().TruncateInt()))
+		}
+
+		// Calculate perpetual fees in USD
+		if perpetualFees.IsPositive() {
+			perpFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpetualFees))
+		}
+
+		// Calculate taker fees in USD
+		if takersFee.IsPositive() {
+			takerFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
+		}
 	}
 
 	// Calculate slippage amount in USD

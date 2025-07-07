@@ -97,7 +97,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	slippageAmount, weightBreakingFee, liabilitiesOracleAmount := osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
 	perpetualFees, takerFees := math.LegacyZeroDec(), math.LegacyZeroDec()
 
-	totalPerpFeesUSD := types.NewPerpetualFeesWithEmptyCoins()
+	totalPerpFees := types.NewPerpetualFeesWithEmptyCoins()
 
 	if mtp.CollateralAsset != baseCurrency {
 		if !liabilities.IsZero() {
@@ -107,7 +107,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			if err != nil {
 				return types.PerpetualFees{}, err
 			}
-			totalPerpFeesUSD = k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(baseCurrency, liabilities), liabilitiesInCollateralTokenOut, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false)
+			totalPerpFees = k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(baseCurrency, liabilities), liabilitiesInCollateralTokenOut, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false, false)
 		}
 	}
 
@@ -120,8 +120,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			if err != nil {
 				return types.PerpetualFees{}, err
 			}
-			perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.LiabilitiesAsset, liabilities), liabilitiesInCollateralTokenIn, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false)
-			totalPerpFeesUSD = totalPerpFeesUSD.Add(perpFees)
+			perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.LiabilitiesAsset, liabilities), liabilitiesInCollateralTokenIn, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false, false)
+			totalPerpFees = totalPerpFees.Add(perpFees)
 		}
 	}
 
@@ -141,9 +141,9 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	// send fees to masterchef and taker collection address
-	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, liabilitiesInCollateral, mtp.CollateralAsset, ammPool)
+	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, liabilitiesInCollateral, mtp.CollateralAsset, ammPool, &totalPerpFees)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
 	}
 
 	err = pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
@@ -164,7 +164,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	k.SetPool(ctx, *pool)
 
-	return totalPerpFeesUSD, k.SetMTP(ctx, mtp)
+	return totalPerpFees, k.SetMTP(ctx, mtp)
 }
 
 func (k Keeper) SendToAmmPool(ctx sdk.Context, senderAddress sdk.AccAddress, ammPool *ammtypes.Pool, coins sdk.Coins) error {
@@ -295,7 +295,7 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	return insuranceAmount, nil
 }
 
-func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool) (math.Int, error) {
+func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees) (math.Int, error) {
 	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
 	if err != nil {
 		return math.ZeroInt(), err
@@ -310,6 +310,7 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 	if sendToMasterchef.IsPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
 		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
+		perpFees.PerpFees = perpFees.PerpFees.Add(sendToMasterchefCoin)
 		err := k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
 		if err != nil {
 			return math.ZeroInt(), err
@@ -327,6 +328,8 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 			return math.ZeroInt(), err
 		}
 		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
+		perpFees.TakerFees = perpFees.TakerFees.Add(sendToTakerCollectionCoin)
+
 		err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
 		if err != nil {
 			return math.ZeroInt(), err

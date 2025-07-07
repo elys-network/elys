@@ -22,7 +22,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 	// SHORT: collateralAsset is always usdc, and custody has to be in base currency, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
 
-	totalPerpFeesUSD := types.NewPerpetualFeesWithEmptyCoins()
+	totalPerpFees := types.NewPerpetualFeesWithEmptyCoins()
 	switch msg.Position {
 	case types.Position_LONG:
 		// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
@@ -50,8 +50,8 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 			if err != nil {
 				return types.PerpetualFees{}, err
 			}
-			fees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, leveragedAmtTokenIn, sdk.NewCoin(mtp.CustodyAsset, custodyAmount), slippageAmount, weightBreakingFee, perpetualFees, takerFees, osmomath.ZeroBigDec(), true)
-			totalPerpFeesUSD = totalPerpFeesUSD.Add(fees)
+			fees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, leveragedAmtTokenIn, sdk.NewCoin(mtp.CustodyAsset, custodyAmount), slippageAmount, weightBreakingFee, perpetualFees, takerFees, osmomath.ZeroBigDec(), true, false)
+			totalPerpFees = totalPerpFees.Add(fees)
 		}
 	case types.Position_SHORT:
 		if mtp.CollateralAsset != baseCurrency {
@@ -76,7 +76,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 	if err != nil {
 		return types.PerpetualFees{}, err
 	}
-	totalPerpFeesUSD = totalPerpFeesUSD.Add(fees)
+	totalPerpFees = totalPerpFees.Add(fees)
 
 	// Update the pool health.
 	if err = k.UpdatePoolHealth(ctx, pool); err != nil {
@@ -118,5 +118,5 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 		return types.PerpetualFees{}, err
 	}
 
-	return totalPerpFeesUSD, nil
+	return totalPerpFees, nil
 }

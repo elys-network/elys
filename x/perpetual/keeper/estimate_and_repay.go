@@ -25,7 +25,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
-	perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false)
+	perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false, false)
 
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
@@ -39,7 +39,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 	baseCurrency := entry.Denom
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees); err != nil {
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
 
