@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	"strings"
+
+	"cosmossdk.io/math"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
