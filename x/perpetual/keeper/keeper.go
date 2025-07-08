@@ -151,7 +151,13 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	// send fees to masterchef and taker collection address
-	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, liabilitiesInCollateral, mtp.CollateralAsset, ammPool, &totalPerpFees)
+	var totalAmount math.Int
+	if mtp.Position == types.Position_LONG && mtp.CollateralAsset == baseCurrency {
+		totalAmount = proxyLeverage.MulInt(collateralAmount).TruncateInt()
+	} else {
+		totalAmount = liabilitiesInCollateral
+	}
+	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees)
 	if err != nil {
 		return types.PerpetualFees{}, err
 	}
