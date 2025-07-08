@@ -4,7 +4,6 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"fmt"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	"strings"
 
 	storetypes "cosmossdk.io/store/types"
@@ -79,6 +78,13 @@ func (app *ElysApp) setUpgradeHandler() {
 				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 
+			perpetualParams := app.PerpetualKeeper.GetParams(ctx)
+			perpetualParams.ExitBuffer = math.LegacyMustNewDecFromStr("0.1")
+			err := app.PerpetualKeeper.SetParams(ctx, &perpetualParams)
+			if err != nil {
+				panic(err)
+			}
+
 			app.OracleKeeper.DeleteAXLPrices(ctx)
 
 			return vm, vmErr
@@ -100,7 +106,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{ratelimittypes.StoreKey},
+			//Added: []string{ratelimittypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{ibcfeetypes.StoreKey},
 		}
