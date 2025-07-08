@@ -160,7 +160,7 @@ func (k Keeper) GetVaultPositions(ctx sdk.Context, vaultId uint64) ([]types.Posi
 }
 
 func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
-	edenApr := osmomath.ZeroBigDec()
+	var edenApr osmomath.BigDec
 	totalBlocksPerYear := k.pk.GetParams(ctx).TotalBlocksPerYear
 	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, ptypes.BaseCurrency)
 

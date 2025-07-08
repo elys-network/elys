@@ -54,6 +54,19 @@ func (suite *KeeperTestSuite) SetupTest() {
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
+
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   "uatom",
+		Display: "ATOM",
+		Decimal: 6,
+	})
+	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+		Asset:     "ATOM",
+		Price:     math.LegacyOneDec(),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+	})
 }
 
 func TestKeeperSuite(t *testing.T) {
