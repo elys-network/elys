@@ -21,9 +21,6 @@ import (
 // BeginBlocker of amm module
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	params := k.parameterKeeper.GetParams(ctx)
-	if params.TakerFeeCollectionInterval == 0 {
-		params.TakerFeeCollectionInterval = 100
-	}
 	// convert balances in taker address to elys and burn them
 	if ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 && params.EnableTakerFeeSwap {
 		k.ProcessTakerFee(ctx)
