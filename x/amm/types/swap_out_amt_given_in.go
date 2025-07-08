@@ -139,7 +139,7 @@ func (p Pool) CalcGivenInSlippage(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 ) (osmomath.BigDec, error) {
-	balancerOutCoin, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, osmomath.ZeroBigDec())
+	_, _, balancerOutAmount, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, osmomath.ZeroBigDec())
 	if err != nil {
 		return osmomath.ZeroBigDec(), err
 	}
@@ -160,8 +160,7 @@ func (p Pool) CalcGivenInSlippage(
 	}
 
 	oracleOutAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
-	balancerOut := osmomath.BigDecFromSDKInt(balancerOutCoin.Amount)
-	slippageAmount := oracleOutAmount.Sub(balancerOut)
+	slippageAmount := oracleOutAmount.Sub(balancerOutAmount)
 	if slippageAmount.IsNegative() {
 		return osmomath.ZeroBigDec(), nil
 	}
@@ -192,7 +191,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 		if len(tokensIn) != 1 {
 			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errors.New("expected tokensIn to be of length one")
 		}
-		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee)
+		balancerOutCoin, slippage, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee)
 		if err != nil {
 			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}

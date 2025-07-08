@@ -3,6 +3,9 @@ package types
 import (
 	"encoding/binary"
 	"errors"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 const (
@@ -32,4 +35,33 @@ func DecodeUint64Slice(bz []byte) ([]uint64, error) {
 		slice[i] = binary.BigEndian.Uint64(bz[i*8:])
 	}
 	return slice, nil
+}
+
+func GetPendingPerpetualOrderAddressKey(user sdk.AccAddress) []byte {
+	key := PendingPerpetualOrderKey
+	key = append(key, address.MustLengthPrefix(user)...)
+	return key
+}
+
+// GetPendingPerpetualOrderKeyBytes returns the byte representation of the Address + PoolId + OrderId
+func GetPendingPerpetualOrderKeyBytes(user sdk.AccAddress, poolId uint64, orderId uint64) []byte {
+
+	key := address.MustLengthPrefix(user)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	orderIdBytes := sdk.Uint64ToBigEndian(orderId)
+	key = append(key, orderIdBytes...)
+
+	return key
+}
+
+func GetPendingPerpetualOrderAddressPoolKey(user sdk.AccAddress, poolId uint64) []byte {
+	key := address.MustLengthPrefix(user)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+
+	return key
 }

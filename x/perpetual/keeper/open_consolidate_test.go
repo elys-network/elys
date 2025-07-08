@@ -117,7 +117,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg, existingMtp, newMtp := tc.setup()
-			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.ATOM, ptypes.BaseCurrency)
+			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.ATOM, ptypes.BaseCurrency, types.NewPerpetualFeesWithEmptyCoins())
 
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)
@@ -183,7 +183,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(653),
+				Liabilities:     math.NewInt(650),
 				Custody:         math.NewInt(4000),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("1.5"),
 			},
@@ -232,7 +232,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(407),
+				Liabilities:     math.NewInt(406),
 				Custody:         math.NewInt(2800),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 			},

@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
+	"os"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -211,7 +213,7 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 		Example: "elysd tx tradeshield cancel-perpetual-orders ids.json --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ids, err := readPositionRequestJSON(args[0])
+			orders, err := readPerpetualOrderRequestJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -221,7 +223,7 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), ids)
+			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), orders)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -232,6 +234,20 @@ func CmdCancelPerpetualOrders() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func readPerpetualOrderRequestJSON(filename string) ([]types.PerpetualOrderPoolKey, error) {
+	var orders []types.PerpetualOrderPoolKey
+	bz, err := os.ReadFile(filename)
+	if err != nil {
+		return []types.PerpetualOrderPoolKey{}, err
+	}
+	err = json.Unmarshal(bz, &orders)
+	if err != nil {
+		return []types.PerpetualOrderPoolKey{}, err
+	}
+
+	return orders, nil
 }
 
 func CmdCancelAllPerpetualOrders() *cobra.Command {

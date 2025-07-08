@@ -12,7 +12,7 @@ import (
 func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 
 	order := types.PerpetualOrder{
-		OwnerAddress:       "valid_address",
+		OwnerAddress:       sdk.AccAddress([]byte("valid_address")).String(),
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
 		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
@@ -33,7 +33,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 		{
 			desc: "valid request",
 			request: &types.QueryGetPendingPerpetualOrderRequest{
-				Id: 1,
+				OwnerAddress: sdk.AccAddress([]byte("valid_address")).String(),
+				PoolId:       1,
+				OrderId:      1,
 			},
 			response: &types.QueryGetPendingPerpetualOrderResponse{
 				PendingPerpetualOrder: types.PerpetualOrderExtraInfo{
@@ -71,7 +73,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderAll() {
 
 	order := types.PerpetualOrder{
-		OwnerAddress:       "valid_address",
+		OwnerAddress:       sdk.AccAddress([]byte("valid_address")).String(),
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
 		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),

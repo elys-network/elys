@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.ClosePosition(ctx, msg)
+	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.ClosePosition(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -17,6 +17,8 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	if err != nil {
 		return nil, err
 	}
+
+	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(types.EventClose,
@@ -38,6 +40,10 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
 			sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
 			sdk.NewAttribute("force_closed", strconv.FormatBool(forceClosed)),
+			sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
+			sdk.NewAttribute(types.AttributeTakerFees, takerFeesInUsd.String()),
 		))
 
 	return &types.MsgCloseResponse{

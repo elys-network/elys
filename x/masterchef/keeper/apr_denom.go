@@ -56,13 +56,16 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 			// Calculate
 			stakersEdenAmount := osmomath.BigDecFromSDKInt(stkIncentive.EdenAmountPerYear).QuoInt64(totalBlocksPerYear)
 
+			providerEdenAmount := stakersEdenAmount.Mul(estakingParams.GetBigDecProviderStakingRewardsPortion())
+			consumerEdenAmount := stakersEdenAmount.Sub(providerEdenAmount)
+
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.GetBigDecMaxEdenRewardAprStakers().
 				Mul(osmomath.BigDecFromSDKInt(totalStakedSnapshot)).
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = osmomath.MinBigDec(stakersEdenAmount, stakersMaxEdenAmount)
+			stakersEdenAmount = osmomath.MinBigDec(consumerEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
