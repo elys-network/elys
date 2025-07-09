@@ -14,9 +14,9 @@ import (
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
 	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -170,7 +170,6 @@ func (suite *KeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
@@ -190,7 +189,6 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
@@ -200,7 +198,7 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 	for _, v := range denoms {
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
-		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
+		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, uint64(ctx.BlockTime().Unix()))
 	}
 }
 func (suite *KeeperTestSuite) SetLeverageParam(ctx sdk.Context) error {
