@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
 	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
@@ -42,7 +42,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(10),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -76,7 +75,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(12),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -133,7 +131,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(10),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -167,7 +164,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecutePartialLimitCloseOrder() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyNewDec(11),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
