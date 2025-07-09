@@ -1,0 +1,30 @@
+syntax = "proto3";
+package elys.vaults;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "elys/vaults/params.proto";
+import "elys/vaults/vault.proto";
+import "elys/vaults/pool.proto";
+
+option go_package = "github.com/elys-network/elys/v6/x/vaults/types";
+
+// GenesisState defines the vaults module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // vault_list defines the list of vaults
+  repeated Vault vault_list = 2 [ (gogoproto.nullable) = false ];
+  // pool_info_list defines the list of pool info
+  repeated PoolInfo pool_info_list = 3 [ (gogoproto.nullable) = false ];
+  // pool_reward_info_list defines the list of pool reward info
+  repeated PoolRewardInfo pool_reward_info_list = 4
+      [ (gogoproto.nullable) = false ];
+  // user_reward_info_list defines the list of user reward info
+  repeated UserRewardInfo user_reward_info_list = 5
+      [ (gogoproto.nullable) = false ];
+  // pool_rewards_accum_list defines the list of pool rewards accum
+  repeated PoolRewardsAccum pool_rewards_accum_list = 6
+      [ (gogoproto.nullable) = false ];
+}

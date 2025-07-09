@@ -2,14 +2,16 @@ package app
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	"strings"
+
+	"cosmossdk.io/math"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	vaulttypes "github.com/elys-network/elys/v6/x/vaults/types"
+
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -107,7 +109,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{ratelimittypes.StoreKey},
+			Added: []string{vaulttypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{ibcfeetypes.StoreKey},
 		}

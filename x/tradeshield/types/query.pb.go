@@ -1052,7 +1052,6 @@ func _Query_PendingSpotOrderForAddress_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.tradeshield.Query",
 	HandlerType: (*QueryServer)(nil),
