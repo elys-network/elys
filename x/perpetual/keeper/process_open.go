@@ -55,6 +55,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 			// Track slippage and weight breaking fee slippage in amm via perpetual
 			for _, coin := range fees.SlippageFees {
 				k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+				k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
 			}
 			for _, coin := range fees.WeightBreakingFees {
 				if coin.Amount.IsPositive() {
