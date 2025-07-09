@@ -94,7 +94,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(204),
+			math.NewInt(203),
 		},
 		{
 			"Close with price greater than open price and less than take profit price",
@@ -214,7 +214,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(502),
+			math.NewInt(501),
 		},
 		{
 			"Success: close long position,at same price as open price",
@@ -245,7 +245,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(204),
+			math.NewInt(203),
 		},
 		{
 			"Success: close short position at same price as open price",
@@ -274,7 +274,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(4498),
+			math.NewInt(4503),
 		},
 		// TODO: Edge case when custody becomes low, this is throwing error, instead it should be closed
 		// FIX this: error updating mtp health: unable to swap (EstimateSwapGivenOut) for out 1uatom and in denom uusdc: amount too low

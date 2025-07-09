@@ -28,9 +28,15 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 			"spot order not found",
 			func() *types.MsgExecuteOrders {
 				return &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{1},
-					PerpetualOrderIds: []uint64{1},
+					Creator:      addr[2].String(),
+					SpotOrderIds: []uint64{1},
+					PerpetualOrders: []types.PerpetualOrderKey{
+						{
+							OwnerAddress: addr[2].String(),
+							PoolId:       1,
+							OrderId:      1,
+						},
+					},
 				}
 			},
 			func() {},
@@ -51,9 +57,15 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				suite.Require().NoError(err)
 
 				return &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{1},
-					PerpetualOrderIds: []uint64{1},
+					Creator:      addr[2].String(),
+					SpotOrderIds: []uint64{1},
+					PerpetualOrders: []types.PerpetualOrderKey{
+						{
+							OwnerAddress: addr[2].String(),
+							PoolId:       1,
+							OrderId:      1,
+						},
+					},
 				}
 			},
 			func() {},
@@ -85,9 +97,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				})
 
 				return &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{1},
-					PerpetualOrderIds: []uint64{},
+					Creator:         addr[2].String(),
+					SpotOrderIds:    []uint64{1},
+					PerpetualOrders: []types.PerpetualOrderKey{},
 				}
 			},
 			func() {
@@ -147,9 +159,15 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				})
 
 				return &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{},
-					PerpetualOrderIds: []uint64{1},
+					Creator:      addr[2].String(),
+					SpotOrderIds: []uint64{},
+					PerpetualOrders: []types.PerpetualOrderKey{
+						{
+							OwnerAddress: addr[2].String(),
+							PoolId:       1,
+							OrderId:      1,
+						},
+					},
 				}
 			},
 			func() {
@@ -222,9 +240,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 
 				// Return message with both order IDs
 				return &types.MsgExecuteOrders{
-					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{1, 2}, // Both orders exist but second will fail during execution
-					PerpetualOrderIds: []uint64{},
+					Creator:         addr[2].String(),
+					SpotOrderIds:    []uint64{1, 2}, // Both orders exist but second will fail during execution
+					PerpetualOrders: []types.PerpetualOrderKey{},
 				}
 			},
 			func() {
