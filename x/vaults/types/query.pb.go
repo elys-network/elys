@@ -1280,7 +1280,6 @@ func _Query_PnL_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
-var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.vaults.Query",
 	HandlerType: (*QueryServer)(nil),

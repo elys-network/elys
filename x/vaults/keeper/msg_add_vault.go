@@ -37,6 +37,8 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 		WithdrawalUsdValue:    math.LegacyZeroDec(),
 		SumOfDepositsUsdValue: math.LegacyZeroDec(),
 		Address:               vaultAddress.String(),
+		Description:           req.Description,
+		AllowedActions:        req.AllowedActions,
 	}
 	k.SetVault(ctx, vault)
 

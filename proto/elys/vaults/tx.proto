@@ -164,6 +164,8 @@ message MsgAddVault {
     (gogoproto.nullable) = false
   ];
   uint64 lockup_period = 11; // in seconds
+  string description = 12;
+  repeated string allowed_actions = 13; // TODO: enable checks in v1.5
 }
 
 // MsgAddVaultResponse defines the response structure for adding vault
