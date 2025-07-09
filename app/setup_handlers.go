@@ -81,6 +81,13 @@ func (app *ElysApp) setUpgradeHandler() {
 				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 
+			perpetualParams := app.PerpetualKeeper.GetParams(ctx)
+			perpetualParams.ExitBuffer = math.LegacyMustNewDecFromStr("0.1")
+			err := app.PerpetualKeeper.SetParams(ctx, &perpetualParams)
+			if err != nil {
+				panic(err)
+			}
+
 			app.OracleKeeper.DeleteAXLPrices(ctx)
 
 			return vm, vmErr
