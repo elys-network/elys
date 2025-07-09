@@ -29,6 +29,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 	// Track slippage and weight breaking fee slippage in amm via perpetual
 	for _, coin := range perpFees.SlippageFees {
 		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
 	}
 	for _, coin := range perpFees.WeightBreakingFees {
 		if coin.Amount.IsPositive() {
