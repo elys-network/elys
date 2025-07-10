@@ -68,14 +68,15 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 	// For long this will be in base currency
 	payingLiabilities = closingRatio.MulInt(mtp.Liabilities).TruncateInt()
 
+	var closingPriceDenom osmomath.BigDec
+
 	if mtp.Position == types.Position_LONG {
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
 		repayAmount, slippage, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
-		// TODO: decimal and price
-		closingPrice = math.LegacyNewDecFromInt(repayAmount).Quo(math.LegacyNewDecFromInt(payingLiabilities))
+		closingPriceDenom = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount))
 	}
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
@@ -84,7 +85,12 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
-		closingPrice = math.LegacyNewDecFromInt(payingLiabilities).Quo(math.LegacyNewDecFromInt(repayAmount))
+		closingPriceDenom = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities))
+	}
+
+	closingPrice, err = k.ConvertDenomRatioPriceToUSDPrice(ctx, closingPriceDenom, mtp.TradingAsset)
+	if err != nil {
+		return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
 	return
