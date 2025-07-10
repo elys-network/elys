@@ -95,6 +95,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/perpetual/open-estimation-by-final";
   }
+
+  rpc InvariantCustodyLiab(QueryInvariantCustodyLiabRequest)
+      returns (QueryInvariantCustodyLiabResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/perpetual/invariant-custody-liab/{pool_id}";
+  }
 }
 
 message Fees {
@@ -539,4 +545,18 @@ message QueryOpenEstimationByFinalResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryInvariantCustodyLiabRequest {
+  uint64 pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryInvariantCustodyLiabResponse {
+  repeated cosmos.base.v1beta1.Coin total_custody = 1 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin total_liabilities = 2 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin total_custody_without_lazy = 3 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin total_liabilities_without_lazy = 4 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin pool_custody = 5 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin pool_liabilities = 6 [ (gogoproto.nullable) = false ];
 }
