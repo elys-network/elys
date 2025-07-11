@@ -22,13 +22,13 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 	// Update interests
 	err = k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 	if err != nil {
-		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, math.LegacyZeroDec(), sdkerrors.Wrap(err, "error updating borrow interest unpaid liability")
+		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, sdkerrors.Wrap(err, "error updating borrow interest unpaid liability")
 	}
 
 	// Pay funding fee
 	fundingFeeFullyPaid, fundingFeeAmt, fundingAmtDistributed, err = k.SettleFunding(ctx, mtp, pool)
 	if err != nil {
-		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, math.LegacyZeroDec(), sdkerrors.Wrap(err, "error handling funding fee")
+		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, sdkerrors.Wrap(err, "error handling funding fee")
 	}
 
 	// Unable to pay funding fee, close the position
@@ -57,6 +57,7 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 		if err != nil {
 			return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, sdkerrors.Wrap(err, "error executing force close")
 		}
+		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, nil
 
 	}
 
