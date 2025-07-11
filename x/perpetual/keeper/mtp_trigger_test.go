@@ -121,7 +121,7 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.setup()
-			_, _, _, _, _, _, _, _, _, err := suite.app.PerpetualKeeper.MTPTriggerChecksAndUpdates(suite.ctx, &mtp, &pool, &ammPool)
+			_, _, _, _, _, _, _, _, _, _, err := suite.app.PerpetualKeeper.MTPTriggerChecksAndUpdates(suite.ctx, &mtp, &pool, &ammPool)
 
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)
