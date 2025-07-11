@@ -3,15 +3,13 @@ package app
 import (
 	"context"
 	"cosmossdk.io/math"
-	"fmt"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
-	"strings"
-
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 )
 
 const (
@@ -20,38 +18,7 @@ const (
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
-	currentVersion := version.Version
-	// if current version empty then override it with localnet version
-	if currentVersion == "v" {
-		currentVersion = "v999999.999999.999999"
-	}
-	parts := strings.Split(currentVersion, ".")
-	// Needed for devnet
-	if len(parts) == 1 {
-		return currentVersion
-	}
-	if len(parts) != 3 {
-		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
-	}
-	majorVersion := strings.TrimPrefix(parts[0], "v")
-	minorVersion := parts[1]
-	// required for testnet
-	patchParts := strings.Split(parts[2], "-")
-	rcVersion := ""
-	if len(patchParts) > 1 {
-		rcVersion = strings.Join(patchParts[1:], "-")
-	}
-	// testnet
-	if rcVersion != "" {
-		if minorVersion != "0" && minorVersion != "999999" {
-			return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
-		}
-		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
-	}
-	if minorVersion != "0" && minorVersion != "999999" {
-		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
-	}
-	return fmt.Sprintf("v%s", majorVersion)
+	return "v6.3"
 }
 
 func (app *ElysApp) setUpgradeHandler() {
