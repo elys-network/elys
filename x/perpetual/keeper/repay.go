@@ -14,12 +14,14 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		if err != nil {
 			return err
 		}
+
 		// send fees to masterchef and taker collection address
-		totalFees, err := k.SendFeesToMasterchefAndTakerCollection(ctx, ammPoolAddr, mtp.Address, repayAmount, mtp.CustodyAsset, ammPool, perpFees)
+		totalFees, err := k.SendFeesToMasterchefAndTakerCollection(ctx, ammPoolAddr, mtp.Address, repayAmount, mtp.CustodyAsset, ammPool, perpFees, returnAmount)
 		if err != nil {
 			return err
 		}
 
+		// to prevent zero return amount
 		if totalFees.LT(returnAmount) {
 			returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount.Sub(totalFees)))
 			err = k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
