@@ -75,3 +75,9 @@ message PositionCounter {
   uint64 counter = 2;
   uint64 total_open = 3;
 }
+
+message ADLCounter {
+  uint64 pool_id = 1;
+  uint64 counter = 2;
+  bytes next_key = 3;
+}

@@ -9,9 +9,9 @@ import (
 )
 
 // RemovePool removes a pool from the store
-func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
+func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(index))
+	store.Delete(types.PoolKey(poolId))
 }
 
 // GetAllPools returns all pool
@@ -35,11 +35,6 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.AmmPoolId), b)
-}
-
-func (k Keeper) DeletePool(ctx sdk.Context, poolId uint64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(poolId))
 }
 
 // GetPool returns a pool from its index

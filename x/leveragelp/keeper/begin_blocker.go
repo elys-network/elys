@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"strconv"
@@ -32,7 +33,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			Limit:      uint64(params.NumberPerBlock),
 			CountTotal: true,
 		}
-		offset, _ := k.GetOffset(ctx)
+		offset, _ := k.GetFallbackOffset(ctx)
 		pageReq.Offset = offset
 		positions, _, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
@@ -40,9 +41,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			return
 		}
 		if offset+uint64(params.NumberPerBlock) >= totalOpen {
-			k.DeleteOffset(ctx)
+			k.DeleteFallbackOffset(ctx)
 		} else {
-			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
+			k.SetFallbackOffset(ctx, offset+uint64(params.NumberPerBlock))
 		}
 
 		for _, position := range positions {
@@ -97,7 +98,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		return true, false, h, errors.New("position is healthy to close")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), true)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing liquidation for unhealthy").Error())
 		return isHealthy, true, h, err
@@ -146,7 +147,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
@@ -154,6 +155,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
 		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),

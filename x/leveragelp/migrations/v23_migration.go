@@ -5,6 +5,6 @@ import (
 )
 
 func (m Migrator) V23Migration(ctx sdk.Context) error {
-	m.keeper.MigrateToNewKeys(ctx)
+	m.keeper.MigratePositionsToNewKeys(ctx)
 	return nil
 }

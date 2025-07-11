@@ -62,6 +62,7 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 				AmmPoolId:            poolId,
 				LeverageMax:          sdkmath.LegacyNewDec(10),
 				PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
+				AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.9999"),
 			},
 		}
 		msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)

@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -58,7 +57,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		return nil, errors.New("leverage lp pool not found")
 	}
 
-	closingRatio := osmomath.BigDecFromSDKInt(req.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
+	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
 	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, _, weightBreakingFee, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
@@ -66,7 +65,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 
 	return &types.QueryCloseEstResponse{
 		RepayAmount:       repayAmount,
-		FinalClosingRatio: finalClosingRatio.Dec(),
+		FinalClosingRatio: finalClosingRatio,
 		ClosingLpAmount:   totalLpAmountToClose,
 		CoinsToAmm:        coinsForAmm,
 		UserReturnTokens:  userReturnTokens,

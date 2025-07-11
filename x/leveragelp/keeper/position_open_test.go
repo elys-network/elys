@@ -59,8 +59,10 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	enablePoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   1,
-			LeverageMax: sdkmath.LegacyNewDec(10),
+			AmmPoolId:            1,
+			LeverageMax:          sdkmath.LegacyNewDec(10),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)

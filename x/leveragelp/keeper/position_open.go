@@ -112,7 +112,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// Update the pool health.
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
-	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, shares, true)
+	pool.UpdateAssetLeveragedAmount(position.Collateral.Denom, shares, true)
 	k.UpdatePoolHealth(ctx, &pool)
 
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)

@@ -71,6 +71,7 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
 				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
+				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
 				app.LeveragelpKeeper.SetPool(ctx, pool)
 			}
 

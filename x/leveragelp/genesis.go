@@ -37,6 +37,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, positionCounter := range genState.PositionCounter {
 		k.SetPositionCounter(ctx, positionCounter)
 	}
+
+	k.SetFallbackOffset(ctx, genState.FallbackOffset)
+
+	for _, adlCounter := range genState.AdlCounter {
+		k.SetADLCounter(ctx, adlCounter)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
@@ -54,6 +60,10 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.AddressWhitelist = whitelistAddressStrings
 
 	genesis.PositionCounter = k.GetAllPositionCounters(ctx)
+
+	genesis.FallbackOffset, _ = k.GetFallbackOffset(ctx)
+
+	genesis.AdlCounter = k.GetAllADLCounter(ctx)
 
 	return genesis
 }

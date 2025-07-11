@@ -58,17 +58,19 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 	enablePoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyNewDec(10),
+			AmmPoolId:            poolId,
+			LeverageMax:          sdkmath.LegacyNewDec(10),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6")))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6"), sdkmath.LegacyMustNewDecFromStr("0.8")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
-		Amount:  issueAmount.QuoRaw(20),
+		Amount:  issueAmount.QuoRaw(100),
 		PoolId:  1,
 	}
 
@@ -288,7 +290,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
-				actualShares, ok := sdkmath.NewIntFromString("9991380952380952380")
+				actualShares, ok := sdkmath.NewIntFromString("9991380952380952379")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
 			},

@@ -28,7 +28,8 @@ var (
 	PositionPrefix        = []byte{0x06}
 	PositionCounterPrefix = []byte{0x07}
 
-	OffsetKeyPrefix = []byte{0x09}
+	ADLCounterKeyPrefix     = []byte{0x08}
+	FallbackOffsetKeyPrefix = []byte{0x09}
 )
 
 func KeyPrefix(p string) []byte {
@@ -72,4 +73,12 @@ func GetPositionKey(poolId uint64, creator sdk.AccAddress, id uint64) []byte {
 
 func GetPositionCounterKey(poolId uint64) []byte {
 	return append(PositionCounterPrefix, sdk.Uint64ToBigEndian(poolId)...)
+}
+
+func GetADLCounterKey(poolId uint64) []byte {
+	return append(ADLCounterKeyPrefix, sdk.Uint64ToBigEndian(poolId)...)
+}
+
+func GetLegacyPositionKey(creator sdk.AccAddress, id uint64) []byte {
+	return append(LegacyPositionPrefix, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
 }

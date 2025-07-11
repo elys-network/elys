@@ -18,10 +18,10 @@ func (k Keeper) GetPosition(ctx sdk.Context, poolId uint64, positionAddress sdk.
 	var position types.Position
 	key := types.GetPositionKey(poolId, positionAddress, id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	if !store.Has(key) {
+	bz := store.Get(key)
+	if bz == nil {
 		return position, types.ErrPositionDoesNotExist
 	}
-	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &position)
 	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	position.Liabilities = debt.GetTotalLiablities()
@@ -61,6 +61,13 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, position types.Position) error 
 	return nil
 }
 
+func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, position types.Position) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	key := types.GetLegacyPositionKey(position.GetOwnerAddress(), position.Id)
+	store.Delete(key)
+}
+
 // Set Open Position count
 func (k Keeper) SetLegacyOpenPositionCount(ctx sdk.Context, count uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -84,30 +91,54 @@ func (k Keeper) GetLegacyPositionCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) SetOffset(ctx sdk.Context, offset uint64) {
+func (k Keeper) SetFallbackOffset(ctx sdk.Context, offset uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.OffsetKeyPrefix, types.GetUint64Bytes(offset))
+	store.Set(types.FallbackOffsetKeyPrefix, types.GetUint64Bytes(offset))
 }
 
-func (k Keeper) GetOffset(ctx sdk.Context) (uint64, bool) {
+func (k Keeper) GetFallbackOffset(ctx sdk.Context) (uint64, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	if store.Has(types.OffsetKeyPrefix) {
-		res := store.Get(types.OffsetKeyPrefix)
+	if store.Has(types.FallbackOffsetKeyPrefix) {
+		res := store.Get(types.FallbackOffsetKeyPrefix)
 		return types.GetUint64FromBytes(res), true
 	} else {
 		return 0, false
 	}
 }
 
-func (k Keeper) DeleteOffset(ctx sdk.Context) {
+func (k Keeper) DeleteFallbackOffset(ctx sdk.Context) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.OffsetKeyPrefix)
+	store.Delete(types.FallbackOffsetKeyPrefix)
 }
 
 func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	var positions []types.Position
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.PositionPrefix)
+	defer func(iterator storetypes.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+			position.Liabilities = debt.GetTotalLiablities()
+			positions = append(positions, position)
+		}
+	}
+	return positions
+}
+
+func (k Keeper) GetAllPositionsForPool(ctx sdk.Context, poolId uint64) []types.Position {
+	var positions []types.Position
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPoolPrefixKey(poolId))
 	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
@@ -174,16 +205,14 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
-	pageRes, err := query.FilteredPaginate(positionStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
 		err := k.cdc.Unmarshal(value, &position)
-		if err == nil {
-			if accumulate && position.AmmPoolId == ammPoolId {
-				positions = append(positions, position)
-				return true, nil
-			}
+		if err != nil {
+			return err
 		}
-		return false, nil
+		positions = append(positions, position)
+		return nil
 	})
 
 	return positions, pageRes, err
@@ -268,7 +297,7 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, poolId uint64, positionAddres
 	return &position, true
 }
 
-func (k Keeper) MigrateToNewKeys(ctx sdk.Context) {
+func (k Keeper) MigratePositionsToNewKeys(ctx sdk.Context) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.LegacyPositionPrefix)
 	defer iterator.Close()
@@ -278,6 +307,8 @@ func (k Keeper) MigrateToNewKeys(ctx sdk.Context) {
 		k.cdc.MustUnmarshal(iterator.Value(), &position)
 
 		k.SetPosition(ctx, &position)
+
+		k.DeleteLegacyPosition(ctx, position)
 
 		positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
 		positionCounter.TotalOpen++

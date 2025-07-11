@@ -118,7 +118,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				return position1
 			},
 			func() {
-				offset, _ := suite.app.LeveragelpKeeper.GetOffset(suite.ctx)
+				offset, _ := suite.app.LeveragelpKeeper.GetFallbackOffset(suite.ctx)
 				suite.Require().Equal(offset, uint64(0))
 			},
 		},

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strconv"
@@ -65,7 +64,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
-		return nil, errors.New("stable stake pool max borrow capacity used up")
+		return nil, fmt.Errorf("stable stake pool max borrow capacity used up, borrow ratio: %s, max allowed: %s", borrowRatio.String(), borrowPool.MaxLeverageRatio.String())
 	}
 
 	// Check if it is the same direction position for the same trader.
