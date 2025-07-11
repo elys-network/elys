@@ -49,7 +49,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 	baseCurrency := entry.Denom
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees); err != nil {
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees, repayAmount); err != nil {
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, err
 	}
 
