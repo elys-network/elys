@@ -38,6 +38,12 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
 		}
 
+		fmt.Println("----------------------------")
+		fmt.Println("Height: ", ctx.BlockHeight())
+		fmt.Println("length: ", len(positions))
+		fmt.Println("positions: ", positions)
+		fmt.Println("----------------------------")
+
 		for _, position := range positions {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if !found {
