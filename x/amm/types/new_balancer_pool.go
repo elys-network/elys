@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// NewPool returns a weighted CPMM pool with the provided parameters, and initial assets.
+// NewBalancerPool returns a weighted CPMM pool with the provided parameters, and initial assets.
 // Invariants that are assumed to be satisfied and not checked:
 // (This is handled in ValidateBasic)
 // * 2 <= len(assets) <= 8
