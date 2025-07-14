@@ -11,8 +11,8 @@ import (
 	"github.com/elys-network/elys/v6/x/amm/keeper"
 	"github.com/elys-network/elys/v6/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
