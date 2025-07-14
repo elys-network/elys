@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.ClosePosition(ctx, msg)
+	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingCollatoral, err := k.ClosePosition(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -19,13 +19,16 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	}
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMtp.CustodyAsset, closingCollatoral, closingRatio)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(types.EventClose,
 			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(closedMtp.Id), 10)),
 			sdk.NewAttribute("owner", closedMtp.Address),
 			sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(closedMtp.AmmPoolId), 10)),
+			sdk.NewAttribute("net_pnl", netPnLInUSD.String()),
 			sdk.NewAttribute("collateral_asset", closedMtp.CollateralAsset),
+			sdk.NewAttribute("collateral_amount", closedMtp.Collateral.String()), // collateral amount after closing
 			sdk.NewAttribute("position", closedMtp.Position.String()),
 			sdk.NewAttribute("mtp_health", closedMtp.MtpHealth.String()), // should be there if it's partial close
 			sdk.NewAttribute("repay_amount", repayAmount.String()),
