@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec, closingCollatoral sdk.Coin) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec, closingCollatoral sdk.Coin, usdcPrice math.LegacyDec) {
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, mtp.CustodyAsset, closingCollatoral, math.LegacyOneDec())
@@ -23,6 +23,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("collateral_amount", mtp.Collateral.String()), // collateral amount after closing
 		sdk.NewAttribute("closer", closer),
 		sdk.NewAttribute("closing_price", closingPrice.String()),
+		sdk.NewAttribute("usdc_price", usdcPrice.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("return_amount", returnAmt.String()),
 		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
