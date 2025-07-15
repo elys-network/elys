@@ -3,8 +3,8 @@
 package mocks
 
 import (
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	math "cosmossdk.io/math"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	mock "github.com/stretchr/testify/mock"
 
 	osmomath "github.com/osmosis-labs/osmosis/osmomath"

@@ -125,9 +125,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			//Added: []string{ratelimittypes.StoreKey},
+			// Added: []string{ratelimittypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{ibcfeetypes.StoreKey},
+			//Deleted: []string{ratelimittypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
