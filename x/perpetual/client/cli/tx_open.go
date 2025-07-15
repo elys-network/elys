@@ -18,7 +18,7 @@ func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "open [position] [leverage] [pool-id] [collateral] [flags]",
 		Short: "Open perpetual position",
-		Example: `Infinte profitability:
+		Example: `Infinite profitability:
 elysd tx perpetual open long 5 1 100000000uusdc --from=bob --yes --gas=1000000
 Finite profitability:
 elysd tx perpetual open short 5 1 100000000uusdc --take-profit 100 --stop-loss 10 --from=bob --yes --gas=1000000`,
