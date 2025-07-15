@@ -27,6 +27,8 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		return nil, err
 	}
 
+	initialCollateralCoin := sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral)
+
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -63,7 +65,11 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		if forceClosed {
-			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice)
+			usdcPrice, err := k.GetUSDCPrice(ctx)
+			if err != nil {
+				return nil, err
+			}
+			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, usdcPrice)
 			// hooks are being called inside MTPTriggerChecksAndUpdates
 			return &types.MsgAddCollateralResponse{}, nil
 		}
