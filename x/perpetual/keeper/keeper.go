@@ -158,7 +158,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	} else {
 		totalAmount = liabilitiesInCollateral
 	}
-	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees)
+	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
 	if err != nil {
 		return types.PerpetualFees{}, err
 	}
@@ -312,7 +312,7 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	return insuranceAmount, nil
 }
 
-func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees) (math.Int, error) {
+func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
 	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
 	if err != nil {
 		return math.ZeroInt(), err
@@ -322,7 +322,15 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
 	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
 	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+
 	sendToTakerCollection := perpsTakersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+	totalCalcFees := sendToMasterchef.Add(sendToTakerCollection)
+
+	if maxTotalFees.GT(math.ZeroInt()) && totalCalcFees.GT(maxTotalFees) {
+		// scale down the fees to maxTotalFees
+		sendToMasterchef = maxTotalFees.Mul(sendToMasterchef).Quo(totalCalcFees)
+		sendToTakerCollection = maxTotalFees.Mul(sendToTakerCollection).Quo(totalCalcFees)
+	}
 
 	if sendToMasterchef.IsPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
