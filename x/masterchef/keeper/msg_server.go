@@ -222,3 +222,16 @@ func (k msgServer) UpdatePoolMultipliers(goCtx context.Context, msg *types.MsgUp
 
 	return &types.MsgUpdatePoolMultipliersResponse{}, nil
 }
+
+func (k msgServer) ToggleTakerFeeSwapAndBurn(goCtx context.Context, msg *types.MsgToggleTakerFeeSwapAndBurn) (*types.MsgToggleTakerFeeSwapAndBurnResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	takerManager := k.GetParams(ctx).TakerManager
+
+	if takerManager != msg.Sender {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", takerManager, msg.Sender)
+	}
+
+	k.ProcessTakerFee(ctx)
+
+	return &types.MsgToggleTakerFeeSwapAndBurnResponse{}, nil
+}

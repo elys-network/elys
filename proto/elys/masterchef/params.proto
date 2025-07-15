@@ -70,6 +70,8 @@ message Params {
   repeated SupportedRewardDenom supported_reward_denoms = 5;
 
   string protocol_revenue_address = 6;
+
+  string taker_manager = 7;
 }
 
 message SupportedRewardDenom {

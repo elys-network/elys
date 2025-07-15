@@ -752,8 +752,9 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 
 	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
 	for _, balance := range balances {
-		// need at least a certain amount to swap
-		if balance.Denom == ptypes.Elys || balance.Amount.LT(sdkmath.NewInt(1000000)) {
+		// need at least a certain 0.5$ amount to swap
+		usdValue := k.amm.CalculateCoinsUSDValue(ctx, sdk.NewCoins(balance))
+		if balance.Denom == ptypes.Elys || usdValue.LT(osmomath.NewBigDecWithPrec(5, 1)) {
 			continue
 		}
 		cacheCtx, write := ctx.CacheContext()
