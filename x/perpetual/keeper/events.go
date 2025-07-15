@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec) {
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 
@@ -19,6 +19,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("position", mtp.Position.String()),
 		sdk.NewAttribute("collateral_asset", mtp.CollateralAsset),
 		sdk.NewAttribute("closer", closer),
+		sdk.NewAttribute("closing_price", closingPrice.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("return_amount", returnAmt.String()),
 		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
