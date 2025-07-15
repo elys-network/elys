@@ -320,9 +320,10 @@ func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAd
 	_, tier := k.tierKeeper.GetMembershipTier(ctx, tierAddress)
 	params := k.GetParams(ctx)
 	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
 	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
-	sendToTakerCollection := takersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+
+	sendToTakerCollection := perpsTakersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
 	totalCalcFees := sendToMasterchef.Add(sendToTakerCollection)
 
 	if maxTotalFees.GT(math.ZeroInt()) && totalCalcFees.GT(maxTotalFees) {
