@@ -328,7 +328,7 @@ func NewElysApp(
 	proposalHandler := oracleabci.NewProposalHandler(
 		app.Logger(),
 		app.OracleKeeper,
-		app.StakingKeeper,
+		app.ICSValidatorKeeper,
 	)
 	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
 	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
