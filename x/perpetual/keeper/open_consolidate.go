@@ -16,6 +16,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
+	existingMtpCollateralCoin := sdk.NewCoin(existingMtp.CollateralAsset, existingMtp.Collateral)
+
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
@@ -32,7 +34,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		if err != nil {
 			return nil, err
 		}
-		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice)
+		usdcPrice, err := k.GetUSDCPrice(ctx)
+		if err != nil {
+			return nil, err
+		}
+		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, usdcPrice)
 		return &types.MsgOpenResponse{
 			Id: existingMtp.Id,
 		}, nil
