@@ -178,6 +178,8 @@ type AppKeepers struct {
 	HooksICS4Wrapper    ibchooks.ICS4Middleware
 	Ics20WasmHooks      *ibchooks.WasmHooks
 	PacketForwardKeeper *packetforwardkeeper.Keeper
+
+	ICSValidatorKeeper ICSValidatorKeeper
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -541,7 +543,7 @@ func NewAppKeeper(
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 
-	icsValidatorKeeper := NewICSValidatorKeeper(app.ConsumerKeeper)
+	app.ICSValidatorKeeper = NewICSValidatorKeeper(app.ConsumerKeeper)
 
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
@@ -567,7 +569,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		icsValidatorKeeper,
+		app.ICSValidatorKeeper,
 		distrtypes.ModuleName,
 		cast.ToBool(appOpts.Get("telemetry.enabled")),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
