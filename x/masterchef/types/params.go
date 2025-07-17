@@ -18,6 +18,7 @@ func NewParams(
 	rewardPortionForStakers sdkmath.LegacyDec,
 	maxEdenRewardAprLps sdkmath.LegacyDec,
 	protocolRevenueAddress string,
+	takerManager string,
 ) Params {
 	return Params{
 		LpIncentives:            lpIncentives,
@@ -26,6 +27,7 @@ func NewParams(
 		MaxEdenRewardAprLps:     maxEdenRewardAprLps,
 		SupportedRewardDenoms:   nil,
 		ProtocolRevenueAddress:  protocolRevenueAddress,
+		TakerManager:            takerManager,
 	}
 }
 
@@ -37,6 +39,7 @@ func DefaultParams() Params {
 		sdkmath.LegacyNewDecWithPrec(25, 2),
 		sdkmath.LegacyNewDecWithPrec(5, 1),
 		authtypes.NewModuleAddress("protocol-revenue-address").String(), // TODO: Change it in genesis in mainnet launch
+		authtypes.NewModuleAddress("taker-manager-address").String(),
 	)
 }
 
@@ -98,6 +101,10 @@ func (p Params) Validate() error {
 		}
 	}
 
+	_, err = sdk.AccAddressFromBech32(p.TakerManager)
+	if err != nil {
+		return fmt.Errorf("invalid TakerManager %s: %s", p.TakerManager, err.Error())
+	}
 	return nil
 }
 
