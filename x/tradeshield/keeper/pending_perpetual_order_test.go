@@ -81,7 +81,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitOpenOrder() {
 		Position:           types.PerpetualPosition_LONG,
 		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
 		Leverage:           math.LegacyNewDec(10),
-		TakeProfitPrice:    math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(50),
 		StopLossPrice:      math.LegacyZeroDec(),
 		PoolId:             1,
 	}
@@ -114,7 +114,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 		Position:           types.PerpetualPosition_LONG,
 		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
 		Leverage:           math.LegacyNewDec(10),
-		TakeProfitPrice:    math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(50),
 		StopLossPrice:      math.LegacyZeroDec(),
 		PoolId:             1,
 	}
