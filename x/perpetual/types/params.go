@@ -34,6 +34,7 @@ func NewParams() Params {
 		MinimumNotionalValue:                math.LegacyNewDec(0),
 		LongMinimumLiabilityAmount:          math.NewInt(1),
 		ExitBuffer:                          math.LegacyMustNewDecFromStr("0.15"),
+		TakerFee:                            math.LegacyMustNewDecFromStr("0.00075"),
 	}
 }
 
@@ -122,6 +123,12 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.ExitBuffer, "ExitBuffer"); err != nil {
 		return err
 	}
+	if err := CheckLegacyDecNilAndNegative(p.TakerFee, "TakerFee"); err != nil {
+		return err
+	}
+	if p.TakerFee.GTE(math.LegacyOneDec()) {
+		return errors.New("TakerFee must be less than 1")
+	}
 	return nil
 }
 
@@ -170,4 +177,8 @@ func (p Params) GetBigDecBorrowInterestRateMin() osmomath.BigDec {
 
 func (p Params) GetBigDecBorrowInterestPaymentFundPercentage() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.BorrowInterestPaymentFundPercentage)
+}
+
+func (p Params) GetBigDecTakerFees() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.TakerFee)
 }

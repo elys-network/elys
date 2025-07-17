@@ -4,7 +4,6 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"fmt"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	"strings"
 
 	storetypes "cosmossdk.io/store/types"
@@ -109,7 +108,7 @@ func (app *ElysApp) setUpgradeStore() {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{ratelimittypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
-			Deleted: []string{ratelimittypes.StoreKey},
+			//Deleted: []string{ratelimittypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
