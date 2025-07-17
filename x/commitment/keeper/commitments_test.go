@@ -80,7 +80,7 @@ func TestKeeper_IterateCommitments(t *testing.T) {
 	assert.Equal(t, commitments, retrievedCommitments)
 }
 
-// TestKeeper_IterateCommitments tests the IterateCommitments function with handlerFn returning true
+// TestKeeper_IterateCommitmentsWithHandlerFn tests the IterateCommitments function with handlerFn returning true
 func TestKeeper_IterateCommitmentsWithHandlerFn(t *testing.T) {
 	keeper, ctx := keepertest.CommitmentKeeper(t)
 
