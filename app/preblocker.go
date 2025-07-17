@@ -11,8 +11,8 @@ import (
 	"github.com/ojo-network/ojo/x/oracle/types"
 )
 
-// PreBlocker is run before finalize block to update the aggregrate exchange rate votes on the oracle module
-// that were verified by the vote etension handler so that the exchange rate votes are available during the
+// PreBlocker is run before finalize block to update the aggregate exchange rate votes on the oracle module
+// that were verified by the vote extension handler so that the exchange rate votes are available during the
 // entire block execution (from BeginBlock). It will execute the preblockers of the other modules set in
 // SetOrderPreBlockers as well.
 func (app *ElysApp) PreBlocker(ctx sdk.Context, req *cometabci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
