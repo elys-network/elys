@@ -19,6 +19,8 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	}
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, closedMtp.CustodyAsset, interestAmt).Dec()
+
 	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMtp.CustodyAsset, closingCollatoral, closingRatio)
 	usdcPrice, err := k.GetUSDCPrice(ctx)
 	if err != nil {
@@ -40,6 +42,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
 			sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 			sdk.NewAttribute("interest_amount", interestAmt.String()),
+			sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 			sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 			sdk.NewAttribute("funding_fee_paid_custody", closedMtp.FundingFeePaidCustody.String()),
 			sdk.NewAttribute("funding_fee_received_custody", closedMtp.FundingFeeReceivedCustody.String()),
