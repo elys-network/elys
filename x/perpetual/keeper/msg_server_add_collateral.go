@@ -120,6 +120,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+		interestAmtInUSD := k.amm.CalculateUSDValue(ctx, mtp.CustodyAsset, interestAmt).Dec()
 
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAddCollateral,
 			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
@@ -132,6 +133,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
 			sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 			sdk.NewAttribute("interest_amount", interestAmt.String()),
+			sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 			sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 			sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 			sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
