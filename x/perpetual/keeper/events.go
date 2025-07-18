@@ -12,6 +12,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, mtp.CustodyAsset, closingCollatoral, math.LegacyOneDec())
+	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, mtp.CustodyAsset, interestAmt).Dec()
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
@@ -29,6 +30,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
 		sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
