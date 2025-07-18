@@ -158,7 +158,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	} else {
 		totalAmount = liabilitiesInCollateral
 	}
-	_, err = k.SendFeesToMasterchefAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
+	_, err = k.SendFeesToPoolRevenueAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
 	if err != nil {
 		return types.PerpetualFees{}, err
 	}
@@ -312,7 +312,10 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	return insuranceAmount, nil
 }
 
-func (k Keeper) SendFeesToMasterchefAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
+// Send fees to pool revenue and taker collection addresses
+// Fee is swapped from pool revenue address and then transferred to masterchef module for distribution
+// Fee sent to taker collection address is swapped and burnt
+func (k Keeper) SendFeesToPoolRevenueAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
 	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
 	if err != nil {
 		return math.ZeroInt(), err

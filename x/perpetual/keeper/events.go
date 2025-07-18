@@ -36,6 +36,8 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
 		sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
 		sdk.NewAttribute("trigger", trigger),
+		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
+		sdk.NewAttribute("closing_amount", mtp.Custody.String()),
 		sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
 		sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
 		sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
