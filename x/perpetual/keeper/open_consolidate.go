@@ -111,6 +111,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		sdk.NewAttribute("new_liabilities", newMtp.Liabilities.String()),
 		sdk.NewAttribute("custody", existingMtp.Custody.String()),
 		sdk.NewAttribute("new_custody", newMtp.Custody.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
 		sdk.NewAttribute("mtp_health", existingMtp.MtpHealth.String()),
 		sdk.NewAttribute("stop_loss_price", existingMtp.StopLossPrice.String()),
 		sdk.NewAttribute("take_profit_price", existingMtp.TakeProfitPrice.String()),
