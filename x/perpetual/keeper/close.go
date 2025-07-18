@@ -46,6 +46,8 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("borrow_interest_paid_custody", closedMtp.BorrowInterestPaidCustody.String()),
 			sdk.NewAttribute("closing_ratio", closingRatio.String()),
 			sdk.NewAttribute("closing_price", closingPrice.String()),
+			sdk.NewAttribute("open_price", closedMtp.OpenPrice.String()),
+			sdk.NewAttribute("closing_amount", msg.Amount.String()),
 			sdk.NewAttribute("usdc_price", usdcPrice.String()),
 			sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
 			sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
