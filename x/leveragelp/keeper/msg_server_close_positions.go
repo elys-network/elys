@@ -29,7 +29,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		_, _, _, err = k.CheckAndLiquidateUnhealthyPosition(cachedCtx, &position, pool)
 		if err == nil {
 			write()
-			liqLog = append(liqLog, position.Id)
 		}
 		if err != nil {
 			liqLog = append(liqLog, position.Id)
