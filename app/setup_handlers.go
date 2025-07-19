@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -65,27 +64,12 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			//oracleParams := app.OracleKeeper.GetParams(ctx)
-			//if len(oracleParams.MandatoryList) == 0 {
-			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//}
-
-			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
-				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
-				app.LeveragelpKeeper.SetPool(ctx, pool)
-			}
-
 			perpetualParams := app.PerpetualKeeper.GetParams(ctx)
-			perpetualParams.ExitBuffer = math.LegacyMustNewDecFromStr("0.1")
+			perpetualParams.WhitelistingEnabled = false
 			err := app.PerpetualKeeper.SetParams(ctx, &perpetualParams)
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
-
-			app.OracleKeeper.DeleteAXLPrices(ctx)
 
 			return vm, vmErr
 		},
