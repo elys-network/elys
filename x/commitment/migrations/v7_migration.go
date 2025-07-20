@@ -33,8 +33,8 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 
 	// For testnet only
 	if ctx.ChainID() == "elysicstestnet-1" {
-		addresess := []string{"elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46", "elys1va67r6h8y489kz89rgpqtlysrv6pd6hckr3pe4", "elys1zu4tahdxl0d585wpnu03nne4wkleyz5qdllh60"}
-		for _, address := range addresess {
+		addresses := []string{"elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46", "elys1va67r6h8y489kz89rgpqtlysrv6pd6hckr3pe4", "elys1zu4tahdxl0d585wpnu03nne4wkleyz5qdllh60"}
+		for _, address := range addresses {
 			m.keeper.SetCadet(ctx, types.Cadet{
 				Address: address,
 				Amount:  math.NewInt(500000000),
