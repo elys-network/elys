@@ -23,10 +23,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 			"mtp not found",
 			func() *types.MsgClose {
 				return &types.MsgClose{
-					Creator: sample.AccAddress(),
-					Id:      uint64(10),
-					Amount:  math.NewInt(12000),
-					PoolId:  1,
+					Creator:      sample.AccAddress(),
+					Id:           uint64(10),
+					Amount:       math.NewInt(12000),
+					PoolId:       1,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"mtp not found",
@@ -54,10 +55,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.Require().NoError(err)
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(500),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(500),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"asset info uusdc not found",
@@ -87,10 +89,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.Require().NoError(err)
 
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(50000000000000), // same as with amount 399
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(50000000000000), // same as with amount 399
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -127,10 +130,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				})
 
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(107),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(107),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -167,10 +171,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				})
 
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(699),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(699),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -207,10 +212,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				})
 
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(699),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(699),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -238,10 +244,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(699),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(699),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -267,10 +274,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(900),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(900),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"",
@@ -342,10 +350,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				})
 
 				return &types.MsgClose{
-					Creator: positionCreator.String(),
-					Id:      position.Id,
-					Amount:  math.NewInt(900),
-					PoolId:  ammPool.PoolId,
+					Creator:      positionCreator.String(),
+					Id:           position.Id,
+					Amount:       math.NewInt(900),
+					PoolId:       ammPool.PoolId,
+					ClosingRatio: math.LegacyZeroDec(),
 				}
 			},
 			"not enough liquidity",

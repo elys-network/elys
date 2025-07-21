@@ -54,6 +54,9 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, perpetualPool types.Pool) e
 	// process will never end. adl trigger stops that by being higher
 	currentMaxLiabilitiesRatio := math.LegacyMaxDec(perpetualPool.BaseAssetLiabilitiesRatio, perpetualPool.QuoteAssetLiabilitiesRatio)
 	params := k.GetParams(ctx)
+	if currentMaxLiabilitiesRatio.LTE(params.PoolMaxLiabilitiesThreshold) {
+		return nil
+	}
 	closingRatio := currentMaxLiabilitiesRatio.Sub(params.PoolMaxLiabilitiesThreshold).Quo(currentMaxLiabilitiesRatio)
 	if closingRatio.IsZero() || closingRatio.IsNegative() {
 		err := fmt.Errorf("closing ratio is <= 0 for pool while triggering adl for pool id %d in perpetual", perpetualPool.AmmPoolId)
@@ -92,12 +95,12 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, perpetualPool types.Pool) e
 
 	for _, mtp := range mtps {
 		msg := types.NewMsgClose(mtp.Address, mtp.Id, math.ZeroInt(), perpetualPool.AmmPoolId, closingRatio)
-		closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingCollateral, err := k.ClosePosition(ctx, msg)
+		closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, err := k.ClosePosition(ctx, msg)
 		if err != nil {
 			return err
 		}
 
-		err = k.EmitClose(ctx, types.EventADLClose, closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingCollateral)
+		err = k.EmitClose(ctx, "adl", closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities)
 		if err != nil {
 			return err
 		}
