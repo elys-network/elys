@@ -264,14 +264,15 @@ func (x *_GenesisState_7_list) IsValid() bool {
 }
 
 var (
-	md_GenesisState                   protoreflect.MessageDescriptor
-	fd_GenesisState_params            protoreflect.FieldDescriptor
-	fd_GenesisState_pool_list         protoreflect.FieldDescriptor
-	fd_GenesisState_position_list     protoreflect.FieldDescriptor
-	fd_GenesisState_address_whitelist protoreflect.FieldDescriptor
-	fd_GenesisState_position_counter  protoreflect.FieldDescriptor
-	fd_GenesisState_fallback_offset   protoreflect.FieldDescriptor
-	fd_GenesisState_adl_counter       protoreflect.FieldDescriptor
+	md_GenesisState                        protoreflect.MessageDescriptor
+	fd_GenesisState_params                 protoreflect.FieldDescriptor
+	fd_GenesisState_pool_list              protoreflect.FieldDescriptor
+	fd_GenesisState_position_list          protoreflect.FieldDescriptor
+	fd_GenesisState_address_whitelist      protoreflect.FieldDescriptor
+	fd_GenesisState_position_counter       protoreflect.FieldDescriptor
+	fd_GenesisState_legacy_fallback_offset protoreflect.FieldDescriptor
+	fd_GenesisState_adl_counter            protoreflect.FieldDescriptor
+	fd_GenesisState_fallback_counter       protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -282,8 +283,9 @@ func init() {
 	fd_GenesisState_position_list = md_GenesisState.Fields().ByName("position_list")
 	fd_GenesisState_address_whitelist = md_GenesisState.Fields().ByName("address_whitelist")
 	fd_GenesisState_position_counter = md_GenesisState.Fields().ByName("position_counter")
-	fd_GenesisState_fallback_offset = md_GenesisState.Fields().ByName("fallback_offset")
+	fd_GenesisState_legacy_fallback_offset = md_GenesisState.Fields().ByName("legacy_fallback_offset")
 	fd_GenesisState_adl_counter = md_GenesisState.Fields().ByName("adl_counter")
+	fd_GenesisState_fallback_counter = md_GenesisState.Fields().ByName("fallback_counter")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -381,15 +383,21 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if x.FallbackOffset != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.FallbackOffset)
-		if !f(fd_GenesisState_fallback_offset, value) {
+	if x.LegacyFallbackOffset != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.LegacyFallbackOffset)
+		if !f(fd_GenesisState_legacy_fallback_offset, value) {
 			return
 		}
 	}
 	if len(x.AdlCounter) != 0 {
 		value := protoreflect.ValueOfList(&_GenesisState_7_list{list: &x.AdlCounter})
 		if !f(fd_GenesisState_adl_counter, value) {
+			return
+		}
+	}
+	if x.FallbackCounter != nil {
+		value := protoreflect.ValueOfMessage(x.FallbackCounter.ProtoReflect())
+		if !f(fd_GenesisState_fallback_counter, value) {
 			return
 		}
 	}
@@ -418,10 +426,12 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.AddressWhitelist) != 0
 	case "elys.leveragelp.GenesisState.position_counter":
 		return len(x.PositionCounter) != 0
-	case "elys.leveragelp.GenesisState.fallback_offset":
-		return x.FallbackOffset != uint64(0)
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
+		return x.LegacyFallbackOffset != uint64(0)
 	case "elys.leveragelp.GenesisState.adl_counter":
 		return len(x.AdlCounter) != 0
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		return x.FallbackCounter != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -448,10 +458,12 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.AddressWhitelist = nil
 	case "elys.leveragelp.GenesisState.position_counter":
 		x.PositionCounter = nil
-	case "elys.leveragelp.GenesisState.fallback_offset":
-		x.FallbackOffset = uint64(0)
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
+		x.LegacyFallbackOffset = uint64(0)
 	case "elys.leveragelp.GenesisState.adl_counter":
 		x.AdlCounter = nil
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		x.FallbackCounter = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -495,8 +507,8 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_5_list{list: &x.PositionCounter}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.leveragelp.GenesisState.fallback_offset":
-		value := x.FallbackOffset
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
+		value := x.LegacyFallbackOffset
 		return protoreflect.ValueOfUint64(value)
 	case "elys.leveragelp.GenesisState.adl_counter":
 		if len(x.AdlCounter) == 0 {
@@ -504,6 +516,9 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_7_list{list: &x.AdlCounter}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		value := x.FallbackCounter
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -542,12 +557,14 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_5_list)
 		x.PositionCounter = *clv.list
-	case "elys.leveragelp.GenesisState.fallback_offset":
-		x.FallbackOffset = value.Uint()
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
+		x.LegacyFallbackOffset = value.Uint()
 	case "elys.leveragelp.GenesisState.adl_counter":
 		lv := value.List()
 		clv := lv.(*_GenesisState_7_list)
 		x.AdlCounter = *clv.list
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		x.FallbackCounter = value.Message().Interface().(*FallbackCounter)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -603,8 +620,13 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_7_list{list: &x.AdlCounter}
 		return protoreflect.ValueOfList(value)
-	case "elys.leveragelp.GenesisState.fallback_offset":
-		panic(fmt.Errorf("field fallback_offset of message elys.leveragelp.GenesisState is not mutable"))
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		if x.FallbackCounter == nil {
+			x.FallbackCounter = new(FallbackCounter)
+		}
+		return protoreflect.ValueOfMessage(x.FallbackCounter.ProtoReflect())
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
+		panic(fmt.Errorf("field legacy_fallback_offset of message elys.leveragelp.GenesisState is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -633,11 +655,14 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "elys.leveragelp.GenesisState.position_counter":
 		list := []*PositionCounter{}
 		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
-	case "elys.leveragelp.GenesisState.fallback_offset":
+	case "elys.leveragelp.GenesisState.legacy_fallback_offset":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.leveragelp.GenesisState.adl_counter":
 		list := []*ADLCounter{}
 		return protoreflect.ValueOfList(&_GenesisState_7_list{list: &list})
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		m := new(FallbackCounter)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -735,14 +760,18 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if x.FallbackOffset != 0 {
-			n += 1 + runtime.Sov(uint64(x.FallbackOffset))
+		if x.LegacyFallbackOffset != 0 {
+			n += 1 + runtime.Sov(uint64(x.LegacyFallbackOffset))
 		}
 		if len(x.AdlCounter) > 0 {
 			for _, e := range x.AdlCounter {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
+		}
+		if x.FallbackCounter != nil {
+			l = options.Size(x.FallbackCounter)
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -773,6 +802,20 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if x.FallbackCounter != nil {
+			encoded, err := options.Marshal(x.FallbackCounter)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x42
+		}
 		if len(x.AdlCounter) > 0 {
 			for iNdEx := len(x.AdlCounter) - 1; iNdEx >= 0; iNdEx-- {
 				encoded, err := options.Marshal(x.AdlCounter[iNdEx])
@@ -789,8 +832,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x3a
 			}
 		}
-		if x.FallbackOffset != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.FallbackOffset))
+		if x.LegacyFallbackOffset != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.LegacyFallbackOffset))
 			i--
 			dAtA[i] = 0x30
 		}
@@ -1086,9 +1129,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FallbackOffset", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyFallbackOffset", wireType)
 				}
-				x.FallbackOffset = 0
+				x.LegacyFallbackOffset = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1098,7 +1141,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.FallbackOffset |= uint64(b&0x7F) << shift
+					x.LegacyFallbackOffset |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -1134,6 +1177,42 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				}
 				x.AdlCounter = append(x.AdlCounter, &ADLCounter{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AdlCounter[len(x.AdlCounter)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FallbackCounter", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.FallbackCounter == nil {
+					x.FallbackCounter = &FallbackCounter{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FallbackCounter); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -1191,13 +1270,14 @@ type GenesisState struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Params           *Params            `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	PoolList         []*Pool            `protobuf:"bytes,2,rep,name=pool_list,json=poolList,proto3" json:"pool_list,omitempty"`
-	PositionList     []*Position        `protobuf:"bytes,3,rep,name=position_list,json=positionList,proto3" json:"position_list,omitempty"`
-	AddressWhitelist []string           `protobuf:"bytes,4,rep,name=address_whitelist,json=addressWhitelist,proto3" json:"address_whitelist,omitempty"`
-	PositionCounter  []*PositionCounter `protobuf:"bytes,5,rep,name=position_counter,json=positionCounter,proto3" json:"position_counter,omitempty"`
-	FallbackOffset   uint64             `protobuf:"varint,6,opt,name=fallback_offset,json=fallbackOffset,proto3" json:"fallback_offset,omitempty"`
-	AdlCounter       []*ADLCounter      `protobuf:"bytes,7,rep,name=adl_counter,json=adlCounter,proto3" json:"adl_counter,omitempty"`
+	Params               *Params            `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	PoolList             []*Pool            `protobuf:"bytes,2,rep,name=pool_list,json=poolList,proto3" json:"pool_list,omitempty"`
+	PositionList         []*Position        `protobuf:"bytes,3,rep,name=position_list,json=positionList,proto3" json:"position_list,omitempty"`
+	AddressWhitelist     []string           `protobuf:"bytes,4,rep,name=address_whitelist,json=addressWhitelist,proto3" json:"address_whitelist,omitempty"`
+	PositionCounter      []*PositionCounter `protobuf:"bytes,5,rep,name=position_counter,json=positionCounter,proto3" json:"position_counter,omitempty"`
+	LegacyFallbackOffset uint64             `protobuf:"varint,6,opt,name=legacy_fallback_offset,json=legacyFallbackOffset,proto3" json:"legacy_fallback_offset,omitempty"`
+	AdlCounter           []*ADLCounter      `protobuf:"bytes,7,rep,name=adl_counter,json=adlCounter,proto3" json:"adl_counter,omitempty"`
+	FallbackCounter      *FallbackCounter   `protobuf:"bytes,8,opt,name=fallback_counter,json=fallbackCounter,proto3" json:"fallback_counter,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -1255,9 +1335,9 @@ func (x *GenesisState) GetPositionCounter() []*PositionCounter {
 	return nil
 }
 
-func (x *GenesisState) GetFallbackOffset() uint64 {
+func (x *GenesisState) GetLegacyFallbackOffset() uint64 {
 	if x != nil {
-		return x.FallbackOffset
+		return x.LegacyFallbackOffset
 	}
 	return 0
 }
@@ -1265,6 +1345,13 @@ func (x *GenesisState) GetFallbackOffset() uint64 {
 func (x *GenesisState) GetAdlCounter() []*ADLCounter {
 	if x != nil {
 		return x.AdlCounter
+	}
+	return nil
+}
+
+func (x *GenesisState) GetFallbackCounter() *FallbackCounter {
+	if x != nil {
+		return x.FallbackCounter
 	}
 	return nil
 }
@@ -1281,7 +1368,7 @@ var file_elys_leveragelp_genesis_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1a, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72,
 	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x1b, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb2, 0x03,
+	0x70, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x92, 0x04,
 	0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x35,
 	0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
@@ -1302,13 +1389,19 @@ var file_elys_leveragelp_genesis_proto_rawDesc = []byte{
 	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x50,
 	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04,
 	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f,
-	0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x27, 0x0a, 0x0f, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63,
-	0x6b, 0x5f, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e,
-	0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x4f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x12, 0x42,
-	0x0a, 0x0b, 0x61, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x07, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
-	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x41, 0x44, 0x4c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
-	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x61, 0x64, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74,
+	0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x34, 0x0a, 0x16, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f,
+	0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x5f, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x46, 0x61, 0x6c,
+	0x6c, 0x62, 0x61, 0x63, 0x6b, 0x4f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x12, 0x42, 0x0a, 0x0b, 0x61,
+	0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x6c, 0x70, 0x2e, 0x41, 0x44, 0x4c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x0a, 0x61, 0x64, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12,
+	0x51, 0x0a, 0x10, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x5f, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x65, 0x72, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x46, 0x61, 0x6c, 0x6c,
+	0x62, 0x61, 0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x0f, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74,
 	0x65, 0x72, 0x42, 0xb5, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
 	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65,
 	0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68,
@@ -1344,6 +1437,7 @@ var file_elys_leveragelp_genesis_proto_goTypes = []interface{}{
 	(*Position)(nil),        // 3: elys.leveragelp.Position
 	(*PositionCounter)(nil), // 4: elys.leveragelp.PositionCounter
 	(*ADLCounter)(nil),      // 5: elys.leveragelp.ADLCounter
+	(*FallbackCounter)(nil), // 6: elys.leveragelp.FallbackCounter
 }
 var file_elys_leveragelp_genesis_proto_depIdxs = []int32{
 	1, // 0: elys.leveragelp.GenesisState.params:type_name -> elys.leveragelp.Params
@@ -1351,11 +1445,12 @@ var file_elys_leveragelp_genesis_proto_depIdxs = []int32{
 	3, // 2: elys.leveragelp.GenesisState.position_list:type_name -> elys.leveragelp.Position
 	4, // 3: elys.leveragelp.GenesisState.position_counter:type_name -> elys.leveragelp.PositionCounter
 	5, // 4: elys.leveragelp.GenesisState.adl_counter:type_name -> elys.leveragelp.ADLCounter
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	6, // 5: elys.leveragelp.GenesisState.fallback_counter:type_name -> elys.leveragelp.FallbackCounter
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_elys_leveragelp_genesis_proto_init() }

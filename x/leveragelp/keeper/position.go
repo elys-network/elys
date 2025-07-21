@@ -91,26 +91,6 @@ func (k Keeper) GetLegacyPositionCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) SetFallbackOffset(ctx sdk.Context, offset uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.FallbackOffsetKeyPrefix, types.GetUint64Bytes(offset))
-}
-
-func (k Keeper) GetFallbackOffset(ctx sdk.Context) (uint64, bool) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	if store.Has(types.FallbackOffsetKeyPrefix) {
-		res := store.Get(types.FallbackOffsetKeyPrefix)
-		return types.GetUint64FromBytes(res), true
-	} else {
-		return 0, false
-	}
-}
-
-func (k Keeper) DeleteFallbackOffset(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.FallbackOffsetKeyPrefix)
-}
-
 func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	var positions []types.Position
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))

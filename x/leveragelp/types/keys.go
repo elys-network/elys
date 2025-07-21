@@ -23,13 +23,14 @@ var (
 	LegacyPositionPrefix          = []byte{0x01}
 	LegacyPositionCountPrefix     = []byte{0x02}
 	LegacyOpenPositionCountPrefix = []byte{0x04}
+	LegacyFallbackOffsetKeyPrefix = []byte{0x09}
 
 	WhitelistPrefix       = []byte{0x05}
 	PositionPrefix        = []byte{0x06}
 	PositionCounterPrefix = []byte{0x07}
 
-	ADLCounterKeyPrefix     = []byte{0x08}
-	FallbackOffsetKeyPrefix = []byte{0x09}
+	ADLCounterKeyPrefix   = []byte{0x08}
+	FallbackCounterPrefix = []byte{0x03}
 )
 
 func KeyPrefix(p string) []byte {

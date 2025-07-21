@@ -38,7 +38,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetPositionCounter(ctx, positionCounter)
 	}
 
-	k.SetFallbackOffset(ctx, genState.FallbackOffset)
+	k.SetFallbackCounter(ctx, genState.FallbackCounter)
 
 	for _, adlCounter := range genState.AdlCounter {
 		k.SetADLCounter(ctx, adlCounter)
@@ -61,7 +61,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PositionCounter = k.GetAllPositionCounters(ctx)
 
-	genesis.FallbackOffset, _ = k.GetFallbackOffset(ctx)
+	genesis.FallbackCounter = k.GetFallbackCounter(ctx)
 
 	genesis.AdlCounter = k.GetAllADLCounter(ctx)
 

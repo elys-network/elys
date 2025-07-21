@@ -6,5 +6,6 @@ import (
 
 func (m Migrator) V23Migration(ctx sdk.Context) error {
 	m.keeper.MigratePositionsToNewKeys(ctx)
+	m.keeper.DeleteLegacyFallbackOffset(ctx)
 	return nil
 }

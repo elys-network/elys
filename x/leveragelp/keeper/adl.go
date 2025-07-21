@@ -49,10 +49,20 @@ func (k Keeper) GetAllADLCounter(ctx sdk.Context) []types.ADLCounter {
 	return list
 }
 
-func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool, currentLeverageRatio math.LegacyDec) error {
+func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) error {
 	// closing ratio = (current ratio - max leverage) / current ratio
 	// we use max leverage instead of adl trigger ratio because then this whole thing will be asymptotic and
 	// process will never end. adl trigger stops that by being higher
+	ammPool, err := k.GetAmmPool(ctx, leveragePool.AmmPoolId)
+	if err != nil {
+		return err
+	}
+
+	currentLeverageRatio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	if currentLeverageRatio.LTE(leveragePool.AdlTriggerRatio) {
+		return nil
+	}
 	closingRatio := currentLeverageRatio.Sub(leveragePool.MaxLeveragelpRatio).Quo(currentLeverageRatio)
 	if closingRatio.IsZero() || closingRatio.IsNegative() {
 		err := fmt.Errorf("closing ratio is <= 0 for pool while triggering adl for pool id %d", leveragePool.AmmPoolId)

@@ -81,3 +81,8 @@ message ADLCounter {
   uint64 counter = 2;
   bytes next_key = 3;
 }
+
+message FallbackCounter {
+  uint64 counter = 1;
+  bytes next_key = 2;
+}

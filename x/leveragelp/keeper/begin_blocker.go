@@ -33,18 +33,26 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			Limit:      uint64(params.NumberPerBlock),
 			CountTotal: true,
 		}
-		offset, _ := k.GetFallbackOffset(ctx)
-		pageReq.Offset = offset
-		positions, _, err := k.GetPositions(ctx, pageReq)
+		fallbackCounter := k.GetFallbackCounter(ctx)
+		if len(fallbackCounter.NextKey) != 0 {
+			pageReq.Key = fallbackCounter.NextKey
+		} else {
+			pageReq.Offset = 0
+		}
+		if fallbackCounter.Counter+uint64(params.NumberPerBlock) >= totalOpen {
+			fallbackCounter.Counter = 0
+		} else {
+			fallbackCounter.Counter += uint64(params.NumberPerBlock)
+		}
+
+		positions, pageResponse, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
 			ctx.Logger().Error(errorsmod.Wrap(err, "error fetching paginated positions").Error())
 			return
 		}
-		if offset+uint64(params.NumberPerBlock) >= totalOpen {
-			k.DeleteFallbackOffset(ctx)
-		} else {
-			k.SetFallbackOffset(ctx, offset+uint64(params.NumberPerBlock))
-		}
+
+		fallbackCounter.NextKey = pageResponse.NextKey
+		k.SetFallbackCounter(ctx, fallbackCounter)
 
 		for _, position := range positions {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)

@@ -17,6 +17,7 @@ message GenesisState {
   repeated string address_whitelist = 4;
   repeated PositionCounter position_counter = 5
       [ (gogoproto.nullable) = false ];
-  uint64 fallback_offset = 6;
+  uint64 legacy_fallback_offset = 6;
   repeated ADLCounter adl_counter = 7 [ (gogoproto.nullable) = false ];
+  FallbackCounter fallback_counter = 8 [ (gogoproto.nullable) = false ];
 }
