@@ -99,6 +99,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpFeesCoins)
+	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, existingMtp.CustodyAsset, interestAmt).Dec()
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventOpenConsolidate,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(existingMtp.Id), 10)),
@@ -111,6 +112,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		sdk.NewAttribute("new_liabilities", newMtp.Liabilities.String()),
 		sdk.NewAttribute("custody", existingMtp.Custody.String()),
 		sdk.NewAttribute("new_custody", newMtp.Custody.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 		sdk.NewAttribute("mtp_health", existingMtp.MtpHealth.String()),
 		sdk.NewAttribute("stop_loss_price", existingMtp.StopLossPrice.String()),
 		sdk.NewAttribute("take_profit_price", existingMtp.TakeProfitPrice.String()),
