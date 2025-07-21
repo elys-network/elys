@@ -16,12 +16,14 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
+	existingMtpCollateralCoin := sdk.NewCoin(existingMtp.CollateralAsset, existingMtp.Collateral)
+
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +34,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		if err != nil {
 			return nil, err
 		}
-		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins)
+		usdcPrice, err := k.GetUSDCPrice(ctx)
+		if err != nil {
+			return nil, err
+		}
+		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, usdcPrice)
 		return &types.MsgOpenResponse{
 			Id: existingMtp.Id,
 		}, nil
@@ -93,6 +99,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpFeesCoins)
+	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, existingMtp.CustodyAsset, interestAmt).Dec()
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventOpenConsolidate,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(existingMtp.Id), 10)),
@@ -105,6 +112,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		sdk.NewAttribute("new_liabilities", newMtp.Liabilities.String()),
 		sdk.NewAttribute("custody", existingMtp.Custody.String()),
 		sdk.NewAttribute("new_custody", newMtp.Custody.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 		sdk.NewAttribute("mtp_health", existingMtp.MtpHealth.String()),
 		sdk.NewAttribute("stop_loss_price", existingMtp.StopLossPrice.String()),
 		sdk.NewAttribute("take_profit_price", existingMtp.TakeProfitPrice.String()),

@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/utils"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
@@ -108,4 +109,16 @@ func (k Keeper) ConvertDenomRatioPriceToUSDPrice(ctx sdk.Context, denomRatioPric
 	// Multiply by 10^decimal of taring asset
 	denomRatioPrice = denomRatioPrice.MulInt64(utils.Pow10Int64(decimal))
 	return denomRatioPrice.Dec(), nil
+}
+
+func (k Keeper) GetUSDCPrice(ctx sdk.Context) (math.LegacyDec, error) {
+	USDCInfo, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return math.LegacyZeroDec(), fmt.Errorf("asset info %s not found", ptypes.BaseCurrency)
+	}
+	USDCPrice, found := k.oracleKeeper.GetAssetPrice(ctx, USDCInfo.DisplayName)
+	if !found {
+		return math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", ptypes.BaseCurrency)
+	}
+	return USDCPrice, nil
 }

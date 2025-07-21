@@ -120,5 +120,10 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 number_per_block = 24; // Number of positions to process per block
+  string taker_fee = 24 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 number_per_block = 25; // Number of positions to process per block
 }

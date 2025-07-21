@@ -57,9 +57,10 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	}
 	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
 	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+	// Use taker fee from perps
+	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
 
-	return tokenOut.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), perpetualFees.Dec(), takersFee.Dec(), nil
+	return tokenOut.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), perpetualFees.Dec(), perpsTakersFee.Dec(), nil
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
@@ -88,9 +89,10 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	}
 	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
 	perpetualFees := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+	// Use taker fee from perps
+	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
 
-	return tokenIn.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), oracleIn, perpetualFees.Dec(), takersFee.Dec(), nil
+	return tokenIn.Amount, slippage, slippageAmount, getWeightBreakingFee(weightBalanceBonus), oracleIn, perpetualFees.Dec(), perpsTakersFee.Dec(), nil
 }
 
 // CalculatePerpetualFees calculates the perpetual fees, slippage fees, weight breaking fees, and taker fees for a swap.
@@ -103,7 +105,7 @@ func (k Keeper) CalculatePerpetualFees(
 	slippageAmount osmomath.BigDec,
 	weightBreakingFee osmomath.BigDec,
 	perpetualFees math.LegacyDec,
-	takersFee math.LegacyDec,
+	perpsTakersFee math.LegacyDec,
 	oracleInAmount osmomath.BigDec,
 	isSwapGivenIn bool,
 	calculatePerpAndTakerFees bool,
@@ -126,8 +128,8 @@ func (k Keeper) CalculatePerpetualFees(
 		}
 
 		// Calculate taker fees in USD
-		if takersFee.IsPositive() {
-			takerFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(takersFee))
+		if perpsTakersFee.IsPositive() {
+			takerFeesCoins = ammkeeper.PortionCoins(takeFeesFrom, osmomath.BigDecFromDec(perpsTakersFee))
 		}
 	}
 

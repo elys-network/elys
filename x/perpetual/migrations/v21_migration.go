@@ -7,8 +7,7 @@ import (
 
 func (m Migrator) V21Migration(ctx sdk.Context) error {
 	params := m.keeper.GetParams(ctx)
-	params.ExitBuffer = math.LegacyMustNewDecFromStr("0.1")
-	params.NumberPerBlock = 5
+	params.TakerFee = math.LegacyMustNewDecFromStr("0.00075")
 	err := m.keeper.SetParams(ctx, &params)
 	if err != nil {
 		return err
