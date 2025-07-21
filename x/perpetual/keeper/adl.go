@@ -91,23 +91,16 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, perpetualPool types.Pool) e
 	k.SetADLCounter(ctx, adlCounter)
 
 	for _, mtp := range mtps {
-		ammPool, err := k.GetAmmPool(ctx, perpetualPool.AmmPoolId)
-		if err != nil {
-			return err
-		}
 		msg := types.NewMsgClose(mtp.Address, mtp.Id, math.ZeroInt(), perpetualPool.AmmPoolId, closingRatio)
-		closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.ClosePosition(ctx, msg)
+		closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingCollateral, err := k.ClosePosition(ctx, msg)
 		if err != nil {
 			return err
 		}
 
-		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, closedMtp.TradingAsset)
+		err = k.EmitClose(ctx, types.EventADLClose, closedMtp, repayAmount, finalClosingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingCollateral)
 		if err != nil {
 			return err
 		}
-
-		perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
-
 	}
 	return nil
 }
