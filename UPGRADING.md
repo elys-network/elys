@@ -18,7 +18,7 @@ A governance gated upgrade occurs when an upgrade plan goes on chain through a s
 2. Wait for the node to stop at the upgrade height.
     * The log will display something like this:
     ```
-    ERR UPGRADE "v6.3" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v6.3 and applying upgrade "v6.3" at height:<UPGRADE_HEIGHT>
+    ERR UPGRADE "v6.5" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v6.5 and applying upgrade "v6.5" at height:<UPGRADE_HEIGHT>
     ```
     * If the node service remains active, you can stop it now.
 3. Replace the binary listed in the unit file with the new release.
@@ -28,17 +28,17 @@ A governance gated upgrade occurs when an upgrade plan goes on chain through a s
 
 1. Build or download the binary for the release you are upgrading to.
 2. Create a folder for the new binary in the relevant Cosmovisor directory.
-    * If the upgrade name is `v6.3`, you would place the binary under `<node home>/cosmovisor/upgrades/v6.3/bin/elysd`:
+    * If the upgrade name is `v6.5`, you would place the binary under `<node home>/cosmovisor/upgrades/v6.5/bin/elysd`:
         ```
         .
         ├── current -> genesis or upgrades/<name>
         ├── genesis or upgrades/<name>
         │   └── bin
-        │       └── elysd  # old: v6.2
+        │       └── elysd  # old: v6.4
         └── upgrades
-        └── v6.3
+        └── v6.5
         └── bin
-        └── elysd  # new: v6.3.0
+        └── elysd  # new: v6.5.0
         ```
 3. Verify that Cosmovisor will use the binary you have prepared.
     * The Cosmovisor service should have the auto-download feature disabled. A sample Cosmovisor unit file will look like this:
@@ -100,10 +100,10 @@ A non-governance gated upgrade occurs when nodes upgrade their binary at an agre
 
 1. Build or download the binary for the release you are upgrading to.
 2. Run the `add-upgrade` command. This command will look as follows using the example values listed below.
-    * New binary: `elysd-v6.3.0-linux-amd64`
-    * Upgrade name: `v6.3`
+    * New binary: `elysd-v6.5.0-linux-amd64`
+    * Upgrade name: `v6.5`
     * Halt height: `<UPGRADE_HEIGHT>`
     ```
-    cosmovisor add-upgrade v6.3.0 elysd-v6.3.0-linux-amd64 --upgrade-height <UPGRADE_HEIGHT> --force
+    cosmovisor add-upgrade v6.5.0 elysd-v6.5.0-linux-amd64 --upgrade-height <UPGRADE_HEIGHT> --force
     ```
 3. Wait for the node to reach the upgrade height. Cosmovisor will restart the node using the new binary.
