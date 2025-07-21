@@ -21,6 +21,8 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	}
 
 	initialCollateralCoin := sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral)
+	initialCustody := mtp.Custody
+	initialLiabilities := mtp.Liabilities
 
 	poolId := mtp.AmmPoolId
 	pool, found := k.GetPool(ctx, poolId)
@@ -48,7 +50,7 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		if err != nil {
 			return nil, err
 		}
-		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, usdcPrice)
+		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return &types.MsgUpdateTakeProfitPriceResponse{}, nil
 	}
 
