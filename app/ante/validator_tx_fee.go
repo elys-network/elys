@@ -2,7 +2,6 @@ package ante
 
 import (
 	"math"
-	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -12,62 +11,81 @@ import (
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
-// CheckTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
-// unit of gas is fixed and set by each validator, can the tx priority is computed from the gas price.
-func CheckTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
-	feeTx, ok := tx.(sdk.FeeTx)
-	if !ok {
-		return nil, 0, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
-	}
+// GaslessAddrs is the whitelist of Bech32 Elys addresses that may send txs
+// with zero fees (in mempool).
+var GaslessAddrs = []string{
+  "elys16qgewtplahkqwqa0aqv4pxnxa58ulu48k6crhj", // Price Feeder 1 mainnet
+  "elys1zwexzk6ns5ermvag5fc0gtyvrnxyaz9kzaflqf", // Price Feeder 2 mainnet
+  "elys1nelawytdfdk4af3z0sy2p8vkrllk8zw9g32jmf", // Execution bot 1 mainnet
+  "elys1gszp63euzm0ecs3qwu0j6mexjr97hjs7x5gvzk", // Execution bot 2 mainnet
 
-	feeCoins := feeTx.GetFee()
-	gas := feeTx.GetGas()
 
-	// Ensure that the provided fees meet a minimum threshold for the validator,
-	// if this is a CheckTx. This is only for local mempool purposes, and thus
-	// is only ran on check tx.
-	if ctx.IsCheckTx() {
-		minGasPrices := ctx.MinGasPrices()
+  "elys1dae9z45ccetfwr208ghya6npntg75qvxgmg4p9", // Price Feeder testnet
+  "elys18z3qtz4wag4mmv9f8ea25tpvkmkfk4vtyy6fpr", // Execution bot 1 testnet
+  "elys135x29zpaph6sacf3kvu8p736jcue5qd30nf8mv", // Execution bot 2 testnet
 
-		// Check for specific message types to adjust gas price
-		msgs := tx.GetMsgs()
-		if len(msgs) == 1 {
-			msgType := strings.ToLower(sdk.MsgTypeURL(msgs[0]))
-			if strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedPrice{})) || strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedMultiplePrices{})) {
-				// set the minimum gas price to 0 ELYS if the message is a feed price
-				minGasPrice := sdk.DecCoin{
-					Denom:  parametertypes.Elys,
-					Amount: sdkmath.LegacyZeroDec(),
-				}
-				if !minGasPrice.IsValid() {
-					return nil, 0, errorsmod.Wrap(sdkerrors.ErrLogic, "invalid gas price")
-				}
-				minGasPrices = sdk.NewDecCoins(minGasPrice)
+  "elys1gy503ty29ydute5rksnkwgmtatelret9d455lt", // Execution bot devnet
+  "elys1dae9z45ccetfwr208ghya6npntg75qvxgmg4p9", // Price Feeder devnet
+}
 
-				// print minGasPrices
-				ctx.Logger().Info("Override minimum gas prices: " + minGasPrices.String())
-			}
-		}
+// CheckTxFeeWithValidatorMinGasPrices checks fees in CheckTx (mempool).  If the
+// fee-payer is in GaslessAddrs, we force minGasPrices to zero so 0uelys txs pass.
+func CheckTxFeeWithValidatorMinGasPrices(
+  ctx sdk.Context, tx sdk.Tx,
+) (sdk.Coins, int64, error) {
+  feeTx, ok := tx.(sdk.FeeTx)
+  if !ok {
+    return nil, 0, errorsmod.Wrap(sdkerrors.ErrTxDecode,
+      "tx must implement FeeTx")
+  }
 
-		if !minGasPrices.IsZero() {
-			requiredFees := make(sdk.Coins, len(minGasPrices))
+  feeCoins, gas := feeTx.GetFee(), feeTx.GetGas()
 
-			// Determine the required fees by multiplying each required minimum gas
-			// price by the gas limit, where fee = ceil(minGasPrice * gasLimit).
-			glDec := sdkmath.LegacyNewDec(int64(gas))
-			for i, gp := range minGasPrices {
-				fee := gp.Amount.Mul(glDec)
-				requiredFees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
-			}
+  if ctx.IsCheckTx() {
+    // start with the validator's configured minGasPrices
+    minGasPrices := ctx.MinGasPrices()
 
-			if !feeCoins.IsAnyGTE(requiredFees) {
-				return nil, 0, errorsmod.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
-			}
-		}
-	}
+    // Check if the fee payer is in the gasless whitelist
+    feePayerBytes := feeTx.FeePayer()
+    if len(feePayerBytes) > 0 {
+      feePayer := sdk.AccAddress(feePayerBytes).String()
+      
+      for _, ga := range GaslessAddrs {
+        if feePayer == ga {
+          zero := sdkmath.LegacyZeroDec()
+          minGasPrices = sdk.NewDecCoins(
+            sdk.NewDecCoinFromDec(parametertypes.Elys, zero),
+          )
+          ctx.Logger().Info(
+            "override minimum gas price to 0 for gasless address",
+            "address", ga,
+          )
+          break
+        }
+      }
+    }
 
-	priority := getTxPriority(feeCoins, int64(gas))
-	return feeCoins, priority, nil
+    // now enforce: feeCoins >= minGasPrices * gasLimit
+    if !minGasPrices.IsZero() {
+      required := make(sdk.Coins, len(minGasPrices))
+      gdec := sdkmath.LegacyNewDec(int64(gas))
+      for i, gp := range minGasPrices {
+        amt := gp.Amount.Mul(gdec).Ceil().RoundInt()
+        required[i] = sdk.NewCoin(gp.Denom, amt)
+      }
+      if !feeCoins.IsAnyGTE(required) {
+        return nil, 0, errorsmod.Wrapf(
+          sdkerrors.ErrInsufficientFee,
+          "insufficient fees; got: %s required: %s",
+          feeCoins, required,
+        )
+      }
+    }
+  }
+
+  // on DeliverTx/Simulate we just deduct whatever feeCoins was attached
+  priority := getTxPriority(feeCoins, int64(gas))
+  return feeCoins, priority, nil
 }
 
 // getTxPriority returns a naive tx priority based on the amount of the smallest denomination of the gas price
