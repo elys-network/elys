@@ -40,6 +40,7 @@ func CheckTxFeeWithValidatorMinGasPrices(
   }
 
   feeCoins, gas := feeTx.GetFee(), feeTx.GetGas()
+  isGasless := false
 
   if ctx.IsCheckTx() {
     // start with the validator's configured minGasPrices
@@ -52,6 +53,7 @@ func CheckTxFeeWithValidatorMinGasPrices(
       
       for _, ga := range GaslessAddrs {
         if feePayer == ga {
+          isGasless = true
           zero := sdkmath.LegacyZeroDec()
           minGasPrices = sdk.NewDecCoins(
             sdk.NewDecCoinFromDec(parametertypes.Elys, zero),
@@ -84,7 +86,18 @@ func CheckTxFeeWithValidatorMinGasPrices(
   }
 
   // on DeliverTx/Simulate we just deduct whatever feeCoins was attached
-  priority := getTxPriority(feeCoins, int64(gas))
+  // Give gasless transactions the highest priority
+  var priority int64
+  if isGasless {
+    priority = math.MaxInt64
+    ctx.Logger().Info(
+      "gasless transaction given highest priority",
+      "priority", priority,
+    )
+  } else {
+    priority = getTxPriority(feeCoins, int64(gas))
+  }
+  
   return feeCoins, priority, nil
 }
 
