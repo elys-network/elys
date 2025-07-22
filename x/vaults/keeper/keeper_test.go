@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -50,7 +50,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyOneDec(),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -63,7 +62,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyOneDec(),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
