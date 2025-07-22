@@ -32,7 +32,11 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		Id:          types.CrossMarginSubAccountId,
 		TradeNounce: 0,
 	}
-	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), subAccountId)
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, err
+	}
+	subAccount, err := k.GetSubAccount(ctx, creator, subAccountId)
 	if err != nil {
 		if errors.Is(err, types.ErrSubAccountNotFound) {
 			subAccount = types.SubAccount{
@@ -116,7 +120,11 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		Id:          types.CrossMarginSubAccountId,
 		TradeNounce: 0,
 	}
-	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), subAccountId)
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, err
+	}
+	subAccount, err := k.GetSubAccount(ctx, creator, subAccountId)
 	if err != nil {
 		if errors.Is(err, types.ErrSubAccountNotFound) {
 			subAccount = types.SubAccount{

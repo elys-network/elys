@@ -134,7 +134,9 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
 	var genState types.GenesisState
 	// Initialize global index to index in genesis state
-	cdc.MustUnmarshalJSON(gs, &genState)
+	if err := cdc.UnmarshalJSON(gs, &genState); err != nil {
+		panic(fmt.Sprintf("failed to unmarshal %s genesis state: %v", types.ModuleName, err))
+	}
 
 	InitGenesis(ctx, am.keeper, genState)
 

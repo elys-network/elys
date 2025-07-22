@@ -3,7 +3,6 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	"errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
@@ -34,9 +33,11 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	filled := math.LegacyZeroDec()
 
 	for ; sellIterator.Valid() && !buyOrderFilled; sellIterator.Next() {
-		fmt.Println("---")
 		var sellOrder types.PerpetualOrder
-		k.cdc.MustUnmarshal(sellIterator.Value(), &sellOrder)
+		if err := k.cdc.Unmarshal(sellIterator.Value(), &sellOrder); err != nil {
+			ctx.Logger().Error("failed to unmarshal sell order", "error", err)
+			continue
+		}
 
 		tradePrice := sellOrder.Price
 
@@ -66,8 +67,6 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		} else {
 			k.SetPerpetualOrder(ctx, sellOrder)
 		}
-		fmt.Println("SELL ORDER EXECUTED: ")
-		fmt.Println(sellOrder)
 
 		sellerSubAccount, err := k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
 		if err != nil {
@@ -86,8 +85,6 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		if err != nil {
 			return false, err
 		}
-		fmt.Println("---")
-
 	}
 
 	err = sellIterator.Close()
@@ -129,9 +126,11 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	filled := math.LegacyZeroDec()
 
 	for ; buyIterator.Valid() && !sellOrderFilled; buyIterator.Next() {
-		fmt.Println("---")
 		var buyOrder types.PerpetualOrder
-		k.cdc.MustUnmarshal(buyIterator.Value(), &buyOrder)
+		if err := k.cdc.Unmarshal(buyIterator.Value(), &buyOrder); err != nil {
+			ctx.Logger().Error("failed to unmarshal buy order", "error", err)
+			continue
+		}
 
 		tradePrice := buyOrder.Price
 
@@ -161,8 +160,6 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		} else {
 			k.SetPerpetualOrder(ctx, buyOrder)
 		}
-		fmt.Println("BUY ORDER EXECUTED: ")
-		fmt.Println(buyOrder)
 
 		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), buyOrder.SubAccountId)
 		if err != nil {
@@ -181,8 +178,6 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		if err != nil {
 			return false, err
 		}
-		fmt.Println("---")
-
 	}
 
 	err = buyIterator.Close()

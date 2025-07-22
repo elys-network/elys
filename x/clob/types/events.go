@@ -1,7 +1,9 @@
 package types
 
 const (
-	EventDeposit = "deposit"
+	EventDeposit      = "deposit"
+	EventUpdateParams = "update_params"
 
-	AttributeAmount = "amount"
+	AttributeAmount    = "amount"
+	AttributeAuthority = "authority"
 )

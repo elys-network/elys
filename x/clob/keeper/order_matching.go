@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"errors"
-	"fmt"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -70,7 +69,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	stop := false
 
 	for ; sellIterator.Valid() && !buyOrderFilled && !stop; sellIterator.Next() {
-		fmt.Println("---")
 		var sellOrder types.PerpetualOrder
 		k.cdc.MustUnmarshal(sellIterator.Value(), &sellOrder)
 
@@ -113,8 +111,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			} else {
 				k.SetPerpetualOrder(ctx, sellOrder)
 			}
-			fmt.Println("SELL ORDER EXECUTED: ")
-			fmt.Println(sellOrder)
 
 			sellerSubAccount, err = k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
 			if err != nil {
@@ -135,9 +131,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			if err != nil {
 				return false, err
 			}
-			fmt.Println("BUY ORDER EXECUTED: ")
-			fmt.Println(*buyOrder)
-			fmt.Println("---")
 		} else {
 			stop = true
 		}

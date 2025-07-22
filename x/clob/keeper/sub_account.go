@@ -19,7 +19,9 @@ func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, subAccountI
 	}
 
 	var val types.SubAccount
-	k.cdc.MustUnmarshal(b, &val)
+	if err := k.cdc.Unmarshal(b, &val); err != nil {
+		return types.SubAccount{}, errors.Wrapf(err, "failed to unmarshal subaccount for owner: %s, subAccountId: %d", owner.String(), subAccountId)
+	}
 	return val, nil
 }
 

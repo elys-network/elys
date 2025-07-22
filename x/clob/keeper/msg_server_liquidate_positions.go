@@ -11,7 +11,10 @@ import (
 func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidatePositions) (*types.MsgLiquidatePositionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	liquidator := sdk.MustAccAddressFromBech32(msg.Liquidator)
+	liquidator, err := sdk.AccAddressFromBech32(msg.Liquidator)
+	if err != nil {
+		return nil, err
+	}
 	liquidatorReward := sdk.Coins{}
 	for _, position := range msg.Positions {
 		perpetual, err := k.GetPerpetual(ctx, position.MarketId, position.PerpetualId)

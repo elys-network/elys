@@ -18,7 +18,10 @@ func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (typ
 	}
 
 	var val types.PerpetualOrder
-	k.cdc.MustUnmarshal(b, &val)
+	if err := k.cdc.Unmarshal(b, &val); err != nil {
+		ctx.Logger().Error("failed to unmarshal perpetual order", "key", orderKey, "error", err)
+		return types.PerpetualOrder{}, false
+	}
 	return val, true
 }
 

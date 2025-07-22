@@ -9,6 +9,7 @@ import (
 )
 
 var _ sdk.Msg = &MsgCreatPerpetualMarket{}
+var _ sdk.Msg = &MsgWithdraw{}
 
 func (msg MsgCreatPerpetualMarket) ValidateBasic() (err error) {
 	err = sdk.ValidateDenom(msg.BaseDenom)
@@ -135,5 +136,49 @@ func (msg MsgLiquidatePositions) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid liquidator address (%s)", err)
 	}
+
+	// Validate positions array
+	if len(msg.Positions) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "positions array cannot be empty")
+	}
+
+	// Limit positions to prevent DoS
+	const maxPositions = 100
+	if len(msg.Positions) > maxPositions {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "too many positions: %d (max: %d)",
+			len(msg.Positions), maxPositions)
+	}
+
+	// Validate each position
+	for i, position := range msg.Positions {
+		if position.MarketId == 0 {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest,
+				"invalid market ID at position %d", i)
+		}
+		if position.PerpetualId == 0 {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest,
+				"invalid perpetual ID at position %d", i)
+		}
+	}
+
+	return nil
+}
+
+func (msg MsgWithdraw) ValidateBasic() error {
+	// Validate sender address
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid sender address: %s", err)
+	}
+
+	// Validate coin
+	if err := msg.Coin.Validate(); err != nil {
+		return errorsmod.Wrapf(ErrInvalidCoin, "invalid coin: %s", err)
+	}
+
+	// Check for positive amount
+	if msg.Coin.Amount.IsNil() || !msg.Coin.Amount.IsPositive() {
+		return errorsmod.Wrapf(ErrInvalidCoin, "coin amount must be positive")
+	}
+
 	return nil
 }

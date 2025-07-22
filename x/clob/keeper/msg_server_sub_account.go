@@ -13,7 +13,10 @@ import (
 func (k Keeper) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.MsgDepositResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 	subAccount, err := k.GetSubAccount(ctx, sender, types.CrossMarginSubAccountId)
 	if err != nil {
 		subAccount = types.SubAccount{
@@ -42,7 +45,10 @@ func (k Keeper) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.Ms
 
 func (k Keeper) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 
 	crossSubAccount, err := k.GetSubAccount(ctx, sender, types.CrossMarginSubAccountId)
 	if err != nil {
