@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	perpetualmodulekeeper "github.com/elys-network/elys/v6/x/perpetual/keeper"
 	tierkeeper "github.com/elys-network/elys/v6/x/tier/keeper"
 	"github.com/elys-network/elys/v6/x/vaults/types"
 )
@@ -29,7 +30,7 @@ type (
 		masterchef         types.MasterchefKeeper
 		assetProfileKeeper types.AssetProfileKeeper
 		oracleKeeper       types.OracleKeeper
-		perpetualKeeper    types.PerpetualKeeper
+		perpetualKeeper    *perpetualmodulekeeper.Keeper
 	}
 )
 
@@ -46,7 +47,7 @@ func NewKeeper(
 	masterchef types.MasterchefKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	oracleKeeper types.OracleKeeper,
-	perpetualKeeper types.PerpetualKeeper,
+	perpetualKeeper *perpetualmodulekeeper.Keeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
