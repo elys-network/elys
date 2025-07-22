@@ -44,7 +44,9 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		suite.Require().NoError(err)
 	}
 	twapPrice := math.LegacyMustNewDecFromStr("10.25")
-	suite.Require().Equal(twapPrice, suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, market.Id))
+	actualPrice, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, market.Id)
+	suite.Require().NoError(err)
+	suite.Require().Equal(twapPrice, actualPrice)
 
 	testCases := []struct {
 		name           string

@@ -16,7 +16,10 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) (math.Lega
 
 	var lastTwapPrice types.TwapPrice
 	if reverseIterator.Valid() {
-		k.cdc.MustUnmarshal(reverseIterator.Value(), &lastTwapPrice)
+		if err := k.cdc.Unmarshal(reverseIterator.Value(), &lastTwapPrice); err != nil {
+			ctx.Logger().Error("failed to unmarshal last twap price", "marketId", marketId, "error", err)
+			return math.LegacyZeroDec(), err
+		}
 	} else {
 		lastTwapPrice = types.TwapPrice{
 			MarketId:          marketId,

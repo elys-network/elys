@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
@@ -19,7 +20,9 @@ func (k Keeper) GetPerpetual(ctx sdk.Context, marketId, id uint64) (types.Perpet
 	}
 
 	var v types.Perpetual
-	k.cdc.MustUnmarshal(b, &v)
+	if err := k.cdc.Unmarshal(b, &v); err != nil {
+		return types.Perpetual{}, errors.Wrapf(err, "failed to unmarshal perpetual for marketId: %d, perpetualId: %d", marketId, id)
+	}
 	return v, nil
 }
 
@@ -33,7 +36,10 @@ func (k Keeper) GetAllPerpetuals(ctx sdk.Context) []types.Perpetual {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Perpetual
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if err := k.cdc.Unmarshal(iterator.Value(), &val); err != nil {
+			ctx.Logger().Error("failed to unmarshal perpetual in GetAllPerpetuals", "error", err)
+			continue
+		}
 		list = append(list, val)
 	}
 

@@ -268,7 +268,7 @@ func (suite *KeeperTestSuite) TestExchange_Isolated() {
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
 			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },
-			expected: ExpectedState{Err: "trade market id and subAccounts market id does not match"}, // Use specific error
+			expected: ExpectedState{Err: "does not match seller's subaccount market id"}, // Use specific error
 		},
 		{
 			name: "Error: Trade quantity <= 0",

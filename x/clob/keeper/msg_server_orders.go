@@ -96,6 +96,20 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		SubAccountId: subAccount.Id,
 		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.Counter),
 	})
+
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventPlaceLimitOrder,
+			sdk.NewAttribute(types.AttributeSender, msg.Creator),
+			sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", msg.MarketId)),
+			sdk.NewAttribute(types.AttributeOrderType, msg.OrderType.String()),
+			sdk.NewAttribute(types.AttributePrice, msg.Price.String()),
+			sdk.NewAttribute(types.AttributeQuantity, msg.BaseQuantity.String()),
+			sdk.NewAttribute(types.AttributeOrderId, fmt.Sprintf("%d", order.Counter)),
+		),
+	)
+
 	return &types.MsgPlaceLimitOrderResponse{}, nil
 }
 
@@ -172,8 +186,19 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		return nil, err
 	}
 	if !fullyFilled {
-		return nil, errors.New("market order cannot be fully filled")
+		return nil, types.ErrOrderNotFilled.Wrap("market order cannot be fully filled")
 	}
+
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventPlaceMarketOrder,
+			sdk.NewAttribute(types.AttributeSender, msg.Creator),
+			sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", msg.MarketId)),
+			sdk.NewAttribute(types.AttributeOrderType, msg.OrderType.String()),
+			sdk.NewAttribute(types.AttributeQuantity, msg.BaseQuantity.String()),
+		),
+	)
 
 	return &types.MsgPlaceMarketOrderResponse{}, nil
 }

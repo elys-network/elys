@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"errors"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
@@ -40,16 +38,15 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	if err != nil {
 		return err
 	}
-	for _, key := range keysToDelete {
-		k.DeleteOrder(ctx, key)
-	}
+	// Batch delete all filled orders
+	k.BatchDeleteOrders(ctx, keysToDelete)
 
 	return nil
 }
 
 func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder) (bool, error) {
 	if !buyOrder.IsBuy() {
-		return false, errors.New("order is not a buy order")
+		return false, types.ErrNotBuyOrder
 	}
 	var err error
 	buyOrderFilled := false
@@ -141,9 +138,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	if err != nil {
 		return false, err
 	}
-	for _, key := range keysToDelete {
-		k.DeleteOrder(ctx, key)
-	}
+	// Batch delete all filled orders
+	k.BatchDeleteOrders(ctx, keysToDelete)
 
 	if !buyOrderFilled {
 		k.SetPerpetualOrder(ctx, *buyOrder)

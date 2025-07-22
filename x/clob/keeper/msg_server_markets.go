@@ -47,7 +47,9 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 		MaxAbsFundingRateChange: msg.MaxAbsFundingRateChange,
 		TwapPricesWindow:        msg.TwapPricesWindow,
 	}
-	k.SetPerpetualMarket(ctx, perpetualMarket)
+	if err := k.SetPerpetualMarket(ctx, perpetualMarket); err != nil {
+		return nil, err
+	}
 
 	k.SetPerpetualMarketCounter(ctx, types.PerpetualMarketCounter{
 		MarketId:          perpetualMarket.Id,
@@ -56,6 +58,19 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 		TotalOpenPosition: 0,
 		TotalOpenOrders:   0,
 	})
+
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventCreateMarket,
+			sdk.NewAttribute(types.AttributeSender, msg.Creator),
+			sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", perpetualMarket.Id)),
+			sdk.NewAttribute("base_denom", msg.BaseDenom),
+			sdk.NewAttribute("quote_denom", msg.QuoteDenom),
+			sdk.NewAttribute("initial_margin_ratio", msg.InitialMarginRatio.String()),
+			sdk.NewAttribute("maintenance_margin_ratio", msg.MaintenanceMarginRatio.String()),
+		),
+	)
 
 	return &types.MsgCreatPerpetualMarketResponse{}, nil
 }

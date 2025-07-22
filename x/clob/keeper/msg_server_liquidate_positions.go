@@ -16,6 +16,9 @@ func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidat
 		return nil, err
 	}
 	liquidatorReward := sdk.Coins{}
+	successCount := 0
+	failureCount := 0
+
 	for _, position := range msg.Positions {
 		perpetual, err := k.GetPerpetual(ctx, position.MarketId, position.PerpetualId)
 		if err != nil {
@@ -30,11 +33,25 @@ func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidat
 
 		liquidatorRewardAmount, err := k.ForcedLiquidation(ctx, perpetual, market, liquidator)
 		if err == nil {
+			successCount++
 			if !liquidatorRewardAmount.IsZero() {
 				liquidatorRewardCoin := sdk.NewCoin(market.QuoteDenom, liquidatorRewardAmount)
 				liquidatorReward = liquidatorReward.Add(liquidatorRewardCoin)
 			}
+
+			// Emit individual liquidation event
+			ctx.EventManager().EmitEvent(
+				sdk.NewEvent(
+					types.EventLiquidation,
+					sdk.NewAttribute(types.AttributeLiquidator, msg.Liquidator),
+					sdk.NewAttribute(types.AttributeOwner, perpetual.GetOwner()),
+					sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", perpetual.MarketId)),
+					sdk.NewAttribute(types.AttributePositionId, fmt.Sprintf("%d", perpetual.Id)),
+					sdk.NewAttribute(types.AttributeReward, liquidatorRewardAmount.String()),
+				),
+			)
 		} else {
+			failureCount++
 			ctx.Logger().Error(fmt.Sprintf("Error liquidating position: Address:%s Id:%d cannot be liquidated due to err: %s", perpetual.GetOwner(), perpetual.Id, err.Error()))
 		}
 	}

@@ -2,14 +2,13 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation, isBuyerTaker bool) (bool, error) {
 	if msg.OrderType != types.OrderType_ORDER_TYPE_MARKET_BUY {
-		return false, errors.New("order is not a buy order")
+		return false, types.ErrNotBuyOrder
 	}
 	var err error
 	buyOrderFilled := false
@@ -91,9 +90,8 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	if err != nil {
 		return false, err
 	}
-	for _, key := range sellOrdersToDelete {
-		k.DeleteOrder(ctx, key)
-	}
+	// Batch delete all filled orders
+	k.BatchDeleteOrders(ctx, sellOrdersToDelete)
 
 	return buyOrderFilled, nil
 
@@ -101,7 +99,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 
 func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMarket, msg types.MsgPlaceMarketOrder, isLiquidation, isBuyerTaker bool) (bool, error) {
 	if msg.OrderType != types.OrderType_ORDER_TYPE_MARKET_SELL {
-		return false, errors.New("order is not a sell order")
+		return false, types.ErrNotSellOrder
 	}
 	var err error
 	sellOrderFilled := false
@@ -158,7 +156,10 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			}
 			buyOrdersToDelete = append(buyOrdersToDelete, toDelete)
 		} else {
-			k.SetPerpetualOrder(ctx, buyOrder)
+			err = k.SetPerpetualOrder(ctx, buyOrder)
+			if err != nil {
+				return false, err
+			}
 		}
 
 		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), buyOrder.SubAccountId)
@@ -184,9 +185,8 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	if err != nil {
 		return false, err
 	}
-	for _, key := range buyOrdersToDelete {
-		k.DeleteOrder(ctx, key)
-	}
+	// Batch delete all filled orders
+	k.BatchDeleteOrders(ctx, buyOrdersToDelete)
 
 	return sellOrderFilled, nil
 

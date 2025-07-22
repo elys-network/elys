@@ -307,7 +307,8 @@ func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
 	suite.Require().Equal(all[0], p1)
 	suite.Require().Equal(all[1], p2)
 
-	currentTwapPrice := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	currentTwapPrice, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	suite.Require().NoError(err)
 	suite.Require().Equal(currentTwapPrice, (p2.CumulativePrice.Sub(p1.CumulativePrice)).QuoInt64(int64(suite.avgBlockTime)))
 
 	suite.IncreaseHeight(1)
@@ -327,7 +328,8 @@ func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
 	suite.Require().Equal(all[1], p2)
 	suite.Require().Equal(all[2], p3)
 
-	currentTwapPrice = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	currentTwapPrice, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	suite.Require().NoError(err)
 	suite.Require().Equal(currentTwapPrice, (p3.CumulativePrice.Sub(p1.CumulativePrice)).QuoInt64(int64(suite.avgBlockTime*2)))
 }
 
@@ -380,7 +382,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		market, _, _, _ = suite.SetupExchangeTest() // Re-get market with correct window
 
 		// 1. No Records
-		twap := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		suite.Require().True(twap.IsZero(), "TWAP should be zero with no records")
 
 		// 2. One Record
@@ -390,7 +393,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
 			MarketId: MarketId, Block: currentBlock, AverageTradePrice: p1AvgPrice, TotalVolume: math.LegacyNewDec(400), CumulativePrice: math.LegacyZeroDec(), Timestamp: currentTime,
 		})
-		twap = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		// Should return the average price of the single record
 		suite.Require().True(twap.Equal(p1AvgPrice), "TWAP should equal single record avg price. Exp %s, Got %s", p1AvgPrice, twap)
 
@@ -402,7 +406,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
 			MarketId: MarketId, Block: currentBlock2, AverageTradePrice: p2AvgPrice, TotalVolume: math.LegacyNewDec(500), CumulativePrice: cumPrice2, Timestamp: currentTime2,
 		})
-		twap = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		// TWAP = (CumPrice2 - CumPrice1) / (Time2 - Time1) = (51.25 - 0) / 5 = 10.25
 		expectedTwap := math.LegacyMustNewDecFromStr("10.25")
 		suite.Require().True(expectedTwap.Equal(twap), "TWAP mismatch with two records. Exp %s, Got %s", expectedTwap, twap)
@@ -415,7 +420,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
 			MarketId: MarketId, Block: currentBlock3, AverageTradePrice: p3AvgPrice, TotalVolume: math.LegacyNewDec(400), CumulativePrice: cumPrice3, Timestamp: currentTime3,
 		})
-		twap = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		// TWAP = (CumPrice3 - CumPrice1) / (Time3 - Time1) = (105.25 - 0) / 10 = 10.525
 		expectedTwap = math.LegacyMustNewDecFromStr("10.525")
 		suite.Require().True(expectedTwap.Equal(twap), "TWAP mismatch with three records. Exp %s, Got %s", expectedTwap, twap)
@@ -428,10 +434,9 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 			suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{MarketId: MarketId, Block: 1, AverageTradePrice: math.LegacyOneDec(), CumulativePrice: math.LegacyZeroDec(), Timestamp: badFirstTime})
 			suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{MarketId: MarketId, Block: 2, AverageTradePrice: math.LegacyOneDec(), CumulativePrice: math.LegacyOneDec(), Timestamp: badLastTime})
 
-			call := func() {
-				_ = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
-			}
-			suite.Require().PanicsWithValue("twap price timestamp delta incorrect, time delta < 0", call)
+			_, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+			suite.Require().Error(err)
+			suite.Require().Contains(err.Error(), "timestamp delta incorrect")
 		})
 	})
 
@@ -461,7 +466,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 				trade:     p1[0], // 10.1, 100
 				setupFunc: func() { setupTest() },
 				checkFunc: func() {
-					twap := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+					twap, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+					suite.Require().NoError(err)
 					suite.Require().True(twap.Equal(p1[0].Price), "TWAP should be first trade price") // Single record returns its avg price
 					allTwaps := suite.app.ClobKeeper.GetAllTwapPrices(suite.ctx)                      // Assuming helper exists
 					suite.Require().Len(allTwaps, 1)
@@ -486,7 +492,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 					suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, initialTwap)
 				},
 				checkFunc: func() {
-					twap := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+					twap, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+					suite.Require().NoError(err)
 					suite.Require().True(twap.Equal(p1AvgPrice), "TWAP should be avg price of the single record") // Still only one record
 					allTwaps := suite.app.ClobKeeper.GetAllTwapPrices(suite.ctx)
 					suite.Require().Len(allTwaps, 1)
@@ -621,7 +628,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		market, _ = suite.app.ClobKeeper.GetPerpetualMarket(suite.ctx, MarketId) // Re-get market with correct window
 
 		// 1. No Records
-		twap := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		suite.Require().True(twap.IsZero(), "TWAP should be zero with no records")
 
 		// 2. One Record
@@ -631,7 +639,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
 			MarketId: MarketId, Block: currentBlock, AverageTradePrice: p1AvgPrice, TotalVolume: math.LegacyNewDec(400), CumulativePrice: math.LegacyZeroDec(), Timestamp: currentTime,
 		})
-		twap = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		// Should return the average price of the single record
 		suite.Require().True(twap.Equal(p1AvgPrice), "TWAP should equal single record avg price. Exp %s, Got %s", p1AvgPrice, twap)
 
@@ -643,7 +652,8 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
 			MarketId: MarketId, Block: currentBlock2, AverageTradePrice: p2AvgPrice, TotalVolume: math.LegacyNewDec(500), CumulativePrice: cumPrice2, Timestamp: currentTime2,
 		})
-		twap = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		twap, err = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+		suite.Require().NoError(err)
 		// TWAP = (CumPrice2 - CumPrice1) / (Time2 - Time1) = (51.25 - 0) / 5 = 10.25
 		expectedTwap := math.LegacyMustNewDecFromStr("10.25")
 		suite.Require().True(expectedTwap.Equal(twap), "TWAP mismatch with two records. Exp %s, Got %s", expectedTwap, twap)
@@ -660,11 +670,9 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 			suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{MarketId: MarketId, Block: 1, AverageTradePrice: math.LegacyOneDec(), CumulativePrice: math.LegacyZeroDec(), Timestamp: badFirstTime})
 			suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{MarketId: MarketId, Block: 2, AverageTradePrice: math.LegacyOneDec(), CumulativePrice: math.LegacyOneDec(), Timestamp: badLastTime})
 
-			call := func() {
-				_ = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
-			}
-			// Assuming the panic remains, test for it
-			suite.Require().PanicsWithValue("twap price timestamp delta incorrect, time delta < 0", call)
+			_, err := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, MarketId)
+			suite.Require().Error(err)
+			suite.Require().Contains(err.Error(), "timestamp delta incorrect")
 		})
 
 	}) // End GetCurrentTwapPrice Scenarios

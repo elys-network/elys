@@ -14,6 +14,10 @@ type Keeper struct {
 
 	bankKeeper   types.BankKeeper
 	oracleKeeper types.OracleKeeper
+
+	// Caches for performance
+	marketCache *MarketCache
+	priceCache  *PriceCache
 }
 
 var _ types.MsgServer = Keeper{}
@@ -33,5 +37,7 @@ func NewKeeper(
 		authority:             authority,
 		bankKeeper:            bankKeeper,
 		oracleKeeper:          oracleKeeper,
+		marketCache:           NewMarketCache(),
+		priceCache:            NewPriceCache(),
 	}
 }

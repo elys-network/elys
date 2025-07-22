@@ -99,5 +99,15 @@ func (k Keeper) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*types.
 	if err != nil {
 		return nil, err
 	}
+
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventWithdraw,
+			sdk.NewAttribute(types.AttributeSender, msg.Sender),
+			sdk.NewAttribute(types.AttributeAmount, msg.Coin.String()),
+		),
+	)
+
 	return &types.MsgWithdrawResponse{}, nil
 }

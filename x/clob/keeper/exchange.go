@@ -2,20 +2,19 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
 func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	if trade.Quantity.LTE(math.LegacyZeroDec()) {
-		return errors.New("trade quantity must be greater than zero")
+		return types.ErrInvalidQuantity.Wrapf("trade quantity must be greater than zero")
 	}
 	if trade.SellerSubAccount.IsIsolated() && trade.SellerSubAccount.Id != trade.MarketId {
-		return errors.New("trade market id and subAccounts market id does not match for seller")
+		return types.ErrInvalidMarketId.Wrapf("trade market id %d does not match seller's subaccount market id", trade.MarketId)
 	}
 	if trade.BuyerSubAccount.IsIsolated() && trade.BuyerSubAccount.Id != trade.MarketId {
-		return errors.New("trade market id and subAccounts market id does not match for buyer")
+		return types.ErrInvalidMarketId.Wrapf("trade market id %d does not match buyer's subaccount market id", trade.MarketId)
 	}
 
 	market, err := k.GetPerpetualMarket(ctx, trade.MarketId)
@@ -116,11 +115,20 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		return err
 	}
 	// Market Changes
-	market.UpdateTotalOpenInterest(buyerPositionBefore, sellerPositionBefore, trade.Quantity)
-	k.SetPerpetualMarket(ctx, market)
+	err = market.UpdateTotalOpenInterest(buyerPositionBefore, sellerPositionBefore, trade.Quantity)
+	if err != nil {
+		return err
+	}
+	if err = k.SetPerpetualMarket(ctx, market); err != nil {
+		return err
+	}
 	err = k.SetTwapPrices(ctx, trade)
 	if err != nil {
 		return err
 	}
+
+	// Emit order executed event
+	k.EmitOrderExecutedEvent(ctx, trade)
+
 	return nil
 }

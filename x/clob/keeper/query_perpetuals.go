@@ -47,7 +47,7 @@ func (k Keeper) OwnerPerpetuals(goCtx context.Context, req *types.OwnerPerpetual
 
 		market, exists := marketCache[perpetual.MarketId]
 		if !exists {
-			market, err = k.GetPerpetualMarket(ctx, perpetual.MarketId)
+			market, err = k.GetCachedMarket(ctx, perpetual.MarketId)
 			if err != nil {
 				return err
 			}
@@ -104,7 +104,7 @@ func (k Keeper) AllPerpetuals(goCtx context.Context, req *types.AllPerpetualsReq
 
 		market, exists := marketCache[perpetual.MarketId]
 		if !exists {
-			market, err = k.GetPerpetualMarket(ctx, perpetual.MarketId)
+			market, err = k.GetCachedMarket(ctx, perpetual.MarketId)
 			if err != nil {
 				return err
 			}
