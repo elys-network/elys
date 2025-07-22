@@ -94,8 +94,8 @@ func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAc
 		initialMarginValue := perpetual.MarginAmount.ToLegacyDec().Mul(quoteAssetDenomPrice)
 		return initialMarginValue.Add(unrealizedPnLValue), nil
 	} else {
-		// TODO TotalAccountValue
-		panic("implement me")
+		// TODO TotalAccountValue - cross-margin implementation needed
+		return math.LegacyZeroDec(), types.ErrImplementationIncomplete
 	}
 }
 

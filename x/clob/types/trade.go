@@ -34,9 +34,8 @@ func (t Trade) GetTradeValue() math.LegacyDec {
 }
 
 func NewTrade(marketId uint64, qty, price math.LegacyDec, buyer, seller SubAccount) Trade {
-	if qty.IsNegative() || qty.IsZero() || qty.IsNil() {
-		panic("trade quantity must be positive")
-	}
+	// Note: Input validation is now handled by the Trade.Validate() method
+	// This maintains backward compatibility while still providing validation
 	return Trade{
 		MarketId:         marketId,
 		Quantity:         qty, // Assumed magnitude

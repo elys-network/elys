@@ -62,9 +62,9 @@ func (market PerpetualMarket) GetInsuranceAccount() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("clob/perpetual/insurance/%d", market.Id))
 }
 
-func (market *PerpetualMarket) UpdateTotalOpenInterest(buyerBefore, sellerBefore, tradeSize math.LegacyDec) {
+func (market *PerpetualMarket) UpdateTotalOpenInterest(buyerBefore, sellerBefore, tradeSize math.LegacyDec) error {
 	if tradeSize.LTE(math.LegacyZeroDec()) {
-		panic("trade size cannot be 0 or negative")
+		return ErrInvalidTradeSize
 	}
 
 	// Calculate final positions for buyer and seller
@@ -92,4 +92,5 @@ func (market *PerpetualMarket) UpdateTotalOpenInterest(buyerBefore, sellerBefore
 	// In all other cases (one increases, one decreases), OI is unchanged (deltaOI remains zero)
 
 	market.TotalOpen = market.TotalOpen.Add(deltaOI)
+	return nil
 }

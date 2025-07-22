@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/clob/types"
@@ -54,10 +55,24 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRate {
 // premium = TWAP(markPrice) - TWAP(indexPrice)
 // fundingRate = clamp(premium / indexPrice, -cap, +cap)
 func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket) error {
-	twapMarkPrice := k.GetCurrentTwapPrice(ctx, market.Id)
+	twapMarkPrice, err := k.GetCurrentTwapPrice(ctx, market.Id)
+	if err != nil {
+		return err
+	}
+
+	// Additional nil safety check
+	if twapMarkPrice.IsNil() {
+		return fmt.Errorf("twap mark price is nil for market %d", market.Id)
+	}
+
 	indexPrice, err := k.GetAssetPriceFromDenom(ctx, market.BaseDenom)
 	if err != nil {
 		return err
+	}
+
+	// Additional nil/zero safety check for division
+	if indexPrice.IsNil() || indexPrice.IsZero() {
+		return fmt.Errorf("index price is nil or zero for market %d, cannot calculate funding rate", market.Id)
 	}
 
 	premium := twapMarkPrice.Sub(indexPrice)

@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/v6/x/clob/types"
 )
 
-func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.LegacyDec {
+func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) (math.LegacyDec, error) {
 	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
 	reverseIterator := storetypes.KVStoreReversePrefixIterator(prefixStore, []byte{})
 
@@ -48,20 +48,20 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 	}
 
 	if lastTwapPrice.Timestamp < firstTwapPrice.Timestamp {
-		panic("twap price timestamp delta incorrect, time delta < 0")
+		return math.LegacyZeroDec(), errors.New("twap price timestamp delta incorrect, time delta < 0")
 	}
 	// Handles the case when no or only 1 twap price is present
 	// Returning average price, because to calculate unrealized PnL, mark price should not be 0 otherwise losses shown will be too high
 	if lastTwapPrice.Timestamp == firstTwapPrice.Timestamp {
-		return lastTwapPrice.AverageTradePrice
+		return lastTwapPrice.AverageTradePrice, nil
 	}
 
 	num := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
 	if num.IsZero() {
-		return math.LegacyZeroDec()
+		return math.LegacyZeroDec(), nil
 	}
 	timeDelta := math.LegacyNewDec(int64(lastTwapPrice.Timestamp - firstTwapPrice.Timestamp))
-	return num.Quo(timeDelta)
+	return num.Quo(timeDelta), nil
 }
 
 // SetTwapPricesStruct Should only be called by Import or Init Genesis

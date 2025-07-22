@@ -192,17 +192,17 @@ func TestUpdateTotalOpenInterest(t *testing.T) {
 				// Initialize other fields if they affect the method, otherwise not needed
 			}
 
-			// Define the call using a pointer to modify the struct
-			call := func() {
-				market.UpdateTotalOpenInterest(tc.buyerBefore, tc.sellerBefore, tc.tradeSize)
-			}
+			// Call the function with error handling
+			err := market.UpdateTotalOpenInterest(tc.buyerBefore, tc.sellerBefore, tc.tradeSize)
 
 			if tc.expectPanic {
-				require.PanicsWithValue(t, tc.expectedPanicMsg, call, "Expected panic with specific message")
-				// Verify OI did not change after panic
-				require.True(t, tc.initialOI.Equal(market.TotalOpen), "TotalOpen changed despite panic. Initial: %s, Final: %s", tc.initialOI, market.TotalOpen)
+				// Now we expect error instead of panic
+				require.Error(t, err, "Expected error for invalid input")
+				require.Contains(t, err.Error(), "invalid trade size", "Error message should mention invalid trade size")
+				// Verify OI did not change after error
+				require.True(t, tc.initialOI.Equal(market.TotalOpen), "TotalOpen changed despite error. Initial: %s, Final: %s", tc.initialOI, market.TotalOpen)
 			} else {
-				require.NotPanics(t, call, "Function call panicked unexpectedly")
+				require.NoError(t, err, "Function call returned unexpected error")
 				// Verify final OI matches expectation
 				require.True(t, tc.expectedFinalOI.Equal(market.TotalOpen), "Final TotalOpen mismatch. Expected: %s, Got: %s", tc.expectedFinalOI, market.TotalOpen)
 			}
@@ -215,13 +215,13 @@ func TestUpdateTotalOpenInterest_InvalidTradeSize(t *testing.T) {
 		math.LegacyNewDec(-5),
 	}
 	for _, size := range invalidTradeSizes {
-		t.Run("panic on tradeSize "+size.String(), func(t *testing.T) {
+		t.Run("error on tradeSize "+size.String(), func(t *testing.T) {
 			market := &types.PerpetualMarket{
 				TotalOpen: math.LegacyZeroDec(),
 			}
-			require.Panics(t, func() {
-				market.UpdateTotalOpenInterest(math.LegacyNewDec(5), math.LegacyNewDec(10), size)
-			}, "expected panic for trade size %s", size.String())
+			err := market.UpdateTotalOpenInterest(math.LegacyNewDec(5), math.LegacyNewDec(10), size)
+			require.Error(t, err, "expected error for trade size %s", size.String())
+			require.Contains(t, err.Error(), "invalid trade size", "Error should mention invalid trade size")
 		})
 	}
 }

@@ -14,7 +14,10 @@ import (
 )
 
 func (k Keeper) GetMarketInfo(ctx sdk.Context, market types.PerpetualMarket) types.MarketResponse {
-	currentTwapPrice := k.GetCurrentTwapPrice(ctx, market.Id)
+	currentTwapPrice, err := k.GetCurrentTwapPrice(ctx, market.Id)
+	if err != nil {
+		currentTwapPrice = math.LegacyZeroDec()
+	}
 	lastAverageTradePrice := k.GetLastAverageTradePrice(ctx, market.Id)
 	highestBuyPrice := k.GetHighestBuyPrice(ctx, market.Id)
 	lowestSellPrice := k.GetLowestSellPrice(ctx, market.Id)

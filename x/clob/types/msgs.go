@@ -8,8 +8,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// TODO Validate Basic
-
 var _ sdk.Msg = &MsgCreatPerpetualMarket{}
 
 func (msg MsgCreatPerpetualMarket) ValidateBasic() (err error) {
@@ -47,18 +45,88 @@ func (msg MsgCreatPerpetualMarket) ValidateBasic() (err error) {
 }
 
 func (msg MsgDeposit) ValidateBasic() error {
+	// Validate sender address
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid sender address: %s", err)
+	}
+
+	// Validate coin
+	if err := msg.Coin.Validate(); err != nil {
+		return errorsmod.Wrapf(ErrInvalidCoin, "invalid coin: %s", err)
+	}
+
+	// Check for positive amount
+	if msg.Coin.Amount.IsNil() || !msg.Coin.Amount.IsPositive() {
+		return errorsmod.Wrapf(ErrInvalidCoin, "coin amount must be positive")
+	}
+
 	return nil
 }
 
 func (msg MsgPlaceLimitOrder) ValidateBasic() error {
+	// Validate creator address
+	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid creator address: %s", err)
+	}
+
+	// Validate market ID (must be non-zero)
+	if msg.MarketId == 0 {
+		return errorsmod.Wrapf(ErrInvalidMarketId, "market id cannot be zero")
+	}
+
+	// Validate price
+	if msg.Price.IsNil() || !msg.Price.IsPositive() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "price must be positive")
+	}
+
+	// Validate base quantity
+	if msg.BaseQuantity.IsNil() || !msg.BaseQuantity.IsPositive() {
+		return errorsmod.Wrapf(ErrInvalidQuantity, "base quantity must be positive")
+	}
+
+	// Validate order type (must be limit order type)
+	if msg.OrderType != OrderType_ORDER_TYPE_LIMIT_BUY && msg.OrderType != OrderType_ORDER_TYPE_LIMIT_SELL {
+		return errorsmod.Wrapf(ErrInvalidOrderType, "invalid order type for limit order: %s", msg.OrderType.String())
+	}
+
 	return nil
 }
 
 func (msg MsgPlaceMarketOrder) ValidateBasic() error {
+	// Validate creator address
+	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid creator address: %s", err)
+	}
+
+	// Validate market ID (must be non-zero)
+	if msg.MarketId == 0 {
+		return errorsmod.Wrapf(ErrInvalidMarketId, "market id cannot be zero")
+	}
+
+	// Validate base quantity
+	if msg.BaseQuantity.IsNil() || !msg.BaseQuantity.IsPositive() {
+		return errorsmod.Wrapf(ErrInvalidQuantity, "base quantity must be positive")
+	}
+
+	// Validate order type (must be market order type)
+	if msg.OrderType != OrderType_ORDER_TYPE_MARKET_BUY && msg.OrderType != OrderType_ORDER_TYPE_MARKET_SELL {
+		return errorsmod.Wrapf(ErrInvalidOrderType, "invalid order type for market order: %s", msg.OrderType.String())
+	}
+
 	return nil
 }
 
 func (msg MsgUpdateParams) ValidateBasic() error {
+	// Validate authority address
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid authority address: %s", err)
+	}
+
+	// Validate params - delegate to params validation
+	if err := msg.Params.Validate(); err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid params: %s", err)
+	}
+
 	return nil
 }
 

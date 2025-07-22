@@ -13,7 +13,10 @@ func (k Keeper) SettleFunding(ctx sdk.Context, subAccount *types.SubAccount, mar
 		if perpetual.IsShort() {
 			paymentSign = 1
 		}
-		twapPrice := k.GetCurrentTwapPrice(ctx, market.Id)
+		twapPrice, err := k.GetCurrentTwapPrice(ctx, market.Id)
+		if err != nil {
+			return err
+		}
 		if !twapPrice.IsZero() {
 			fundingPnL := fundingRateApplied.Mul(perpetual.Quantity.Abs().Mul(twapPrice)).RoundInt().MulRaw(paymentSign)
 			if fundingPnL.IsPositive() {
