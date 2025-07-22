@@ -10,7 +10,7 @@ const (
 	EventPaidFromInsuranceFund     = "perpetual_mtp_paid_from_insurance_fund"
 	EventInsufficientInsuranceFund = "perpetual_mtp_insufficient_insurance_fund"
 	EventAddCollateral             = "perpetual_mtp_add_collateral"
-	EventPerpetualFees             = "perpetual_fees"
+	EventClosePositions            = "perpetual_close_positions"
 )
 
 const (

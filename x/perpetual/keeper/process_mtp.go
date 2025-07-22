@@ -17,8 +17,12 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 			ctx.Logger().Error(err.Error())
 		}
 	}()
+	initialCollateralCoin := sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral)
+	initialCustody := mtp.Custody
+	initialLiabilities := mtp.Liabilities
+
 	totalPerpetualFees := types.NewPerpetualFeesWithEmptyCoins()
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFees, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFees, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
 	if err != nil {
 		return err
 	}
@@ -28,29 +32,33 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 	if err != nil {
 		return err
 	}
+	usdcPrice, err := k.GetUSDCPrice(ctx)
+	if err != nil {
+		return err
+	}
 
 	if forceClosed {
-		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees)
+		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 
 	if mtp.CheckForStopLoss(tradingAssetPrice) {
-		repayAmt, returnAmt, perpetualFees, err = k.ForceClose(ctx, mtp, &pool, ammPool)
+		repayAmt, returnAmt, perpetualFees, closingPrice, err = k.ForceClose(ctx, mtp, &pool, ammPool)
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
 		totalPerpetualFees = totalPerpetualFees.Add(perpetualFees)
-		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees)
+		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 
 	if mtp.CheckForTakeProfit(tradingAssetPrice) {
-		repayAmt, returnAmt, perpetualFees, err = k.ForceClose(ctx, mtp, &pool, ammPool)
+		repayAmt, returnAmt, perpetualFees, closingPrice, err = k.ForceClose(ctx, mtp, &pool, ammPool)
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
 		totalPerpetualFees = totalPerpetualFees.Add(perpetualFees)
-		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees)
+		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 	err = errors.New("position cannot be liquidated")

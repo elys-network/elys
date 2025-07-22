@@ -20,7 +20,7 @@ func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 }
 
-// exitPool exits the pool given exitingCoins and exitingShares.
+// processExitPool exits the pool given exitingCoins and exitingShares.
 // updates the pool's liquidity and totalShares.
 func (p *Pool) processExitPool(_ sdk.Context, exitingCoins sdk.Coins, exitingShares math.Int) error {
 	balances := p.GetTotalPoolLiquidity().Sub(exitingCoins...)

@@ -17,9 +17,9 @@ import (
 	aptypes "github.com/elys-network/elys/v6/x/assetprofile/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/suite"
 )
@@ -103,7 +103,6 @@ func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})

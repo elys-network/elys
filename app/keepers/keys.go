@@ -18,7 +18,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
@@ -36,7 +35,6 @@ import (
 	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
 	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
@@ -44,6 +42,7 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 	vaultstypes "github.com/elys-network/elys/v6/x/vaults/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -73,7 +72,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		ccvconsumertypes.StoreKey,
 		wasmTypes.StoreKey,
 		packetforwardtypes.StoreKey,
-		ratelimittypes.StoreKey,
 
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,

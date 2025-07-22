@@ -54,9 +54,6 @@ import (
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
-	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v8"
-	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/keeper"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
@@ -96,8 +93,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/v6/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	legacyoraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
+	legacyoracletypes "github.com/elys-network/elys/v6/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/v6/x/perpetual/keeper"
@@ -112,6 +109,9 @@ import (
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
 	vaultskeeper "github.com/elys-network/elys/v6/x/vaults/keeper"
 	vaultstypes "github.com/elys-network/elys/v6/x/vaults/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -155,11 +155,13 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
+	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -179,7 +181,8 @@ type AppKeepers struct {
 	HooksICS4Wrapper    ibchooks.ICS4Middleware
 	Ics20WasmHooks      *ibchooks.WasmHooks
 	PacketForwardKeeper *packetforwardkeeper.Keeper
-	RatelimitKeeper     ratelimitkeeper.Keeper
+
+	ICSValidatorKeeper ICSValidatorKeeper
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -257,6 +260,7 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -402,6 +406,19 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	// Configure the hooks keeper
+	hooksKeeper := ibchookskeeper.NewKeeper(
+		app.keys[ibchookstypes.StoreKey],
+	)
+	app.IBCHooksKeeper = &hooksKeeper
+
+	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix)
+	app.Ics20WasmHooks = &wasmHooks
+	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		app.IBCKeeper.ChannelKeeper,
+		app.Ics20WasmHooks,
+	)
+
 	transferKeeper := ibctransferkeeper.NewKeeper(
 		appCodec,
 		app.keys[ibctransfertypes.StoreKey],
@@ -415,6 +432,17 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.TransferKeeper = &transferKeeper
+
+	app.PacketForwardKeeper = packetforwardkeeper.NewKeeper(
+		appCodec,
+		app.keys[packetforwardtypes.StoreKey],
+		app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.BankKeeper,
+		// The ICS4Wrapper is replaced by the HooksICS4Wrapper instead of the channel so that sending can be overridden by the middleware
+		app.HooksICS4Wrapper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec,
@@ -432,16 +460,6 @@ func NewAppKeeper(
 	// required since ibc-go v7.5.0
 	app.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
 
-	app.RatelimitKeeper = *ratelimitkeeper.NewKeeper(
-		appCodec, // BinaryCodec
-		runtime.NewKVStoreService(app.keys[ratelimittypes.StoreKey]), // StoreKey
-		app.GetSubspace(ratelimittypes.ModuleName),                   // param Subspace
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),     // authority
-		app.BankKeeper,
-		app.IBCKeeper.ChannelKeeper, // ChannelKeeper
-		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper
-	)
-
 	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
 		appCodec,
 		app.keys[icacontrollertypes.StoreKey],
@@ -451,33 +469,6 @@ func NewAppKeeper(
 		app.IBCKeeper.PortKeeper,
 		app.ScopedICAControllerKeeper,
 		bApp.MsgServiceRouter(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Configure the hooks keeper
-	hooksKeeper := ibchookskeeper.NewKeeper(
-		app.keys[ibchookstypes.StoreKey],
-	)
-	app.IBCHooksKeeper = &hooksKeeper
-
-	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix)
-	app.Ics20WasmHooks = &wasmHooks
-	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
-		app.IBCKeeper.ChannelKeeper,
-		app.Ics20WasmHooks,
-	)
-	// intentionally sending itself to wrap HooksICS4Wrapper with rate limiter
-	// Note app.HooksICS4Wrapper is used in transfer stack as well
-	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(app.HooksICS4Wrapper, app.RatelimitKeeper)
-
-	app.PacketForwardKeeper = packetforwardkeeper.NewKeeper(
-		appCodec,
-		app.keys[packetforwardtypes.StoreKey],
-		app.TransferKeeper,
-		app.IBCKeeper.ChannelKeeper,
-		app.BankKeeper,
-		// The ICS4Wrapper is replaced by the HooksICS4Wrapper instead of the channel so that sending can be overridden by the middleware
-		app.HooksICS4Wrapper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -554,6 +545,9 @@ func NewAppKeeper(
 	)
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+
+	app.ICSValidatorKeeper = NewICSValidatorKeeper(app.ConsumerKeeper)
+
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -567,23 +561,22 @@ func NewAppKeeper(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	app.OracleKeeper = *oraclekeeper.NewKeeper(
+	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	//app.OracleKeeper = oraclekeeper.NewKeeper(
-	//	appCodec,
-	//	runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
-	//	app.AccountKeeper,
-	//	app.BankKeeper,
-	//	app.DistrKeeper,
-	//	app.StakingKeeper,
-	//	distrtypes.ModuleName,
-	//	cast.ToBool(appOpts.Get("telemetry.enabled")),
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.ICSValidatorKeeper,
+		distrtypes.ModuleName,
+		cast.ToBool(appOpts.Get("telemetry.enabled")),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
@@ -768,13 +761,14 @@ func NewAppKeeper(
 
 	// Create Transfer Stack (from bottom to top of stack)
 	// - core IBC
+	// - ibcfee
 	// - ratelimit
 	// - pfm
 	// - provider
 	// - transfer
 	//
 	// This is how transfer stack will work in the end:
-	// * RecvPacket -> IBC core -> RateLimit -> PFM -> Provider -> Transfer (AddRoute)
+	// * RecvPacket -> IBC core -> Fee -> RateLimit -> PFM -> Provider -> Transfer (AddRoute)
 	// * SendPacket -> Transfer -> Provider -> PFM -> RateLimit -> Fee -> IBC core (ICS4Wrapper)
 
 	var transferStack porttypes.IBCModule
@@ -786,7 +780,6 @@ func NewAppKeeper(
 		0, // retries on timeout
 		packetforwardkeeper.DefaultForwardTransferPacketTimeoutTimestamp,
 	)
-	transferStack = ratelimit.NewIBCMiddleware(app.RatelimitKeeper, transferStack)
 	transferICS4Wrapper := transferStack.(porttypes.ICS4Wrapper)
 	app.TransferKeeper.WithICS4Wrapper(transferICS4Wrapper)
 
@@ -867,7 +860,6 @@ func NewAppKeeper(
 			// insert perpetual hooks receivers here
 			app.AccountedPoolKeeper.PerpetualHooks(),
 			app.TierKeeper.PerpetualHooks(),
-			app.TradeshieldKeeper.PerpetualHooks(),
 		),
 	)
 
@@ -903,11 +895,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 	paramsKeeper.Subspace(ccvconsumertypes.ModuleName).WithKeyTable(ccv.ParamKeyTable())
 	paramsKeeper.Subspace(ibchookstypes.ModuleName)
-	paramsKeeper.Subspace(ratelimittypes.ModuleName).WithKeyTable(ratelimittypes.ParamKeyTable())
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	paramsKeeper.Subspace(oracletypes.ModuleName)
+	//paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)

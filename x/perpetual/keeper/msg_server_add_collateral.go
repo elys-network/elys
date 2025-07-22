@@ -27,6 +27,10 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		return nil, err
 	}
 
+	initialCollateralCoin := sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral)
+	initialCustody := mtp.Custody
+	initialLiabilities := mtp.Liabilities
+
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -52,7 +56,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			return nil, err
 		}
 
-		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +67,11 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		if forceClosed {
-			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins)
+			usdcPrice, err := k.GetUSDCPrice(ctx)
+			if err != nil {
+				return nil, err
+			}
+			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 			// hooks are being called inside MTPTriggerChecksAndUpdates
 			return &types.MsgAddCollateralResponse{}, nil
 		}
@@ -114,6 +122,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 
 		perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
+		interestAmtInUSD := k.amm.CalculateUSDValue(ctx, mtp.CustodyAsset, interestAmt).Dec()
 
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAddCollateral,
 			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
@@ -126,6 +135,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
 			sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 			sdk.NewAttribute("interest_amount", interestAmt.String()),
+			sdk.NewAttribute("interest_amount_in_usd", interestAmtInUSD.String()),
 			sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 			sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 			sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),

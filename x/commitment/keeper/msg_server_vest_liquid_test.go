@@ -105,7 +105,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v, sender: %s", edenToken, creator.String())).Error())
 }
 
-// TestKeeper_VestLiquid tests the VestLiquid function with invalid denom
+// TestKeeper_VestLiquidWithInvalidDenom tests the VestLiquid function with invalid denom
 func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 
