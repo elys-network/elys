@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // GaslessAddrs is the whitelist of Bech32 Elys addresses that may send txs
