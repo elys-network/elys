@@ -11,6 +11,7 @@ import (
 	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
 	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
 	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -106,4 +107,12 @@ type ParamSubspace interface {
 
 type OracleKeeper interface {
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
+}
+
+type PerpetualKeeper interface {
+	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)
+	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
+	AddCollateral(ctx sdk.Context, msg *perpetualtypes.MsgAddCollateral) (*perpetualtypes.MsgAddCollateralResponse, error)
+	UpdateStopLoss(ctx sdk.Context, msg *perpetualtypes.MsgUpdateStopLoss) (*perpetualtypes.MsgUpdateStopLossResponse, error)
+	UpdateTakeProfitPrice(ctx sdk.Context, msg *perpetualtypes.MsgUpdateTakeProfitPrice) (*perpetualtypes.MsgUpdateTakeProfitPriceResponse, error)
 }

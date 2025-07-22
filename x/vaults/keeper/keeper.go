@@ -29,6 +29,7 @@ type (
 		masterchef         types.MasterchefKeeper
 		assetProfileKeeper types.AssetProfileKeeper
 		oracleKeeper       types.OracleKeeper
+		perpetualKeeper    types.PerpetualKeeper
 	}
 )
 
@@ -45,6 +46,7 @@ func NewKeeper(
 	masterchef types.MasterchefKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	oracleKeeper types.OracleKeeper,
+	perpetualKeeper types.PerpetualKeeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
@@ -63,6 +65,7 @@ func NewKeeper(
 		masterchef:         masterchef,
 		assetProfileKeeper: assetProfileKeeper,
 		oracleKeeper:       oracleKeeper,
+		perpetualKeeper:    perpetualKeeper,
 	}
 }
 
