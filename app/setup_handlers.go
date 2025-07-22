@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -70,6 +71,12 @@ func (app *ElysApp) setUpgradeHandler() {
 			if err != nil {
 				return nil, err
 			}
+
+			chainParams := app.ParameterKeeper.GetParams(ctx)
+			chainParams.EnableTakerFeeSwap = true
+			chainParams.TakerFeeCollectionInterval = 1000
+			chainParams.TakerFees = math.LegacyMustNewDecFromStr("0.00075")
+			app.ParameterKeeper.SetParams(ctx, chainParams)
 
 			return vm, vmErr
 		},
