@@ -76,12 +76,8 @@ func TestCheckTxFeeWithValidatorMinGasPrices(t *testing.T) {
 	// Create test addresses
 	regularAddr := sdk.AccAddress("regular_address____")
 	
-	// Create a mock gasless address that matches the expected format
-	// We'll temporarily add it to the GaslessAddrs for testing
-	mockGaslessAddr := sdk.AccAddress("gasless_address_____")
-	originalGaslessAddrs := GaslessAddrs
-	GaslessAddrs = append(GaslessAddrs, mockGaslessAddr.String())
-	defer func() { GaslessAddrs = originalGaslessAddrs }() // Restore original after test
+	// Use the actual governance address from the whitelist
+	govAddr := sdk.MustAccAddressFromBech32(GaslessAddrs[0])
 
 	for _, tc := range []struct {
 		desc              string
@@ -115,8 +111,8 @@ func TestCheckTxFeeWithValidatorMinGasPrices(t *testing.T) {
 			errorContains: "insufficient fees",
 		},
 		{
-			desc:             "Gasless transaction with no fees",
-			fromAddr:         mockGaslessAddr,
+			desc:             "Governance transaction with no fees (feegrant scenario)",
+			fromAddr:         govAddr,
 			fee:              sdk.NewCoins(),
 			gas:              50000,
 			minGasPrices:     sdk.NewDecCoins(sdk.NewDecCoinFromDec(parametertypes.Elys, sdkmath.LegacyNewDec(1))),
@@ -125,8 +121,8 @@ func TestCheckTxFeeWithValidatorMinGasPrices(t *testing.T) {
 			expectedPriority: math.MaxInt64, // Should get max priority
 		},
 		{
-			desc:             "Gasless transaction with fees (still gets max priority)",
-			fromAddr:         mockGaslessAddr,
+			desc:             "Governance transaction with fees (still gets max priority)",
+			fromAddr:         govAddr,
 			fee:              sdk.NewCoins(sdk.NewCoin(parametertypes.Elys, sdkmath.NewInt(10000))),
 			gas:              50000,
 			minGasPrices:     sdk.NewDecCoins(sdk.NewDecCoinFromDec(parametertypes.Elys, sdkmath.LegacyNewDec(1))),
@@ -135,8 +131,8 @@ func TestCheckTxFeeWithValidatorMinGasPrices(t *testing.T) {
 			expectedPriority: math.MaxInt64, // Should still get max priority
 		},
 		{
-			desc:             "Gasless transaction bypasses high min gas prices",
-			fromAddr:         mockGaslessAddr,
+			desc:             "Governance transaction bypasses high min gas prices",
+			fromAddr:         govAddr,
 			fee:              sdk.NewCoins(),
 			gas:              50000,
 			minGasPrices:     sdk.NewDecCoins(sdk.NewDecCoinFromDec(parametertypes.Elys, sdkmath.LegacyNewDec(1000))),
@@ -199,7 +195,7 @@ func TestCheckTxFeeWithInvalidTransaction(t *testing.T) {
 }
 
 func TestGaslessTransactionPriorityComparison(t *testing.T) {
-	// Test that gasless transactions have higher priority than regular transactions
+	// Test that governance transactions have higher priority than regular transactions
 	ctx := sdk.NewContext(nil, cmtproto.Header{}, false, log.NewNopLogger())
 	ctx = ctx.WithIsCheckTx(true).WithMinGasPrices(
 		sdk.NewDecCoins(sdk.NewDecCoinFromDec(parametertypes.Elys, sdkmath.LegacyNewDec(1))),
@@ -207,30 +203,25 @@ func TestGaslessTransactionPriorityComparison(t *testing.T) {
 	
 	// Create addresses
 	regularAddr := sdk.AccAddress("regular_address____")
-	mockGaslessAddr := sdk.AccAddress("gasless_address_____")
-	
-	// Temporarily add gasless address to whitelist
-	originalGaslessAddrs := GaslessAddrs
-	GaslessAddrs = append(GaslessAddrs, mockGaslessAddr.String())
-	defer func() { GaslessAddrs = originalGaslessAddrs }()
+	govAddr := sdk.MustAccAddressFromBech32(GaslessAddrs[0])
 	
 	// Regular transaction with very high fees
 	regularTx := createTestTx(regularAddr, sdk.NewCoins(sdk.NewCoin(parametertypes.Elys, sdkmath.NewInt(1000000))), 50000)
 	
-	// Gasless transaction with no fees
-	gaslessTx := createTestTx(mockGaslessAddr, sdk.NewCoins(), 50000)
+	// Governance transaction with no fees (simulating feegrant usage)
+	govTx := createTestTx(govAddr, sdk.NewCoins(), 50000)
 	
 	// Check regular transaction priority
 	_, regularPriority, err := CheckTxFeeWithValidatorMinGasPrices(ctx, regularTx)
 	require.NoError(t, err)
 	
-	// Check gasless transaction priority
-	_, gaslessPriority, err := CheckTxFeeWithValidatorMinGasPrices(ctx, gaslessTx)
+	// Check governance transaction priority
+	_, govPriority, err := CheckTxFeeWithValidatorMinGasPrices(ctx, govTx)
 	require.NoError(t, err)
 	
-	// Gasless should have higher priority
-	require.Greater(t, gaslessPriority, regularPriority)
-	require.Equal(t, int64(math.MaxInt64), gaslessPriority)
+	// Governance should have higher priority
+	require.Greater(t, govPriority, regularPriority)
+	require.Equal(t, int64(math.MaxInt64), govPriority)
 }
 
 func TestGetTxPriority(t *testing.T) {

@@ -7,24 +7,16 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
 )
 
-// GaslessAddrs is the whitelist of Bech32 Elys addresses that may send txs
-// with zero fees (in mempool).
+// GaslessAddrs contains only the governance module address.
+// Governance can grant feegrants to operational addresses (price feeders, liquidation bots, etc.)
+// When those addresses use feegrants, the fee payer becomes governance, enabling gasless transactions.
 var GaslessAddrs = []string{
-  "elys16qgewtplahkqwqa0aqv4pxnxa58ulu48k6crhj", // Price Feeder 1 mainnet
-  "elys1zwexzk6ns5ermvag5fc0gtyvrnxyaz9kzaflqf", // Price Feeder 2 mainnet
-  "elys1nelawytdfdk4af3z0sy2p8vkrllk8zw9g32jmf", // Execution bot 1 mainnet
-  "elys1gszp63euzm0ecs3qwu0j6mexjr97hjs7x5gvzk", // Execution bot 2 mainnet
-
-
-  "elys1dae9z45ccetfwr208ghya6npntg75qvxgmg4p9", // Price Feeder testnet
-  "elys18z3qtz4wag4mmv9f8ea25tpvkmkfk4vtyy6fpr", // Execution bot 1 testnet
-  "elys135x29zpaph6sacf3kvu8p736jcue5qd30nf8mv", // Execution bot 2 testnet
-
-  "elys1gy503ty29ydute5rksnkwgmtatelret9d455lt", // Execution bot devnet
-  "elys1dae9z45ccetfwr208ghya6npntg75qvxgmg4p9", // Price Feeder devnet
+	authtypes.NewModuleAddress(govtypes.ModuleName).String(), // Governance module address
 }
 
 // CheckTxFeeWithValidatorMinGasPrices checks fees in CheckTx (mempool).  If the
