@@ -23,6 +23,15 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, err
 	}
 
+	// Additional validations
+	if err = k.ValidateOrderPrice(ctx, market, msg.OrderType, msg.Price); err != nil {
+		return nil, err
+	}
+
+	if err = k.ValidateOrderQuantity(ctx, market, msg.BaseQuantity); err != nil {
+		return nil, err
+	}
+
 	subAccountId := types.CrossMarginSubAccountId
 	if msg.IsIsolated {
 		subAccountId = market.Id
@@ -123,6 +132,38 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 
 	if err = market.ValidateOpenPositionRequest(msg.MarketId, math.LegacyZeroDec(), msg.BaseQuantity, true); err != nil {
 		return nil, err
+	}
+
+	// Additional validations
+	if err = k.ValidateOrderQuantity(ctx, market, msg.BaseQuantity); err != nil {
+		return nil, err
+	}
+
+	// Check if there's sufficient liquidity for market order
+	if msg.OrderType == types.OrderType_ORDER_TYPE_MARKET_BUY {
+		sellOrders := k.GetSellOrdersUpToQuantity(ctx, market.Id, msg.BaseQuantity)
+		if len(sellOrders) == 0 {
+			return nil, types.ErrNoOrdersAvailable.Wrapf("no sell orders available for market buy in market %d", market.Id)
+		}
+		totalAvailable := math.LegacyZeroDec()
+		for _, order := range sellOrders {
+			totalAvailable = totalAvailable.Add(order.Quantity)
+		}
+		if totalAvailable.LT(msg.BaseQuantity) {
+			return nil, WrapInsufficientLiquidityError(totalAvailable, msg.BaseQuantity, "market buy")
+		}
+	} else if msg.OrderType == types.OrderType_ORDER_TYPE_MARKET_SELL {
+		buyOrders := k.GetBuyOrdersUpToQuantity(ctx, market.Id, msg.BaseQuantity)
+		if len(buyOrders) == 0 {
+			return nil, types.ErrNoOrdersAvailable.Wrapf("no buy orders available for market sell in market %d", market.Id)
+		}
+		totalAvailable := math.LegacyZeroDec()
+		for _, order := range buyOrders {
+			totalAvailable = totalAvailable.Add(order.Quantity)
+		}
+		if totalAvailable.LT(msg.BaseQuantity) {
+			return nil, WrapInsufficientLiquidityError(totalAvailable, msg.BaseQuantity, "market sell")
+		}
 	}
 
 	subAccountId := types.CrossMarginSubAccountId

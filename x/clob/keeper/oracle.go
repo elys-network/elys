@@ -10,15 +10,15 @@ import (
 func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (math.LegacyDec, error) {
 	assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
 	if !found {
-		return math.LegacyDec{}, fmt.Errorf("asset info (%s) not found for denom", denom)
+		return math.LegacyDec{}, WrapPriceNotFoundError(denom, "asset info lookup")
 	}
 
 	price, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
 	if !found {
-		return math.LegacyDec{}, fmt.Errorf("asset price not found for denom (%s)", denom)
+		return math.LegacyDec{}, WrapPriceNotFoundError(denom, "oracle")
 	}
 	if price.LTE(math.LegacyZeroDec()) || price.IsNil() {
-		return math.LegacyDec{}, fmt.Errorf("asset price (%s) is invalid", price.String())
+		return math.LegacyDec{}, WrapInvalidPriceError(price, "price must be positive")
 	}
 	return price, nil
 }

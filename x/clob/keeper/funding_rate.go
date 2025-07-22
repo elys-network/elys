@@ -98,7 +98,12 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket)
 			lastFundingRate.Rate = market.MaxAbsFundingRate.Neg()
 		}
 	}
+	previousRate := lastFundingRate.Rate.Sub(change)
 	lastFundingRate.Block = uint64(ctx.BlockHeight())
 	k.SetFundingRate(ctx, lastFundingRate)
+
+	// Emit funding rate update event
+	k.EmitFundingRateUpdateEvent(ctx, market.Id, previousRate, lastFundingRate.Rate)
+
 	return nil
 }

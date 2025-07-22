@@ -11,20 +11,38 @@ import (
 
 // MarketCache provides caching for frequently accessed market data
 type MarketCache struct {
-	mu          sync.RWMutex
-	markets     map[uint64]types.PerpetualMarket
-	bestBids    map[uint64]math.LegacyDec
-	bestAsks    map[uint64]math.LegacyDec
-	blockHeight int64
+	mu             sync.RWMutex
+	markets        map[uint64]types.PerpetualMarket
+	bestBids       map[uint64]math.LegacyDec
+	bestAsks       map[uint64]math.LegacyDec
+	midPrices      map[uint64]math.LegacyDec
+	twapPrices     map[uint64]TWAPCacheEntry
+	orderBookDepth map[uint64]OrderBookDepth
+	blockHeight    int64
+}
+
+// TWAPCacheEntry stores TWAP price with error state
+type TWAPCacheEntry struct {
+	Price math.LegacyDec
+	Error error
+}
+
+// OrderBookDepth stores order book depth information
+type OrderBookDepth struct {
+	BuyDepth  uint64
+	SellDepth uint64
 }
 
 // NewMarketCache creates a new market cache
 func NewMarketCache() *MarketCache {
 	return &MarketCache{
-		markets:     make(map[uint64]types.PerpetualMarket),
-		bestBids:    make(map[uint64]math.LegacyDec),
-		bestAsks:    make(map[uint64]math.LegacyDec),
-		blockHeight: 0,
+		markets:        make(map[uint64]types.PerpetualMarket),
+		bestBids:       make(map[uint64]math.LegacyDec),
+		bestAsks:       make(map[uint64]math.LegacyDec),
+		midPrices:      make(map[uint64]math.LegacyDec),
+		twapPrices:     make(map[uint64]TWAPCacheEntry),
+		orderBookDepth: make(map[uint64]OrderBookDepth),
+		blockHeight:    0,
 	}
 }
 
@@ -121,6 +139,100 @@ func (k *Keeper) GetCachedBestAsk(ctx sdk.Context, marketId uint64) math.LegacyD
 	return price
 }
 
+// GetCachedMidPrice retrieves the mid price from cache
+func (k *Keeper) GetCachedMidPrice(ctx sdk.Context, marketId uint64) (math.LegacyDec, error) {
+	if k.marketCache != nil {
+		k.marketCache.mu.RLock()
+		if k.marketCache.blockHeight == ctx.BlockHeight() {
+			price, exists := k.marketCache.midPrices[marketId]
+			k.marketCache.mu.RUnlock()
+			if exists {
+				return price, nil
+			}
+		} else {
+			k.marketCache.mu.RUnlock()
+		}
+	}
+
+	// Load from store
+	price, err := k.GetMidPrice(ctx, marketId)
+
+	// Update cache if no error
+	if err == nil && k.marketCache != nil {
+		k.marketCache.mu.Lock()
+		k.marketCache.midPrices[marketId] = price
+		k.marketCache.blockHeight = ctx.BlockHeight()
+		k.marketCache.mu.Unlock()
+	}
+
+	return price, err
+}
+
+// GetCachedTWAPPrice retrieves the TWAP price from cache
+func (k *Keeper) GetCachedTWAPPrice(ctx sdk.Context, marketId uint64) (math.LegacyDec, error) {
+	if k.marketCache != nil {
+		k.marketCache.mu.RLock()
+		if k.marketCache.blockHeight == ctx.BlockHeight() {
+			entry, exists := k.marketCache.twapPrices[marketId]
+			k.marketCache.mu.RUnlock()
+			if exists {
+				return entry.Price, entry.Error
+			}
+		} else {
+			k.marketCache.mu.RUnlock()
+		}
+	}
+
+	// Load from store
+	price, err := k.GetCurrentTwapPrice(ctx, marketId)
+
+	// Update cache
+	if k.marketCache != nil {
+		k.marketCache.mu.Lock()
+		k.marketCache.twapPrices[marketId] = TWAPCacheEntry{
+			Price: price,
+			Error: err,
+		}
+		k.marketCache.blockHeight = ctx.BlockHeight()
+		k.marketCache.mu.Unlock()
+	}
+
+	return price, err
+}
+
+// GetCachedOrderBookDepth retrieves order book depth from cache
+func (k *Keeper) GetCachedOrderBookDepth(ctx sdk.Context, marketId uint64) (buyDepth, sellDepth uint64) {
+	if k.marketCache != nil {
+		k.marketCache.mu.RLock()
+		if k.marketCache.blockHeight == ctx.BlockHeight() {
+			depth, exists := k.marketCache.orderBookDepth[marketId]
+			k.marketCache.mu.RUnlock()
+			if exists {
+				return depth.BuyDepth, depth.SellDepth
+			}
+		} else {
+			k.marketCache.mu.RUnlock()
+		}
+	}
+
+	// Calculate from store
+	buyDepth = k.GetBuyOrderBookDepth(ctx, marketId)
+	sellDepth = k.GetSellOrderBookDepth(ctx, marketId)
+
+	// Update cache
+	if k.marketCache != nil {
+		k.marketCache.mu.Lock()
+		k.marketCache.orderBookDepth[marketId] = OrderBookDepth{
+			BuyDepth:  buyDepth,
+			SellDepth: sellDepth,
+		}
+		k.marketCache.blockHeight = ctx.BlockHeight()
+		k.marketCache.mu.Unlock()
+	}
+
+	return buyDepth, sellDepth
+}
+
 // ClearMarketCache clears all cached market data
 func (k *Keeper) ClearMarketCache() {
 	if k.marketCache != nil {
@@ -128,6 +240,9 @@ func (k *Keeper) ClearMarketCache() {
 		k.marketCache.markets = make(map[uint64]types.PerpetualMarket)
 		k.marketCache.bestBids = make(map[uint64]math.LegacyDec)
 		k.marketCache.bestAsks = make(map[uint64]math.LegacyDec)
+		k.marketCache.midPrices = make(map[uint64]math.LegacyDec)
+		k.marketCache.twapPrices = make(map[uint64]TWAPCacheEntry)
+		k.marketCache.orderBookDepth = make(map[uint64]OrderBookDepth)
 		k.marketCache.mu.Unlock()
 	}
 }

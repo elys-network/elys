@@ -53,4 +53,19 @@ var (
 	// Rate limiting errors
 	ErrRateLimitExceeded       = errorsmod.Register(ModuleName, 32, "rate limit exceeded")
 	ErrCircuitBreakerTriggered = errorsmod.Register(ModuleName, 33, "circuit breaker triggered")
+
+	// Liquidity errors
+	ErrInsufficientLiquidity = errorsmod.Register(ModuleName, 34, "insufficient liquidity")
+	ErrNoOrdersAvailable     = errorsmod.Register(ModuleName, 35, "no orders available")
+
+	// Price errors
+	ErrPriceNotFound    = errorsmod.Register(ModuleName, 36, "price not found")
+	ErrInvalidPriceData = errorsmod.Register(ModuleName, 37, "invalid price data")
+
+	// Liquidation errors
+	ErrLiquidation     = errorsmod.Register(ModuleName, 38, "liquidation error")
+	ErrNotLiquidatable = errorsmod.Register(ModuleName, 39, "position not liquidatable")
+
+	// Order errors
+	ErrOrderNotFound = errorsmod.Register(ModuleName, 40, "order not found")
 )
