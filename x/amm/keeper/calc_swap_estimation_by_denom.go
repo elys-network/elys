@@ -14,7 +14,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	amount sdk.Coin,
 	denomIn string,
 	denomOut string,
-	baseCurrency string,
+	baseAssetsDenoms []string,
 	address string,
 	overrideSwapFee osmomath.BigDec,
 	decimals uint64,
@@ -48,9 +48,19 @@ func (k Keeper) CalcSwapEstimationByDenom(
 
 	// Determine the correct route based on the amount's denom
 	if amount.Denom == denomIn {
-		inRoute, err = k.CalcInRouteByDenom(ctx, denomIn, denomOut, baseCurrency)
+		for _, baseCurrency := range baseAssetsDenoms {
+			inRoute, err = k.CalcInRouteByDenom(ctx, denomIn, denomOut, baseCurrency)
+			if err == nil {
+				break
+			}
+		}
 	} else if amount.Denom == denomOut {
-		outRoute, err = k.CalcOutRouteByDenom(ctx, denomOut, denomIn, baseCurrency)
+		for _, baseCurrency := range baseAssetsDenoms {
+			outRoute, err = k.CalcOutRouteByDenom(ctx, denomOut, denomIn, baseCurrency)
+			if err == nil {
+				break
+			}
+		}
 	} else {
 		err = types.ErrInvalidDenom
 		return
