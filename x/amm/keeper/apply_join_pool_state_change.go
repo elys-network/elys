@@ -19,6 +19,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	takerFees osmomath.BigDec,
 	swapFee osmomath.BigDec,
 	slippageCoins sdk.Coins,
+	virtualSwaps []types.VirtualSwap,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err
@@ -173,6 +174,11 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	}
 
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
+
+	if joinCoins.Len() == 1 {
+		types.EmitVirtualSwapsEvent(ctx, pool.PoolId, joiner.String(), virtualSwaps)
+	}
+
 	if k.hooks != nil {
 		err := k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
 		if err != nil {

@@ -69,7 +69,7 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 	weightedAmount := tokenInAmount.Mul(weightMultiplier)
 	resizedAmount := osmomath.BigDecFromSDKInt(weightedAmount.Dec().TruncateInt()).
 		Quo(externalLiquidityRatio).Dec().RoundInt()
-	slippageAmount, err := p.CalcGivenInSlippage(
+	slippageAmount, _, err := p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
 		snapshot,
