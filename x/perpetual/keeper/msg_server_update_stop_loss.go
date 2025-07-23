@@ -13,6 +13,10 @@ import (
 func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.UpdateStopLoss(ctx, msg)
+}
+
+func (k Keeper) UpdateStopLoss(ctx sdk.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
 	// Load existing mtp
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)

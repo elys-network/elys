@@ -13,6 +13,10 @@ import (
 func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.UpdateTakeProfitPrice(ctx, msg)
+}
+
+func (k Keeper) UpdateTakeProfitPrice(ctx sdk.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
 	// Load existing mtp
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)

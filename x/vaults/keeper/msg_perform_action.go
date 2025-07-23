@@ -2,11 +2,13 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 
 	"github.com/elys-network/elys/v6/x/vaults/types"
 )
@@ -138,6 +140,133 @@ func (k msgServer) PerformActionSwapByDenom(goCtx context.Context, req *types.Ms
 	return &types.MsgPerformActionSwapByDenomResponse{
 		OutAmount: swapCoins.Amount,
 	}, nil
+}
+
+func (k msgServer) PerformActionOpenPerpetual(goCtx context.Context, req *types.MsgPerformActionOpenPerpetual) (*types.MsgPerformActionOpenPerpetualResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	if vault.Manager != req.Creator {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	perpetual, err := k.perpetualKeeper.Open(ctx, &perpetualtypes.MsgOpen{
+		Creator:         vaultAddress.String(),
+		Position:        perpetualtypes.Position(req.Position),
+		Leverage:        req.Leverage,
+		Collateral:      req.Collateral,
+		TakeProfitPrice: req.TakeProfitPrice,
+		StopLossPrice:   req.StopLossPrice,
+		PoolId:          req.PoolId,
+	})
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionOpenPerpetualResponse{
+		PerpetualId: strconv.FormatUint(perpetual.Id, 10),
+	}, nil
+}
+
+func (k msgServer) PerformActionClosePerpetual(goCtx context.Context, req *types.MsgPerformActionClosePerpetual) (*types.MsgPerformActionClosePerpetualResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	if vault.Manager != req.Creator {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	perpetual, err := k.perpetualKeeper.Close(ctx, &perpetualtypes.MsgClose{
+		Creator: vaultAddress.String(),
+		Id:      req.PerpetualId,
+		PoolId:  req.PoolId,
+		Amount:  req.Amount,
+	})
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionClosePerpetualResponse{
+		Amount: perpetual.Amount,
+	}, nil
+}
+
+func (k msgServer) PerformActionAddCollateral(goCtx context.Context, req *types.MsgPerformActionAddCollateral) (*types.MsgPerformActionAddCollateralResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	if vault.Manager != req.Creator {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	_, err := k.perpetualKeeper.AddCollateral(ctx, &perpetualtypes.MsgAddCollateral{
+		Creator:       vaultAddress.String(),
+		Id:            req.PerpetualId,
+		PoolId:        req.PoolId,
+		AddCollateral: req.AddCollateral,
+	})
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionAddCollateralResponse{}, nil
+}
+
+func (k msgServer) PerformActionUpdateStopLoss(goCtx context.Context, req *types.MsgPerformActionUpdateStopLoss) (*types.MsgPerformActionUpdateStopLossResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	if vault.Manager != req.Creator {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	_, err := k.perpetualKeeper.UpdateStopLoss(ctx, &perpetualtypes.MsgUpdateStopLoss{
+		Creator: vaultAddress.String(),
+		Id:      req.PerpetualId,
+		PoolId:  req.PoolId,
+		Price:   req.Price,
+	})
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionUpdateStopLossResponse{}, nil
+}
+
+func (k msgServer) PerformActionUpdateTakeProfitPrice(goCtx context.Context, req *types.MsgPerformActionUpdateTakeProfitPrice) (*types.MsgPerformActionUpdateTakeProfitPriceResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, errorsmod.Wrapf(types.ErrVaultNotFound, "vault %d not found", req.VaultId)
+	}
+	if vault.Manager != req.Creator {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
+	}
+	vaultAddress := types.NewVaultAddress(req.VaultId)
+
+	_, err := k.perpetualKeeper.UpdateTakeProfitPrice(ctx, &perpetualtypes.MsgUpdateTakeProfitPrice{
+		Creator: vaultAddress.String(),
+		Id:      req.PerpetualId,
+		PoolId:  req.PoolId,
+		Price:   req.Price,
+	})
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrInvalidAction, "action failed with error: %s", err)
+	}
+
+	return &types.MsgPerformActionUpdateTakeProfitPriceResponse{}, nil
 }
 
 // func (k Keeper) AllowedAction(ctx sdk.Context, action interface{}, vaultAddress string) bool {

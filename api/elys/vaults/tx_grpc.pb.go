@@ -28,10 +28,15 @@ type MsgClient interface {
 	// AddVault defines a method for creating a new vault.
 	AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
-	// rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
 	PerformActionJoinPool(ctx context.Context, in *MsgPerformActionJoinPool, opts ...grpc.CallOption) (*MsgPerformActionJoinPoolResponse, error)
 	PerformActionExitPool(ctx context.Context, in *MsgPerformActionExitPool, opts ...grpc.CallOption) (*MsgPerformActionExitPoolResponse, error)
 	PerformActionSwapByDenom(ctx context.Context, in *MsgPerformActionSwapByDenom, opts ...grpc.CallOption) (*MsgPerformActionSwapByDenomResponse, error)
+	// PerformAction for perpetuals
+	PerformActionOpenPerpetual(ctx context.Context, in *MsgPerformActionOpenPerpetual, opts ...grpc.CallOption) (*MsgPerformActionOpenPerpetualResponse, error)
+	PerformActionClosePerpetual(ctx context.Context, in *MsgPerformActionClosePerpetual, opts ...grpc.CallOption) (*MsgPerformActionClosePerpetualResponse, error)
+	PerformActionAddCollateral(ctx context.Context, in *MsgPerformActionAddCollateral, opts ...grpc.CallOption) (*MsgPerformActionAddCollateralResponse, error)
+	PerformActionUpdateStopLoss(ctx context.Context, in *MsgPerformActionUpdateStopLoss, opts ...grpc.CallOption) (*MsgPerformActionUpdateStopLossResponse, error)
+	PerformActionUpdateTakeProfitPrice(ctx context.Context, in *MsgPerformActionUpdateTakeProfitPrice, opts ...grpc.CallOption) (*MsgPerformActionUpdateTakeProfitPriceResponse, error)
 	// UpdateVaultCoins defines a method for updating the coins of a vault.
 	UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error)
 	// UpdateVaultFees defines a method for updating the fees of a vault.
@@ -117,6 +122,51 @@ func (c *msgClient) PerformActionSwapByDenom(ctx context.Context, in *MsgPerform
 	return out, nil
 }
 
+func (c *msgClient) PerformActionOpenPerpetual(ctx context.Context, in *MsgPerformActionOpenPerpetual, opts ...grpc.CallOption) (*MsgPerformActionOpenPerpetualResponse, error) {
+	out := new(MsgPerformActionOpenPerpetualResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionOpenPerpetual", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionClosePerpetual(ctx context.Context, in *MsgPerformActionClosePerpetual, opts ...grpc.CallOption) (*MsgPerformActionClosePerpetualResponse, error) {
+	out := new(MsgPerformActionClosePerpetualResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionClosePerpetual", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionAddCollateral(ctx context.Context, in *MsgPerformActionAddCollateral, opts ...grpc.CallOption) (*MsgPerformActionAddCollateralResponse, error) {
+	out := new(MsgPerformActionAddCollateralResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionAddCollateral", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionUpdateStopLoss(ctx context.Context, in *MsgPerformActionUpdateStopLoss, opts ...grpc.CallOption) (*MsgPerformActionUpdateStopLossResponse, error) {
+	out := new(MsgPerformActionUpdateStopLossResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionUpdateStopLoss", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PerformActionUpdateTakeProfitPrice(ctx context.Context, in *MsgPerformActionUpdateTakeProfitPrice, opts ...grpc.CallOption) (*MsgPerformActionUpdateTakeProfitPriceResponse, error) {
+	out := new(MsgPerformActionUpdateTakeProfitPriceResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformActionUpdateTakeProfitPrice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateVaultCoins(ctx context.Context, in *MsgUpdateVaultCoins, opts ...grpc.CallOption) (*MsgUpdateVaultCoinsResponse, error) {
 	out := new(MsgUpdateVaultCoinsResponse)
 	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultCoins", in, out, opts...)
@@ -176,10 +226,15 @@ type MsgServer interface {
 	// AddVault defines a method for creating a new vault.
 	AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error)
 	// PerformAction defines a method for performing an action on a vault.
-	// rpc PerformAction(MsgPerformAction) returns (MsgPerformActionResponse);
 	PerformActionJoinPool(context.Context, *MsgPerformActionJoinPool) (*MsgPerformActionJoinPoolResponse, error)
 	PerformActionExitPool(context.Context, *MsgPerformActionExitPool) (*MsgPerformActionExitPoolResponse, error)
 	PerformActionSwapByDenom(context.Context, *MsgPerformActionSwapByDenom) (*MsgPerformActionSwapByDenomResponse, error)
+	// PerformAction for perpetuals
+	PerformActionOpenPerpetual(context.Context, *MsgPerformActionOpenPerpetual) (*MsgPerformActionOpenPerpetualResponse, error)
+	PerformActionClosePerpetual(context.Context, *MsgPerformActionClosePerpetual) (*MsgPerformActionClosePerpetualResponse, error)
+	PerformActionAddCollateral(context.Context, *MsgPerformActionAddCollateral) (*MsgPerformActionAddCollateralResponse, error)
+	PerformActionUpdateStopLoss(context.Context, *MsgPerformActionUpdateStopLoss) (*MsgPerformActionUpdateStopLossResponse, error)
+	PerformActionUpdateTakeProfitPrice(context.Context, *MsgPerformActionUpdateTakeProfitPrice) (*MsgPerformActionUpdateTakeProfitPriceResponse, error)
 	// UpdateVaultCoins defines a method for updating the coins of a vault.
 	UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error)
 	// UpdateVaultFees defines a method for updating the fees of a vault.
@@ -219,6 +274,21 @@ func (UnimplementedMsgServer) PerformActionExitPool(context.Context, *MsgPerform
 }
 func (UnimplementedMsgServer) PerformActionSwapByDenom(context.Context, *MsgPerformActionSwapByDenom) (*MsgPerformActionSwapByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PerformActionSwapByDenom not implemented")
+}
+func (UnimplementedMsgServer) PerformActionOpenPerpetual(context.Context, *MsgPerformActionOpenPerpetual) (*MsgPerformActionOpenPerpetualResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionOpenPerpetual not implemented")
+}
+func (UnimplementedMsgServer) PerformActionClosePerpetual(context.Context, *MsgPerformActionClosePerpetual) (*MsgPerformActionClosePerpetualResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionClosePerpetual not implemented")
+}
+func (UnimplementedMsgServer) PerformActionAddCollateral(context.Context, *MsgPerformActionAddCollateral) (*MsgPerformActionAddCollateralResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionAddCollateral not implemented")
+}
+func (UnimplementedMsgServer) PerformActionUpdateStopLoss(context.Context, *MsgPerformActionUpdateStopLoss) (*MsgPerformActionUpdateStopLossResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionUpdateStopLoss not implemented")
+}
+func (UnimplementedMsgServer) PerformActionUpdateTakeProfitPrice(context.Context, *MsgPerformActionUpdateTakeProfitPrice) (*MsgPerformActionUpdateTakeProfitPriceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformActionUpdateTakeProfitPrice not implemented")
 }
 func (UnimplementedMsgServer) UpdateVaultCoins(context.Context, *MsgUpdateVaultCoins) (*MsgUpdateVaultCoinsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultCoins not implemented")
@@ -374,6 +444,96 @@ func _Msg_PerformActionSwapByDenom_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_PerformActionOpenPerpetual_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionOpenPerpetual)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionOpenPerpetual(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionOpenPerpetual",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionOpenPerpetual(ctx, req.(*MsgPerformActionOpenPerpetual))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionClosePerpetual_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionClosePerpetual)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionClosePerpetual(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionClosePerpetual",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionClosePerpetual(ctx, req.(*MsgPerformActionClosePerpetual))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionAddCollateral_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionAddCollateral)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionAddCollateral(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionAddCollateral",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionAddCollateral(ctx, req.(*MsgPerformActionAddCollateral))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionUpdateStopLoss_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionUpdateStopLoss)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionUpdateStopLoss(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionUpdateStopLoss",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionUpdateStopLoss(ctx, req.(*MsgPerformActionUpdateStopLoss))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PerformActionUpdateTakeProfitPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformActionUpdateTakeProfitPrice)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformActionUpdateTakeProfitPrice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformActionUpdateTakeProfitPrice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformActionUpdateTakeProfitPrice(ctx, req.(*MsgPerformActionUpdateTakeProfitPrice))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateVaultCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateVaultCoins)
 	if err := dec(in); err != nil {
@@ -498,6 +658,26 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PerformActionSwapByDenom",
 			Handler:    _Msg_PerformActionSwapByDenom_Handler,
+		},
+		{
+			MethodName: "PerformActionOpenPerpetual",
+			Handler:    _Msg_PerformActionOpenPerpetual_Handler,
+		},
+		{
+			MethodName: "PerformActionClosePerpetual",
+			Handler:    _Msg_PerformActionClosePerpetual_Handler,
+		},
+		{
+			MethodName: "PerformActionAddCollateral",
+			Handler:    _Msg_PerformActionAddCollateral_Handler,
+		},
+		{
+			MethodName: "PerformActionUpdateStopLoss",
+			Handler:    _Msg_PerformActionUpdateStopLoss_Handler,
+		},
+		{
+			MethodName: "PerformActionUpdateTakeProfitPrice",
+			Handler:    _Msg_PerformActionUpdateTakeProfitPrice_Handler,
 		},
 		{
 			MethodName: "UpdateVaultCoins",
