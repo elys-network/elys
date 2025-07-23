@@ -258,6 +258,10 @@ func (suite *KeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle
 	return ammPool
 }
 
+func (suite *KeeperTestSuite) ResetSuite() {
+	suite.SetupTest()
+}
+
 func (suite *KeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Pool, sdk.AccAddress, ammtypes.Pool) {
 	ctx := suite.ctx
 	k := suite.app.PerpetualKeeper

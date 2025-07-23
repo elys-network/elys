@@ -56,204 +56,128 @@ func (suite *KeeperTestSuite) TestMsgServerPerformActionOpenPerpetual() {
 			},
 			expectError: false,
 		},
-		// {
-		// 	desc:            "successful perpetual open - short position",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_SHORT,
-		// 	leverage:        sdkmath.LegacyNewDec(3),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(500)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(80),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(120),
-		// 	poolId:          1,
-		// 	setup: func() {
-		// 		// Create a vault with the manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
+		{
+			desc:            "successful perpetual open - short position",
+			creator:         sdk.AccAddress([]byte("manager")),
+			vaultId:         1,
+			position:        types.Position_SHORT,
+			leverage:        sdkmath.LegacyNewDec(3),
+			collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(500)),
+			takeProfitPrice: sdkmath.LegacyMustNewDecFromStr("0.5"),
+			stopLossPrice:   sdkmath.LegacyNewDec(6),
+			poolId:          1,
+			setup: func() {
+				// Create a vault with the manager
+				msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
+				msg := types.MsgAddVault{
+					Creator:       suite.app.VaultsKeeper.GetAuthority(),
+					DepositDenom:  "uusdc",
+					MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+					AllowedCoins:  []string{"uusdc", "uatom"},
+					RewardCoins:   []string{"uelys"},
+					BenchmarkCoin: "uatom",
+					Manager:       sdk.AccAddress([]byte("manager")).String(),
+				}
+				_, err := msgServer.AddVault(suite.ctx, &msg)
+				suite.Require().NoError(err)
 
-		// 		// Fund the vault with collateral
-		// 		vaultAddress := types.NewVaultAddress(1)
-		// 		err = suite.app.BankKeeper.MintCoins(suite.ctx, authtypes.Minter, sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
-		// 		suite.Require().NoError(err)
-		// 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, authtypes.Minter, vaultAddress, sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError: false,
-		// },
-		// {
-		// 	desc:            "vault not found",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         999,
-		// 	position:        types.Position_LONG,
-		// 	leverage:        sdkmath.LegacyNewDec(2),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          1,
-		// 	setup:           func() {},
-		// 	expectError:     true,
-		// 	errorContains:   "vault 999 not found",
-		// },
-		// {
-		// 	desc:            "invalid signer - not the vault manager",
-		// 	creator:         sdk.AccAddress([]byte("wrong_manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_LONG,
-		// 	leverage:        sdkmath.LegacyNewDec(2),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          1,
-		// 	setup: func() {
-		// 		// Create a vault with a different manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError:   true,
-		// 	errorContains: "vault 1 is not managed by",
-		// },
-		// {
-		// 	desc:            "unspecified position",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_UNSPECIFIED,
-		// 	leverage:        sdkmath.LegacyNewDec(2),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          1,
-		// 	setup: func() {
-		// 		// Create a vault with the manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError:   true,
-		// 	errorContains: "action failed with error",
-		// },
-		// {
-		// 	desc:            "zero leverage",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_LONG,
-		// 	leverage:        sdkmath.LegacyZeroDec(),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          1,
-		// 	setup: func() {
-		// 		// Create a vault with the manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError:   true,
-		// 	errorContains: "action failed with error",
-		// },
-		// {
-		// 	desc:            "zero collateral amount",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_LONG,
-		// 	leverage:        sdkmath.LegacyNewDec(2),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.ZeroInt()),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          1,
-		// 	setup: func() {
-		// 		// Create a vault with the manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError:   true,
-		// 	errorContains: "action failed with error",
-		// },
-		// {
-		// 	desc:            "invalid pool id",
-		// 	creator:         sdk.AccAddress([]byte("manager")),
-		// 	vaultId:         1,
-		// 	position:        types.Position_LONG,
-		// 	leverage:        sdkmath.LegacyNewDec(2),
-		// 	collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
-		// 	takeProfitPrice: sdkmath.LegacyNewDec(110),
-		// 	stopLossPrice:   sdkmath.LegacyNewDec(90),
-		// 	poolId:          999,
-		// 	setup: func() {
-		// 		// Create a vault with the manager
-		// 		msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-		// 		msg := types.MsgAddVault{
-		// 			Creator:       suite.app.VaultsKeeper.GetAuthority(),
-		// 			DepositDenom:  "uusdc",
-		// 			MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		// 			AllowedCoins:  []string{"uusdc", "uatom"},
-		// 			RewardCoins:   []string{"uelys"},
-		// 			BenchmarkCoin: "uatom",
-		// 			Manager:       sdk.AccAddress([]byte("manager")).String(),
-		// 		}
-		// 		_, err := msgServer.AddVault(suite.ctx, &msg)
-		// 		suite.Require().NoError(err)
-
-		// 		// Fund the vault with collateral
-		// 		vaultAddress := types.NewVaultAddress(1)
-		// 		err = suite.app.BankKeeper.MintCoins(suite.ctx, authtypes.Minter, sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
-		// 		suite.Require().NoError(err)
-		// 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, authtypes.Minter, vaultAddress, sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError:   true,
-		// 	errorContains: "action failed with error",
-		// },
+				// Fund the vault with collateral
+				vaultAddress := types.NewVaultAddress(1)
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, "mint", sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", vaultAddress, sdk.NewCoins(sdk.NewCoin("uusdc", sdkmath.NewInt(10000))))
+				suite.Require().NoError(err)
+			},
+			expectError: false,
+		},
+		{
+			desc:            "unspecified position",
+			creator:         sdk.AccAddress([]byte("manager")),
+			vaultId:         1,
+			position:        types.Position_UNSPECIFIED,
+			leverage:        sdkmath.LegacyNewDec(2),
+			collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
+			takeProfitPrice: sdkmath.LegacyMustNewDecFromStr("0.5"),
+			stopLossPrice:   sdkmath.LegacyMustNewDecFromStr("6"),
+			poolId:          1,
+			setup: func() {
+				// Create a vault with the manager
+				msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
+				msg := types.MsgAddVault{
+					Creator:       suite.app.VaultsKeeper.GetAuthority(),
+					DepositDenom:  "uusdc",
+					MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+					AllowedCoins:  []string{"uusdc", "uatom"},
+					RewardCoins:   []string{"uelys"},
+					BenchmarkCoin: "uatom",
+					Manager:       sdk.AccAddress([]byte("manager")).String(),
+				}
+				_, err := msgServer.AddVault(suite.ctx, &msg)
+				suite.Require().NoError(err)
+			},
+			expectError:   true,
+			errorContains: "action failed with error",
+		},
+		{
+			desc:            "zero leverage",
+			creator:         sdk.AccAddress([]byte("manager")),
+			vaultId:         1,
+			position:        types.Position_LONG,
+			leverage:        sdkmath.LegacyZeroDec(),
+			collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
+			takeProfitPrice: sdkmath.LegacyMustNewDecFromStr("0.5"),
+			stopLossPrice:   sdkmath.LegacyMustNewDecFromStr("6"),
+			poolId:          1,
+			setup: func() {
+				// Create a vault with the manager
+				msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
+				msg := types.MsgAddVault{
+					Creator:       suite.app.VaultsKeeper.GetAuthority(),
+					DepositDenom:  "uusdc",
+					MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+					AllowedCoins:  []string{"uusdc", "uatom"},
+					RewardCoins:   []string{"uelys"},
+					BenchmarkCoin: "uatom",
+					Manager:       sdk.AccAddress([]byte("manager")).String(),
+				}
+				_, err := msgServer.AddVault(suite.ctx, &msg)
+				suite.Require().NoError(err)
+			},
+			expectError:   true,
+			errorContains: "action failed with error",
+		},
+		{
+			desc:            "zero collateral amount",
+			creator:         sdk.AccAddress([]byte("manager")),
+			vaultId:         1,
+			position:        types.Position_LONG,
+			leverage:        sdkmath.LegacyNewDec(2),
+			collateral:      sdk.NewCoin("uusdc", sdkmath.ZeroInt()),
+			takeProfitPrice: sdkmath.LegacyMustNewDecFromStr("0.5"),
+			stopLossPrice:   sdkmath.LegacyMustNewDecFromStr("6"),
+			poolId:          1,
+			setup: func() {
+				// Create a vault with the manager
+				msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
+				msg := types.MsgAddVault{
+					Creator:       suite.app.VaultsKeeper.GetAuthority(),
+					DepositDenom:  "uusdc",
+					MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
+					AllowedCoins:  []string{"uusdc", "uatom"},
+					RewardCoins:   []string{"uelys"},
+					BenchmarkCoin: "uatom",
+					Manager:       sdk.AccAddress([]byte("manager")).String(),
+				}
+				_, err := msgServer.AddVault(suite.ctx, &msg)
+				suite.Require().NoError(err)
+			},
+			expectError:   true,
+			errorContains: "action failed with error",
+		},
 	} {
 		suite.Run(tc.desc, func() {
 			// Setup test case
+			suite.ResetSuite()
 			tc.setup()
 			suite.SetPerpetualPool(1)
 
