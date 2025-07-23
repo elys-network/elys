@@ -21,12 +21,8 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64)
 	position.StopLossPrice = msg.StopLossPrice
 	position.BorrowPoolId = borrowPool
 
-	positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
-	positionCounter.Counter++
-	positionCounter.TotalOpen++
-	k.SetPositionCounter(ctx, positionCounter)
-
-	position.Id = positionCounter.Counter
+	// Use atomic increment to prevent race conditions
+	position.Id = k.IncrementPositionCounter(ctx, position.AmmPoolId)
 
 	// Call the function to process the open long logic.
 	return k.ProcessOpenLong(ctx, position, msg.AmmPoolId, msg)

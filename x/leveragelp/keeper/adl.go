@@ -58,6 +58,10 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 		return err
 	}
 
+	// Check for division by zero
+	if ammPool.TotalShares.Amount.IsZero() {
+		return fmt.Errorf("amm pool %d has zero total shares", leveragePool.AmmPoolId)
+	}
 	currentLeverageRatio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	if currentLeverageRatio.LTE(leveragePool.AdlTriggerRatio) {
@@ -102,7 +106,7 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 	k.SetADLCounter(ctx, adlCounter)
 
 	for _, position := range positions {
-		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &leveragePool, closingRatio, false)
+		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &leveragePool, closingRatio, false)
 		if err != nil {
 			ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 			return err
@@ -117,11 +121,11 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 			sdk.NewAttribute("repay_amount", repayAmount.String()),
 			sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
 			sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
-			sdk.NewAttribute("reason", "stop_loss"),
+			sdk.NewAttribute("health", position.PositionHealth.String()),
 			sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 			sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
 			sdk.NewAttribute("exit_swap_fee", swapFee.String()),
-			sdk.NewAttribute("exit_taker_fee", exitFee.String()),
+			sdk.NewAttribute("exit_taker_fee", takerFee.String()),
 		))
 	}
 	return nil

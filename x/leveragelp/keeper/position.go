@@ -33,12 +33,8 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	creator := sdk.MustAccAddressFromBech32(position.Address)
 
 	if position.Id == 0 {
-		positionCounter := k.GetPositionCounter(ctx, position.AmmPoolId)
-		positionCounter.Counter++
-		positionCounter.TotalOpen++
-		k.SetPositionCounter(ctx, positionCounter)
-
-		position.Id = positionCounter.Counter
+		// Use atomic increment to prevent race conditions
+		position.Id = k.IncrementPositionCounter(ctx, position.AmmPoolId)
 	}
 
 	key := types.GetPositionKey(position.AmmPoolId, creator, position.Id)
@@ -257,6 +253,11 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (osm
 	ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
 		return osmomath.ZeroBigDec(), err
+	}
+
+	// Check for division by zero
+	if ammPool.TotalShares.Amount.IsZero() {
+		return osmomath.ZeroBigDec(), fmt.Errorf("amm pool %d has zero total shares", position.AmmPoolId)
 	}
 	positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 

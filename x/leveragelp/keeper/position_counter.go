@@ -45,3 +45,21 @@ func (k Keeper) SetPositionCounter(ctx sdk.Context, positionCounter types.Positi
 	bz := k.cdc.MustMarshal(&positionCounter)
 	store.Set(key, bz)
 }
+
+// IncrementPositionCounter atomically increments the position counter for a pool
+// and returns the new position ID. This prevents race conditions when multiple
+// positions are being created concurrently.
+func (k Keeper) IncrementPositionCounter(ctx sdk.Context, poolId uint64) uint64 {
+	// Get current counter
+	positionCounter := k.GetPositionCounter(ctx, poolId)
+
+	// Increment counters
+	positionCounter.Counter++
+	positionCounter.TotalOpen++
+
+	// Save updated counter
+	k.SetPositionCounter(ctx, positionCounter)
+
+	// Return the new position ID
+	return positionCounter.Counter
+}

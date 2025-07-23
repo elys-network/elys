@@ -41,6 +41,10 @@ func (k Keeper) CheckMaxLeverageRatio(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
 	}
 
+	// Check for division by zero
+	if ammPool.TotalShares.Amount.IsZero() {
+		return errorsmod.Wrapf(types.ErrInvalidBorrowingAsset, "amm pool %d has zero total shares", poolId)
+	}
 	poolLeverageRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	if poolLeverageRatio.GTE(pool.MaxLeveragelpRatio) {
@@ -85,6 +89,10 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []types.
 		debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
 		debtValue := position.GetBigDecLiabilities().Mul(debtDenomPrice)
 
+		// Check for division by zero
+		if ammPool.TotalShares.Amount.IsZero() {
+			continue // Skip positions in pools with zero shares
+		}
 		positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
 		updated_leverage := osmomath.ZeroBigDec()
