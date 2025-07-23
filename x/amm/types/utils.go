@@ -15,6 +15,19 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
+// VirtualSwaps holds the information about virtual swaps that are done during single-sided join/exit pools
+type VirtualSwap struct {
+	TokenIn  sdk.Coin
+	TokenOut sdk.Coin
+}
+
+func NewVirtualSwap(tokenIn, tokenOut sdk.Coin) VirtualSwap {
+	return VirtualSwap{
+		TokenIn:  tokenIn,
+		TokenOut: tokenOut,
+	}
+}
+
 func GetPoolShareDenom(poolId uint64) string {
 	return fmt.Sprintf("amm/pool/%d", poolId)
 }
