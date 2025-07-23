@@ -102,7 +102,12 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 		ctx.Logger().Error(errorsmod.Wrap(err, "error fetching paginated positions").Error())
 		return err
 	}
-	adlCounter.NextKey = pageResponse.NextKey
+
+	if adlCounter.Counter == 0 {
+		adlCounter.NextKey = nil
+	} else {
+		adlCounter.NextKey = pageResponse.NextKey
+	}
 	k.SetADLCounter(ctx, adlCounter)
 
 	for _, position := range positions {

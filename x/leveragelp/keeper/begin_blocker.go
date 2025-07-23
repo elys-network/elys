@@ -51,7 +51,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			return
 		}
 
-		fallbackCounter.NextKey = pageResponse.NextKey
+		if fallbackCounter.Counter == 0 {
+			fallbackCounter.NextKey = nil
+		} else {
+			fallbackCounter.NextKey = pageResponse.NextKey
+		}
 		k.SetFallbackCounter(ctx, fallbackCounter)
 
 		for _, position := range positions {
