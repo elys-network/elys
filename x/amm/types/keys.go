@@ -76,7 +76,7 @@ func DenomLiquidityKey(denom string) []byte {
 }
 
 func TKeyPrefixSwapExactAmountInPrefix(m *MsgSwapExactAmountIn) []byte {
-	prefix := []byte(fmt.Sprintf("%s/", m.TokenIn.Denom))
+	prefix := fmt.Appendf(nil, "%s/", m.TokenIn.Denom)
 	routeKeys := []string{}
 	for _, route := range m.Routes[:1] {
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenOutDenom))
@@ -101,7 +101,7 @@ func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 }
 
 func TKeyPrefixSwapExactAmountOutPrefix(m *MsgSwapExactAmountOut) []byte {
-	prefix := []byte(fmt.Sprintf("/%s", m.TokenOut.Denom))
+	prefix := fmt.Appendf(nil, "/%s", m.TokenOut.Denom)
 	routeKeys := []string{}
 	if len(m.Routes) > 0 {
 		route := m.Routes[len(m.Routes)-1]
