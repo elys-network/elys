@@ -6,14 +6,22 @@ import (
 	"testing"
 
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v6/x/perpetual/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	aptypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+
+	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 
 	simapp "github.com/elys-network/elys/v6/app"
@@ -23,6 +31,44 @@ import (
 
 const (
 	initChain = true
+)
+
+type assetPriceInfo struct {
+	denom   string
+	display string
+	price   osmomath.BigDec
+}
+
+var (
+	oracleProvider = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
+	priceMap = map[string]assetPriceInfo{
+		"uusdc": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   osmomath.OneBigDec(),
+		},
+		"uatom": {
+			denom:   ptypes.ATOM,
+			display: "ATOM",
+			price:   osmomath.MustNewBigDecFromStr("5.0"),
+		},
+	}
+
+	entry = []aptypes.Entry{
+		{
+			BaseDenom:   ptypes.BaseCurrency,
+			Denom:       ptypes.BaseCurrency,
+			Decimals:    6,
+			DisplayName: "USDC",
+		},
+		{
+			BaseDenom:   ptypes.ATOM,
+			Denom:       ptypes.ATOM,
+			Decimals:    6,
+			DisplayName: "ATOM",
+		},
+	}
 )
 
 type KeeperTestSuite struct {
@@ -67,6 +113,62 @@ func (suite *KeeperTestSuite) SetupTest() {
 	})
 }
 
+func (suite *KeeperTestSuite) SetupCoinPrices() {
+	// prices set for USDT and USDC
+	provider := oracleProvider
+
+	for _, v := range priceMap {
+		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+			Denom:   v.denom,
+			Display: v.display,
+			Decimal: 6,
+		})
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+			Asset:     v.display,
+			Price:     v.price.Dec(),
+			Provider:  provider.String(),
+			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) GetAccountIssueAmount() math.Int {
+	return math.NewInt(10_000_000_000_000)
+}
+
+func (suite *KeeperTestSuite) SetupAssetProfile() {
+	for _, v := range entry {
+		suite.app.AssetprofileKeeper.SetEntry(suite.ctx, v)
+	}
+}
+
+func (suite *KeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
+	issueAmount := suite.GetAccountIssueAmount()
+	var addresses []sdk.AccAddress
+	if n > len(given) {
+		addresses = simapp.AddTestAddrs(suite.app, suite.ctx, n-len(given), issueAmount)
+		addresses = append(addresses, given...)
+	} else {
+		addresses = given
+	}
+	for _, address := range addresses {
+		coins := sdk.NewCoins(
+			sdk.NewCoin(ptypes.ATOM, issueAmount),
+			sdk.NewCoin(ptypes.Elys, issueAmount),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+		)
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		if err != nil {
+			panic(err)
+		}
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, address, coins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return addresses
+}
+
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
@@ -96,30 +198,30 @@ func TestKeeper_SetHooks_Panic(t *testing.T) {
 	})
 }
 
-func (suite *KeeperTestSuite) SetupAssetProfile() {
+// func (suite *KeeperTestSuite) SetupAssetProfile() {
 
-	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
-		BaseDenom:                "uusdc",
-		Decimals:                 6,
-		Denom:                    "uusdc",
-		Path:                     "transfer/channel-12",
-		IbcChannelId:             "channel-12",
-		IbcCounterpartyChannelId: "channel-19",
-		DisplayName:              "USDC",
-		DisplaySymbol:            "uUSDC",
-		Network:                  "",
-		Address:                  "",
-		ExternalSymbol:           "uUSDC",
-		TransferLimit:            "",
-		Permissions:              []string{},
-		UnitDenom:                "uusdc",
-		IbcCounterpartyDenom:     "",
-		IbcCounterpartyChainId:   "",
-		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
-		CommitEnabled:            true,
-		WithdrawEnabled:          true,
-	})
-}
+// 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
+// 		BaseDenom:                "uusdc",
+// 		Decimals:                 6,
+// 		Denom:                    "uusdc",
+// 		Path:                     "transfer/channel-12",
+// 		IbcChannelId:             "channel-12",
+// 		IbcCounterpartyChannelId: "channel-19",
+// 		DisplayName:              "USDC",
+// 		DisplaySymbol:            "uUSDC",
+// 		Network:                  "",
+// 		Address:                  "",
+// 		ExternalSymbol:           "uUSDC",
+// 		TransferLimit:            "",
+// 		Permissions:              []string{},
+// 		UnitDenom:                "uusdc",
+// 		IbcCounterpartyDenom:     "",
+// 		IbcCounterpartyChainId:   "",
+// 		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+// 		CommitEnabled:            true,
+// 		WithdrawEnabled:          true,
+// 	})
+// }
 
 func (suite *KeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
@@ -154,4 +256,37 @@ func (suite *KeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle
 	ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
 
 	return ammPool
+}
+
+func (suite *KeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Pool, sdk.AccAddress, ammtypes.Pool) {
+	ctx := suite.ctx
+	k := suite.app.PerpetualKeeper
+
+	params := k.GetParams(ctx)
+	params.EnabledPools = append(params.EnabledPools, poolId)
+	k.SetParams(ctx, &params)
+	//prices
+	suite.SetupCoinPrices()
+	suite.SetupAssetProfile()
+	//accounts
+	accounts := suite.AddAccounts(2, nil)
+	poolCreator := accounts[0]
+
+	amount := math.NewInt(100000000000)
+
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
+
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	k.SetPool(ctx, pool)
+
+	return pool, poolCreator, ammPool
 }
