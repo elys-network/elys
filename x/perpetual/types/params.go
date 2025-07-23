@@ -31,7 +31,7 @@ func NewParams() Params {
 		WeightBreakingFeeFactor:             math.LegacyMustNewDecFromStr("0.5"),
 		WhitelistingEnabled:                 false,
 		EnabledPools:                        []uint64(nil),
-		MinimumNotionalValue:                math.LegacyNewDec(0),
+		MinimumNotionalValue:                math.LegacyNewDec(10), // Minimum position notional value of 10 units
 		LongMinimumLiabilityAmount:          math.NewInt(1),
 		ExitBuffer:                          math.LegacyMustNewDecFromStr("0.15"),
 		TakerFee:                            math.LegacyMustNewDecFromStr("0.00075"),

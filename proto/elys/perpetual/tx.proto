@@ -67,6 +67,11 @@ message MsgClose {
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 4;
+  string closing_ratio = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCloseResponse {

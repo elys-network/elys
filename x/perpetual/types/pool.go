@@ -13,7 +13,7 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
+func NewPool(ammPool ammtypes.Pool, leverageMax, adlTrigger math.LegacyDec) Pool {
 	p := Pool{
 		AmmPoolId:                            ammPool.PoolId,
 		BaseAssetLiabilitiesRatio:            math.LegacyZeroDec(),
@@ -24,6 +24,7 @@ func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
 		LastHeightBorrowInterestRateComputed: 0,
 		FundingRate:                          math.LegacyZeroDec(),
 		LeverageMax:                          leverageMax,
+		AdlTriggerRatio:                      adlTrigger,
 	}
 
 	for _, asset := range ammPool.PoolAssets {

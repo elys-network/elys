@@ -37,7 +37,7 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
 
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"), math.LegacyMustNewDecFromStr("0.67"))
 	k.SetPool(ctx, pool)
 
 	openPositionMsg := &types.MsgOpen{

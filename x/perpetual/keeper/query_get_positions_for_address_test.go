@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v6/testutil/sample"
 	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
 	"github.com/elys-network/elys/v6/x/perpetual/types"
 )
@@ -27,20 +25,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_ErrAccAdd
 	})
 
 	suite.Require().ErrorContains(err, "invalid bech32 string length 5")
-}
-
-func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_ErrPageSize() {
-	k := suite.app.PerpetualKeeper
-	ctx := suite.ctx
-
-	_, err := k.GetPositionsForAddress(ctx, &types.PositionsForAddressRequest{
-		Address: sample.AccAddress(),
-		Pagination: &query.PageRequest{
-			Limit: 12000,
-		},
-	})
-
-	suite.Require().ErrorContains(err, "page size greater than max")
 }
 
 func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_Successful() {
@@ -82,9 +66,6 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_Successfu
 
 	response, err := k.GetPositionsForAddress(ctx, &types.PositionsForAddressRequest{
 		Address: firstPositionCreator.String(),
-		Pagination: &query.PageRequest{
-			Limit: 10,
-		},
 	})
 
 	suite.Require().Nil(err)

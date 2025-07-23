@@ -227,7 +227,7 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (os
 	totalAssets := osmomath.ZeroBigDec()
 	totalLiability := osmomath.ZeroBigDec()
 	var netValue osmomath.BigDec
-	perpetuals, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, user, nil)
+	perpetuals, err := k.perpetual.GetAllMTPForAddress(ctx, user)
 	if err != nil {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
 	}

@@ -9,8 +9,6 @@ import (
 
 	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
 
-	query "github.com/cosmos/cosmos-sdk/types/query"
-
 	types "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -129,6 +127,65 @@ func (_c *PerpetualKeeper_Close_Call) Return(_a0 *perpetualtypes.MsgCloseRespons
 }
 
 func (_c *PerpetualKeeper_Close_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)) *PerpetualKeeper_Close_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetAllMTPForAddress provides a mock function with given fields: ctx, mtpAddress
+func (_m *PerpetualKeeper) GetAllMTPForAddress(ctx types.Context, mtpAddress types.AccAddress) ([]*perpetualtypes.MtpAndPrice, error) {
+	ret := _m.Called(ctx, mtpAddress)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAllMTPForAddress")
+	}
+
+	var r0 []*perpetualtypes.MtpAndPrice
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) ([]*perpetualtypes.MtpAndPrice, error)); ok {
+		return rf(ctx, mtpAddress)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) []*perpetualtypes.MtpAndPrice); ok {
+		r0 = rf(ctx, mtpAddress)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*perpetualtypes.MtpAndPrice)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, types.AccAddress) error); ok {
+		r1 = rf(ctx, mtpAddress)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PerpetualKeeper_GetAllMTPForAddress_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllMTPForAddress'
+type PerpetualKeeper_GetAllMTPForAddress_Call struct {
+	*mock.Call
+}
+
+// GetAllMTPForAddress is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtpAddress types.AccAddress
+func (_e *PerpetualKeeper_Expecter) GetAllMTPForAddress(ctx interface{}, mtpAddress interface{}) *PerpetualKeeper_GetAllMTPForAddress_Call {
+	return &PerpetualKeeper_GetAllMTPForAddress_Call{Call: _e.mock.On("GetAllMTPForAddress", ctx, mtpAddress)}
+}
+
+func (_c *PerpetualKeeper_GetAllMTPForAddress_Call) Run(run func(ctx types.Context, mtpAddress types.AccAddress)) *PerpetualKeeper_GetAllMTPForAddress_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(types.AccAddress))
+	})
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetAllMTPForAddress_Call) Return(_a0 []*perpetualtypes.MtpAndPrice, _a1 error) *PerpetualKeeper_GetAllMTPForAddress_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetAllMTPForAddress_Call) RunAndReturn(run func(types.Context, types.AccAddress) ([]*perpetualtypes.MtpAndPrice, error)) *PerpetualKeeper_GetAllMTPForAddress_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -252,75 +309,6 @@ func (_c *PerpetualKeeper_GetMTP_Call) Return(_a0 perpetualtypes.MTP, _a1 error)
 }
 
 func (_c *PerpetualKeeper_GetMTP_Call) RunAndReturn(run func(types.Context, uint64, types.AccAddress, uint64) (perpetualtypes.MTP, error)) *PerpetualKeeper_GetMTP_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetMTPsForAddressWithPagination provides a mock function with given fields: ctx, mtpAddress, pagination
-func (_m *PerpetualKeeper) GetMTPsForAddressWithPagination(ctx types.Context, mtpAddress types.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error) {
-	ret := _m.Called(ctx, mtpAddress, pagination)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetMTPsForAddressWithPagination")
-	}
-
-	var r0 []*perpetualtypes.MtpAndPrice
-	var r1 *query.PageResponse
-	var r2 error
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)); ok {
-		return rf(ctx, mtpAddress, pagination)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, *query.PageRequest) []*perpetualtypes.MtpAndPrice); ok {
-		r0 = rf(ctx, mtpAddress, pagination)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*perpetualtypes.MtpAndPrice)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, types.AccAddress, *query.PageRequest) *query.PageResponse); ok {
-		r1 = rf(ctx, mtpAddress, pagination)
-	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(*query.PageResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(2).(func(types.Context, types.AccAddress, *query.PageRequest) error); ok {
-		r2 = rf(ctx, mtpAddress, pagination)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
-}
-
-// PerpetualKeeper_GetMTPsForAddressWithPagination_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMTPsForAddressWithPagination'
-type PerpetualKeeper_GetMTPsForAddressWithPagination_Call struct {
-	*mock.Call
-}
-
-// GetMTPsForAddressWithPagination is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtpAddress types.AccAddress
-//   - pagination *query.PageRequest
-func (_e *PerpetualKeeper_Expecter) GetMTPsForAddressWithPagination(ctx interface{}, mtpAddress interface{}, pagination interface{}) *PerpetualKeeper_GetMTPsForAddressWithPagination_Call {
-	return &PerpetualKeeper_GetMTPsForAddressWithPagination_Call{Call: _e.mock.On("GetMTPsForAddressWithPagination", ctx, mtpAddress, pagination)}
-}
-
-func (_c *PerpetualKeeper_GetMTPsForAddressWithPagination_Call) Run(run func(ctx types.Context, mtpAddress types.AccAddress, pagination *query.PageRequest)) *PerpetualKeeper_GetMTPsForAddressWithPagination_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(*query.PageRequest))
-	})
-	return _c
-}
-
-func (_c *PerpetualKeeper_GetMTPsForAddressWithPagination_Call) Return(_a0 []*perpetualtypes.MtpAndPrice, _a1 *query.PageResponse, _a2 error) *PerpetualKeeper_GetMTPsForAddressWithPagination_Call {
-	_c.Call.Return(_a0, _a1, _a2)
-	return _c
-}
-
-func (_c *PerpetualKeeper_GetMTPsForAddressWithPagination_Call) RunAndReturn(run func(types.Context, types.AccAddress, *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)) *PerpetualKeeper_GetMTPsForAddressWithPagination_Call {
 	_c.Call.Return(run)
 	return _c
 }

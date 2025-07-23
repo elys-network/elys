@@ -17,4 +17,5 @@ message GenesisState {
   repeated string address_whitelist = 4;
   repeated PerpetualCounter perpetual_counter = 5
       [ (gogoproto.nullable) = false ];
+  repeated ADLCounter adl_counter = 6 [ (gogoproto.nullable) = false ];
 }

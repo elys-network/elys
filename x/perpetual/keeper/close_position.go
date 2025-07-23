@@ -44,14 +44,18 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, 
 	}
 
 	// Should be declared after SettleMTPBorrowInterestUnpaidLiability and settling funding
-	closingRatio := msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
-	if mtp.Position == types.Position_SHORT {
-		closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+	var closingRatio math.LegacyDec
+	if msg.ClosingRatio.IsPositive() {
+		closingRatio = msg.ClosingRatio
+	} else {
+		closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
+		if mtp.Position == types.Position_SHORT {
+			closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+		}
 	}
 	if closingRatio.GT(math.LegacyOneDec()) {
 		closingRatio = math.LegacyOneDec()
 	}
-
 	// Estimate swap and repay
 	repayAmt, returnAmt, perpFees, closingPrice, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, closingRatio)
 	if err != nil {

@@ -15,9 +15,9 @@ import (
 
 func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "close [mtp-id] [amount] [pool-id]",
+		Use:     "close [mtp-id] [closingRatio] [pool-id]",
 		Short:   "Close perpetual position",
-		Example: `elysd tx perpetual close 1 10000000 --from=bob --yes --gas=1000000`,
+		Example: `elysd tx perpetual close 1 0.37 2 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -34,9 +34,9 @@ func CmdClose() *cobra.Command {
 				return errors.New("invalid mtp id")
 			}
 
-			argAmount, ok := math.NewIntFromString(args[1])
-			if !ok {
-				return errors.New("invalid amount")
+			argClosingRatio, err := math.LegacyNewDecFromStr(args[1])
+			if err != nil {
+				return err
 			}
 
 			poolId, err := strconv.ParseUint(args[2], 10, 64)
@@ -47,8 +47,9 @@ func CmdClose() *cobra.Command {
 			msg := types.NewMsgClose(
 				signer.String(),
 				argMtpId,
-				argAmount,
+				math.ZeroInt(),
 				poolId,
+				argClosingRatio,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err

@@ -35,6 +35,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if err != nil {
 		panic(err)
 	}
+
+	for _, elem := range genState.AdlCounter {
+		k.SetADLCounter(ctx, elem)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
@@ -53,6 +57,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 		whitelistAddresses[i] = whitelistAddress.String()
 	}
 	genesis.AddressWhitelist = whitelistAddresses
+
+	genesis.AdlCounter = k.GetAllADLCounter(ctx)
 
 	return genesis
 }

@@ -30,7 +30,7 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -68,7 +68,7 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -102,7 +102,7 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -140,7 +140,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -175,7 +175,7 @@ func TestPool_InitiatePoolValid(t *testing.T) {
 		},
 	}
 	// Define the perpetual pool with assets
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 
 	denom := "testAsset"
 	assert.Equal(t, pool.AmmPoolId, (uint64)(1))
@@ -197,7 +197,7 @@ func TestKeeper_GetPerpetualPoolBalances(t *testing.T) {
 			},
 		},
 	}
-	perpetualPool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
+	perpetualPool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"), math.LegacyMustNewDecFromStr("0.67"))
 	perpetualPool.PoolAssetsLong = []types.PoolAsset{
 		{
 			AssetDenom:  "testAsset",

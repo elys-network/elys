@@ -33,16 +33,15 @@ var (
 )
 
 var (
-	MTPPrefix              = []byte{0x01}
+	LegacyMTPPrefix        = []byte{0x01}
 	PerpetualCounterPrefix = []byte{0x02}
 	WhitelistPrefix        = []byte{0x05}
 	PoolKeyPrefix          = []byte{0x06}
 	InterestRatePrefix     = []byte{0x07}
 	FundingRatePrefix      = []byte{0x08}
 
-	// Delete after v18 migration
-	LegacyMTPCountPrefix     = []byte{0x02}
-	LegacyOpenMTPCountPrefix = []byte{0x04}
+	MTPPrefix        = []byte{0x03}
+	ADLCounterPrefix = []byte{0x04}
 )
 
 func KeyPrefix(p string) []byte {
@@ -60,20 +59,30 @@ func GetWhitelistKey(addr sdk.AccAddress) []byte {
 	return append(WhitelistPrefix, address.MustLengthPrefix(addr)...)
 }
 
-func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
-	return append(MTPPrefix, address.MustLengthPrefix(addr)...)
+func GetLegacyMTPKey(addr sdk.AccAddress, poolId, id uint64) []byte {
+	key := append(LegacyMTPPrefix, address.MustLengthPrefix(addr)...)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(poolId)...)
+	key = append(key, []byte("/")...)
+	key = append(key, GetUint64Bytes(id)...)
+	return key
+}
+
+func GetMTPPrefixForPoolId(poolId uint64) []byte {
+	key := append(MTPPrefix, GetUint64Bytes(poolId)...)
+	key = append(key, []byte("/")...)
+	return key
 }
 
 func GetMTPPrefixForAddressAndPoolId(addr sdk.AccAddress, poolId uint64) []byte {
-	key := GetMTPPrefixForAddress(addr)
+	key := GetMTPPrefixForPoolId(poolId)
+	key = append(key, address.MustLengthPrefix(addr)...)
 	key = append(key, []byte("/")...)
-	key = append(key, GetUint64Bytes(poolId)...)
 	return key
 }
 
 func GetMTPKey(addr sdk.AccAddress, poolId, id uint64) []byte {
 	key := GetMTPPrefixForAddressAndPoolId(addr, poolId)
-	key = append(key, []byte("/")...)
 	key = append(key, GetUint64Bytes(id)...)
 	return key
 }
@@ -93,4 +102,8 @@ func GetFundingRateKey(block uint64, pool uint64) []byte {
 
 func GePerpetualCounterKey(ammPoolId uint64) []byte {
 	return append(PerpetualCounterPrefix, sdk.Uint64ToBigEndian(ammPoolId)...)
+}
+
+func GetADLCounterKey(ammPoolId uint64) []byte {
+	return append(ADLCounterPrefix, sdk.Uint64ToBigEndian(ammPoolId)...)
 }

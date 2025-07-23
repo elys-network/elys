@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +12,7 @@ import (
 
 func (k Keeper) OnLeverageLpEnablePool(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	params := k.GetParams(ctx)
-	pool := types.NewPool(ammPool, params.LeverageMax)
+	pool := types.NewPool(ammPool, params.LeverageMax, params.PoolMaxLiabilitiesThreshold.Add(math.LegacyMustNewDecFromStr("0.02")))
 	k.SetPool(ctx, pool)
 	return nil
 }

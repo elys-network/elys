@@ -5,6 +5,6 @@ import (
 )
 
 func (m Migrator) V13Migration(ctx sdk.Context) error {
-	m.keeper.DeleteAllToPay(ctx)
+	//m.keeper.DeleteAllToPay(ctx)
 	return nil
 }
