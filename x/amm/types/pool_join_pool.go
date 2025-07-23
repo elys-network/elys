@@ -92,7 +92,7 @@ func (p *Pool) JoinPool(
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
 	takerFees osmomath.BigDec,
-) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, virtualSwaps []VirtualSwap, err error) {
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, swapsInfos []SwapInfo, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		// We calculate based on snapshot, if there no accounted pool then it will be same as normal pool
@@ -107,7 +107,7 @@ func (p *Pool) JoinPool(
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
-		return tokensJoined, numShares, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), virtualSwaps, nil
+		return tokensJoined, numShares, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), swapsInfos, nil
 	}
 
 	if !p.PoolParams.UseOracle {
@@ -120,9 +120,9 @@ func (p *Pool) JoinPool(
 				_, slippage, tokenAmountOut, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
 				if err == nil {
 					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
-					virtualTokenIn := sdk.NewCoin(tokenIn.Denom, osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weight.Weight).Dec().TruncateInt())
-					virtualTokenOut := sdk.NewCoin(weight.Asset, tokenAmountOut.Mul(weight.Weight).Dec().TruncateInt())
-					virtualSwaps = append(virtualSwaps, NewVirtualSwap(virtualTokenIn, virtualTokenOut))
+					swappedTokenIn := sdk.NewCoin(tokenIn.Denom, osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weight.Weight).Dec().TruncateInt())
+					swappedTokenOut := sdk.NewCoin(weight.Asset, tokenAmountOut.Mul(weight.Weight).Dec().TruncateInt())
+					swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, swappedTokenOut))
 				}
 			}
 		}
@@ -146,7 +146,7 @@ func (p *Pool) JoinPool(
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
-		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, virtualSwaps, nil
+		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, swapsInfos, nil
 	}
 
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, oracleKeeper, snapshot.PoolAssets, tokensIn[0].Denom)
@@ -167,7 +167,7 @@ func (p *Pool) JoinPool(
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
-	virtualSwaps = append(virtualSwaps, NewVirtualSwap(swappedTokenIn, secondTokenOut))
+	swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, secondTokenOut))
 
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
@@ -208,7 +208,7 @@ func (p *Pool) JoinPool(
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
-	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, virtualSwaps, nil
+	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, swapsInfos, nil
 }
 
 func (p *Pool) GetSecondAssetDenomFromTwoAssetPool(firstAssetDenom string) (string, error) {

@@ -69,9 +69,9 @@ func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uin
 	})
 }
 
-func EmitVirtualSwapsEvent(ctx sdk.Context, poolId uint64, sender string, virtualSwaps []VirtualSwap) {
+func EmitVirtualSwapsEvent(ctx sdk.Context, poolId uint64, sender string, swapInfos []SwapInfo) {
 	tokensIn, tokensOut := sdk.Coins{}, sdk.Coins{}
-	for _, swap := range virtualSwaps {
+	for _, swap := range swapInfos {
 		tokensIn = tokensIn.Add(swap.TokenIn)
 		tokensOut = tokensOut.Add(swap.TokenOut)
 	}
