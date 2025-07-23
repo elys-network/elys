@@ -107,6 +107,8 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	vaultskeeper "github.com/elys-network/elys/v6/x/vaults/keeper"
+	vaultstypes "github.com/elys-network/elys/v6/x/vaults/types"
 	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/spf13/cast"
@@ -174,6 +176,7 @@ type AppKeepers struct {
 	EstakingKeeper      *estakingmodulekeeper.Keeper
 	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
+	VaultsKeeper        vaultskeeper.Keeper
 
 	HooksICS4Wrapper    ibchooks.ICS4Middleware
 	Ics20WasmHooks      *ibchooks.WasmHooks
@@ -734,6 +737,21 @@ func NewAppKeeper(
 
 	app.TierKeeper.SetTradeshieldKeeper(&app.TradeshieldKeeper)
 
+	app.VaultsKeeper = vaultskeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[vaultstypes.StoreKey]),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.BankKeeper,
+		app.TierKeeper,
+		app.AmmKeeper,
+		app.CommitmentKeeper,
+		app.AccountKeeper,
+		app.ParameterKeeper,
+		app.MasterchefKeeper,
+		app.AssetprofileKeeper,
+		app.OracleKeeper,
+	)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -889,6 +907,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
 	paramsKeeper.Subspace(masterchefmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tiermoduletypes.ModuleName)
+	paramsKeeper.Subspace(vaultstypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
