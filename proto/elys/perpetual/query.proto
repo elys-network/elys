@@ -463,6 +463,11 @@ message QueryOpenEstimationByFinalRequest {
   ];
   uint64 poolId = 6;
   string collateral_denom = 7;
+  string limit_price = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOpenEstimationByFinalResponse {
