@@ -76,7 +76,17 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		return nil, err
 	}
 
+	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
 	assetPriceAtOpen := tradingAssetPrice
+
+	var limitPriceDenomRatio osmomath.BigDec
+	if useLimitPrice {
+		assetPriceAtOpen = req.LimitPrice
+		limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, tradingAsset, assetPriceAtOpen)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	if req.TakeProfitPrice.IsPositive() {
 		if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
@@ -118,6 +128,9 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 			if err != nil {
 				return nil, err
 			}
+			if useLimitPrice {
+				collateralLiab = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Quo(limitPriceDenomRatio).Dec().TruncateInt()
+			}
 			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
 			liabilities = collateralLiab.Sub(collateral)
@@ -132,6 +145,9 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 			if err != nil {
 				return nil, err
 			}
+			if useLimitPrice {
+				liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount.Sub(collateral)).Mul(limitPriceDenomRatio).Dec().TruncateInt()
+			}
 		}
 	}
 	// Getting Liabilities
@@ -141,6 +157,9 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		liabilities, slippage, _, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
+		}
+		if useLimitPrice {
+			liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Quo(limitPriceDenomRatio).Dec().TruncateInt()
 		}
 		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage).TruncateInt()
 		mtp.Collateral = collateral
@@ -224,5 +243,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		WeightBreakingFee:  weightBreakingFee.Dec(),
 		SwapFees:           swapFees,
 		TakerFees:          takerFees,
+		LimitPrice:         req.LimitPrice,
 	}, nil
 }
