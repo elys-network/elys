@@ -20,7 +20,7 @@ type Server struct {
 	config   *config.WebSocketConfig
 	upgrader websocket.Upgrader
 	hub      *Hub
-	cache    *cache.Cache
+	cache    cache.CacheInterface
 	db       *database.Repository
 	logger   *zap.Logger
 	server   *http.Server
@@ -49,7 +49,7 @@ type BroadcastMessage struct {
 	Data    []byte
 }
 
-func NewServer(cfg *config.WebSocketConfig, cache *cache.Cache, db *database.Repository, logger *zap.Logger) *Server {
+func NewServer(cfg *config.WebSocketConfig, cacheImpl cache.CacheInterface, db *database.Repository, logger *zap.Logger) *Server {
 	hub := &Hub{
 		clients:    make(map[string]*Client),
 		register:   make(chan *Client),
@@ -70,7 +70,7 @@ func NewServer(cfg *config.WebSocketConfig, cache *cache.Cache, db *database.Rep
 		config:   cfg,
 		upgrader: upgrader,
 		hub:      hub,
-		cache:    cache,
+		cache:    cacheImpl,
 		db:       db,
 		logger:   logger,
 	}
@@ -210,7 +210,7 @@ func (h *Hub) cleanupInactiveClients() {
 	}
 }
 
-func (c *Client) readPump(cfg *config.WebSocketConfig, db *database.Repository, cache *cache.Cache) {
+func (c *Client) readPump(cfg *config.WebSocketConfig, db *database.Repository, cache cache.CacheInterface) {
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
@@ -292,7 +292,7 @@ func (c *Client) writePump(cfg *config.WebSocketConfig) {
 	}
 }
 
-func (c *Client) handleSubscribe(msg models.WSMessage, db *database.Repository, cache *cache.Cache) {
+func (c *Client) handleSubscribe(msg models.WSMessage, db *database.Repository, cache cache.CacheInterface) {
 	var req models.WSSubscribeRequest
 	if err := json.Unmarshal(msg.Data, &req); err != nil {
 		c.sendError("Invalid subscribe request")

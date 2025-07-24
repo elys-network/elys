@@ -4,14 +4,16 @@ go 1.23.9
 
 require (
 	cosmossdk.io/math v1.4.0
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/cometbft/cometbft v0.38.17
-	github.com/cosmos/cosmos-sdk v0.50.14
 	github.com/elys-network/elys/v6 v6.0.0
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gorilla/websocket v1.5.3
 	github.com/lib/pq v1.10.9
-	github.com/redis/go-redis/v9 v9.5.1
+	github.com/redis/go-redis/v9 v9.7.2
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
+	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.70.0
 )
@@ -48,6 +50,7 @@ require (
 	github.com/cosmos/btcutil v1.0.5 // indirect
 	github.com/cosmos/cosmos-db v1.1.1 // indirect
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
+	github.com/cosmos/cosmos-sdk v0.50.14 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/gogoproto v1.7.0 // indirect
@@ -134,7 +137,6 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
