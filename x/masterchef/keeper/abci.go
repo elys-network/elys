@@ -22,7 +22,7 @@ import (
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	params := k.parameterKeeper.GetParams(ctx)
 	// convert balances in taker address to elys and burn them
-	if ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 && params.EnableTakerFeeSwap {
+	if params.EnableTakerFeeSwap && params.TakerFeeCollectionInterval > 0 && ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 {
 		k.ProcessTakerFee(ctx)
 	}
 	return nil
