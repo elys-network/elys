@@ -99,6 +99,10 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
+	weightedTokenInAmountAfterSlippage := exitValueWithSlippage.Quo(inTokenPrice).Mul(weightMultiplier)
+
+	weightedInCoin = sdk.NewCoin(tokenInDenom, weightedTokenInAmountAfterSlippage.Dec().TruncateInt())
+
 	slippageCoins := sdk.Coins{sdk.NewCoin(tokenOutDenom, slippageAmount.Dec().TruncateInt())}
 
 	return exitValueWithSlippage, slippage, slippageCoins, weightedInCoin, nil
@@ -146,7 +150,7 @@ func (p Pool) CalcExitPool(
 			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
 		}
 
-		swapInfos = append(swapInfos, NewSwapInfo(swappedWeightedTokenIn, tokenOut))
+		swapInfo := NewSwapInfo(swappedWeightedTokenIn, tokenOut)
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
@@ -194,10 +198,16 @@ func (p Pool) CalcExitPool(
 
 			takerFeesFinal = takerFees.Mul(initialWeightIn)
 
+			swapInfo.TokenOut.Amount = osmomath.BigDecFromSDKInt(swapInfo.TokenOut.Amount).
+				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
+				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal))).Dec().RoundInt()
+
 			tokenOutAmount = (oracleOutAmount.
 				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
 				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal)))).Dec().RoundInt()
 		}
+
+		swapInfos = append(swapInfos, swapInfo)
 
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, nil
 	}
