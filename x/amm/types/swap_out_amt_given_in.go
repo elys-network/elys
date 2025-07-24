@@ -138,33 +138,34 @@ func (p Pool) CalcGivenInSlippage(
 	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-) (osmomath.BigDec, error) {
+) (osmomath.BigDec, osmomath.BigDec, error) {
 	_, _, balancerOutAmount, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, osmomath.ZeroBigDec())
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
 	inTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
-		return osmomath.ZeroBigDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
 	outTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
-		return osmomath.ZeroBigDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	oracleOutAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
 	slippageAmount := oracleOutAmount.Sub(balancerOutAmount)
 	if slippageAmount.IsNegative() {
-		return osmomath.ZeroBigDec(), nil
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil
 	}
-	return slippageAmount, nil
+
+	return slippageAmount, balancerOutAmount, nil
 }
 
 // SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
@@ -231,7 +232,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	}
 
 	resizedAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Quo(externalLiquidityRatio).Dec().RoundInt()
-	slippageAmount, err = p.CalcGivenInSlippage(
+	slippageAmount, _, err = p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
 		snapshot,

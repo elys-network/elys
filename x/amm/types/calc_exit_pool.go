@@ -12,10 +12,10 @@ import (
 
 func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
 	snapshot SnapshotPool, exitingShares sdkmath.Int, tokenOutDenom string,
-	weightMultiplier osmomath.BigDec, applyFee bool, params Params) (osmomath.BigDec, osmomath.BigDec, sdk.Coins, error) {
+	weightMultiplier osmomath.BigDec, applyFee bool, params Params) (osmomath.BigDec, osmomath.BigDec, sdk.Coins, sdk.Coin, error) {
 	tvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, err
 	}
 
 	// As this is 2 token pool, tokenOut will be
@@ -28,7 +28,7 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 	}
 	// Not possible, but we might require this when we have pools with assets more than 2
 	if tokenInDenom == "" {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, fmt.Errorf("token in denom not found")
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, fmt.Errorf("token in denom not found")
 	}
 
 	totalShares := p.GetTotalShares()
@@ -36,40 +36,43 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, ErrAmountTooLow
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, ErrAmountTooLow
 	}
 
 	exitValue := tvl.Mul(refundedShares).Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 
-	if !applyFee {
-		return exitValue, osmomath.ZeroBigDec(), sdk.Coins{}, nil
-	}
-
 	inTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, fmt.Errorf("token price not set: %s", tokenInDenom)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, fmt.Errorf("token price not set: %s", tokenInDenom)
+	}
+
+	// tokenIn amount will be
+	tokenInAmount := exitValue.Quo(inTokenPrice)
+	weightedAmount := tokenInAmount.Mul(weightMultiplier)
+
+	weightedInCoin := sdk.NewCoin(tokenInDenom, weightedAmount.Dec().TruncateInt())
+
+	if !applyFee {
+		return exitValue, osmomath.ZeroBigDec(), sdk.Coins{}, weightedInCoin, nil
 	}
 
 	outTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, fmt.Errorf("token price not set: %s", tokenOutDenom)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, fmt.Errorf("token price not set: %s", tokenOutDenom)
 	}
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, err
 	}
 	// Ensure externalLiquidityRatio is not zero to avoid division by zero
 	if externalLiquidityRatio.LT(osmomath.OneBigDec()) {
 		externalLiquidityRatio = osmomath.OneBigDec()
 	}
 
-	// tokenIn amount will be
-	tokenInAmount := exitValue.Quo(inTokenPrice)
-	weightedAmount := tokenInAmount.Mul(weightMultiplier)
 	resizedAmount := osmomath.BigDecFromSDKInt(weightedAmount.Dec().TruncateInt()).
 		Quo(externalLiquidityRatio).Dec().RoundInt()
-	slippageAmount, err := p.CalcGivenInSlippage(
+	slippageAmount, _, err := p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
 		snapshot,
@@ -77,7 +80,7 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 		tokenOutDenom,
 	)
 	if err != nil {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, err
 	}
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 
@@ -93,12 +96,16 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 	exitValueWithSlippage := exitValue.Sub(slippageValue)
 
 	if exitingShares.GTE(totalShares.Amount) {
-		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, sdk.Coin{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
+
+	weightedTokenInAmountAfterSlippage := exitValueWithSlippage.Quo(inTokenPrice).Mul(weightMultiplier)
+
+	weightedInCoin = sdk.NewCoin(tokenInDenom, weightedTokenInAmountAfterSlippage.Dec().TruncateInt())
 
 	slippageCoins := sdk.Coins{sdk.NewCoin(tokenOutDenom, slippageAmount.Dec().TruncateInt())}
 
-	return exitValueWithSlippage, slippage, slippageCoins, nil
+	return exitValueWithSlippage, slippage, slippageCoins, weightedInCoin, nil
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
@@ -112,10 +119,10 @@ func (p Pool) CalcExitPool(
 	params Params,
 	takerFees osmomath.BigDec,
 	applyFee bool,
-) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, swapInfos []SwapInfo, err error) {
 	totalShares := p.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -133,14 +140,21 @@ func (p Pool) CalcExitPool(
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, oracleKeeper, snapshot.PoolAssets, tokenOutDenom)
 		initialWeightIn := osmomath.OneBigDec().Sub(initialWeightOut)
 
-		exitValueWithSlippage, slippage, slippageCoins, err := p.CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
+		exitValueWithSlippage, slippage, slippageCoins, swappedWeightedTokenIn, err := p.CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
 		if err != nil {
-			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
 		}
+
+		tokenOut, _, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, sdk.Coins{swappedWeightedTokenIn}, tokenOutDenom, osmomath.ZeroBigDec())
+		if err != nil {
+			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
+		}
+
+		swapInfo := NewSwapInfo(swappedWeightedTokenIn, tokenOut)
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, ErrAmountTooLow
+			return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithSlippage.Quo(tokenPrice)
@@ -157,12 +171,12 @@ func (p Pool) CalcExitPool(
 				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.Dec().RoundInt())}, snapshot.PoolAssets,
 			)
 			if err != nil {
-				return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+				return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
 			}
 			var tokenInDenom string
 			for _, asset := range newAssetPools {
 				if asset.Token.Amount.IsNegative() {
-					return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, errors.New("out amount exceeds liquidity balance")
+					return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, errors.New("out amount exceeds liquidity balance")
 				}
 
 				// As we have two asset pool so other asset will be tokenIn
@@ -184,12 +198,18 @@ func (p Pool) CalcExitPool(
 
 			takerFeesFinal = takerFees.Mul(initialWeightIn)
 
+			swapInfo.TokenOut.Amount = osmomath.BigDecFromSDKInt(swapInfo.TokenOut.Amount).
+				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
+				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal))).Dec().RoundInt()
+
 			tokenOutAmount = (oracleOutAmount.
 				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
 				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal)))).Dec().RoundInt()
 		}
 
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
+		swapInfos = append(swapInfos, swapInfo)
+
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, nil
 	}
 
 	// Real balances
@@ -203,11 +223,11 @@ func (p Pool) CalcExitPool(
 		}
 		for _, pooledAsset := range poolLiquidity {
 			if pooledAsset.Denom == accountedAsset.Token.Denom && exitAmt.GTE(pooledAsset.Amount) {
-				return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, errors.New("too many shares out")
+				return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, errors.New("too many shares out")
 			}
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(accountedAsset.Token.Denom, exitAmt))
 	}
 
-	return exitedCoins, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil
+	return exitedCoins, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, swapInfos, nil
 }

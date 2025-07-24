@@ -15,6 +15,19 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
+// SwapInfo holds the information for swap
+type SwapInfo struct {
+	TokenIn  sdk.Coin
+	TokenOut sdk.Coin
+}
+
+func NewSwapInfo(tokenIn, tokenOut sdk.Coin) SwapInfo {
+	return SwapInfo{
+		TokenIn:  tokenIn,
+		TokenOut: tokenOut,
+	}
+}
+
 func GetPoolShareDenom(poolId uint64) string {
 	return fmt.Sprintf("amm/pool/%d", poolId)
 }
