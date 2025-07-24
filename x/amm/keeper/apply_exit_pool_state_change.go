@@ -106,7 +106,7 @@ func (k Keeper) ApplyExitPoolStateChange(
 	}
 
 	if exitCoins.Len() == 1 {
-		types.EmitVirtualSwapsEvent(ctx, pool.PoolId, exiter.String(), swapInfos)
+		types.EmitSwapsInfoEvent(ctx, pool.PoolId, exiter.String(), swapInfos)
 	}
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)

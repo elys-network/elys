@@ -69,14 +69,14 @@ func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uin
 	})
 }
 
-func EmitVirtualSwapsEvent(ctx sdk.Context, poolId uint64, sender string, swapInfos []SwapInfo) {
+func EmitSwapsInfoEvent(ctx sdk.Context, poolId uint64, sender string, swapInfos []SwapInfo) {
 	tokensIn, tokensOut := sdk.Coins{}, sdk.Coins{}
 	for _, swap := range swapInfos {
 		tokensIn = tokensIn.Add(swap.TokenIn)
 		tokensOut = tokensOut.Add(swap.TokenOut)
 	}
 	ctx.EventManager().EmitEvents(sdk.Events{
-		NewVirtualSwapEvent(poolId, sender, tokensIn, tokensOut),
+		NewSwapInfoEvent(poolId, sender, tokensIn, tokensOut),
 	})
 }
 
@@ -144,7 +144,7 @@ func NewRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk
 	)
 }
 
-func NewVirtualSwapEvent(poolId uint64, sender string, tokensIn, tokensOut sdk.Coins) sdk.Event {
+func NewSwapInfoEvent(poolId uint64, sender string, tokensIn, tokensOut sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtVirtualSwaps,
 		sdk.NewAttribute(sdk.AttributeKeySender, sender),

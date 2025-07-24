@@ -176,7 +176,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 
 	if joinCoins.Len() == 1 {
-		types.EmitVirtualSwapsEvent(ctx, pool.PoolId, joiner.String(), swapInfos)
+		types.EmitSwapsInfoEvent(ctx, pool.PoolId, joiner.String(), swapInfos)
 	}
 
 	if k.hooks != nil {
