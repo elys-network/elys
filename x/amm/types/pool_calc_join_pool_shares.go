@@ -8,7 +8,7 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// calcPoolOutGivenSingleIn - balance pAo.
+// calcSingleAssetJoin - balance pAo.
 func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor osmomath.BigDec, tokenInPoolAsset PoolAsset, totalShares sdkmath.Int) (numShares sdkmath.Int, err error) {
 	totalWeight := p.TotalWeight
 	if totalWeight.IsZero() {
