@@ -13,6 +13,7 @@ func (k Keeper) ApplyExitPoolStateChange(
 	exitCoins sdk.Coins, isLiquidation bool,
 	weightBalanceBonus osmomath.BigDec, takerFees osmomath.BigDec,
 	swapFee osmomath.BigDec, slippageCoins sdk.Coins,
+	swapInfos []types.SwapInfo,
 ) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
@@ -102,6 +103,10 @@ func (k Keeper) ApplyExitPoolStateChange(
 			"0",
 			takerFeesAmountInUSD.String(),
 		)
+	}
+
+	if exitCoins.Len() == 1 {
+		types.EmitVirtualSwapsEvent(ctx, pool.PoolId, exiter.String(), swapInfos)
 	}
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)
