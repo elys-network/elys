@@ -129,7 +129,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 				return nil, err
 			}
 			if useLimitPrice {
-				collateralLiab = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Quo(limitPriceDenomRatio).Dec().TruncateInt()
+				collateralLiab = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Mul(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
@@ -146,7 +146,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 				return nil, err
 			}
 			if useLimitPrice {
-				liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount.Sub(collateral)).Mul(limitPriceDenomRatio).Dec().TruncateInt()
+				liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount.Sub(collateral)).Quo(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 		}
 	}
@@ -159,7 +159,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 			return nil, err
 		}
 		if useLimitPrice {
-			liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Quo(limitPriceDenomRatio).Dec().TruncateInt()
+			liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Mul(limitPriceDenomRatio).Dec().TruncateInt()
 		}
 		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage).TruncateInt()
 		mtp.Collateral = collateral
