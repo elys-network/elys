@@ -40,6 +40,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"okx",
 			"bitget",
+			"mexc",
+			"huobi",
 			"gate",
 		},
 		BaseProxyDenom:          "ATOM",
@@ -52,6 +54,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USD",
 		Providers: []string{
 			"coinbase",
+			"kraken",
 		},
 	},
 	{
@@ -59,6 +62,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"gate",
+			"huobi",
 		},
 		BaseProxyDenom:          "AKT",
 		QuoteProxyDenom:         "USDC",
@@ -71,6 +75,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"okx",
+			"huobi",
 			"bitget",
 			"gate",
 		},
@@ -84,6 +89,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USD",
 		Providers: []string{
 			"coinbase",
+			"kraken",
 		},
 	},
 	{
@@ -91,6 +97,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
+			"mexc",
 			"gate",
 			"bitget",
 		},
@@ -117,6 +124,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"bitget",
 			"gate",
+			"huobi",
+			"mexc",
 		},
 		BaseProxyDenom:          "XION",
 		QuoteProxyDenom:         "USDC",
@@ -129,6 +138,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"huobi",
 			"gate",
+			"mexc",
 		},
 		BaseProxyDenom:          "SCRT",
 		QuoteProxyDenom:         "USDC",
@@ -161,6 +171,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"bitget",
 			"gate",
+			"mexc",
 		},
 		BaseProxyDenom:          "NTRN",
 		QuoteProxyDenom:         "USDC",
@@ -194,9 +205,10 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:       "BTC",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "BTC",
-		QuoteProxyDenom: "USDT",
+		QuoteProxyDenom: "USDC",
 		Providers: []string{
 			"binance",
+			"mexc",
 			"gate",
 			"huobi",
 		},
@@ -206,9 +218,10 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:       "ETH",
 		QuoteDenom:      "USDT",
 		BaseProxyDenom:  "ETH",
-		QuoteProxyDenom: "USDT",
+		QuoteProxyDenom: "USDC",
 		Providers: []string{
 			"binance",
+			"mexc",
 			"gate",
 			"huobi",
 		},
@@ -222,6 +235,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"gate",
+			"mexc",
 		},
 		ExternLiquidityProvider: "binance",
 	},
@@ -233,6 +247,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"gate",
+			"okx",
+			"mexc",
 		},
 		ExternLiquidityProvider: "binance",
 	},
@@ -245,6 +261,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"gate",
 			"huobi",
+			"okx",
+			"mexc",
 		},
 		ExternLiquidityProvider: "binance",
 	},
@@ -254,7 +272,16 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"kraken",
 		},
-		ExternLiquidityProvider: "kraken",
+	},
+	{
+		BaseDenom:       "STRD",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "STRD",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"mexc",
+		},
+		ExternLiquidityProvider: "mexc",
 	},
 	{
 		BaseDenom:       "INJ",
@@ -263,6 +290,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteProxyDenom: "USDC",
 		Providers: []string{
 			"binance",
+			"okx",
+			"mexc",
 			"gate",
 			"huobi",
 		},
@@ -276,27 +305,37 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"gate",
+			"okx",
+			"mexc",
 			"huobi",
 		},
 		ExternLiquidityProvider: "binance",
 	},
 	{
-		BaseDenom:  "LINK",
-		QuoteDenom: "USDT",
+		BaseDenom:       "LINK",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "LINK",
+		QuoteProxyDenom: "USDC",
 		Providers: []string{
 			"binance",
 			"gate",
 			"mexc",
+			"okx",
+			"huobi",
 		},
 		ExternLiquidityProvider: "binance",
 	},
 	{
-		BaseDenom:  "ONDO",
-		QuoteDenom: "USDT",
+		BaseDenom:       "ONDO",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "ONDO",
+		QuoteProxyDenom: "USDC",
 		Providers: []string{
 			"binance",
 			"gate",
 			"mexc",
+			"okx",
+			"huobi",
 		},
 		ExternLiquidityProvider: "binance",
 	},
