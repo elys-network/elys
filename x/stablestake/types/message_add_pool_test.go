@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/v6/testutil/sample"
-	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v7/testutil/sample"
+	"github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

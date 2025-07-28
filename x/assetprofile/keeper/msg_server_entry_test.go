@@ -9,9 +9,9 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/x/assetprofile/keeper"
-	"github.com/elys-network/elys/v6/x/assetprofile/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v7/x/assetprofile/types"
 )
 
 func TestEntryMsgServerUpdate(t *testing.T) {

@@ -3,10 +3,10 @@ package tokenomics_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/tokenomics"
-	"github.com/elys-network/elys/v6/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/tokenomics"
+	"github.com/elys-network/elys/v7/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
 )
 

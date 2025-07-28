@@ -5,12 +5,12 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/utils"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v7/utils"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

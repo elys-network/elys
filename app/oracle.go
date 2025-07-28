@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	leagacyOracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	leagacyOracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 

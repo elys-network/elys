@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/estaking/types"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/estaking/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestGenesis() {

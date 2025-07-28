@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) TestGetParams() {

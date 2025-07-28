@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "elys/tradeshield/params.proto";
 import "elys/tradeshield/types.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/tradeshield/types";
+option go_package = "github.com/elys-network/elys/v7/x/tradeshield/types";
 
 // GenesisState defines the tradeshield module's genesis state.
 message GenesisState {
