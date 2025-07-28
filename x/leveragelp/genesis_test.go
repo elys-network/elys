@@ -3,10 +3,10 @@ package leveragelp_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/leveragelp"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/leveragelp"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

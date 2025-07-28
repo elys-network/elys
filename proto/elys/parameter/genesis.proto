@@ -5,7 +5,7 @@ package elys.parameter;
 import "gogoproto/gogo.proto";
 import "elys/parameter/params.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/parameter/types";
+option go_package = "github.com/elys-network/elys/v7/x/parameter/types";
 
 // GenesisState defines the parameter module's genesis state.
 message GenesisState { Params params = 1 [ (gogoproto.nullable) = false ]; }

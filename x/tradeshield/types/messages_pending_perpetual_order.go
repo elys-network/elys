@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"

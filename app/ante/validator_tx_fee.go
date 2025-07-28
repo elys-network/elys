@@ -8,7 +8,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	parametertypes "github.com/elys-network/elys/v7/x/parameter/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 

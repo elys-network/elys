@@ -11,9 +11,9 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/x/tokenomics/keeper"
-	"github.com/elys-network/elys/v6/x/tokenomics/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/x/tokenomics/keeper"
+	"github.com/elys-network/elys/v7/x/tokenomics/types"
 )
 
 func TestAirdropMsgServerCreate(t *testing.T) {

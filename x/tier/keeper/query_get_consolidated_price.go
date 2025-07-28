@@ -5,11 +5,11 @@ import (
 	"cosmossdk.io/math"
 	"strings"
 
-	"github.com/elys-network/elys/v6/utils"
+	"github.com/elys-network/elys/v7/utils"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/tier/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
