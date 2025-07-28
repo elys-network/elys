@@ -19,10 +19,10 @@ func (k Keeper) GetPositionsForAddress(goCtx context.Context, req *types.Positio
 		return nil, err
 	}
 
-	mtps, pageRes, err := k.GetMTPsForAddressWithPagination(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
+	mtps, err := k.GetAllMTPForAddress(sdk.UnwrapSDKContext(goCtx), addr)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.PositionsForAddressResponse{Mtps: mtps, Pagination: pageRes}, nil
+	return &types.PositionsForAddressResponse{Mtps: mtps}, nil
 }

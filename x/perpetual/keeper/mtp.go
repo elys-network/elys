@@ -90,9 +90,14 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	var mtpStore storetypes.KVStore
 
-	if address != nil {
-		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForAddress(address))
-	} else {
+	switch true {
+	case address == nil && ammPoolId == nil:
+		mtpStore = prefix.NewStore(store, types.MTPPrefix)
+	case address == nil && ammPoolId != nil:
+		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForPoolId(*ammPoolId))
+	case address != nil && ammPoolId != nil:
+		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForAddressAndPoolId(address, *ammPoolId))
+	default:
 		mtpStore = prefix.NewStore(store, types.MTPPrefix)
 	}
 
@@ -115,10 +120,6 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
-
-		if ammPoolId != nil && mtp.AmmPoolId != *ammPoolId {
-			return nil
-		}
 
 		mtpAndPrice, err := k.fillMTPData(ctx, mtp, baseCurrency)
 		if err != nil {
@@ -206,23 +207,6 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	}, nil
 }
 
-func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
-	var mtps []*types.MTP
-
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.MTP
-		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &mtp)
-		mtps = append(mtps, &mtp)
-	}
-	return mtps
-}
-
 func (k Keeper) GetAllMTPsForAddressAndByPool(ctx sdk.Context, mtpAddress sdk.AccAddress, poolId uint64) []*types.MTP {
 	var mtps []*types.MTP
 
@@ -248,20 +232,18 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	return k.GetMTPData(ctx, pagination, nil, &ammPoolId)
 }
 
-func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
-	return k.GetMTPData(ctx, pagination, mtpAddress, nil)
-}
+func (k Keeper) GetAllMTPForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) ([]*types.MtpAndPrice, error) {
+	allPools := k.GetAllPools(ctx)
+	var list []*types.MtpAndPrice
 
-// Delete all to pay if any
-func (k Keeper) DeleteAllToPay(ctx sdk.Context) error {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{0x09})
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
+	for _, pool := range allPools {
+		positions, _, err := k.GetMTPData(ctx, nil, mtpAddress, &pool.AmmPoolId)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, positions...)
 	}
-	return nil
+	return list, nil
 }
 
 func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
@@ -387,4 +369,58 @@ func (k Keeper) GetExistingPosition(ctx sdk.Context, msg *types.MsgOpen) *types.
 		}
 	}
 	return nil
+}
+
+func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]types.MTP, *query.PageResponse, error) {
+	var positions []types.MTP
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	positionStore := prefix.NewStore(store, types.GetMTPPrefixForPoolId(ammPoolId))
+
+	if pagination == nil {
+		pagination = &query.PageRequest{
+			Limit: types.MaxPageLimit,
+		}
+	}
+
+	if pagination.Limit > types.MaxPageLimit {
+		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
+	}
+
+	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+		var position types.MTP
+		err := k.cdc.Unmarshal(value, &position)
+		if err != nil {
+			return err
+		}
+		positions = append(positions, position)
+		return nil
+	})
+
+	return positions, pageRes, err
+}
+
+func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtp types.MTP) {
+	key := types.GetLegacyMTPKey(mtp.GetAccountAddress(), mtp.AmmPoolId, mtp.Id)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store.Delete(key)
+}
+func (k Keeper) MigrateToNewKeys(ctx sdk.Context) {
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.LegacyMTPPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.MTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		err := k.SetMTP(ctx, &mtp)
+		if err != nil {
+			panic(err)
+		}
+		k.DeleteLegacyMTP(ctx, mtp)
+	}
+	return
 }

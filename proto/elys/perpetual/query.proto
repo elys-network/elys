@@ -43,8 +43,7 @@ service Query {
   rpc GetPositionsForAddress(PositionsForAddressRequest)
       returns (PositionsForAddressResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/perpetual/mtps-for-address/{address}/"
-        "{pagination.key}";
+        "/elys-network/elys/perpetual/mtps-for-address/{address}";
   }
 
   // Queries a list of whitelisted addresses.
@@ -181,15 +180,9 @@ message PerpetualCounterResponse {
   PerpetualCounter result = 1 [ (gogoproto.nullable) = false ];
 }
 
-message PositionsForAddressRequest {
-  string address = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
+message PositionsForAddressRequest { string address = 1; }
 
-message PositionsForAddressResponse {
-  repeated MtpAndPrice mtps = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
+message PositionsForAddressResponse { repeated MtpAndPrice mtps = 1; }
 
 message WhitelistRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
