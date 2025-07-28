@@ -48,6 +48,35 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 	return found
 }
 
+// CheckExistingPoolWithSameAssets returns true if a pool with the same set of assets already exists.
+func (k Keeper) CheckExistingPoolWithSameAssets(ctx sdk.Context, newAssets []types.PoolAsset) bool {
+	newAssetsMap := make(map[string]bool, len(newAssets))
+	for _, asset := range newAssets {
+		newAssetsMap[asset.Token.Denom] = true
+	}
+
+	existingPools := k.GetAllPool(ctx)
+	for _, pool := range existingPools {
+		if len(pool.PoolAssets) != len(newAssets) {
+			continue
+		}
+
+		matches := true
+		for _, poolAsset := range pool.PoolAssets {
+			if !newAssetsMap[poolAsset.Token.Denom] {
+				matches = false
+				break
+			}
+		}
+
+		if matches {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (k Keeper) V8Migrate(ctx sdk.Context) error {
 	baseCurrencyDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {

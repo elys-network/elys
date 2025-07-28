@@ -19,44 +19,27 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, newPoolParams t
 		return 0, types.PoolParams{}, types.ErrPoolNotFound
 	}
 
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return 0, types.PoolParams{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
 	// If the fee denom is empty, set it to the base currency
 	if newPoolParams.FeeDenom == "" {
-		newPoolParams.FeeDenom = baseCurrency
+		newPoolParams.FeeDenom = usdcDenom
 	}
 
 	// changing from non-oracle pool to oracle pool
 	if !pool.PoolParams.UseOracle && newPoolParams.UseOracle {
-
-		nonBaseCurrencyDenom := ""
-		usdcDenomFound := false
-
 		for _, asset := range pool.PoolAssets {
-			if asset.Token.Denom != baseCurrency {
-				nonBaseCurrencyDenom = asset.Token.Denom
+			entry, found := k.assetProfileKeeper.GetEntryByDenom(ctx, asset.Token.Denom)
+			if !found {
+				return 0, types.PoolParams{}, fmt.Errorf("asset profile for %s not found", asset.Token.Denom)
 			}
-			if asset.Token.Denom == baseCurrency {
-				usdcDenomFound = true
+			_, found = k.oracleKeeper.GetAssetPrice(ctx, entry.DisplayName)
+			if !found {
+				return 0, types.PoolParams{}, fmt.Errorf("oracle price for %s not found", entry.DisplayName)
 			}
-		}
-		if !usdcDenomFound {
-			return 0, types.PoolParams{}, fmt.Errorf("no usdc denom in the amm pool %d", poolId)
-		}
-		if nonBaseCurrencyDenom == "" {
-			return 0, types.PoolParams{}, fmt.Errorf("no non-usdc denom in the amm pool %d", poolId)
-		}
-
-		entry, found := k.assetProfileKeeper.GetEntryByDenom(ctx, nonBaseCurrencyDenom)
-		if !found {
-			return 0, types.PoolParams{}, fmt.Errorf("asset profile for %s not found", nonBaseCurrencyDenom)
-		}
-		_, found = k.oracleKeeper.GetAssetPrice(ctx, entry.DisplayName)
-		if !found {
-			return 0, types.PoolParams{}, fmt.Errorf("oracle price for %s not found", entry.DisplayName)
 		}
 	}
 	pool.PoolParams = newPoolParams

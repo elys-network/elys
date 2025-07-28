@@ -20,10 +20,13 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// retrieve base currency denom
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	baseAssetsDenoms := k.GetParams(ctx).BaseAssets
+	if len(baseAssetsDenoms) == 0 {
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if !found {
+			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		}
+		baseAssetsDenoms = []string{baseCurrency}
 	}
 
 	// retrieve denom in decimals
@@ -32,7 +35,7 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.DenomIn)
 	}
 
-	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Address, osmomath.ZeroBigDec(), entry.Decimals)
+	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseAssetsDenoms, req.Address, osmomath.ZeroBigDec(), entry.Decimals)
 	if err != nil {
 		return nil, err
 	}
