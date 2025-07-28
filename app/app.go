@@ -330,6 +330,15 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.ICSValidatorKeeper,
 	)
+
+	// Have to do this for SUT as SUT test is not ICS test
+	if version.Version == "v999999.999999.999999" {
+		proposalHandler = oracleabci.NewProposalHandler(
+			app.Logger(),
+			app.OracleKeeper,
+			app.StakingKeeper,
+		)
+	}
 	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
 	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
 
