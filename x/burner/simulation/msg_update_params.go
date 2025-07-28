@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/elys-network/elys/v6/x/burner/keeper"
-	"github.com/elys-network/elys/v6/x/burner/types"
+	"github.com/elys-network/elys/v7/x/burner/keeper"
+	"github.com/elys-network/elys/v7/x/burner/types"
 )
 
 func SimulateMsgUpdateParams(

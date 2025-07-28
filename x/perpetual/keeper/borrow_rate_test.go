@@ -6,11 +6,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v6/x/perpetual/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.InterestBlock, int64) {

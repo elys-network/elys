@@ -5,7 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 )
 

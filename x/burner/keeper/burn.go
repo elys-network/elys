@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/v6/x/burner/types"
+	"github.com/elys-network/elys/v7/x/burner/types"
 )
 
 // ShouldBurnTokens checks if tokens should be burned for the given epoch

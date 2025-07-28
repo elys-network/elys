@@ -2,7 +2,7 @@ package migrations
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (m Migrator) V17Migration(ctx sdk.Context) error {

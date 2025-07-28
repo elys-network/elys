@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v6/x/perpetual/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestMsgServerOpen() {

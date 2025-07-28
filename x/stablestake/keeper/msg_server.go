@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 type msgServer struct {

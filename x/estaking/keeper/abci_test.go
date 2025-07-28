@@ -5,11 +5,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/elys-network/elys/v6/x/estaking/keeper"
-	exdistr "github.com/elys-network/elys/v6/x/estaking/modules/distribution"
-	"github.com/elys-network/elys/v6/x/estaking/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	ttypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	"github.com/elys-network/elys/v7/x/estaking/keeper"
+	exdistr "github.com/elys-network/elys/v7/x/estaking/modules/distribution"
+	"github.com/elys-network/elys/v7/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	ttypes "github.com/elys-network/elys/v7/x/tokenomics/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestAbci() {

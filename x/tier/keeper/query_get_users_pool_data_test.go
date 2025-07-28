@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	ltypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
-	"github.com/elys-network/elys/v6/x/tier/types"
+	ltypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	"github.com/elys-network/elys/v7/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -8,7 +8,7 @@ import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/burner/types";
+option go_package = "github.com/elys-network/elys/v7/x/burner/types";
 
 // Msg defines the Msg service.
 service Msg {
