@@ -5,12 +5,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	tokenomicskeeper "github.com/elys-network/elys/v6/x/tokenomics/keeper"
-	tokenomicstypes "github.com/elys-network/elys/v6/x/tokenomics/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	tokenomicskeeper "github.com/elys-network/elys/v7/x/tokenomics/keeper"
+	tokenomicstypes "github.com/elys-network/elys/v7/x/tokenomics/types"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {

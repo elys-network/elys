@@ -2,8 +2,8 @@ package wasm
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/v6/wasmbindings/types"
-	"github.com/elys-network/elys/v6/x/amm/keeper"
+	wasmbindingstypes "github.com/elys-network/elys/v7/wasmbindings/types"
+	"github.com/elys-network/elys/v7/x/amm/keeper"
 )
 
 // Querier handles queries for the AMM module.

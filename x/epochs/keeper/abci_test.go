@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/epochs"
-	"github.com/elys-network/elys/v6/x/epochs/types"
+	"github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/epochs"
+	"github.com/elys-network/elys/v7/x/epochs/types"
 )
 
 func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {

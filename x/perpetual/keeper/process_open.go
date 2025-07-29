@@ -3,13 +3,13 @@ package keeper
 import (
 	"fmt"
 
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes.Pool, mtp *types.MTP, proxyLeverage math.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (types.PerpetualFees, error) {

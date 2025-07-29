@@ -3,7 +3,7 @@ package elys.oracle;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/oracle/types";
+option go_package = "github.com/elys-network/elys/v7/x/oracle/types";
 
 message AssetInfo {
   string denom = 1;

@@ -5,9 +5,9 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/accountedpool/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	leveragelptypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/accountedpool/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	leveragelptypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) error {
