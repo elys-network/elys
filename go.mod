@@ -53,6 +53,7 @@ require (
 	github.com/bufbuild/buf v1.31.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
+	github.com/elys-network/elys/v6 v6.5.1
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/ojo-network/ojo v0.5.2-0.20250725164638-41fcb84d6ad6
@@ -143,7 +144,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.15.0 // indirect
-	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/uuid/v5 v5.1.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
