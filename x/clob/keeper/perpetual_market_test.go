@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 func (suite *KeeperTestSuite) TestGetPerpetualMarket() {

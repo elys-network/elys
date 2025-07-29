@@ -1,21 +1,21 @@
 package keeper_test
 
 import (
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"testing"
 
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
+	simapp "github.com/elys-network/elys/v7/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -86,16 +86,15 @@ func (suite *KeeperTestSuite) SetupTest() {
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 
-	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, ojooracletypes.AssetInfo{
 		Denom:   "uusdc",
 		Display: "USDC",
 		Decimal: 6,
 	})
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+	suite.app.OracleKeeper.SetPrice(suite.ctx, ojooracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyOneDec(),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

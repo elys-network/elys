@@ -9,12 +9,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammkeeper "github.com/elys-network/elys/v7/x/amm/keeper"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -22,7 +22,7 @@ import (
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	params := k.parameterKeeper.GetParams(ctx)
 	// convert balances in taker address to elys and burn them
-	if ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 && params.EnableTakerFeeSwap {
+	if params.EnableTakerFeeSwap && params.TakerFeeCollectionInterval > 0 && ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 {
 		k.ProcessTakerFee(ctx)
 	}
 	return nil
@@ -752,8 +752,9 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 
 	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
 	for _, balance := range balances {
-		// need at least a certain amount to swap
-		if balance.Denom == ptypes.Elys || balance.Amount.LT(sdkmath.NewInt(1000000)) {
+		// need at least a certain 0.5$ amount to swap
+		usdValue := k.amm.CalculateCoinsUSDValue(ctx, sdk.NewCoins(balance))
+		if balance.Denom == ptypes.Elys || usdValue.LT(osmomath.NewBigDecWithPrec(5, 1)) {
 			continue
 		}
 		cacheCtx, write := ctx.CacheContext()

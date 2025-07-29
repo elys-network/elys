@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidatePositions) (*types.MsgLiquidatePositionsResponse, error) {

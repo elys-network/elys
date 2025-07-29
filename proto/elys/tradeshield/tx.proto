@@ -10,7 +10,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/tradeshield/types";
+option go_package = "github.com/elys-network/elys/v7/x/tradeshield/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -135,12 +135,14 @@ message MsgCreatePerpetualCloseOrder {
   string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   LegacyTriggerPriceV1 legacy_trigger_price_v1 = 2
       [ (gogoproto.nullable) = false ];
+  uint64 position_id = 3;
   string trigger_price = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 position_id = 3;
+  uint64 pool_id = 5;
+  uint64 close_percentage = 6;
 }
 
 message MsgCreatePerpetualCloseOrderResponse { uint64 order_id = 1; }
@@ -157,6 +159,7 @@ message MsgUpdatePerpetualOrder {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 5;
 }
 
 message MsgUpdatePerpetualOrderResponse {}
@@ -166,6 +169,7 @@ message MsgCancelPerpetualOrder {
   option (amino.name) = "tradeshield/MsgCancelPerpetualOrder";
   string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 order_id = 2;
+  uint64 pool_id = 3;
 }
 
 message MsgCancelPerpetualOrderResponse { uint64 order_id = 1; }
@@ -174,7 +178,8 @@ message MsgCancelPerpetualOrders {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCancelPerpetualOrders";
   string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated uint64 order_ids = 2;
+  repeated uint64 legacy_order_ids = 2;
+  repeated PerpetualOrderPoolKey orders = 3 [ (gogoproto.nullable) = false ];
 }
 
 message MsgCancelPerpetualOrdersResponse {}
@@ -205,7 +210,20 @@ message MsgExecuteOrders {
   option (amino.name) = "tradeshield/MsgExecuteOrders";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated uint64 spot_order_ids = 2;
-  repeated uint64 perpetual_order_ids = 3;
+  repeated uint64 legacy_perpetual_order_ids = 3;
+  repeated PerpetualOrderKey perpetual_orders = 4
+      [ (gogoproto.nullable) = false ];
 }
 
 message MsgExecuteOrdersResponse {}
+
+message PerpetualOrderKey {
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 pool_id = 2;
+  uint64 order_id = 3;
+}
+
+message PerpetualOrderPoolKey {
+  uint64 pool_id = 1;
+  uint64 order_id = 2;
+}

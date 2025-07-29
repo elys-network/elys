@@ -6,7 +6,7 @@ import (
 	"errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 func (k Keeper) GetOrderOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64, orderKey types.OrderKey) (types.PerpetualOrderOwner, error) {

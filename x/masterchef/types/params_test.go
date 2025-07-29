@@ -5,12 +5,12 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdkmath.LegacyNewDecWithPrec(60, 2), sdkmath.LegacyNewDecWithPrec(25, 2), sdkmath.LegacyNewDecWithPrec(5, 1), authtypes.NewModuleAddress("protocol-revenue-address").String()))
+	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdkmath.LegacyNewDecWithPrec(60, 2), sdkmath.LegacyNewDecWithPrec(25, 2), sdkmath.LegacyNewDecWithPrec(5, 1), authtypes.NewModuleAddress("protocol-revenue-address").String(), authtypes.NewModuleAddress("taker-manager-address").String()))
 }
 
 func TestRewardPortionForLps(t *testing.T) {

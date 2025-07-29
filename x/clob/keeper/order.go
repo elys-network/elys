@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (types.PerpetualOrder, bool) {

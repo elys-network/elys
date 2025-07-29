@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/v6/api/elys/perpetual"
+	"github.com/elys-network/elys/v7/api/elys/perpetual"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -72,6 +72,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "OpenEstimation",
+					Skip:      true, // use custom command
+				},
+				{
+					RpcMethod: "OpenEstimationByFinal",
 					Skip:      true, // use custom command
 				},
 				{

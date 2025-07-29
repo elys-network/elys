@@ -10,13 +10,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -144,15 +144,6 @@ func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetPoolThreshold(value math.LegacyDec) {
-	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
-	params.PoolOpenThreshold = value
-	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (suite *KeeperTestSuite) SetSafetyFactor(value math.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.SafetyFactor = value
@@ -179,7 +170,6 @@ func (suite *KeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
@@ -199,7 +189,6 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
@@ -209,7 +198,7 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 	for _, v := range denoms {
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
-		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
+		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, uint64(ctx.BlockTime().Unix()))
 	}
 }
 func (suite *KeeperTestSuite) SetLeverageParam(ctx sdk.Context) error {
@@ -404,19 +393,19 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        osmomath.BigDec
+		expectedValue        math.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			osmomath.ZeroBigDec(),
+			math.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.OneBigDec(),
+			math.LegacyOneDec(),
 		},
 		{
 			"success",
@@ -424,7 +413,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			osmomath.BigDecFromSDKInt(totalShares.Sub(leveragelpAmount)).Quo(osmomath.BigDecFromSDKInt(totalShares)),
+			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().Quo(totalShares.ToLegacyDec()),
 		},
 	}
 

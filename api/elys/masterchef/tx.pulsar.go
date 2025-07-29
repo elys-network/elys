@@ -6093,6 +6093,782 @@ func (x *fastReflection_MsgTogglePoolEdenRewardsResponse) ProtoMethods() *protoi
 	}
 }
 
+var (
+	md_MsgToggleTakerFeeSwapAndBurn        protoreflect.MessageDescriptor
+	fd_MsgToggleTakerFeeSwapAndBurn_sender protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_masterchef_tx_proto_init()
+	md_MsgToggleTakerFeeSwapAndBurn = File_elys_masterchef_tx_proto.Messages().ByName("MsgToggleTakerFeeSwapAndBurn")
+	fd_MsgToggleTakerFeeSwapAndBurn_sender = md_MsgToggleTakerFeeSwapAndBurn.Fields().ByName("sender")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgToggleTakerFeeSwapAndBurn)(nil)
+
+type fastReflection_MsgToggleTakerFeeSwapAndBurn MsgToggleTakerFeeSwapAndBurn
+
+func (x *MsgToggleTakerFeeSwapAndBurn) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgToggleTakerFeeSwapAndBurn)(x)
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurn) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_tx_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType
+var _ protoreflect.MessageType = fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType{}
+
+type fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType struct{}
+
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgToggleTakerFeeSwapAndBurn)(nil)
+}
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgToggleTakerFeeSwapAndBurn)
+}
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgToggleTakerFeeSwapAndBurn
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgToggleTakerFeeSwapAndBurn
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Type() protoreflect.MessageType {
+	return _fastReflection_MsgToggleTakerFeeSwapAndBurn_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) New() protoreflect.Message {
+	return new(fastReflection_MsgToggleTakerFeeSwapAndBurn)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Interface() protoreflect.ProtoMessage {
+	return (*MsgToggleTakerFeeSwapAndBurn)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Sender != "" {
+		value := protoreflect.ValueOfString(x.Sender)
+		if !f(fd_MsgToggleTakerFeeSwapAndBurn_sender, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		return x.Sender != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		x.Sender = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		value := x.Sender
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		x.Sender = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		panic(fmt.Errorf("field sender of message elys.masterchef.MsgToggleTakerFeeSwapAndBurn is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.MsgToggleTakerFeeSwapAndBurn.sender":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurn"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurn does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.MsgToggleTakerFeeSwapAndBurn", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurn) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurn)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Sender)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurn)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Sender) > 0 {
+			i -= len(x.Sender)
+			copy(dAtA[i:], x.Sender)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Sender)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurn)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgToggleTakerFeeSwapAndBurn: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgToggleTakerFeeSwapAndBurn: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Sender = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_MsgToggleTakerFeeSwapAndBurnResponse protoreflect.MessageDescriptor
+)
+
+func init() {
+	file_elys_masterchef_tx_proto_init()
+	md_MsgToggleTakerFeeSwapAndBurnResponse = File_elys_masterchef_tx_proto.Messages().ByName("MsgToggleTakerFeeSwapAndBurnResponse")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgToggleTakerFeeSwapAndBurnResponse)(nil)
+
+type fastReflection_MsgToggleTakerFeeSwapAndBurnResponse MsgToggleTakerFeeSwapAndBurnResponse
+
+func (x *MsgToggleTakerFeeSwapAndBurnResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgToggleTakerFeeSwapAndBurnResponse)(x)
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurnResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_tx_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType{}
+
+type fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType struct{}
+
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgToggleTakerFeeSwapAndBurnResponse)(nil)
+}
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgToggleTakerFeeSwapAndBurnResponse)
+}
+func (x fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgToggleTakerFeeSwapAndBurnResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgToggleTakerFeeSwapAndBurnResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgToggleTakerFeeSwapAndBurnResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgToggleTakerFeeSwapAndBurnResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgToggleTakerFeeSwapAndBurnResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgToggleTakerFeeSwapAndBurnResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurnResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurnResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgToggleTakerFeeSwapAndBurnResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgToggleTakerFeeSwapAndBurnResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgToggleTakerFeeSwapAndBurnResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -6619,6 +7395,67 @@ func (*MsgTogglePoolEdenRewardsResponse) Descriptor() ([]byte, []int) {
 	return file_elys_masterchef_tx_proto_rawDescGZIP(), []int{12}
 }
 
+type MsgToggleTakerFeeSwapAndBurn struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurn) Reset() {
+	*x = MsgToggleTakerFeeSwapAndBurn{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_tx_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgToggleTakerFeeSwapAndBurn) ProtoMessage() {}
+
+// Deprecated: Use MsgToggleTakerFeeSwapAndBurn.ProtoReflect.Descriptor instead.
+func (*MsgToggleTakerFeeSwapAndBurn) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_tx_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurn) GetSender() string {
+	if x != nil {
+		return x.Sender
+	}
+	return ""
+}
+
+type MsgToggleTakerFeeSwapAndBurnResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurnResponse) Reset() {
+	*x = MsgToggleTakerFeeSwapAndBurnResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_tx_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgToggleTakerFeeSwapAndBurnResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgToggleTakerFeeSwapAndBurnResponse) ProtoMessage() {}
+
+// Deprecated: Use MsgToggleTakerFeeSwapAndBurnResponse.ProtoReflect.Descriptor instead.
+func (*MsgToggleTakerFeeSwapAndBurnResponse) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_tx_proto_rawDescGZIP(), []int{14}
+}
+
 var File_elys_masterchef_tx_proto protoreflect.FileDescriptor
 
 var file_elys_masterchef_tx_proto_rawDesc = []byte{
@@ -6737,60 +7574,80 @@ var file_elys_masterchef_tx_proto_rawDesc = []byte{
 	0x6f, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x22, 0x0a,
 	0x20, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x64,
 	0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x32, 0xa0, 0x05, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x78, 0x0a, 0x16, 0x41, 0x64, 0x64,
+	0x65, 0x22, 0x89, 0x01, 0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54,
+	0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75,
+	0x72, 0x6e, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x73, 0x65,
+	0x6e, 0x64, 0x65, 0x72, 0x3a, 0x37, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65,
+	0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x27, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2f, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65, 0x72, 0x46,
+	0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75, 0x72, 0x6e, 0x22, 0x26, 0x0a,
+	0x24, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65, 0x72, 0x46,
+	0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75, 0x72, 0x6e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa4, 0x06, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x78, 0x0a,
+	0x16, 0x41, 0x64, 0x64, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64,
 	0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x6e, 0x6f, 0x6d, 0x1a, 0x32, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
 	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x45, 0x78, 0x74, 0x65,
-	0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x1a,
-	0x32, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
+	0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x72, 0x0a, 0x14, 0x41, 0x64, 0x64, 0x45, 0x78,
+	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x12,
+	0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
 	0x66, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x72, 0x0a, 0x14, 0x41, 0x64, 0x64, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e,
-	0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x12, 0x28, 0x2e, 0x65, 0x6c,
+	0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x1a, 0x30, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x41,
+	0x64, 0x64, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74,
+	0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c,
 	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73,
-	0x67, 0x41, 0x64, 0x64, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65,
-	0x6e, 0x74, 0x69, 0x76, 0x65, 0x1a, 0x30, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x45, 0x78,
-	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74,
-	0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
-	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x75, 0x0a, 0x15, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f,
-	0x6c, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x73, 0x12, 0x29, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x4d, 0x75, 0x6c, 0x74,
-	0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x73, 0x1a, 0x31, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
-	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65,
-	0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x43, 0x6c,
-	0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67,
-	0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x28, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d,
-	0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x75, 0x0a, 0x15, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65,
-	0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
-	0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
-	0x66, 0x2e, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x45,
-	0x64, 0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x31, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67,
-	0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80,
-	0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x42, 0x07, 0x54, 0x78,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xa2, 0x02, 0x03, 0x45,
-	0x4d, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72,
-	0x63, 0x68, 0x65, 0x66, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d, 0x61, 0x73, 0x74,
-	0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x28, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x75, 0x0a, 0x15, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x73,
+	0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c,
+	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x73, 0x1a, 0x31, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73,
+	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x4d, 0x75, 0x6c, 0x74, 0x69,
+	0x70, 0x6c, 0x69, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a,
+	0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x20,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
+	0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x75, 0x0a, 0x15, 0x54, 0x6f,
+	0x67, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x52, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x73, 0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x50,
+	0x6f, 0x6f, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x1a, 0x31,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2e, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x45, 0x64,
+	0x65, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x81, 0x01, 0x0a, 0x19, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65,
+	0x72, 0x46, 0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75, 0x72, 0x6e, 0x12,
+	0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
+	0x66, 0x2e, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65, 0x72,
+	0x46, 0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75, 0x72, 0x6e, 0x1a, 0x35,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2e, 0x4d, 0x73, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x54, 0x61, 0x6b, 0x65, 0x72, 0x46,
+	0x65, 0x65, 0x53, 0x77, 0x61, 0x70, 0x41, 0x6e, 0x64, 0x42, 0x75, 0x72, 0x6e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xb0, 0x01, 0x0a,
+	0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x63, 0x68, 0x65, 0x66, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73,
+	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x37,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x63, 0x68, 0x65, 0x66, 0xa2, 0x02, 0x03, 0x45, 0x4d, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79,
+	0x73, 0x2e, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xca, 0x02, 0x0f, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xe2, 0x02,
+	0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45,
+	0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -6805,25 +7662,27 @@ func file_elys_masterchef_tx_proto_rawDescGZIP() []byte {
 	return file_elys_masterchef_tx_proto_rawDescData
 }
 
-var file_elys_masterchef_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_elys_masterchef_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_elys_masterchef_tx_proto_goTypes = []interface{}{
-	(*MsgAddExternalRewardDenom)(nil),         // 0: elys.masterchef.MsgAddExternalRewardDenom
-	(*MsgAddExternalRewardDenomResponse)(nil), // 1: elys.masterchef.MsgAddExternalRewardDenomResponse
-	(*MsgAddExternalIncentive)(nil),           // 2: elys.masterchef.MsgAddExternalIncentive
-	(*MsgAddExternalIncentiveResponse)(nil),   // 3: elys.masterchef.MsgAddExternalIncentiveResponse
-	(*MsgUpdateParams)(nil),                   // 4: elys.masterchef.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),           // 5: elys.masterchef.MsgUpdateParamsResponse
-	(*PoolMultiplier)(nil),                    // 6: elys.masterchef.PoolMultiplier
-	(*MsgUpdatePoolMultipliers)(nil),          // 7: elys.masterchef.MsgUpdatePoolMultipliers
-	(*MsgUpdatePoolMultipliersResponse)(nil),  // 8: elys.masterchef.MsgUpdatePoolMultipliersResponse
-	(*MsgClaimRewards)(nil),                   // 9: elys.masterchef.MsgClaimRewards
-	(*MsgClaimRewardsResponse)(nil),           // 10: elys.masterchef.MsgClaimRewardsResponse
-	(*MsgTogglePoolEdenRewards)(nil),          // 11: elys.masterchef.MsgTogglePoolEdenRewards
-	(*MsgTogglePoolEdenRewardsResponse)(nil),  // 12: elys.masterchef.MsgTogglePoolEdenRewardsResponse
-	(*Params)(nil),                            // 13: elys.masterchef.Params
+	(*MsgAddExternalRewardDenom)(nil),            // 0: elys.masterchef.MsgAddExternalRewardDenom
+	(*MsgAddExternalRewardDenomResponse)(nil),    // 1: elys.masterchef.MsgAddExternalRewardDenomResponse
+	(*MsgAddExternalIncentive)(nil),              // 2: elys.masterchef.MsgAddExternalIncentive
+	(*MsgAddExternalIncentiveResponse)(nil),      // 3: elys.masterchef.MsgAddExternalIncentiveResponse
+	(*MsgUpdateParams)(nil),                      // 4: elys.masterchef.MsgUpdateParams
+	(*MsgUpdateParamsResponse)(nil),              // 5: elys.masterchef.MsgUpdateParamsResponse
+	(*PoolMultiplier)(nil),                       // 6: elys.masterchef.PoolMultiplier
+	(*MsgUpdatePoolMultipliers)(nil),             // 7: elys.masterchef.MsgUpdatePoolMultipliers
+	(*MsgUpdatePoolMultipliersResponse)(nil),     // 8: elys.masterchef.MsgUpdatePoolMultipliersResponse
+	(*MsgClaimRewards)(nil),                      // 9: elys.masterchef.MsgClaimRewards
+	(*MsgClaimRewardsResponse)(nil),              // 10: elys.masterchef.MsgClaimRewardsResponse
+	(*MsgTogglePoolEdenRewards)(nil),             // 11: elys.masterchef.MsgTogglePoolEdenRewards
+	(*MsgTogglePoolEdenRewardsResponse)(nil),     // 12: elys.masterchef.MsgTogglePoolEdenRewardsResponse
+	(*MsgToggleTakerFeeSwapAndBurn)(nil),         // 13: elys.masterchef.MsgToggleTakerFeeSwapAndBurn
+	(*MsgToggleTakerFeeSwapAndBurnResponse)(nil), // 14: elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse
+	(*Params)(nil),                               // 15: elys.masterchef.Params
 }
 var file_elys_masterchef_tx_proto_depIdxs = []int32{
-	13, // 0: elys.masterchef.MsgUpdateParams.params:type_name -> elys.masterchef.Params
+	15, // 0: elys.masterchef.MsgUpdateParams.params:type_name -> elys.masterchef.Params
 	6,  // 1: elys.masterchef.MsgUpdatePoolMultipliers.pool_multipliers:type_name -> elys.masterchef.PoolMultiplier
 	0,  // 2: elys.masterchef.Msg.AddExternalRewardDenom:input_type -> elys.masterchef.MsgAddExternalRewardDenom
 	2,  // 3: elys.masterchef.Msg.AddExternalIncentive:input_type -> elys.masterchef.MsgAddExternalIncentive
@@ -6831,14 +7690,16 @@ var file_elys_masterchef_tx_proto_depIdxs = []int32{
 	7,  // 5: elys.masterchef.Msg.UpdatePoolMultipliers:input_type -> elys.masterchef.MsgUpdatePoolMultipliers
 	9,  // 6: elys.masterchef.Msg.ClaimRewards:input_type -> elys.masterchef.MsgClaimRewards
 	11, // 7: elys.masterchef.Msg.TogglePoolEdenRewards:input_type -> elys.masterchef.MsgTogglePoolEdenRewards
-	1,  // 8: elys.masterchef.Msg.AddExternalRewardDenom:output_type -> elys.masterchef.MsgAddExternalRewardDenomResponse
-	3,  // 9: elys.masterchef.Msg.AddExternalIncentive:output_type -> elys.masterchef.MsgAddExternalIncentiveResponse
-	5,  // 10: elys.masterchef.Msg.UpdateParams:output_type -> elys.masterchef.MsgUpdateParamsResponse
-	8,  // 11: elys.masterchef.Msg.UpdatePoolMultipliers:output_type -> elys.masterchef.MsgUpdatePoolMultipliersResponse
-	10, // 12: elys.masterchef.Msg.ClaimRewards:output_type -> elys.masterchef.MsgClaimRewardsResponse
-	12, // 13: elys.masterchef.Msg.TogglePoolEdenRewards:output_type -> elys.masterchef.MsgTogglePoolEdenRewardsResponse
-	8,  // [8:14] is the sub-list for method output_type
-	2,  // [2:8] is the sub-list for method input_type
+	13, // 8: elys.masterchef.Msg.ToggleTakerFeeSwapAndBurn:input_type -> elys.masterchef.MsgToggleTakerFeeSwapAndBurn
+	1,  // 9: elys.masterchef.Msg.AddExternalRewardDenom:output_type -> elys.masterchef.MsgAddExternalRewardDenomResponse
+	3,  // 10: elys.masterchef.Msg.AddExternalIncentive:output_type -> elys.masterchef.MsgAddExternalIncentiveResponse
+	5,  // 11: elys.masterchef.Msg.UpdateParams:output_type -> elys.masterchef.MsgUpdateParamsResponse
+	8,  // 12: elys.masterchef.Msg.UpdatePoolMultipliers:output_type -> elys.masterchef.MsgUpdatePoolMultipliersResponse
+	10, // 13: elys.masterchef.Msg.ClaimRewards:output_type -> elys.masterchef.MsgClaimRewardsResponse
+	12, // 14: elys.masterchef.Msg.TogglePoolEdenRewards:output_type -> elys.masterchef.MsgTogglePoolEdenRewardsResponse
+	14, // 15: elys.masterchef.Msg.ToggleTakerFeeSwapAndBurn:output_type -> elys.masterchef.MsgToggleTakerFeeSwapAndBurnResponse
+	9,  // [9:16] is the sub-list for method output_type
+	2,  // [2:9] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
 	2,  // [2:2] is the sub-list for extension extendee
 	0,  // [0:2] is the sub-list for field type_name
@@ -7007,6 +7868,30 @@ func file_elys_masterchef_tx_proto_init() {
 				return nil
 			}
 		}
+		file_elys_masterchef_tx_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgToggleTakerFeeSwapAndBurn); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_tx_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgToggleTakerFeeSwapAndBurnResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -7014,7 +7899,7 @@ func file_elys_masterchef_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_masterchef_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

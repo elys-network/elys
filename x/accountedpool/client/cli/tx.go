@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/v6/x/accountedpool/types"
+	"github.com/elys-network/elys/v7/x/accountedpool/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

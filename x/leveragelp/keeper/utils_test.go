@@ -7,9 +7,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (suite *KeeperTestSuite) TestCheckUserAuthorization() {
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 	poolId := uint64(1)
 
 	// PoolNotFound
-	err := k.CheckPoolHealth(suite.ctx, poolId)
+	err := k.CheckMaxLeverageRatio(suite.ctx, poolId)
 	suite.Require().True(errors.Is(err, types.ErrPoolDoesNotExist))
 
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 		AmmPoolId: 1,
 		Health:    math.LegacyNewDec(5).Quo(math.LegacyNewDec(100)),
 	})
-	err = k.CheckPoolHealth(suite.ctx, poolId)
+	err = k.CheckMaxLeverageRatio(suite.ctx, poolId)
 	suite.Require().Error(errors.New("pool health too low to open new positions"))
 
 	// PoolIsHealthy
@@ -84,7 +84,7 @@ func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 		Health:             math.LegacyNewDec(15),
 		MaxLeveragelpRatio: math.LegacyNewDec(5),
 	})
-	err = k.CheckPoolHealth(suite.ctx, poolId)
+	err = k.CheckMaxLeverageRatio(suite.ctx, poolId)
 	suite.Require().NoError(err)
 }
 

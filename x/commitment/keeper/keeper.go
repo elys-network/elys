@@ -12,8 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v6/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 // Interface declearation
@@ -186,13 +186,15 @@ func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	k.SetTotalSupply(ctx, prev)
 
 	// Emit event to track Eden and EdenB mint amount
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeMintCoins,
-			sdk.NewAttribute("module", moduleName),
-			sdk.NewAttribute("coins", coinsChanged.String()),
-		),
-	)
+	if !coinsChanged.Empty() {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeMintCoins,
+				sdk.NewAttribute("module", moduleName),
+				sdk.NewAttribute("coins", coinsChanged.String()),
+			),
+		)
+	}
 
 	if amt.Empty() {
 		return nil
@@ -215,13 +217,15 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	k.SetTotalSupply(ctx, prev)
 
 	// Emit event to track Eden and EdenB burn amount
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeBurnCoins,
-			sdk.NewAttribute("module", moduleName),
-			sdk.NewAttribute("coins", coinsChanged.String()),
-		),
-	)
+	if !coinsChanged.Empty() {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeBurnCoins,
+				sdk.NewAttribute("module", moduleName),
+				sdk.NewAttribute("coins", coinsChanged.String()),
+			),
+		)
+	}
 
 	if amt.Empty() {
 		return nil

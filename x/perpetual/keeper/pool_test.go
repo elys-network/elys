@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/perpetual/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/perpetual/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 

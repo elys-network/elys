@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 )
 
 func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSpotOrder) (*types.MsgCreateSpotOrderResponse, error) {
@@ -66,7 +66,7 @@ func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSp
 		return nil, types.ErrSpotOrderNotFound
 	}
 
-	// Checks if the the msg creator is the same as the current owner
+	// Checks if the msg creator is the same as the current owner
 	if msg.OwnerAddress != order.OwnerAddress {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}

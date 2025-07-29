@@ -7,23 +7,31 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
+func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64, openedPosition bool) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
-	maxLiabilitiesThreshold := k.GetPoolMaxLiabilitiesThreshold(ctx)
-	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+	params := k.GetParams(ctx)
+
+	maxLiabilitiesRatioAllowed := math.LegacyZeroDec()
+	if openedPosition {
+		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold
+	} else {
+		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold.Add(params.ExitBuffer)
+	}
+
+	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
 	}
-	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesThreshold) {
+	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)

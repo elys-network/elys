@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/x/commitment/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/x/commitment/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -80,7 +80,7 @@ func TestKeeper_IterateCommitments(t *testing.T) {
 	assert.Equal(t, commitments, retrievedCommitments)
 }
 
-// TestKeeper_IterateCommitments tests the IterateCommitments function with handlerFn returning true
+// TestKeeper_IterateCommitmentsWithHandlerFn tests the IterateCommitments function with handlerFn returning true
 func TestKeeper_IterateCommitmentsWithHandlerFn(t *testing.T) {
 	keeper, ctx := keepertest.CommitmentKeeper(t)
 

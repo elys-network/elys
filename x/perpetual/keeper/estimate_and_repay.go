@@ -6,46 +6,58 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // EstimateAndRepay ammPool has to be pointer because RemoveFromPoolBalance (in Repay) updates pool assets
 // Important to send pointer mtp and pool
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, error) {
 
 	if closingRatio.LTE(math.LegacyZeroDec()) || closingRatio.GT(math.LegacyOneDec()) {
-		return math.Int{}, math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
+		return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
+	}
+	zeroPerpFees := types.NewPerpetualFeesWithEmptyCoins()
+	repayAmount, payingLiabilities, _, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, closingPrice, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
+	if err != nil {
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, math.LegacyZeroDec(), err
+	}
+	perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.CustodyAsset, repayAmount), sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities), slippageAmount, weightBreakingFee, perpetualFees, takerFees, repayOracleAmount, false, false)
+	// Track slippage and weight breaking fee slippage in amm via perpetual
+	for _, coin := range perpFees.SlippageFees {
+		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+	}
+	for _, coin := range perpFees.WeightBreakingFees {
+		if coin.Amount.IsPositive() {
+			k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+		}
 	}
 
-	repayAmount, payingLiabilities, _, _, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
-	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
-	}
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, math.LegacyZeroDec(), err
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return math.Int{}, math.Int{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
-		return math.ZeroInt(), math.ZeroInt(), err
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees, repayAmount); err != nil {
+		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, math.LegacyZeroDec(), err
 	}
 
-	return repayAmount, returnAmount, nil
+	return repayAmount, returnAmount, perpFees, closingPrice, nil
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
-func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee osmomath.BigDec, err error) {
+func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, slippageAmount, weightBreakingFee, repayOracleAmount osmomath.BigDec, perpetualFees, takerFees, closingPrice math.LegacyDec, err error) {
 	// init repay amount
 	// For long this will be in trading asset (custody asset is trading asset)
 	// For short this will be in USDC (custody asset is USDC)
@@ -56,20 +68,29 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 	// For long this will be in base currency
 	payingLiabilities = closingRatio.MulInt(mtp.Liabilities).TruncateInt()
 
+	var closingPriceDenom osmomath.BigDec
+
 	if mtp.Position == types.Position_LONG {
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
+		repayAmount, slippage, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
+		closingPriceDenom = osmomath.BigDecFromSDKInt(payingLiabilities).Quo(osmomath.BigDecFromSDKInt(repayAmount))
 	}
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
+		repayAmount, slippage, slippageAmount, weightBreakingFee, repayOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
+		closingPriceDenom = osmomath.BigDecFromSDKInt(repayAmount).Quo(osmomath.BigDecFromSDKInt(payingLiabilities))
+	}
+
+	closingPrice, err = k.ConvertDenomRatioPriceToUSDPrice(ctx, closingPriceDenom, mtp.TradingAsset)
+	if err != nil {
+		return math.ZeroInt(), math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
 	return
@@ -91,4 +112,19 @@ func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRat
 		returnAmount = closingAmount.Sub(repayAmount)
 	}
 	return returnAmount, nil
+}
+
+// returnAmount is in custody asset
+// closingCollatoralCoin is the collateral coin before closing position
+func (k Keeper) CalcNetPnLAtClosing(ctx sdk.Context, returnAmount math.Int, custodyAsset string, closingCollatoralCoin sdk.Coin, closingRatio math.LegacyDec) (netPnLInUSD math.LegacyDec) {
+
+	closedCollateralAmount := closingRatio.MulInt(closingCollatoralCoin.Amount).TruncateInt()
+	closedCollateralInUSD := k.amm.CalculateUSDValue(ctx, closingCollatoralCoin.Denom, closedCollateralAmount).Dec()
+
+	// returnAmount will always be >=0
+	returnAmountInUSD := k.amm.CalculateUSDValue(ctx, custodyAsset, returnAmount).Dec()
+
+	netPnLInUSD = returnAmountInUSD.Sub(closedCollateralInUSD)
+
+	return netPnLInUSD
 }

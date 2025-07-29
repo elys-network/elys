@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

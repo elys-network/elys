@@ -8,9 +8,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -69,7 +69,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId, true); err != nil {
 		return nil, err
 	}
 
@@ -89,21 +89,24 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	// Initialize a new Perpetual Trading Position (MTP).
 	mtp := types.NewMTP(ctx, msg.Creator, msg.Collateral.Denom, tradingAsset, liabilitiesAsset, custodyAsset, msg.Position, msg.TakeProfitPrice, msg.PoolId)
 
-	err = k.ProcessOpen(ctx, &pool, &ammPool, mtp, proxyLeverage, msg.PoolId, msg, baseCurrency)
+	totalPerpFeesCoins, err := k.ProcessOpen(ctx, &pool, &ammPool, mtp, proxyLeverage, msg.PoolId, msg, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	if existingMtp != nil {
-		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, baseCurrency)
+		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, baseCurrency, totalPerpFeesCoins)
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId, true); err != nil {
 		return nil, err
 	}
 
 	// should not be checked before OpenConsolidate
 	denomPrice, err := k.GetDenomPrice(ctx, tradingAsset)
+	if err != nil {
+		return nil, err
+	}
 	if mtp.GetMTPValue(denomPrice).LT(params.MinimumNotionalValue) {
 		return nil, fmt.Errorf("not enough notional value for the mtp: minimum %s, mtp: %s", params.MinimumNotionalValue.String(), mtp.GetMTPValue(denomPrice).String())
 	}
@@ -115,6 +118,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, err
 		}
 	}
+
+	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpFeesCoins)
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
@@ -132,6 +137,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
+		sdk.NewAttribute(types.AttributeKeyPerpFee, perpFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeySlippage, slippageFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeKeyWeightBreakingFee, weightBreakingFeesInUsd.String()),
+		sdk.NewAttribute(types.AttributeTakerFees, takerFeesInUsd.String()),
 	))
 
 	return &types.MsgOpenResponse{

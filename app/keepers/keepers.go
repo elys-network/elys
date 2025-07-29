@@ -74,41 +74,44 @@ import (
 	ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccv "github.com/cosmos/interchain-security/v6/x/ccv/types"
-	wasmbindingsclient "github.com/elys-network/elys/v6/wasmbindings/client"
-	accountedpoolmodulekeeper "github.com/elys-network/elys/v6/x/accountedpool/keeper"
-	accountedpoolmoduletypes "github.com/elys-network/elys/v6/x/accountedpool/types"
-	ammmodulekeeper "github.com/elys-network/elys/v6/x/amm/keeper"
-	ammmoduletypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofilemodulekeeper "github.com/elys-network/elys/v6/x/assetprofile/keeper"
-	assetprofilemoduletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	burnermodulekeeper "github.com/elys-network/elys/v6/x/burner/keeper"
-	burnermoduletypes "github.com/elys-network/elys/v6/x/burner/types"
-	clobmodulekeeper "github.com/elys-network/elys/v6/x/clob/keeper"
-	clobmoduletypes "github.com/elys-network/elys/v6/x/clob/types"
-	commitmentmodulekeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
-	commitmentmoduletypes "github.com/elys-network/elys/v6/x/commitment/types"
-	epochsmodulekeeper "github.com/elys-network/elys/v6/x/epochs/keeper"
-	epochsmoduletypes "github.com/elys-network/elys/v6/x/epochs/types"
-	estakingmodulekeeper "github.com/elys-network/elys/v6/x/estaking/keeper"
-	estakingmoduletypes "github.com/elys-network/elys/v6/x/estaking/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	masterchefmodulekeeper "github.com/elys-network/elys/v6/x/masterchef/keeper"
-	masterchefmoduletypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	parametermodulekeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
-	parametermoduletypes "github.com/elys-network/elys/v6/x/parameter/types"
-	perpetualmodulekeeper "github.com/elys-network/elys/v6/x/perpetual/keeper"
-	perpetualmoduletypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
-	tiermodulekeeper "github.com/elys-network/elys/v6/x/tier/keeper"
-	tiermoduletypes "github.com/elys-network/elys/v6/x/tier/types"
-	tokenomicsmodulekeeper "github.com/elys-network/elys/v6/x/tokenomics/keeper"
-	tokenomicsmoduletypes "github.com/elys-network/elys/v6/x/tokenomics/types"
-	tradeshieldmodulekeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
-	tradeshieldmoduletypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	wasmbindingsclient "github.com/elys-network/elys/v7/wasmbindings/client"
+	accountedpoolmodulekeeper "github.com/elys-network/elys/v7/x/accountedpool/keeper"
+	accountedpoolmoduletypes "github.com/elys-network/elys/v7/x/accountedpool/types"
+	ammmodulekeeper "github.com/elys-network/elys/v7/x/amm/keeper"
+	ammmoduletypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofilemodulekeeper "github.com/elys-network/elys/v7/x/assetprofile/keeper"
+	assetprofilemoduletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	burnermodulekeeper "github.com/elys-network/elys/v7/x/burner/keeper"
+	burnermoduletypes "github.com/elys-network/elys/v7/x/burner/types"
+	clobmodulekeeper "github.com/elys-network/elys/v7/x/clob/keeper"
+	clobmoduletypes "github.com/elys-network/elys/v7/x/clob/types"
+	commitmentmodulekeeper "github.com/elys-network/elys/v7/x/commitment/keeper"
+	commitmentmoduletypes "github.com/elys-network/elys/v7/x/commitment/types"
+	epochsmodulekeeper "github.com/elys-network/elys/v7/x/epochs/keeper"
+	epochsmoduletypes "github.com/elys-network/elys/v7/x/epochs/types"
+	estakingmodulekeeper "github.com/elys-network/elys/v7/x/estaking/keeper"
+	estakingmoduletypes "github.com/elys-network/elys/v7/x/estaking/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	masterchefmodulekeeper "github.com/elys-network/elys/v7/x/masterchef/keeper"
+	masterchefmoduletypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	legacyoraclekeeper "github.com/elys-network/elys/v7/x/oracle/keeper"
+	legacyoracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	parametermodulekeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
+	parametermoduletypes "github.com/elys-network/elys/v7/x/parameter/types"
+	perpetualmodulekeeper "github.com/elys-network/elys/v7/x/perpetual/keeper"
+	perpetualmoduletypes "github.com/elys-network/elys/v7/x/perpetual/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	tiermodulekeeper "github.com/elys-network/elys/v7/x/tier/keeper"
+	tiermoduletypes "github.com/elys-network/elys/v7/x/tier/types"
+	tokenomicsmodulekeeper "github.com/elys-network/elys/v7/x/tokenomics/keeper"
+	tokenomicsmoduletypes "github.com/elys-network/elys/v7/x/tokenomics/types"
+	tradeshieldmodulekeeper "github.com/elys-network/elys/v7/x/tradeshield/keeper"
+	tradeshieldmoduletypes "github.com/elys-network/elys/v7/x/tradeshield/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -152,11 +155,13 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
+	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -176,6 +181,8 @@ type AppKeepers struct {
 	HooksICS4Wrapper    ibchooks.ICS4Middleware
 	Ics20WasmHooks      *ibchooks.WasmHooks
 	PacketForwardKeeper *packetforwardkeeper.Keeper
+
+	ICSValidatorKeeper ICSValidatorKeeper
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -253,6 +260,7 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -537,6 +545,9 @@ func NewAppKeeper(
 	)
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+
+	app.ICSValidatorKeeper = NewICSValidatorKeeper(app.ConsumerKeeper)
+
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -550,23 +561,22 @@ func NewAppKeeper(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	app.OracleKeeper = *oraclekeeper.NewKeeper(
+	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	//app.OracleKeeper = oraclekeeper.NewKeeper(
-	//	appCodec,
-	//	runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
-	//	app.AccountKeeper,
-	//	app.BankKeeper,
-	//	app.DistrKeeper,
-	//	app.StakingKeeper,
-	//	distrtypes.ModuleName,
-	//	cast.ToBool(appOpts.Get("telemetry.enabled")),
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.ICSValidatorKeeper,
+		distrtypes.ModuleName,
+		cast.ToBool(appOpts.Get("telemetry.enabled")),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
@@ -723,6 +733,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.AmmKeeper,
 		app.PerpetualKeeper,
+		app.AssetprofileKeeper,
 	)
 
 	app.TierKeeper.SetTradeshieldKeeper(&app.TradeshieldKeeper)
@@ -882,7 +893,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	paramsKeeper.Subspace(oracletypes.ModuleName)
+	//paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)

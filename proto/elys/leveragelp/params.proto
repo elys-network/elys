@@ -4,7 +4,7 @@ package elys.leveragelp;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/leveragelp/types";
+option go_package = "github.com/elys-network/elys/v7/x/leveragelp/types";
 
 // Params defines the parameters for the module.
 message LegacyParams {
@@ -59,4 +59,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
   bool stop_loss_enabled = 11;
+  string liabilities_factor = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

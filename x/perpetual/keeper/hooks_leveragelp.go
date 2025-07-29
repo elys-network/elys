@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	leveragelptypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	leveragelptypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) OnLeverageLpEnablePool(ctx sdk.Context, ammPool ammtypes.Pool) error {
@@ -54,14 +54,14 @@ func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, _ sdk.AccAddress, ammPool ammtypes.Pool) error {
 	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		return fmt.Errorf("perpetual pool (id: %d) not found", ammPool.PoolId)
@@ -72,14 +72,14 @@ func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sd
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, _ sdk.AccAddress, ammPool ammtypes.Pool) error {
 	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		return fmt.Errorf("perpetual pool (id: %d) not found", ammPool.PoolId)
@@ -90,7 +90,7 @@ func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context,
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
 	if err != nil {
 		return err
 	}

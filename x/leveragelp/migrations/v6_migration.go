@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (m Migrator) V6Migration(ctx sdk.Context) error {
@@ -23,7 +23,7 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 			return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 		}
 		pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
-		pool.Health = m.keeper.CalculatePoolHealth(ctx, &pool).Dec()
+		pool.Health = m.keeper.CalculatePoolHealth(ctx, &pool)
 		m.keeper.SetPool(ctx, pool)
 	}
 	return nil

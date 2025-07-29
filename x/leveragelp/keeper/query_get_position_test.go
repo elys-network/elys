@@ -5,10 +5,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryGetPosition() {
@@ -102,7 +102,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
-	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666912249")
+	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253084466940841678")
 
 	suite.Require().Equal(position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
@@ -111,7 +111,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		Position: &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100278"),
+			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940493900624814"),
 		},
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671232"),
 		InterestRateHourUsd: sdkmath.LegacyMustNewDecFromStr("0.000000068493150684"),

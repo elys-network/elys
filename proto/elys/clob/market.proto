@@ -4,7 +4,7 @@ package elys.clob;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/clob/types";
+option go_package = "github.com/elys-network/elys/v7/x/clob/types";
 
 enum PerpetualMarketStatus {
   MARKET_STATUS_UNSPECIFIED = 0;

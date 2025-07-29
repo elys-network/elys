@@ -7,9 +7,9 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -76,7 +76,17 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		return nil, err
 	}
 
+	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
 	assetPriceAtOpen := tradingAssetPrice
+
+	var limitPriceDenomRatio osmomath.BigDec
+	if useLimitPrice {
+		assetPriceAtOpen = req.LimitPrice
+		limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, tradingAsset, assetPriceAtOpen)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	if req.TakeProfitPrice.IsPositive() {
 		if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
@@ -114,9 +124,12 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		// LONG: if collateral is base, and input is custody, then EstimateSwapGivenOut(total_input_custody) = collateral * lev
 		if mtp.CollateralAsset == baseCurrency {
 			var collateralLiab math.Int
-			collateralLiab, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, req.FinalAmount, mtp.CollateralAsset, ammPool, req.Address)
+			collateralLiab, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, req.FinalAmount, mtp.CollateralAsset, ammPool, req.Address)
 			if err != nil {
 				return nil, err
+			}
+			if useLimitPrice {
+				collateralLiab = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Mul(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 			collateral := math.LegacyNewDecFromInt(collateralLiab).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
@@ -128,9 +141,12 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		if mtp.CollateralAsset != baseCurrency {
 			collateral := math.LegacyNewDecFromInt(req.FinalAmount.Amount).Quo(req.Leverage).TruncateInt()
 			mtp.Collateral = collateral
-			liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.FinalAmount.Denom, req.FinalAmount.Amount.Sub(collateral)), baseCurrency, ammPool, req.Address)
+			liabilities, slippage, _, weightBreakingFee, _, swapFees, takerFees, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.FinalAmount.Denom, req.FinalAmount.Amount.Sub(collateral)), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
+			}
+			if useLimitPrice {
+				liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount.Sub(collateral)).Quo(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 		}
 	}
@@ -138,14 +154,18 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 	// SHORT: liability: SwapGivenIn(total_input_liability)(in usdc) = collateral * (lev)
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		liabilities, slippage, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
+		liabilities, slippage, _, weightBreakingFee, swapFees, takerFees, err = k.EstimateSwapGivenIn(ctx, req.FinalAmount, baseCurrency, ammPool, mtp.Address)
 		if err != nil {
 			return nil, err
+		}
+		if useLimitPrice {
+			liabilities = osmomath.BigDecFromSDKInt(req.FinalAmount.Amount).Mul(limitPriceDenomRatio).Dec().TruncateInt()
 		}
 		collateral := math.LegacyNewDecFromInt(liabilities).Quo(req.Leverage).TruncateInt()
 		mtp.Collateral = collateral
 		liabilities = req.FinalAmount.Amount
-		custodyAmount = collateral.Mul(req.Leverage.Add(math.LegacyOneDec()).TruncateInt())
+		proxyLeverage := req.Leverage.Add(math.LegacyOneDec())
+		custodyAmount = proxyLeverage.MulInt(collateral).TruncateInt()
 	}
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
@@ -223,5 +243,6 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		WeightBreakingFee:  weightBreakingFee.Dec(),
 		SwapFees:           swapFees,
 		TakerFees:          takerFees,
+		LimitPrice:         req.LimitPrice,
 	}, nil
 }

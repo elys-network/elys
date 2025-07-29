@@ -6,11 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestOpenLong() {
@@ -107,9 +107,9 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position.Address, addr.String())
 	suite.Require().Equal(position.Collateral.String(), "1000uusdc")
 	suite.Require().Equal(position.Liabilities.String(), "4000")
-	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390000000000000") // slippage enabled on amm
+	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390243902439024") // slippage enabled on amm
 	// suite.Require().Equal(position.LeveragedLpAmount.String(), "50000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235117522775069654") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235123475156203501") // slippage enabled on amm
 	suite.Require().Equal(position.Id, uint64(1))
 	suite.Require().Equal(position.AmmPoolId, uint64(1))
 
@@ -128,9 +128,9 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position2.Address, addr.String())
 	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")
 	suite.Require().Equal(position2.Liabilities.String(), "8000")
-	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98805291560975610") // slippage enabled on amm
+	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98808230716012451") // slippage enabled on amm
 	// .Require().Equal(position2.LeveragedLpAmount.String(), "100000000000000000") // slippage disabled on amm
-	suite.Require().Equal(position.PositionHealth.String(), "1.235769184451886056") // slippage enabled on amm
+	suite.Require().Equal(position.PositionHealth.String(), "1.235804214189914642") // slippage enabled on amm
 	// suite.Require().Equal(position2.PositionHealth.String(), "1.250000000000000000") // slippage disabled on amm
 	suite.Require().Equal(position2.Id, uint64(1))
 	suite.Require().Equal(position2.AmmPoolId, uint64(1))

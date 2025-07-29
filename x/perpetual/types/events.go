@@ -10,4 +10,12 @@ const (
 	EventPaidFromInsuranceFund     = "perpetual_mtp_paid_from_insurance_fund"
 	EventInsufficientInsuranceFund = "perpetual_mtp_insufficient_insurance_fund"
 	EventAddCollateral             = "perpetual_mtp_add_collateral"
+	EventClosePositions            = "perpetual_close_positions"
+)
+
+const (
+	AttributeKeyPerpFee           = "perp_fee"
+	AttributeKeySlippage          = "slippage"
+	AttributeKeyWeightBreakingFee = "weight_breaking_fee"
+	AttributeTakerFees            = "taker_fees"
 )

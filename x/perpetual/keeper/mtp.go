@@ -1,15 +1,16 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -136,11 +137,6 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 }
 
 func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string) (*types.MtpAndPrice, error) {
-	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return &types.MtpAndPrice{}, fmt.Errorf("amm pool %d not found", mtp.AmmPoolId)
-	}
-
 	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
@@ -156,7 +152,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 		return nil, err
 	}
 
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +193,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
 		TradingAssetPrice: tradingAssetPrice,
-		Pnl:               sdk.Coin{baseCurrency, pnl},
+		Pnl:               sdk.Coin{Denom: baseCurrency, Amount: pnl},
 		LiquidationPrice:  liquidationPrice,
 		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
@@ -370,7 +366,7 @@ func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP)
 	if err != nil {
 		return err
 	}
-	takeProfitBorrowFactor := osmomath.OneBigDec()
+	var takeProfitBorrowFactor osmomath.BigDec
 	if mtp.Position == types.Position_LONG {
 		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
 		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().Mul(takeProfitPriceDenomRatio)))

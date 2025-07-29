@@ -2,11 +2,13 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -36,6 +38,13 @@ type AmmKeeper interface {
 	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec
 }
 
+// AssetProfileKeeper defines the expected interface needed to retrieve denom info
+type AssetProfileKeeper interface {
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
+	GetUsdcDenom(ctx sdk.Context) (string, bool)
+}
+
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions
 //
 //go:generate mockery --srcpkg . --name PerpetualKeeper --structname PerpetualKeeper --filename perpetual_keeper.go --with-expecter
@@ -50,4 +59,6 @@ type PerpetualKeeper interface {
 	GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (sdkmath.LegacyDec, osmomath.BigDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
 	GetTradingAsset(ctx sdk.Context, poolId uint64) (string, error)
+	IsWhitelistingEnabled(ctx sdk.Context) bool
+	CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool
 }

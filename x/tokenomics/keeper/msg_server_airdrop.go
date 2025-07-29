@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/tokenomics/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/tokenomics/types"
 )
 
 func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAirdrop) (*types.MsgCreateAirdropResponse, error) {
@@ -50,7 +50,7 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -79,7 +79,7 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -97,7 +97,7 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg authority is the same as the current owner
+	// Checks if the msg authority is the same as the current owner
 	if msg.Sender != airdrop.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}

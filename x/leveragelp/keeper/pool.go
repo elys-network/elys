@@ -6,7 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 // RemovePool removes a pool from the store
@@ -86,5 +86,32 @@ func (k Keeper) SetLeveragedAmount(ctx sdk.Context) {
 		}
 		pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, position.LeveragedLpAmount, true)
 		k.SetPool(ctx, pool)
+	}
+}
+
+func (k Keeper) V21Migration(ctx sdk.Context) {
+	pool, found := k.GetPool(ctx, 2)
+	if !found {
+		return
+	}
+	pool.LeveragedLpAmount = sdkmath.NewInt(0)
+	k.SetPool(ctx, pool)
+
+	iterator := k.GetPositionIterator(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		if position.AmmPoolId == 2 {
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
+
+			pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
+			pool.Health = k.CalculatePoolHealth(ctx, &pool)
+			k.SetPool(ctx, pool)
+		}
 	}
 }

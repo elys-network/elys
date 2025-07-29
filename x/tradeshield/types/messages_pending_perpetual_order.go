@@ -1,8 +1,10 @@
 package types
 
 import (
+	"errors"
 	"fmt"
-	"slices"
+
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -44,9 +46,17 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return err
 	}
 
+	if msg.TriggerPrice.IsZero() {
+		return errors.New("invalid trigger price")
+	}
+
 	// Validate collateral
-	if !msg.Collateral.IsValid() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
+	if err = msg.Collateral.Validate(); err != nil {
+		return errorsmod.Wrap(err, "invalid collateral")
+	}
+
+	if msg.Collateral.IsZero() {
+		return errors.New("collateral cannot be 0")
 	}
 
 	if msg.Position != PerpetualPosition_LONG && msg.Position != PerpetualPosition_SHORT {
@@ -55,6 +65,10 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 
 	if err = CheckLegacyDecNilAndNegative(msg.Leverage, "Leverage"); err != nil {
 		return err
+	}
+
+	if !(msg.Leverage.GT(math.LegacyOneDec()) || msg.Leverage.IsZero()) {
+		return errorsmod.Wrapf(perpetualtypes.ErrInvalidLeverage, "leverage (%s) can only be 0 (to add collateral) or > 1 to open positions", msg.Leverage.String())
 	}
 
 	if err = CheckLegacyDecNilAndNegative(msg.TakeProfitPrice, "TakeProfitPrice"); err != nil {
@@ -70,10 +84,10 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "pool ID cannot be zero")
 	}
 
-	if msg.Position == PerpetualPosition_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
+	if msg.Position == PerpetualPosition_LONG && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
 		return fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG")
 	}
-	if msg.Position == PerpetualPosition_SHORT && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
+	if msg.Position == PerpetualPosition_SHORT && !msg.StopLossPrice.IsZero() && !msg.TakeProfitPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
 		return fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
 	}
 	return nil
@@ -176,9 +190,9 @@ func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
+func NewMsgCancelPerpetualOrders(creator string, orders []PerpetualOrderPoolKey) *MsgCancelPerpetualOrders {
 	return &MsgCancelPerpetualOrders{
-		OrderIds:     ids,
+		Orders:       orders,
 		OwnerAddress: creator,
 	}
 }
@@ -190,11 +204,16 @@ func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	}
 
 	// Validate SpotOrderIds
-	if len(msg.OrderIds) == 0 {
+	if len(msg.Orders) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
 	}
-	if slices.Contains(msg.OrderIds, 0) {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+	for _, order := range msg.Orders {
+		if order.PoolId == 0 {
+			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "pool ID cannot be zero")
+		}
+		if order.OrderId == 0 {
+			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order ID cannot be zero")
+		}
 	}
 
 	return nil

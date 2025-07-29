@@ -5,7 +5,7 @@ import (
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/utils"
+	"github.com/elys-network/elys/v7/utils"
 )
 
 func NewOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64) OrderKey {

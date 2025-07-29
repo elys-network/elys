@@ -1,8 +1,9 @@
 package types
 
 import (
+	math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 )
 
 type PerpetualHooks interface {
@@ -17,7 +18,7 @@ type PerpetualHooks interface {
 
 	// AfterPerpetualPositionClosed is called after a position gets closed.
 	// This should be used to update pool health
-	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
+	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error
 }
 
 var _ PerpetualHooks = MultiPerpetualHooks{}
@@ -60,9 +61,9 @@ func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, amm
 	return nil
 }
 
-func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
+func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, closingRatio math.LegacyDec, positionId uint64) error {
 	for i := range h {
-		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender)
+		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender, closingRatio, positionId)
 		if err != nil {
 			return err
 		}

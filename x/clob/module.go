@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/elys-network/elys/v6/x/clob/cli"
+	"github.com/elys-network/elys/v7/x/clob/cli"
 
 	"cosmossdk.io/core/appmodule"
 
@@ -18,8 +18,8 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/v6/x/clob/keeper"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/keeper"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 var (

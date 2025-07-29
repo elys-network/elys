@@ -5,11 +5,11 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// MultihopSwapExactAmountOut defines the output denom and output amount for the last pool.
+// RouteExactAmountOut defines the output denom and output amount for the last pool.
 // Calculation starts by providing the tokenOutAmount of the final pool to calculate the required tokenInAmount
 // the calculated tokenInAmount is used as defined tokenOutAmount of the previous pool, calculating in reverse order of the swap
 // Transaction succeeds if the calculated tokenInAmount of the first pool is less than the defined tokenInMaxAmount defined.

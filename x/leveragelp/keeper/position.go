@@ -11,9 +11,9 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -313,7 +313,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if found {
 				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
-				pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
+				pool.Health = k.CalculatePoolHealth(ctx, &pool)
 				k.SetPool(ctx, pool)
 			}
 

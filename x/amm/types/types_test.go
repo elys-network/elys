@@ -11,9 +11,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	simapp "github.com/elys-network/elys/v6/app"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 const (
@@ -53,14 +53,12 @@ func (suite *TestSuite) SetupStableCoinPrices() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     sdkmath.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
 		Price:     sdkmath.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

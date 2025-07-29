@@ -5,9 +5,9 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -61,7 +61,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   math.NewInt(832154489169426942), // weight breaking fee - slippage enable
+			shareOutAmount:   math.NewInt(832154822031355754), // weight breaking fee - slippage enable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -76,7 +76,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   math.NewInt(644790000000000000), // weight recovery direction - slippage enable
+			shareOutAmount:   math.NewInt(644790550160842642), // weight recovery direction - slippage enable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,

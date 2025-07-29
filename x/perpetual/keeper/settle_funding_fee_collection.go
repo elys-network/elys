@@ -3,14 +3,14 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (bool, math.Int, error) {
 
 	fullFundingFeePayment := true
-	takeAmountCustodyAmount := math.ZeroInt()
+	var takeAmountCustodyAmount math.Int
 	// get funding rate
 	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 

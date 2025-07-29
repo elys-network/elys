@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

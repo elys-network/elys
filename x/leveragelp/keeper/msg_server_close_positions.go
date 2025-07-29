@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePositions) (*types.MsgClosePositionsResponse, error) {
@@ -29,7 +29,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		_, _, _, err = k.CheckAndLiquidateUnhealthyPosition(cachedCtx, &position, pool)
 		if err == nil {
 			write()
-			liqLog = append(liqLog, position.Id)
 		}
 		if err != nil {
 			liqLog = append(liqLog, position.Id)

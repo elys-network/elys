@@ -6,25 +6,25 @@ import (
 	"testing"
 	"time"
 
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	oraclekeeper "github.com/elys-network/elys/v6/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -188,7 +188,6 @@ func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})
@@ -208,7 +207,6 @@ func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})
@@ -218,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 	for _, v := range denoms {
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
-		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
+		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, uint64(ctx.BlockTime().Unix()))
 	}
 }
 
@@ -226,11 +224,10 @@ func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, p
 	assetInfo, found := suite.app.OracleKeeper.GetAssetInfo(ctx, denom)
 	suite.Require().True(found)
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	suite.app.OracleKeeper.RemovePrice(ctx, assetInfo.Display, "elys", uint64(ctx.BlockTime().Unix()))
+	suite.app.OracleKeeper.RemovePrice(ctx, assetInfo.Display, uint64(ctx.BlockTime().Unix()))
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     assetInfo.Display,
 		Price:     price,
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix() + 1),
 	})
@@ -455,35 +452,30 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
 		Price:     math.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
 		Price:     math.LegacyNewDec(23),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     math.LegacyNewDec(5),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
 		Price:     math.LegacyMustNewDecFromStr("5"),
-		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})

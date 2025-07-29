@@ -5,9 +5,9 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 
-	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v7/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -218,6 +218,8 @@ func TestMsgAddPool(t *testing.T) {
 			name: "success",
 			setter: func() {
 				msg.Authority = sample.AccAddress()
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(3)
+				msg.Pool.PoolMaxLeverageRatio = sdkmath.LegacyOneDec().QuoInt64(3)
 			},
 			errMsg: "",
 		},
@@ -237,11 +239,12 @@ func TestMsgAddPool(t *testing.T) {
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
-			name: "leverage is < 0",
+			name: "LeverageMax is negative",
 			setter: func() {
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
+
 			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
+			errMsg: "LeverageMax is negative",
 		},
 		{
 			name: "leverage is 1",

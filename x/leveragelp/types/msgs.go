@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/elys-network/elys/v7/utils"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -128,8 +129,18 @@ func (msg *MsgAddPool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
+	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.LeverageMax, "LeverageMax"); err != nil {
+		return err
+	}
 	if msg.Pool.LeverageMax.LTE(math.LegacyOneDec()) {
 		return ErrLeverageTooSmall
+	}
+
+	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.PoolMaxLeverageRatio, "PoolMaxLeverageRatio"); err != nil {
+		return err
+	}
+	if !msg.Pool.PoolMaxLeverageRatio.GT(math.LegacyZeroDec()) || !msg.Pool.PoolMaxLeverageRatio.LT(math.LegacyOneDec()) {
+		return errors.New("invalid pool max leverage ratio")
 	}
 	return nil
 }

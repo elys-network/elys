@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	"github.com/elys-network/elys/v6/x/clob/types"
+	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
 func newTestPerpetualForLiqPrice(id uint64, owner string, qty math.LegacyDec, ep math.LegacyDec, marginAmt math.Int) types.Perpetual {

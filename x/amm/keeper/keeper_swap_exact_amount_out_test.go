@@ -5,8 +5,8 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -165,15 +165,15 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFeeOut:          osmomath.ZeroBigDec(),
-			tokenIn:             sdk.NewInt64Coin("uusda", 222546),
+			tokenIn:             sdk.NewInt64Coin("uusda", 222544),
 			tokenInMax:          sdkmath.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 200000),
 			weightBalanceBonus:  osmomath.ZeroBigDec(),
 			isOraclePool:        true,
 			useNewRecipient:     false,
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 777454), sdk.NewInt64Coin(ptypes.BaseCurrency, 1200000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 777456), sdk.NewInt64Coin(ptypes.BaseCurrency, 1200000)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1222402), sdk.NewInt64Coin(ptypes.BaseCurrency, 800000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1222400), sdk.NewInt64Coin(ptypes.BaseCurrency, 800000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000144), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
@@ -334,7 +334,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 
 				track := suite.app.AmmKeeper.GetSlippageTrack(suite.ctx, 1, uint64(suite.ctx.BlockTime().Unix()))
 				if tc.isOraclePool {
-					suite.Require().Equal(track.Tracked.String(), "22224uusda")
+					suite.Require().Equal(track.Tracked.String(), "22222uusda")
 				} else {
 					suite.Require().Equal(track.Tracked.String(), "")
 				}

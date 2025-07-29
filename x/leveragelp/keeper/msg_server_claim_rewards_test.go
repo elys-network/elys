@@ -6,14 +6,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	mastercheftypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -59,8 +59,9 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		enablePoolMsg := types.MsgAddPool{
 			Authority: authtypes.NewModuleAddress("gov").String(),
 			Pool: types.AddPool{
-				AmmPoolId:   poolId,
-				LeverageMax: sdkmath.LegacyNewDec(10),
+				AmmPoolId:            poolId,
+				LeverageMax:          sdkmath.LegacyNewDec(10),
+				PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
 			},
 		}
 		msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
@@ -191,6 +192,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 }
 
 func (suite *KeeperTestSuite) TestMsgServerClaimAllRewards() {
+	suite.ResetSuite()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency

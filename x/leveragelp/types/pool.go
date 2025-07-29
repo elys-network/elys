@@ -5,17 +5,17 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func NewPool(poolId uint64, maxLeverage sdkmath.LegacyDec) Pool {
+func NewPool(poolId uint64, maxLeverage, maxLeveragelpRatio sdkmath.LegacyDec) Pool {
 	return Pool{
 		AmmPoolId:          poolId,
-		Health:             sdkmath.LegacyNewDec(100),
+		Health:             sdkmath.LegacyOneDec(),
 		LeveragedLpAmount:  sdkmath.ZeroInt(),
 		LeverageMax:        maxLeverage,
-		MaxLeveragelpRatio: sdkmath.LegacyMustNewDecFromStr("0.6"),
+		MaxLeveragelpRatio: maxLeveragelpRatio,
 	}
 }
 

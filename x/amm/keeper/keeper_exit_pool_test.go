@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

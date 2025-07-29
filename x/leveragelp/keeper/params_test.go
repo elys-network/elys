@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	testkeeper "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 

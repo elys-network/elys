@@ -6,7 +6,7 @@ import "elys/masterchef/incentive.proto";
 import "elys/masterchef/pool.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/masterchef/types";
+option go_package = "github.com/elys-network/elys/v7/x/masterchef/types";
 
 // Params defines the parameters for the module.
 message LegacyParams {
@@ -70,6 +70,8 @@ message Params {
   repeated SupportedRewardDenom supported_reward_denoms = 5;
 
   string protocol_revenue_address = 6;
+
+  string taker_manager = 7;
 }
 
 message SupportedRewardDenom {

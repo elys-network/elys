@@ -4,17 +4,17 @@ import (
 	"time"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -65,7 +65,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10")))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),

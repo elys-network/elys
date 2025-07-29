@@ -2,8 +2,8 @@ package oracle
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/oracle/keeper"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/x/oracle/keeper"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
@@ -30,7 +30,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	//genesis.PortId = k.GetPort(ctx)
 	genesis.AssetInfos = k.GetAllAssetInfo(ctx)
-	genesis.Prices = k.GetAllPrice(ctx)
+	genesis.Prices = k.GetAllLegacyPrice(ctx)
 	genesis.PriceFeeders = k.GetAllPriceFeeder(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 

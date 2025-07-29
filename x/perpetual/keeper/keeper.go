@@ -9,10 +9,11 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	pkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/v6/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v7/x/tier/keeper"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 type (
@@ -74,16 +75,16 @@ func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
 	return k.tierKeeper
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string) (types.PerpetualFees, error) {
 	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
 	}
 
 	collateralCoin := sdk.NewCoin(mtp.CollateralAsset, collateralAmount)
 
 	if !k.bankKeeper.HasBalance(ctx, senderAddress, collateralCoin) {
-		return types.ErrBalanceNotAvailable
+		return types.PerpetualFees{}, types.ErrBalanceNotAvailable
 	}
 
 	// eta = leverage - 1
@@ -93,14 +94,20 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
 	// For LONG, Liability has to be in base currency, CollateralAsset can be trading asset or base currency
 	// For SHORT, Liability has to be in trading asset and CollateralAsset will be in base currency, so this if case only applies to LONG
+	slippageAmount, weightBreakingFee, liabilitiesOracleAmount := osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
+	perpetualFees, takerFees := math.LegacyZeroDec(), math.LegacyZeroDec()
+
+	totalPerpFees := types.NewPerpetualFeesWithEmptyCoins()
+
 	if mtp.CollateralAsset != baseCurrency {
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
 			// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-			liabilities, _, _, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool, mtp.Address)
+			liabilities, _, slippageAmount, weightBreakingFee, liabilitiesOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool, mtp.Address)
 			if err != nil {
-				return err
+				return types.PerpetualFees{}, err
 			}
+			totalPerpFees = k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(baseCurrency, liabilities), liabilitiesInCollateralTokenOut, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false, false)
 		}
 	}
 
@@ -109,10 +116,23 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-			liabilities, _, _, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool, mtp.Address)
+			liabilities, _, slippageAmount, weightBreakingFee, liabilitiesOracleAmount, perpetualFees, takerFees, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool, mtp.Address)
 			if err != nil {
-				return err
+				return types.PerpetualFees{}, err
 			}
+			perpFees := k.CalculatePerpetualFees(ctx, ammPool.PoolParams.UseOracle, sdk.NewCoin(mtp.LiabilitiesAsset, liabilities), liabilitiesInCollateralTokenIn, slippageAmount, weightBreakingFee, perpetualFees, takerFees, liabilitiesOracleAmount, false, false)
+			totalPerpFees = totalPerpFees.Add(perpFees)
+		}
+	}
+
+	// Track slippage and weight breaking fee slippage in amm via perpetual
+	for _, coin := range totalPerpFees.SlippageFees {
+		k.amm.TrackSlippage(ctx, ammPool.PoolId, coin)
+		k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
+	}
+	for _, coin := range totalPerpFees.WeightBreakingFees {
+		if coin.Amount.IsPositive() {
+			k.amm.TrackWeightBreakingSlippage(ctx, ammPool.PoolId, coin)
 		}
 	}
 
@@ -120,36 +140,48 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
 	}
 
 	collateralCoins := sdk.NewCoins(collateralCoin)
 	err = k.SendToAmmPool(ctx, senderAddress, ammPool, collateralCoins)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
+	}
+
+	// send fees to masterchef and taker collection address
+	var totalAmount math.Int
+	if mtp.Position == types.Position_LONG && mtp.CollateralAsset == baseCurrency {
+		totalAmount = proxyLeverage.MulInt(collateralAmount).TruncateInt()
+	} else {
+		totalAmount = liabilitiesInCollateral
+	}
+	_, err = k.SendFeesToPoolRevenueAndTakerCollection(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
+	if err != nil {
+		return types.PerpetualFees{}, err
 	}
 
 	err = pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
-		return nil
+		return types.PerpetualFees{}, err
 	}
 
 	// All liability has to be in liabilities asset
 	err = pool.UpdateLiabilities(mtp.LiabilitiesAsset, mtp.Liabilities, true, mtp.Position)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
 	}
 
 	err = pool.UpdateCollateral(mtp.CollateralAsset, mtp.Collateral, true, mtp.Position)
 	if err != nil {
-		return err
+		return types.PerpetualFees{}, err
 	}
 
 	k.SetPool(ctx, *pool)
 
-	return k.SetMTP(ctx, mtp)
+	return totalPerpFees, k.SetMTP(ctx, mtp)
 }
 
 func (k Keeper) SendToAmmPool(ctx sdk.Context, senderAddress sdk.AccAddress, ammPool *ammtypes.Pool, coins sdk.Coins) error {
@@ -241,6 +273,17 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
 
+	// Net interest rate can be 0 if net open interest is 0
+	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
+	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
+	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest).Abs()
+	totalInterest := totalLongOpenInterest.Add(totalShortOpenInterest)
+	netOpenInterestRatio := math.LegacyZeroDec()
+	if totalInterest.IsPositive() {
+		netOpenInterestRatio = netOpenInterest.ToLegacyDec().Quo(totalInterest.ToLegacyDec())
+	}
+	targetBorrowInterestRate = targetBorrowInterestRate.Mul(netOpenInterestRatio)
+
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate
 	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
@@ -280,6 +323,60 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	return insuranceAmount, nil
 }
 
+// Send fees to pool revenue and taker collection addresses
+// Fee is swapped from pool revenue address and then transferred to masterchef module for distribution
+// Fee sent to taker collection address is swapped and burnt
+func (k Keeper) SendFeesToPoolRevenueAndTakerCollection(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
+	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, tierAddress)
+	params := k.GetParams(ctx)
+	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
+	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
+	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+
+	sendToTakerCollection := perpsTakersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
+	totalCalcFees := sendToMasterchef.Add(sendToTakerCollection)
+
+	if maxTotalFees.GT(math.ZeroInt()) && totalCalcFees.GT(maxTotalFees) {
+		// scale down the fees to maxTotalFees
+		sendToMasterchef = maxTotalFees.Mul(sendToMasterchef).Quo(totalCalcFees)
+		sendToTakerCollection = maxTotalFees.Mul(sendToTakerCollection).Quo(totalCalcFees)
+	}
+
+	if sendToMasterchef.IsPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
+		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
+		perpFees.PerpFees = perpFees.PerpFees.Add(sendToMasterchefCoin)
+		err := k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+
+		err = k.amm.OnCollectFee(ctx, *ammPool, sdk.NewCoins(sendToMasterchefCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+	}
+
+	if sendToTakerCollection.IsPositive() {
+		takerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
+		perpFees.TakerFees = perpFees.TakerFees.Add(sendToTakerCollectionCoin)
+
+		err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+	}
+	return sendToMasterchef.Add(sendToTakerCollection), nil
+}
+
 // Set the perpetual hooks.
 func (k *Keeper) SetHooks(gh types.PerpetualHooks) *Keeper {
 	if k.hooks != nil {
@@ -289,4 +386,14 @@ func (k *Keeper) SetHooks(gh types.PerpetualHooks) *Keeper {
 	k.hooks = gh
 
 	return k
+}
+
+func (k Keeper) GetPerpFeesInUSD(ctx sdk.Context, perpFeesCoins types.PerpetualFees) (perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd math.LegacyDec) {
+
+	perpFeesInUsd = k.amm.CalculateCoinsUSDValue(ctx, perpFeesCoins.PerpFees).Dec()
+	slippageFeesInUsd = k.amm.CalculateCoinsUSDValue(ctx, perpFeesCoins.SlippageFees).Dec()
+	weightBreakingFeesInUsd = k.amm.CalculateCoinsUSDValue(ctx, perpFeesCoins.WeightBreakingFees).Dec()
+	takerFeesInUsd = k.amm.CalculateCoinsUSDValue(ctx, perpFeesCoins.TakerFees).Dec()
+
+	return perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd
 }

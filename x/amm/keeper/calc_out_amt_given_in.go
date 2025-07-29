@@ -3,7 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -17,10 +17,10 @@ func (k Keeper) CalcOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,
-) (sdk.Coin, osmomath.BigDec, error) {
+) (sdk.Coin, osmomath.BigDec, osmomath.BigDec, error) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
 	return p.CalcOutAmtGivenIn(ctx, oracle, snapshot, tokensIn, tokenOutDenom, swapFee)

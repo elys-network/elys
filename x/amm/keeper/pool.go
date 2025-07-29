@@ -8,7 +8,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -198,7 +198,7 @@ func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val
 	return types.SnapshotPool{Pool: snapshot}
 }
 
-// AddToPoolBalance Used in perpetual balance changes
+// AddToPoolBalanceAndUpdateLiquidity Used in perpetual balance changes
 func (k Keeper) AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.IncreaseLiquidity(addShares, coins)
 	if err != nil {
@@ -208,7 +208,7 @@ func (k Keeper) AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.
 	return k.RecordTotalLiquidityIncrease(ctx, coins)
 }
 
-// RemoveFromPoolBalance Used in perpetual balance changes
+// RemoveFromPoolBalanceAndUpdateLiquidity Used in perpetual balance changes
 func (k Keeper) RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.DecreaseLiquidity(removeShares, coins)
 	if err != nil {

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	"github.com/elys-network/elys/v6/x/estaking/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -134,14 +134,14 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 
 	// Maximum eden APR - 30% by default
 	stakersMaxEdenAmount := osmomath.BigDecFromDec(params.MaxEdenRewardAprStakers).
-		Mul(osmomath.BigDecFromSDKInt(totalElysEdenStake)).
+		Mul(osmomath.BigDecFromSDKInt(totalElysEdenEdenBStake)).
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.Dec().TruncateInt())
 
 	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
-	stakersEdenBAmount := osmomath.BigDecFromSDKInt(totalElysEdenEdenBStake).
+	stakersEdenBAmount := osmomath.BigDecFromSDKInt(totalElysEdenStake).
 		Mul(params.GetBigDecEdenBoostApr()).
 		QuoInt64(totalBlocksPerYear).
 		Dec().
