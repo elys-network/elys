@@ -762,6 +762,7 @@ func _Msg_UnjailGovernor_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.estaking.Msg",
 	HandlerType: (*MsgServer)(nil),
