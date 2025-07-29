@@ -6,7 +6,7 @@ require (
 	cosmossdk.io/math v1.4.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/cometbft/cometbft v0.38.17
-	github.com/elys-network/elys/v7 v6.0.0
+	github.com/elys-network/elys/v7 v7.0.0-rc0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gorilla/websocket v1.5.3
 	github.com/lib/pq v1.10.9
@@ -115,7 +115,7 @@ require (
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
-	github.com/ojo-network/ojo v0.5.2-0.20250617172149-bc325435c484 // indirect
+	github.com/ojo-network/ojo v0.5.2-0.20250729193146-c2aea183868e // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/osmosis-labs/osmosis/osmomath v0.0.17 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
@@ -133,6 +133,7 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.5 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect

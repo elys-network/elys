@@ -55,8 +55,8 @@ require (
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
-	github.com/shopspring/decimal v1.4.0
 	github.com/ojo-network/ojo v0.5.2-0.20250729193146-c2aea183868e
+	github.com/shopspring/decimal v1.4.0
 	golang.org/x/tools v0.24.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
