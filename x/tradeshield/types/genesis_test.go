@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 	"github.com/stretchr/testify/require"
 )
 

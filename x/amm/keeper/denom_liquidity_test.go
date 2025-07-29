@@ -7,10 +7,10 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 

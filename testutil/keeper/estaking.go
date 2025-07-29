@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/estaking/keeper"
+	simapp "github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/estaking/keeper"
 )
 
 func EstakingKeeper(t *testing.T) (*keeper.Keeper, sdk.Context, sdk.AccAddress, sdk.ValAddress) {

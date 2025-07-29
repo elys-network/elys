@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
 )
 
 func (k Keeper) SetPoolInfo(ctx sdk.Context, pool types.PoolInfo) {

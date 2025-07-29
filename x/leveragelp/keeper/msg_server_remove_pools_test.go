@@ -2,10 +2,10 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	simapp "github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestRemove_Pool() {

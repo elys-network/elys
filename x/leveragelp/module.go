@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/v6/x/leveragelp/client/cli"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/migrations"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/client/cli"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/migrations"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 var (

@@ -3,8 +3,8 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ammkeeper "github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

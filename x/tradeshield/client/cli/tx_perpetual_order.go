@@ -12,9 +12,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	perpcli "github.com/elys-network/elys/v6/x/perpetual/client/cli"
-	perptypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	perpcli "github.com/elys-network/elys/v7/x/perpetual/client/cli"
+	perptypes "github.com/elys-network/elys/v7/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )

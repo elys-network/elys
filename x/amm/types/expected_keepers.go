@@ -8,8 +8,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	parametertypes "github.com/elys-network/elys/v7/x/parameter/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 

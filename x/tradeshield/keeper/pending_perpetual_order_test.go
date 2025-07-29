@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"fmt"
 
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []types.PerpetualOrder {

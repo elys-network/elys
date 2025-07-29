@@ -3,7 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -77,16 +77,28 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (math.Legac
 		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
-	fixedRate := k.GetParams(ctx).FixedFundingRate
+	if totalLongOpenInterest.Equal(totalShortOpenInterest) {
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
+	}
+
+	params := k.GetParams(ctx)
 	if totalLongOpenInterest.GT(totalShortOpenInterest) {
 		// long is popular
 		// long pays short
 		netLongRatio := (totalLongOpenInterest.Sub(totalShortOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return netLongRatio.Mul(fixedRate), math.LegacyZeroDec()
+		fundingRate := netLongRatio.Mul(params.FixedFundingRate)
+		if fundingRate.LT(params.MinimumFundingRate) {
+			fundingRate = params.MinimumFundingRate
+		}
+		return fundingRate, math.LegacyZeroDec()
 	} else {
 		// short is popular
 		// short pays long
 		netShortRatio := (totalShortOpenInterest.Sub(totalLongOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return math.LegacyZeroDec(), netShortRatio.Mul(fixedRate)
+		fundingRate := netShortRatio.Mul(params.FixedFundingRate)
+		if fundingRate.LT(params.MinimumFundingRate) {
+			fundingRate = params.MinimumFundingRate
+		}
+		return math.LegacyZeroDec(), fundingRate
 	}
 }
