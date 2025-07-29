@@ -193,54 +193,54 @@ func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 	return edenApr
 }
 
-func (k Keeper) PnL(goCtx context.Context, req *types.QueryPnLRequest) (*types.QueryPnLResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
+// func (k Keeper) PnL(goCtx context.Context, req *types.QueryPnLRequest) (*types.QueryPnLResponse, error) {
+// 	if req == nil {
+// 		return nil, status.Error(codes.InvalidArgument, "invalid request")
+// 	}
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	vaults := k.GetAllVaults(ctx)
-	pnls := []types.PnlResponse{}
-	for _, vault := range vaults {
-		userData, _ := k.GetUserData(ctx, req.Address, vault.Id)
-		// get vault usd value
-		commitments := k.commitment.GetCommitments(ctx, types.NewVaultAddress(vault.Id))
-		shareAmount := sdkmath.ZeroInt()
-		for _, commitment := range commitments.CommittedTokens {
-			if commitment.Denom == types.GetShareDenomForVault(vault.Id) {
-				shareAmount = shareAmount.Add(commitment.Amount)
-			}
-		}
-		vaultValue, err := k.VaultUsdValue(ctx, vault.Id)
-		if err != nil {
-			return nil, err
-		}
-		totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForVault(vault.Id)).Amount
+// 	vaults := k.GetAllVaults(ctx)
+// 	pnls := []types.PnlResponse{}
+// 	for _, vault := range vaults {
+// 		userData, _ := k.GetUserData(ctx, req.Address, vault.Id)
+// 		// get vault usd value
+// 		commitments := k.commitment.GetCommitments(ctx, types.NewVaultAddress(vault.Id))
+// 		shareAmount := sdkmath.ZeroInt()
+// 		for _, commitment := range commitments.CommittedTokens {
+// 			if commitment.Denom == types.GetShareDenomForVault(vault.Id) {
+// 				shareAmount = shareAmount.Add(commitment.Amount)
+// 			}
+// 		}
+// 		vaultValue, err := k.VaultUsdValue(ctx, vault.Id)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForVault(vault.Id)).Amount
 
-		shareUsdValue := vaultValue.Dec().Mul(shareAmount.ToLegacyDec().Quo(sdkmath.LegacyNewDecFromInt(totalShares)))
-		currentBalanceUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
-		profitAndLossUsd := shareUsdValue.Sub(currentBalanceUsd)
+// 		shareUsdValue := vaultValue.Dec().Mul(shareAmount.ToLegacyDec().Quo(sdkmath.LegacyNewDecFromInt(totalShares)))
+// 		currentBalanceUsd := userData.TotalDepositsUsd.Sub(userData.TotalWithdrawalsUsd)
+// 		profitAndLossUsd := shareUsdValue.Sub(currentBalanceUsd)
 
-		unclaimedEden, found := k.GetUserRewardInfo(ctx, sdk.MustAccAddressFromBech32(req.Address), vault.Id, ptypes.Eden)
-		if found && !unclaimedEden.RewardPending.IsZero() {
-			edenUsdValue := k.amm.CalculateUSDValue(ctx, ptypes.Eden, unclaimedEden.RewardPending.TruncateInt())
-			userData.EdenUsdValue = userData.EdenUsdValue.Add(edenUsdValue.Dec())
-			userData.EdenAmount = userData.EdenAmount.Add(unclaimedEden.RewardPending.TruncateInt())
-		}
+// 		unclaimedEden, found := k.GetUserRewardInfo(ctx, sdk.MustAccAddressFromBech32(req.Address), vault.Id, ptypes.Eden)
+// 		if found && !unclaimedEden.RewardPending.IsZero() {
+// 			edenUsdValue := k.amm.CalculateUSDValue(ctx, ptypes.Eden, unclaimedEden.RewardPending.TruncateInt())
+// 			userData.EdenUsdValue = userData.EdenUsdValue.Add(edenUsdValue.Dec())
+// 			userData.EdenAmount = userData.EdenAmount.Add(unclaimedEden.RewardPending.TruncateInt())
+// 		}
 
-		pnls = append(pnls, types.PnlResponse{
-			PnlUsd:            profitAndLossUsd,
-			EdenUsdValue:      userData.EdenUsdValue,
-			CurrentBalanceUsd: currentBalanceUsd,
-			VaultId:           vault.Id,
-			EdenAmount:        userData.EdenAmount,
-		})
-	}
+// 		pnls = append(pnls, types.PnlResponse{
+// 			PnlUsd:            profitAndLossUsd,
+// 			EdenUsdValue:      userData.EdenUsdValue,
+// 			CurrentBalanceUsd: currentBalanceUsd,
+// 			VaultId:           vault.Id,
+// 			EdenAmount:        userData.EdenAmount,
+// 		})
+// 	}
 
-	return &types.QueryPnLResponse{
-		Pnls: pnls,
-	}, nil
-}
+// 	return &types.QueryPnLResponse{
+// 		Pnls: pnls,
+// 	}, nil
+// }
 
 // func (k Keeper) PnlApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 // 	vault, found := k.GetVault(ctx, vaultId)

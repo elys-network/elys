@@ -52,12 +52,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Shows the estimated withdraw amount for a vault",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "shares_amount"}},
 				},
-				{
-					RpcMethod:      "Pnl",
-					Use:            "pnl <vault-id> <address>",
-					Short:          "Shows the pnl for a address",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "address"}},
-				},
+				// {
+				// 	RpcMethod:      "Pnl",
+				// 	Use:            "pnl <vault-id> <address>",
+				// 	Short:          "Shows the pnl for a address",
+				// 	PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "address"}},
+				// },
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
