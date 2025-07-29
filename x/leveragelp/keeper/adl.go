@@ -110,12 +110,12 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 	k.SetADLCounter(ctx, adlCounter)
 
 	for _, position := range positions {
-		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &leveragePool, closingRatio, false)
+		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &leveragePool, closingRatio, false)
 		if err != nil {
 			ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 			return err
 		}
-		k.EmitCloseEvent(ctx, "adl", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee)
+		k.EmitCloseEvent(ctx, "user_tx", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue)
 	}
 	return nil
 }
