@@ -5,7 +5,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 )
 
 func (oq *Querier) queryJoinPoolEstimation(ctx sdk.Context, query *ammtypes.QueryJoinPoolEstimationRequest) ([]byte, error) {

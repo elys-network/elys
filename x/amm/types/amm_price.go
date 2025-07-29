@@ -5,7 +5,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/utils"
+	"github.com/elys-network/elys/v7/utils"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

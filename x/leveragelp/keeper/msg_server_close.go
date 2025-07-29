@@ -8,7 +8,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -36,7 +36,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +53,12 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFeeOnClosingPosition.String()),
+		sdk.NewAttribute("exit_slippage_fee_value_in_usd", slippageValue.String()),
 		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_swap_fee_value_in_usd", swapFeeValue.String()),
 		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
+		sdk.NewAttribute("exit_taker_fee_value_in_usd", takerFeeValue.String()),
+		sdk.NewAttribute("exit_weight_breaking_fee_value_in_usd", weightBreakingFeeValue.String()),
 	))
 	return &types.MsgCloseResponse{}, nil
 }

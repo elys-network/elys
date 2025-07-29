@@ -3,9 +3,9 @@ package keeper
 import (
 	math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/accountedpool/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/accountedpool/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) error {

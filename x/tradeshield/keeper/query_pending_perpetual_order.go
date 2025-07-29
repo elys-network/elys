@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

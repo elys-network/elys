@@ -6,8 +6,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	"github.com/elys-network/elys/v6/x/stablestake/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	"github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

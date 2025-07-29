@@ -17,10 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/v6/x/perpetual/client/cli"
-	"github.com/elys-network/elys/v6/x/perpetual/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/migrations"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/client/cli"
+	"github.com/elys-network/elys/v7/x/perpetual/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/migrations"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 var (
@@ -129,6 +129,11 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = cfg.RegisterMigration(types.ModuleName, 21, m.V22Migration)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
@@ -152,7 +157,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion is a sequence number for state-breaking change of the module. It should be incremented on each consensus-breaking change introduced by the module. To avoid wrong/empty versions, the initial version should be set to 1
-func (AppModule) ConsensusVersion() uint64 { return 21 }
+func (AppModule) ConsensusVersion() uint64 { return 22 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
 func (am AppModule) BeginBlock(gotCtx context.Context) error {
