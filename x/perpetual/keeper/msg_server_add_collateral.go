@@ -17,12 +17,16 @@ import (
 func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.AddCollateral(ctx, msg)
+}
+
+func (k Keeper) AddCollateral(ctx sdk.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
 	}
 
-	mtp, err := k.Keeper.GetMTP(ctx, msg.PoolId, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +163,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		if err = msgOpen.ValidateBasic(); err != nil {
 			return nil, err
 		}
-		_, err = k.Open(goCtx, &msgOpen)
+		_, err = k.Open(ctx, &msgOpen)
 		if err != nil {
 			return nil, err
 		}
