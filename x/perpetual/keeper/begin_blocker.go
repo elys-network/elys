@@ -78,15 +78,24 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (math.Legac
 	}
 
 	fixedRate := k.GetParams(ctx).FixedFundingRate
+	minimumFundingRate := k.GetParams(ctx).MinimumFundingRate
 	if totalLongOpenInterest.GT(totalShortOpenInterest) {
 		// long is popular
 		// long pays short
 		netLongRatio := (totalLongOpenInterest.Sub(totalShortOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return netLongRatio.Mul(fixedRate), math.LegacyZeroDec()
+		fundingRate := netLongRatio.Mul(fixedRate)
+		if fundingRate.LT(minimumFundingRate) {
+			fundingRate = minimumFundingRate
+		}
+		return fundingRate, math.LegacyZeroDec()
 	} else {
 		// short is popular
 		// short pays long
 		netShortRatio := (totalShortOpenInterest.Sub(totalLongOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return math.LegacyZeroDec(), netShortRatio.Mul(fixedRate)
+		fundingRate := netShortRatio.Mul(fixedRate)
+		if fundingRate.LT(minimumFundingRate) {
+			fundingRate = minimumFundingRate
+		}
+		return math.LegacyZeroDec(), fundingRate
 	}
 }
