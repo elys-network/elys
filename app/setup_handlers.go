@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -60,6 +61,11 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
+			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
+				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
+				app.LeveragelpKeeper.SetPool(ctx, pool)
+			}
+
 			for _, profile := range app.AssetprofileKeeper.GetAllEntry(ctx) {
 				if profile.DisplayName == "WBTC" || profile.DisplayName == "wBTC" {
 					profile.DisplayName = "BTC"
@@ -81,7 +87,6 @@ func (app *ElysApp) setUpgradeHandler() {
 					assetInfo.BandTicker = "ETH"
 					assetInfo.ElysTicker = "ETH"
 				}
-				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
 				app.LegacyOracleKeepper.SetAssetInfo(ctx, assetInfo)
 			}
 
