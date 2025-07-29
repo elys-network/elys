@@ -77,6 +77,10 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (math.Legac
 		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
+	if totalLongOpenInterest.Equal(totalShortOpenInterest) {
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
+	}
+
 	params := k.GetParams(ctx)
 	fixedRate := params.FixedFundingRate
 	minimumFundingRate := params.MinimumFundingRate
