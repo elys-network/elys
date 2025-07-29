@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"strconv"
@@ -271,4 +270,3 @@ func (suite *KeeperTestSuite) TestGetAssetPriceAndGetDenomPrice() {
 	suite.Require().NotEqual(price.String(), denomPrice.String())
 	suite.Require().Equal("0.000000000000000000000000034452320000", denomPrice.String())
 }
-*/

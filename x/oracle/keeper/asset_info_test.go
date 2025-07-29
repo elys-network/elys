@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	"github.com/elys-network/elys/v7/x/oracle/types"
 )
@@ -43,4 +42,3 @@ func (suite *KeeperTestSuite) TestAssetInfoSetGetDelete() {
 	_, found := suite.app.OracleKeeper.GetAssetInfo(suite.ctx, assetInfos[0].Denom)
 	suite.Require().False(found)
 }
-*/

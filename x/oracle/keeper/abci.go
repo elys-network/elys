@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	"sort"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"sort"
 )
 
 func (k Keeper) EndBlock(ctx sdk.Context) {

@@ -4,7 +4,7 @@ import (
 	"github.com/elys-network/elys/v7/x/amm/types"
 	"testing"
 
-	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	ojooracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
