@@ -730,6 +730,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.AmmKeeper,
 		app.PerpetualKeeper,
+		app.AssetprofileKeeper,
 	)
 
 	app.TierKeeper.SetTradeshieldKeeper(&app.TradeshieldKeeper)
