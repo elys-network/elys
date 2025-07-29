@@ -6,7 +6,7 @@ require (
 	cosmossdk.io/math v1.4.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/cometbft/cometbft v0.38.17
-	github.com/elys-network/elys/v6 v6.0.0
+	github.com/elys-network/elys/v7 v7.0.0-rc0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gorilla/websocket v1.5.3
 	github.com/lib/pq v1.10.9
@@ -27,6 +27,7 @@ require (
 	cosmossdk.io/log v1.5.0 // indirect
 	cosmossdk.io/store v1.1.1 // indirect
 	cosmossdk.io/x/tx v0.13.7 // indirect
+	cosmossdk.io/x/upgrade v0.1.4 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
@@ -68,12 +69,10 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.7.0 // indirect
-	github.com/elys-network/elys/v7 v7.0.0-20250729200743-096533e2615b // indirect
 	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
 	github.com/getsentry/sentry-go v0.27.0 // indirect
 	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
@@ -170,7 +169,7 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-replace github.com/elys-network/elys/v6 => ../
+replace github.com/elys-network/elys/v7 => ../
 
 replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.1
