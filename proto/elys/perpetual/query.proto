@@ -11,7 +11,7 @@ import "elys/perpetual/pool.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v7/x/perpetual/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -463,6 +463,11 @@ message QueryOpenEstimationByFinalRequest {
   ];
   uint64 poolId = 6;
   string collateral_denom = 7;
+  string limit_price = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOpenEstimationByFinalResponse {

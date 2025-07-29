@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/elys-network/elys/v6/x/epochs/types"
+	"github.com/elys-network/elys/v7/x/epochs/types"
 )
 
 var _ types.QueryServer = Keeper{}

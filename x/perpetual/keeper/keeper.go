@@ -9,10 +9,10 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	pkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/v6/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v7/x/tier/keeper"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -272,6 +272,17 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	}
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
+
+	// Net interest rate can be 0 if net open interest is 0
+	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
+	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
+	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest).Abs()
+	totalInterest := totalLongOpenInterest.Add(totalShortOpenInterest)
+	netOpenInterestRatio := math.LegacyZeroDec()
+	if totalInterest.IsPositive() {
+		netOpenInterestRatio = netOpenInterest.ToLegacyDec().Quo(totalInterest.ToLegacyDec())
+	}
+	targetBorrowInterestRate = targetBorrowInterestRate.Mul(netOpenInterestRatio)
 
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate

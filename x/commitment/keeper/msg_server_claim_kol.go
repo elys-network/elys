@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v6/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 var KolWallet = "elys1ykrphaysp9u5m8379f3d7pr9k7t0xq757lr9vj"

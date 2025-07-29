@@ -4,11 +4,11 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingCollatoral, err := k.ClosePosition(ctx, msg)
+	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, err := k.ClosePosition(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, closedMtp.CustodyAsset, interestAmt).Dec()
 
-	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMtp.CustodyAsset, closingCollatoral, closingRatio)
+	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMtp.CustodyAsset, initialCollateral, closingRatio)
 	usdcPrice, err := k.GetUSDCPrice(ctx)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,12 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(closedMtp.AmmPoolId), 10)),
 			sdk.NewAttribute("net_pnl", netPnLInUSD.String()),
 			sdk.NewAttribute("collateral_asset", closedMtp.CollateralAsset),
-			sdk.NewAttribute("collateral_amount", closedMtp.Collateral.String()), // collateral amount after closing
+			sdk.NewAttribute("initial_collateral_amount", initialCollateral.Amount.String()),
+			sdk.NewAttribute("final_collateral_amount", closedMtp.Collateral.String()),
+			sdk.NewAttribute("initial_custody_amount", initialCustody.String()),
+			sdk.NewAttribute("final_custody_amount", closedMtp.Custody.String()),
+			sdk.NewAttribute("initial_liabilities_amount", initialLiabilities.String()),
+			sdk.NewAttribute("final_liabilities_amount", closedMtp.Liabilities.String()),
 			sdk.NewAttribute("position", closedMtp.Position.String()),
 			sdk.NewAttribute("mtp_health", closedMtp.MtpHealth.String()), // should be there if it's partial close
 			sdk.NewAttribute("repay_amount", repayAmount.String()),
@@ -50,7 +55,6 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("closing_ratio", closingRatio.String()),
 			sdk.NewAttribute("closing_price", closingPrice.String()),
 			sdk.NewAttribute("open_price", closedMtp.OpenPrice.String()),
-			sdk.NewAttribute("closing_amount", msg.Amount.String()),
 			sdk.NewAttribute("usdc_price", usdcPrice.String()),
 			sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
 			sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
