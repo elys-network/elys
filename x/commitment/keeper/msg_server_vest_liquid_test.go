@@ -9,11 +9,11 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	simapp "github.com/elys-network/elys/v6/app"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/v6/x/commitment/keeper"
-	"github.com/elys-network/elys/v6/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	commitmentkeeper "github.com/elys-network/elys/v7/x/commitment/keeper"
+	"github.com/elys-network/elys/v7/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

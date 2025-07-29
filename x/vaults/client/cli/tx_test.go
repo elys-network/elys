@@ -10,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v6/testutil/network"
-	"github.com/elys-network/elys/v6/x/vaults/client/cli"
+	"github.com/elys-network/elys/v7/testutil/network"
+	"github.com/elys-network/elys/v7/x/vaults/client/cli"
 )
 
 func setupNetwork(t *testing.T) *network.Network {

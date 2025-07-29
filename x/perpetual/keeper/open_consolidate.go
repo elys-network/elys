@@ -6,7 +6,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset, baseCurrency string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {

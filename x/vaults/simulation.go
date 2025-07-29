@@ -8,9 +8,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/elys-network/elys/v6/testutil/sample"
-	vaultssimulation "github.com/elys-network/elys/v6/x/vaults/simulation"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	"github.com/elys-network/elys/v7/testutil/sample"
+	vaultssimulation "github.com/elys-network/elys/v7/x/vaults/simulation"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 // avoid unused import issue

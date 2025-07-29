@@ -3,7 +3,7 @@ package vaults
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
-	modulev1 "github.com/elys-network/elys/v6/api/elys/vaults"
+	modulev1 "github.com/elys-network/elys/v7/api/elys/vaults"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

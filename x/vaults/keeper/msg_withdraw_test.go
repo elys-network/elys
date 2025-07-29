@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v6/x/vaults/keeper"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	"github.com/elys-network/elys/v7/x/vaults/keeper"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerWithdraw() {

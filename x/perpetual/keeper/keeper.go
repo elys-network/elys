@@ -9,10 +9,10 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	pkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	tierkeeper "github.com/elys-network/elys/v6/x/tier/keeper"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	pkeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/v7/x/tier/keeper"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

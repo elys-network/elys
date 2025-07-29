@@ -3,8 +3,8 @@ package vaults
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v6/x/vaults/keeper"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	"github.com/elys-network/elys/v7/x/vaults/keeper"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

@@ -2,11 +2,13 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
+  assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -34,6 +36,13 @@ type AmmKeeper interface {
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) osmomath.BigDec
 	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec
+}
+
+// AssetProfileKeeper defines the expected interface needed to retrieve denom info
+type AssetProfileKeeper interface {
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
+	GetUsdcDenom(ctx sdk.Context) (string, bool)
 }
 
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions

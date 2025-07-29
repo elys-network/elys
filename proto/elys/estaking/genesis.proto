@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "elys/estaking/params.proto";
 import "elys/estaking/elys_staked.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/estaking/types";
+option go_package = "github.com/elys-network/elys/v7/x/estaking/types";
 
 // GenesisState defines the estaking module's genesis state.
 message GenesisState {

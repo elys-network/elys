@@ -15,8 +15,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -37,6 +37,7 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		cdc,
 		storeService,
 		govAddress.String(),
+		nil,
 		nil,
 		nil,
 		nil,

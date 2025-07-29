@@ -6,7 +6,7 @@ import (
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/elys-network/elys/v6/api/elys/estaking"
+	"github.com/elys-network/elys/v7/api/elys/estaking"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

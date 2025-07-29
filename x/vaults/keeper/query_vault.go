@@ -12,10 +12,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	tiertypes "github.com/elys-network/elys/v6/x/tier/types"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	tiertypes "github.com/elys-network/elys/v7/x/tier/types"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 func (k Keeper) Vault(goCtx context.Context, req *types.QueryVaultRequest) (*types.QueryVaultResponse, error) {

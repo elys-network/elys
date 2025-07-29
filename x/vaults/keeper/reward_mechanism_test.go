@@ -5,10 +5,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/vaults/keeper"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	mastercheftypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/vaults/keeper"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 func (suite *KeeperTestSuite) TestRewardMechanism() {

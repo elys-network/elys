@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/elys-network/elys/v6/testutil/sample"
-	tvlsimulation "github.com/elys-network/elys/v6/x/accountedpool/simulation"
-	"github.com/elys-network/elys/v6/x/accountedpool/types"
+	"github.com/elys-network/elys/v7/testutil/sample"
+	tvlsimulation "github.com/elys-network/elys/v7/x/accountedpool/simulation"
+	"github.com/elys-network/elys/v7/x/accountedpool/types"
 )
 
 // avoid unused import issue

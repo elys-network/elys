@@ -15,9 +15,9 @@ import (
 	"github.com/spf13/cobra"
 
 	// this line is used by starport scaffolding # 1
-	"github.com/elys-network/elys/v6/x/vaults/client/cli"
-	"github.com/elys-network/elys/v6/x/vaults/keeper"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	"github.com/elys-network/elys/v7/x/vaults/client/cli"
+	"github.com/elys-network/elys/v7/x/vaults/keeper"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 )
 
 var (

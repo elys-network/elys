@@ -3,10 +3,10 @@ package vaults_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	vaults "github.com/elys-network/elys/v6/x/vaults"
-	"github.com/elys-network/elys/v6/x/vaults/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	vaults "github.com/elys-network/elys/v7/x/vaults"
+	"github.com/elys-network/elys/v7/x/vaults/types"
 	"github.com/stretchr/testify/require"
 )
 

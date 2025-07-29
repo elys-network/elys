@@ -3,9 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/tradeshield/keeper"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
@@ -94,6 +95,17 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					Price:     math.LegacyNewDec(5),
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+				})
+
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom: "uatom",
+					Denom:     "uatom",
+					Decimals:  6,
+				})
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom: "uusdc",
+					Denom:     "uusdc",
+					Decimals:  6,
 				})
 
 				return &types.MsgExecuteOrders{
@@ -236,6 +248,17 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					Price:     math.LegacyNewDec(5),
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+				})
+
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom: "uatom",
+					Denom:     "uatom",
+					Decimals:  6,
+				})
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom: "uusdc",
+					Denom:     "uusdc",
+					Decimals:  6,
 				})
 
 				// Return message with both order IDs
