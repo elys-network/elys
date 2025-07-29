@@ -273,6 +273,13 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
 
+	// Net interest rate can be 0 if net open interest is 0
+	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
+	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
+	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest).Abs()
+	netOpenInterestRatio := netOpenInterest.ToLegacyDec().Quo(totalLongOpenInterest.Add(totalShortOpenInterest).ToLegacyDec())
+	targetBorrowInterestRate = targetBorrowInterestRate.Mul(netOpenInterestRatio)
+
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate
 	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(math.LegacyNewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
