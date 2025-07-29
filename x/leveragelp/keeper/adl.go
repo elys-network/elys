@@ -9,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/v7/x/leveragelp/types"
-	"strconv"
 )
 
 func (k Keeper) SetADLCounter(ctx sdk.Context, adlCounter types.ADLCounter) {
@@ -116,22 +115,7 @@ func (k Keeper) ClosePositionsOnADL(ctx sdk.Context, leveragePool types.Pool) er
 			ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 			return err
 		}
-		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventADLTriggeredClosePosition,
-			sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-			sdk.NewAttribute("address", position.Address),
-			sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
-			sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
-			sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
-			sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
-			sdk.NewAttribute("repay_amount", repayAmount.String()),
-			sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
-			sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
-			sdk.NewAttribute("health", position.PositionHealth.String()),
-			sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
-			sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
-			sdk.NewAttribute("exit_swap_fee", swapFee.String()),
-			sdk.NewAttribute("exit_taker_fee", takerFee.String()),
-		))
+		k.EmitCloseEvent(ctx, "adl", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee)
 	}
 	return nil
 }
