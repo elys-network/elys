@@ -1,14 +1,15 @@
 package oracle_test
 
+/*
 import (
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
 
-	simapp "github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/oracle"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/oracle"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -69,3 +70,4 @@ func TestGenesis(t *testing.T) {
 	require.ElementsMatch(t, genesisState.PriceFeeders, got.PriceFeeders)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
+*/

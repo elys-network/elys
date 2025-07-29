@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/testutil/sample"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/testutil/sample"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestClose() {
@@ -94,7 +94,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(204),
+			math.NewInt(203),
 		},
 		{
 			"Close with price greater than open price and less than take profit price",
@@ -122,7 +122,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyMustNewDecFromStr("10.0"),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -135,7 +134,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(31), // less than at the same price
+			math.NewInt(30), // less than at the same price
 		},
 		{
 			"Close at take profit price",
@@ -163,7 +162,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     tradingAssetPrice.MulInt64(4),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -204,7 +202,6 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
 					Price:     math.LegacyMustNewDecFromStr("2.0"),
-					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 				})
@@ -217,7 +214,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(502),
+			math.NewInt(501),
 		},
 		{
 			"Success: close long position,at same price as open price",
@@ -248,7 +245,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(204),
+			math.NewInt(203),
 		},
 		{
 			"Success: close short position at same price as open price",
@@ -277,7 +274,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(4498),
+			math.NewInt(4503),
 		},
 		// TODO: Edge case when custody becomes low, this is throwing error, instead it should be closed
 		// FIX this: error updating mtp health: unable to swap (EstimateSwapGivenOut) for out 1uatom and in denom uusdc: amount too low

@@ -6,8 +6,8 @@ import (
 
 	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool *ammtypes.Pool, closer string) (err error) {
@@ -17,37 +17,48 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 			ctx.Logger().Error(err.Error())
 		}
 	}()
+	initialCollateralCoin := sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral)
+	initialCustody := mtp.Custody
+	initialLiabilities := mtp.Liabilities
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
+	totalPerpetualFees := types.NewPerpetualFeesWithEmptyCoins()
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFees, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
 	if err != nil {
 		return err
 	}
+	totalPerpetualFees = perpetualFees
 
 	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return err
 	}
+	usdcPrice, err := k.GetUSDCPrice(ctx)
+	if err != nil {
+		return err
+	}
 
 	if forceClosed {
-		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 
 	if mtp.CheckForStopLoss(tradingAssetPrice) {
-		repayAmt, returnAmt, err = k.ForceClose(ctx, mtp, &pool, ammPool)
+		repayAmt, returnAmt, perpetualFees, closingPrice, err = k.ForceClose(ctx, mtp, &pool, ammPool)
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
-		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		totalPerpetualFees = totalPerpetualFees.Add(perpetualFees)
+		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 
 	if mtp.CheckForTakeProfit(tradingAssetPrice) {
-		repayAmt, returnAmt, err = k.ForceClose(ctx, mtp, &pool, ammPool)
+		repayAmt, returnAmt, perpetualFees, closingPrice, err = k.ForceClose(ctx, mtp, &pool, ammPool)
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
-		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		totalPerpetualFees = totalPerpetualFees.Add(perpetualFees)
+		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice, totalPerpetualFees, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
 		return
 	}
 	err = errors.New("position cannot be liquidated")

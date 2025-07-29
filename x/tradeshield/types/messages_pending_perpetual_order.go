@@ -3,8 +3,8 @@ package types
 import (
 	"errors"
 	"fmt"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	"slices"
+
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -190,9 +190,9 @@ func (msg *MsgCancelAllPerpetualOrders) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
+func NewMsgCancelPerpetualOrders(creator string, orders []PerpetualOrderPoolKey) *MsgCancelPerpetualOrders {
 	return &MsgCancelPerpetualOrders{
-		OrderIds:     ids,
+		Orders:       orders,
 		OwnerAddress: creator,
 	}
 }
@@ -204,11 +204,16 @@ func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	}
 
 	// Validate SpotOrderIds
-	if len(msg.OrderIds) == 0 {
+	if len(msg.Orders) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
 	}
-	if slices.Contains(msg.OrderIds, 0) {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+	for _, order := range msg.Orders {
+		if order.PoolId == 0 {
+			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "pool ID cannot be zero")
+		}
+		if order.OrderId == 0 {
+			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order ID cannot be zero")
+		}
 	}
 
 	return nil

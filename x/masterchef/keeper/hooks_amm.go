@@ -3,8 +3,8 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
 )
 
 // AfterPoolCreated is called after CreatePool

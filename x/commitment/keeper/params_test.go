@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 

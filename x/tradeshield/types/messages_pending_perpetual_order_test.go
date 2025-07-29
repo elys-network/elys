@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/elys-network/elys/v6/testutil/sample"
+	"github.com/elys-network/elys/v7/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
@@ -163,7 +163,12 @@ func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
-				OrderIds:     []uint64{1},
+				Orders: []PerpetualOrderPoolKey{
+					{
+						PoolId:  1,
+						OrderId: 1,
+					},
+				},
 			},
 		},
 	}

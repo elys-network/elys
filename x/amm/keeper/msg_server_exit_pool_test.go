@@ -9,9 +9,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
@@ -78,8 +78,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom:    ptypes.BaseCurrency,
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99198)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99198)}, // slippage enabled
 			expPass:          true,
 		},
 	} {

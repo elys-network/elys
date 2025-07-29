@@ -13,15 +13,15 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -165,7 +165,6 @@ func (suite *TierKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price,
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})

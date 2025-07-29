@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package elys.tradeshield;
 
-option go_package = "github.com/elys-network/elys/v6/x/tradeshield/types";
+option go_package = "github.com/elys-network/elys/v7/x/tradeshield/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -74,6 +74,7 @@ message PerpetualOrder {
     (gogoproto.nullable) = false
   ];
   uint64 poolId = 12;
+  uint64 close_percentage = 13;
 }
 
 message PerpetualOrderExtraInfo {

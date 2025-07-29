@@ -11,7 +11,7 @@ import "elys/tokenomics/genesis_inflation.proto";
 import "elys/tokenomics/time_based_inflation.proto";
 import "elys/tokenomics/inflation_entry.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/tokenomics/types";
+option go_package = "github.com/elys-network/elys/v7/x/tokenomics/types";
 
 // Query defines the gRPC querier service.
 service Query {

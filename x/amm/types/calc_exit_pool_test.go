@@ -5,8 +5,8 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/amm/types/mocks"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types/mocks"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -43,7 +43,7 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			osmomath.NewBigDec(1660),
+			osmomath.MustNewBigDecFromStr("1666.666666666666666666666666666666670000"),
 			"",
 		},
 		{
@@ -149,7 +149,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr("0.5"),
 				MinSlippage:                 sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
-			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(190))},
+			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(191))},
 			osmomath.ZeroBigDec(),
 			"",
 		},

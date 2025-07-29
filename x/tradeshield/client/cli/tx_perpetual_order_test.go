@@ -12,9 +12,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/v6/testutil/network"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/tradeshield/client/cli"
+	"github.com/elys-network/elys/v7/testutil/network"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/client/cli"
 )
 
 func TestCreatePerpetualOpenOrder(t *testing.T) {
@@ -73,8 +73,14 @@ func TestCancelPerpertualOrders(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(tmpFile.Name())
 
-	validIds := []uint64{1}
-	validJson, err := json.Marshal(validIds)
+	// Create the correct format with PerpetualOrderPoolKey objects
+	validOrders := []map[string]uint64{
+		{
+			"pool_id":  1,
+			"order_id": 1,
+		},
+	}
+	validJson, err := json.Marshal(validOrders)
 	require.NoError(t, err)
 	_, err = tmpFile.Write(validJson)
 	require.NoError(t, err)

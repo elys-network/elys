@@ -5,8 +5,8 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/elys-network/elys/v6/testutil/sample"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	"github.com/elys-network/elys/v7/testutil/sample"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -8,7 +8,7 @@ import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/masterchef/types";
+option go_package = "github.com/elys-network/elys/v7/x/masterchef/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -23,6 +23,8 @@ service Msg {
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc TogglePoolEdenRewards(MsgTogglePoolEdenRewards)
       returns (MsgTogglePoolEdenRewardsResponse);
+  rpc ToggleTakerFeeSwapAndBurn(MsgToggleTakerFeeSwapAndBurn)
+      returns (MsgToggleTakerFeeSwapAndBurnResponse);
 }
 message MsgAddExternalRewardDenom {
   option (cosmos.msg.v1.signer) = "authority";
@@ -101,3 +103,11 @@ message MsgTogglePoolEdenRewards {
 }
 
 message MsgTogglePoolEdenRewardsResponse {}
+
+message MsgToggleTakerFeeSwapAndBurn {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "masterchef/MsgToggleTakerFeeSwapAndBurn";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgToggleTakerFeeSwapAndBurnResponse {}

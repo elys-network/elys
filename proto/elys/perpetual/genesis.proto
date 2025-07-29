@@ -7,7 +7,7 @@ import "elys/perpetual/params.proto";
 import "elys/perpetual/pool.proto";
 import "elys/perpetual/types.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v7/x/perpetual/types";
 
 // GenesisState defines the perpetual module's genesis state.
 message GenesisState {

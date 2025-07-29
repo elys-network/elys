@@ -6084,8 +6084,10 @@ var (
 	md_MsgCreatePerpetualCloseOrder                         protoreflect.MessageDescriptor
 	fd_MsgCreatePerpetualCloseOrder_owner_address           protoreflect.FieldDescriptor
 	fd_MsgCreatePerpetualCloseOrder_legacy_trigger_price_v1 protoreflect.FieldDescriptor
-	fd_MsgCreatePerpetualCloseOrder_trigger_price           protoreflect.FieldDescriptor
 	fd_MsgCreatePerpetualCloseOrder_position_id             protoreflect.FieldDescriptor
+	fd_MsgCreatePerpetualCloseOrder_trigger_price           protoreflect.FieldDescriptor
+	fd_MsgCreatePerpetualCloseOrder_pool_id                 protoreflect.FieldDescriptor
+	fd_MsgCreatePerpetualCloseOrder_close_percentage        protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -6093,8 +6095,10 @@ func init() {
 	md_MsgCreatePerpetualCloseOrder = File_elys_tradeshield_tx_proto.Messages().ByName("MsgCreatePerpetualCloseOrder")
 	fd_MsgCreatePerpetualCloseOrder_owner_address = md_MsgCreatePerpetualCloseOrder.Fields().ByName("owner_address")
 	fd_MsgCreatePerpetualCloseOrder_legacy_trigger_price_v1 = md_MsgCreatePerpetualCloseOrder.Fields().ByName("legacy_trigger_price_v1")
-	fd_MsgCreatePerpetualCloseOrder_trigger_price = md_MsgCreatePerpetualCloseOrder.Fields().ByName("trigger_price")
 	fd_MsgCreatePerpetualCloseOrder_position_id = md_MsgCreatePerpetualCloseOrder.Fields().ByName("position_id")
+	fd_MsgCreatePerpetualCloseOrder_trigger_price = md_MsgCreatePerpetualCloseOrder.Fields().ByName("trigger_price")
+	fd_MsgCreatePerpetualCloseOrder_pool_id = md_MsgCreatePerpetualCloseOrder.Fields().ByName("pool_id")
+	fd_MsgCreatePerpetualCloseOrder_close_percentage = md_MsgCreatePerpetualCloseOrder.Fields().ByName("close_percentage")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgCreatePerpetualCloseOrder)(nil)
@@ -6174,15 +6178,27 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Range(f func(protoreflect.
 			return
 		}
 	}
+	if x.PositionId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PositionId)
+		if !f(fd_MsgCreatePerpetualCloseOrder_position_id, value) {
+			return
+		}
+	}
 	if x.TriggerPrice != "" {
 		value := protoreflect.ValueOfString(x.TriggerPrice)
 		if !f(fd_MsgCreatePerpetualCloseOrder_trigger_price, value) {
 			return
 		}
 	}
-	if x.PositionId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.PositionId)
-		if !f(fd_MsgCreatePerpetualCloseOrder_position_id, value) {
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_MsgCreatePerpetualCloseOrder_pool_id, value) {
+			return
+		}
+	}
+	if x.ClosePercentage != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.ClosePercentage)
+		if !f(fd_MsgCreatePerpetualCloseOrder_close_percentage, value) {
 			return
 		}
 	}
@@ -6205,10 +6221,14 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Has(fd protoreflect.FieldD
 		return x.OwnerAddress != ""
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1":
 		return x.LegacyTriggerPriceV1 != nil
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
-		return x.TriggerPrice != ""
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
 		return x.PositionId != uint64(0)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
+		return x.TriggerPrice != ""
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		return x.PoolId != uint64(0)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
+		return x.ClosePercentage != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCreatePerpetualCloseOrder"))
@@ -6229,10 +6249,14 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Clear(fd protoreflect.Fiel
 		x.OwnerAddress = ""
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1":
 		x.LegacyTriggerPriceV1 = nil
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
-		x.TriggerPrice = ""
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
 		x.PositionId = uint64(0)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
+		x.TriggerPrice = ""
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		x.PoolId = uint64(0)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
+		x.ClosePercentage = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCreatePerpetualCloseOrder"))
@@ -6255,11 +6279,17 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Get(descriptor protoreflec
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1":
 		value := x.LegacyTriggerPriceV1
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
+		value := x.PositionId
+		return protoreflect.ValueOfUint64(value)
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
 		value := x.TriggerPrice
 		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
-		value := x.PositionId
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
+		value := x.ClosePercentage
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -6285,10 +6315,14 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Set(fd protoreflect.FieldD
 		x.OwnerAddress = value.Interface().(string)
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1":
 		x.LegacyTriggerPriceV1 = value.Message().Interface().(*LegacyTriggerPriceV1)
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
-		x.TriggerPrice = value.Interface().(string)
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
 		x.PositionId = value.Uint()
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
+		x.TriggerPrice = value.Interface().(string)
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		x.PoolId = value.Uint()
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
+		x.ClosePercentage = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCreatePerpetualCloseOrder"))
@@ -6316,10 +6350,14 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) Mutable(fd protoreflect.Fi
 		return protoreflect.ValueOfMessage(x.LegacyTriggerPriceV1.ProtoReflect())
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.owner_address":
 		panic(fmt.Errorf("field owner_address of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
-		panic(fmt.Errorf("field trigger_price of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
 		panic(fmt.Errorf("field position_id of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
+		panic(fmt.Errorf("field trigger_price of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
+		panic(fmt.Errorf("field close_percentage of message elys.tradeshield.MsgCreatePerpetualCloseOrder is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCreatePerpetualCloseOrder"))
@@ -6338,9 +6376,13 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) NewField(fd protoreflect.F
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1":
 		m := new(LegacyTriggerPriceV1)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
+		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.trigger_price":
 		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.position_id":
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.tradeshield.MsgCreatePerpetualCloseOrder.close_percentage":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -6419,12 +6461,18 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) ProtoMethods() *protoiface
 			l = options.Size(x.LegacyTriggerPriceV1)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.PositionId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PositionId))
+		}
 		l = len(x.TriggerPrice)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.PositionId != 0 {
-			n += 1 + runtime.Sov(uint64(x.PositionId))
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		if x.ClosePercentage != 0 {
+			n += 1 + runtime.Sov(uint64(x.ClosePercentage))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -6454,6 +6502,16 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) ProtoMethods() *protoiface
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.ClosePercentage != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ClosePercentage))
+			i--
+			dAtA[i] = 0x30
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x28
 		}
 		if len(x.TriggerPrice) > 0 {
 			i -= len(x.TriggerPrice)
@@ -6605,6 +6663,25 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) ProtoMethods() *protoiface
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+				}
+				x.PositionId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PositionId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
@@ -6637,11 +6714,11 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) ProtoMethods() *protoiface
 				}
 				x.TriggerPrice = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 3:
+			case 5:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
 				}
-				x.PositionId = 0
+				x.PoolId = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -6651,7 +6728,26 @@ func (x *fastReflection_MsgCreatePerpetualCloseOrder) ProtoMethods() *protoiface
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.PositionId |= uint64(b&0x7F) << shift
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClosePercentage", wireType)
+				}
+				x.ClosePercentage = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ClosePercentage |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -7101,6 +7197,7 @@ var (
 	fd_MsgUpdatePerpetualOrder_order_id                protoreflect.FieldDescriptor
 	fd_MsgUpdatePerpetualOrder_legacy_trigger_price_v1 protoreflect.FieldDescriptor
 	fd_MsgUpdatePerpetualOrder_trigger_price           protoreflect.FieldDescriptor
+	fd_MsgUpdatePerpetualOrder_pool_id                 protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -7110,6 +7207,7 @@ func init() {
 	fd_MsgUpdatePerpetualOrder_order_id = md_MsgUpdatePerpetualOrder.Fields().ByName("order_id")
 	fd_MsgUpdatePerpetualOrder_legacy_trigger_price_v1 = md_MsgUpdatePerpetualOrder.Fields().ByName("legacy_trigger_price_v1")
 	fd_MsgUpdatePerpetualOrder_trigger_price = md_MsgUpdatePerpetualOrder.Fields().ByName("trigger_price")
+	fd_MsgUpdatePerpetualOrder_pool_id = md_MsgUpdatePerpetualOrder.Fields().ByName("pool_id")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgUpdatePerpetualOrder)(nil)
@@ -7201,6 +7299,12 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Range(f func(protoreflect.Field
 			return
 		}
 	}
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_MsgUpdatePerpetualOrder_pool_id, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -7224,6 +7328,8 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Has(fd protoreflect.FieldDescri
 		return x.LegacyTriggerPriceV1 != nil
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		return x.TriggerPrice != ""
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		return x.PoolId != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7248,6 +7354,8 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Clear(fd protoreflect.FieldDesc
 		x.LegacyTriggerPriceV1 = nil
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		x.TriggerPrice = ""
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		x.PoolId = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7276,6 +7384,9 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Get(descriptor protoreflect.Fie
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		value := x.TriggerPrice
 		return protoreflect.ValueOfString(value)
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7304,6 +7415,8 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Set(fd protoreflect.FieldDescri
 		x.LegacyTriggerPriceV1 = value.Message().Interface().(*LegacyTriggerPriceV1)
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		x.TriggerPrice = value.Interface().(string)
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		x.PoolId = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7335,6 +7448,8 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) Mutable(fd protoreflect.FieldDe
 		panic(fmt.Errorf("field order_id of message elys.tradeshield.MsgUpdatePerpetualOrder is not mutable"))
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		panic(fmt.Errorf("field trigger_price of message elys.tradeshield.MsgUpdatePerpetualOrder is not mutable"))
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.tradeshield.MsgUpdatePerpetualOrder is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7357,6 +7472,8 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) NewField(fd protoreflect.FieldD
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "elys.tradeshield.MsgUpdatePerpetualOrder.trigger_price":
 		return protoreflect.ValueOfString("")
+	case "elys.tradeshield.MsgUpdatePerpetualOrder.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgUpdatePerpetualOrder"))
@@ -7441,6 +7558,9 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) ProtoMethods() *protoiface.Meth
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -7469,6 +7589,11 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) ProtoMethods() *protoiface.Meth
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x28
 		}
 		if len(x.TriggerPrice) > 0 {
 			i -= len(x.TriggerPrice)
@@ -7671,6 +7796,25 @@ func (x *fastReflection_MsgUpdatePerpetualOrder) ProtoMethods() *protoiface.Meth
 				}
 				x.TriggerPrice = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 5:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -8066,6 +8210,7 @@ var (
 	md_MsgCancelPerpetualOrder               protoreflect.MessageDescriptor
 	fd_MsgCancelPerpetualOrder_owner_address protoreflect.FieldDescriptor
 	fd_MsgCancelPerpetualOrder_order_id      protoreflect.FieldDescriptor
+	fd_MsgCancelPerpetualOrder_pool_id       protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -8073,6 +8218,7 @@ func init() {
 	md_MsgCancelPerpetualOrder = File_elys_tradeshield_tx_proto.Messages().ByName("MsgCancelPerpetualOrder")
 	fd_MsgCancelPerpetualOrder_owner_address = md_MsgCancelPerpetualOrder.Fields().ByName("owner_address")
 	fd_MsgCancelPerpetualOrder_order_id = md_MsgCancelPerpetualOrder.Fields().ByName("order_id")
+	fd_MsgCancelPerpetualOrder_pool_id = md_MsgCancelPerpetualOrder.Fields().ByName("pool_id")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgCancelPerpetualOrder)(nil)
@@ -8152,6 +8298,12 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Range(f func(protoreflect.Field
 			return
 		}
 	}
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_MsgCancelPerpetualOrder_pool_id, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -8171,6 +8323,8 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Has(fd protoreflect.FieldDescri
 		return x.OwnerAddress != ""
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
 		return x.OrderId != uint64(0)
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
+		return x.PoolId != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrder"))
@@ -8191,6 +8345,8 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Clear(fd protoreflect.FieldDesc
 		x.OwnerAddress = ""
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
 		x.OrderId = uint64(0)
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
+		x.PoolId = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrder"))
@@ -8212,6 +8368,9 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Get(descriptor protoreflect.Fie
 		return protoreflect.ValueOfString(value)
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
 		value := x.OrderId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
+		value := x.PoolId
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -8237,6 +8396,8 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Set(fd protoreflect.FieldDescri
 		x.OwnerAddress = value.Interface().(string)
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
 		x.OrderId = value.Uint()
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
+		x.PoolId = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrder"))
@@ -8261,6 +8422,8 @@ func (x *fastReflection_MsgCancelPerpetualOrder) Mutable(fd protoreflect.FieldDe
 		panic(fmt.Errorf("field owner_address of message elys.tradeshield.MsgCancelPerpetualOrder is not mutable"))
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
 		panic(fmt.Errorf("field order_id of message elys.tradeshield.MsgCancelPerpetualOrder is not mutable"))
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.tradeshield.MsgCancelPerpetualOrder is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrder"))
@@ -8277,6 +8440,8 @@ func (x *fastReflection_MsgCancelPerpetualOrder) NewField(fd protoreflect.FieldD
 	case "elys.tradeshield.MsgCancelPerpetualOrder.owner_address":
 		return protoreflect.ValueOfString("")
 	case "elys.tradeshield.MsgCancelPerpetualOrder.order_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.tradeshield.MsgCancelPerpetualOrder.pool_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -8354,6 +8519,9 @@ func (x *fastReflection_MsgCancelPerpetualOrder) ProtoMethods() *protoiface.Meth
 		if x.OrderId != 0 {
 			n += 1 + runtime.Sov(uint64(x.OrderId))
 		}
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -8382,6 +8550,11 @@ func (x *fastReflection_MsgCancelPerpetualOrder) ProtoMethods() *protoiface.Meth
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x18
 		}
 		if x.OrderId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderId))
@@ -8491,6 +8664,25 @@ func (x *fastReflection_MsgCancelPerpetualOrder) ProtoMethods() *protoiface.Meth
 					b := dAtA[iNdEx]
 					iNdEx++
 					x.OrderId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -8964,7 +9156,7 @@ func (x *_MsgCancelPerpetualOrders_2_list) Append(value protoreflect.Value) {
 }
 
 func (x *_MsgCancelPerpetualOrders_2_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message MsgCancelPerpetualOrders at list field OrderIds as it is not of Message kind"))
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgCancelPerpetualOrders at list field LegacyOrderIds as it is not of Message kind"))
 }
 
 func (x *_MsgCancelPerpetualOrders_2_list) Truncate(n int) {
@@ -8980,17 +9172,70 @@ func (x *_MsgCancelPerpetualOrders_2_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_MsgCancelPerpetualOrders_3_list)(nil)
+
+type _MsgCancelPerpetualOrders_3_list struct {
+	list *[]*PerpetualOrderPoolKey
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PerpetualOrderPoolKey)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PerpetualOrderPoolKey)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) AppendMutable() protoreflect.Value {
+	v := new(PerpetualOrderPoolKey)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) NewElement() protoreflect.Value {
+	v := new(PerpetualOrderPoolKey)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgCancelPerpetualOrders_3_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_MsgCancelPerpetualOrders               protoreflect.MessageDescriptor
-	fd_MsgCancelPerpetualOrders_owner_address protoreflect.FieldDescriptor
-	fd_MsgCancelPerpetualOrders_order_ids     protoreflect.FieldDescriptor
+	md_MsgCancelPerpetualOrders                  protoreflect.MessageDescriptor
+	fd_MsgCancelPerpetualOrders_owner_address    protoreflect.FieldDescriptor
+	fd_MsgCancelPerpetualOrders_legacy_order_ids protoreflect.FieldDescriptor
+	fd_MsgCancelPerpetualOrders_orders           protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_tradeshield_tx_proto_init()
 	md_MsgCancelPerpetualOrders = File_elys_tradeshield_tx_proto.Messages().ByName("MsgCancelPerpetualOrders")
 	fd_MsgCancelPerpetualOrders_owner_address = md_MsgCancelPerpetualOrders.Fields().ByName("owner_address")
-	fd_MsgCancelPerpetualOrders_order_ids = md_MsgCancelPerpetualOrders.Fields().ByName("order_ids")
+	fd_MsgCancelPerpetualOrders_legacy_order_ids = md_MsgCancelPerpetualOrders.Fields().ByName("legacy_order_ids")
+	fd_MsgCancelPerpetualOrders_orders = md_MsgCancelPerpetualOrders.Fields().ByName("orders")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgCancelPerpetualOrders)(nil)
@@ -9064,9 +9309,15 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Range(f func(protoreflect.Fiel
 			return
 		}
 	}
-	if len(x.OrderIds) != 0 {
-		value := protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_2_list{list: &x.OrderIds})
-		if !f(fd_MsgCancelPerpetualOrders_order_ids, value) {
+	if len(x.LegacyOrderIds) != 0 {
+		value := protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_2_list{list: &x.LegacyOrderIds})
+		if !f(fd_MsgCancelPerpetualOrders_legacy_order_ids, value) {
+			return
+		}
+	}
+	if len(x.Orders) != 0 {
+		value := protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_3_list{list: &x.Orders})
+		if !f(fd_MsgCancelPerpetualOrders_orders, value) {
 			return
 		}
 	}
@@ -9087,8 +9338,10 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Has(fd protoreflect.FieldDescr
 	switch fd.FullName() {
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		return x.OwnerAddress != ""
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
-		return len(x.OrderIds) != 0
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
+		return len(x.LegacyOrderIds) != 0
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		return len(x.Orders) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrders"))
@@ -9107,8 +9360,10 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Clear(fd protoreflect.FieldDes
 	switch fd.FullName() {
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		x.OwnerAddress = ""
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
-		x.OrderIds = nil
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
+		x.LegacyOrderIds = nil
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		x.Orders = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrders"))
@@ -9128,11 +9383,17 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Get(descriptor protoreflect.Fi
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		value := x.OwnerAddress
 		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
-		if len(x.OrderIds) == 0 {
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
+		if len(x.LegacyOrderIds) == 0 {
 			return protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_2_list{})
 		}
-		listValue := &_MsgCancelPerpetualOrders_2_list{list: &x.OrderIds}
+		listValue := &_MsgCancelPerpetualOrders_2_list{list: &x.LegacyOrderIds}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		if len(x.Orders) == 0 {
+			return protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_3_list{})
+		}
+		listValue := &_MsgCancelPerpetualOrders_3_list{list: &x.Orders}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -9156,10 +9417,14 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Set(fd protoreflect.FieldDescr
 	switch fd.FullName() {
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		x.OwnerAddress = value.Interface().(string)
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
 		lv := value.List()
 		clv := lv.(*_MsgCancelPerpetualOrders_2_list)
-		x.OrderIds = *clv.list
+		x.LegacyOrderIds = *clv.list
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		lv := value.List()
+		clv := lv.(*_MsgCancelPerpetualOrders_3_list)
+		x.Orders = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrders"))
@@ -9180,11 +9445,17 @@ func (x *fastReflection_MsgCancelPerpetualOrders) Set(fd protoreflect.FieldDescr
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgCancelPerpetualOrders) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
-		if x.OrderIds == nil {
-			x.OrderIds = []uint64{}
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
+		if x.LegacyOrderIds == nil {
+			x.LegacyOrderIds = []uint64{}
 		}
-		value := &_MsgCancelPerpetualOrders_2_list{list: &x.OrderIds}
+		value := &_MsgCancelPerpetualOrders_2_list{list: &x.LegacyOrderIds}
+		return protoreflect.ValueOfList(value)
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		if x.Orders == nil {
+			x.Orders = []*PerpetualOrderPoolKey{}
+		}
+		value := &_MsgCancelPerpetualOrders_3_list{list: &x.Orders}
 		return protoreflect.ValueOfList(value)
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		panic(fmt.Errorf("field owner_address of message elys.tradeshield.MsgCancelPerpetualOrders is not mutable"))
@@ -9203,9 +9474,12 @@ func (x *fastReflection_MsgCancelPerpetualOrders) NewField(fd protoreflect.Field
 	switch fd.FullName() {
 	case "elys.tradeshield.MsgCancelPerpetualOrders.owner_address":
 		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.MsgCancelPerpetualOrders.order_ids":
+	case "elys.tradeshield.MsgCancelPerpetualOrders.legacy_order_ids":
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_2_list{list: &list})
+	case "elys.tradeshield.MsgCancelPerpetualOrders.orders":
+		list := []*PerpetualOrderPoolKey{}
+		return protoreflect.ValueOfList(&_MsgCancelPerpetualOrders_3_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgCancelPerpetualOrders"))
@@ -9279,12 +9553,18 @@ func (x *fastReflection_MsgCancelPerpetualOrders) ProtoMethods() *protoiface.Met
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if len(x.OrderIds) > 0 {
+		if len(x.LegacyOrderIds) > 0 {
 			l = 0
-			for _, e := range x.OrderIds {
+			for _, e := range x.LegacyOrderIds {
 				l += runtime.Sov(uint64(e))
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if len(x.Orders) > 0 {
+			for _, e := range x.Orders {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -9315,14 +9595,30 @@ func (x *fastReflection_MsgCancelPerpetualOrders) ProtoMethods() *protoiface.Met
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.OrderIds) > 0 {
+		if len(x.Orders) > 0 {
+			for iNdEx := len(x.Orders) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Orders[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x1a
+			}
+		}
+		if len(x.LegacyOrderIds) > 0 {
 			var pksize2 int
-			for _, num := range x.OrderIds {
+			for _, num := range x.LegacyOrderIds {
 				pksize2 += runtime.Sov(uint64(num))
 			}
 			i -= pksize2
 			j1 := i
-			for _, num := range x.OrderIds {
+			for _, num := range x.LegacyOrderIds {
 				for num >= 1<<7 {
 					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
 					num >>= 7
@@ -9440,7 +9736,7 @@ func (x *fastReflection_MsgCancelPerpetualOrders) ProtoMethods() *protoiface.Met
 							break
 						}
 					}
-					x.OrderIds = append(x.OrderIds, v)
+					x.LegacyOrderIds = append(x.LegacyOrderIds, v)
 				} else if wireType == 2 {
 					var packedLen int
 					for shift := uint(0); ; shift += 7 {
@@ -9475,8 +9771,8 @@ func (x *fastReflection_MsgCancelPerpetualOrders) ProtoMethods() *protoiface.Met
 						}
 					}
 					elementCount = count
-					if elementCount != 0 && len(x.OrderIds) == 0 {
-						x.OrderIds = make([]uint64, 0, elementCount)
+					if elementCount != 0 && len(x.LegacyOrderIds) == 0 {
+						x.LegacyOrderIds = make([]uint64, 0, elementCount)
 					}
 					for iNdEx < postIndex {
 						var v uint64
@@ -9494,11 +9790,45 @@ func (x *fastReflection_MsgCancelPerpetualOrders) ProtoMethods() *protoiface.Met
 								break
 							}
 						}
-						x.OrderIds = append(x.OrderIds, v)
+						x.LegacyOrderIds = append(x.LegacyOrderIds, v)
 					}
 				} else {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderIds", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyOrderIds", wireType)
 				}
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Orders", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Orders = append(x.Orders, &PerpetualOrderPoolKey{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Orders[len(x.Orders)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -11597,7 +11927,7 @@ func (x *_MsgExecuteOrders_3_list) Append(value protoreflect.Value) {
 }
 
 func (x *_MsgExecuteOrders_3_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message MsgExecuteOrders at list field PerpetualOrderIds as it is not of Message kind"))
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgExecuteOrders at list field LegacyPerpetualOrderIds as it is not of Message kind"))
 }
 
 func (x *_MsgExecuteOrders_3_list) Truncate(n int) {
@@ -11613,11 +11943,63 @@ func (x *_MsgExecuteOrders_3_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_MsgExecuteOrders_4_list)(nil)
+
+type _MsgExecuteOrders_4_list struct {
+	list *[]*PerpetualOrderKey
+}
+
+func (x *_MsgExecuteOrders_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgExecuteOrders_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_MsgExecuteOrders_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PerpetualOrderKey)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgExecuteOrders_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PerpetualOrderKey)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgExecuteOrders_4_list) AppendMutable() protoreflect.Value {
+	v := new(PerpetualOrderKey)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgExecuteOrders_4_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgExecuteOrders_4_list) NewElement() protoreflect.Value {
+	v := new(PerpetualOrderKey)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgExecuteOrders_4_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_MsgExecuteOrders                     protoreflect.MessageDescriptor
-	fd_MsgExecuteOrders_creator             protoreflect.FieldDescriptor
-	fd_MsgExecuteOrders_spot_order_ids      protoreflect.FieldDescriptor
-	fd_MsgExecuteOrders_perpetual_order_ids protoreflect.FieldDescriptor
+	md_MsgExecuteOrders                            protoreflect.MessageDescriptor
+	fd_MsgExecuteOrders_creator                    protoreflect.FieldDescriptor
+	fd_MsgExecuteOrders_spot_order_ids             protoreflect.FieldDescriptor
+	fd_MsgExecuteOrders_legacy_perpetual_order_ids protoreflect.FieldDescriptor
+	fd_MsgExecuteOrders_perpetual_orders           protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -11625,7 +12007,8 @@ func init() {
 	md_MsgExecuteOrders = File_elys_tradeshield_tx_proto.Messages().ByName("MsgExecuteOrders")
 	fd_MsgExecuteOrders_creator = md_MsgExecuteOrders.Fields().ByName("creator")
 	fd_MsgExecuteOrders_spot_order_ids = md_MsgExecuteOrders.Fields().ByName("spot_order_ids")
-	fd_MsgExecuteOrders_perpetual_order_ids = md_MsgExecuteOrders.Fields().ByName("perpetual_order_ids")
+	fd_MsgExecuteOrders_legacy_perpetual_order_ids = md_MsgExecuteOrders.Fields().ByName("legacy_perpetual_order_ids")
+	fd_MsgExecuteOrders_perpetual_orders = md_MsgExecuteOrders.Fields().ByName("perpetual_orders")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgExecuteOrders)(nil)
@@ -11705,9 +12088,15 @@ func (x *fastReflection_MsgExecuteOrders) Range(f func(protoreflect.FieldDescrip
 			return
 		}
 	}
-	if len(x.PerpetualOrderIds) != 0 {
-		value := protoreflect.ValueOfList(&_MsgExecuteOrders_3_list{list: &x.PerpetualOrderIds})
-		if !f(fd_MsgExecuteOrders_perpetual_order_ids, value) {
+	if len(x.LegacyPerpetualOrderIds) != 0 {
+		value := protoreflect.ValueOfList(&_MsgExecuteOrders_3_list{list: &x.LegacyPerpetualOrderIds})
+		if !f(fd_MsgExecuteOrders_legacy_perpetual_order_ids, value) {
+			return
+		}
+	}
+	if len(x.PerpetualOrders) != 0 {
+		value := protoreflect.ValueOfList(&_MsgExecuteOrders_4_list{list: &x.PerpetualOrders})
+		if !f(fd_MsgExecuteOrders_perpetual_orders, value) {
 			return
 		}
 	}
@@ -11730,8 +12119,10 @@ func (x *fastReflection_MsgExecuteOrders) Has(fd protoreflect.FieldDescriptor) b
 		return x.Creator != ""
 	case "elys.tradeshield.MsgExecuteOrders.spot_order_ids":
 		return len(x.SpotOrderIds) != 0
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
-		return len(x.PerpetualOrderIds) != 0
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
+		return len(x.LegacyPerpetualOrderIds) != 0
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		return len(x.PerpetualOrders) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgExecuteOrders"))
@@ -11752,8 +12143,10 @@ func (x *fastReflection_MsgExecuteOrders) Clear(fd protoreflect.FieldDescriptor)
 		x.Creator = ""
 	case "elys.tradeshield.MsgExecuteOrders.spot_order_ids":
 		x.SpotOrderIds = nil
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
-		x.PerpetualOrderIds = nil
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
+		x.LegacyPerpetualOrderIds = nil
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		x.PerpetualOrders = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgExecuteOrders"))
@@ -11779,11 +12172,17 @@ func (x *fastReflection_MsgExecuteOrders) Get(descriptor protoreflect.FieldDescr
 		}
 		listValue := &_MsgExecuteOrders_2_list{list: &x.SpotOrderIds}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
-		if len(x.PerpetualOrderIds) == 0 {
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
+		if len(x.LegacyPerpetualOrderIds) == 0 {
 			return protoreflect.ValueOfList(&_MsgExecuteOrders_3_list{})
 		}
-		listValue := &_MsgExecuteOrders_3_list{list: &x.PerpetualOrderIds}
+		listValue := &_MsgExecuteOrders_3_list{list: &x.LegacyPerpetualOrderIds}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		if len(x.PerpetualOrders) == 0 {
+			return protoreflect.ValueOfList(&_MsgExecuteOrders_4_list{})
+		}
+		listValue := &_MsgExecuteOrders_4_list{list: &x.PerpetualOrders}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -11811,10 +12210,14 @@ func (x *fastReflection_MsgExecuteOrders) Set(fd protoreflect.FieldDescriptor, v
 		lv := value.List()
 		clv := lv.(*_MsgExecuteOrders_2_list)
 		x.SpotOrderIds = *clv.list
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
 		lv := value.List()
 		clv := lv.(*_MsgExecuteOrders_3_list)
-		x.PerpetualOrderIds = *clv.list
+		x.LegacyPerpetualOrderIds = *clv.list
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		lv := value.List()
+		clv := lv.(*_MsgExecuteOrders_4_list)
+		x.PerpetualOrders = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgExecuteOrders"))
@@ -11841,11 +12244,17 @@ func (x *fastReflection_MsgExecuteOrders) Mutable(fd protoreflect.FieldDescripto
 		}
 		value := &_MsgExecuteOrders_2_list{list: &x.SpotOrderIds}
 		return protoreflect.ValueOfList(value)
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
-		if x.PerpetualOrderIds == nil {
-			x.PerpetualOrderIds = []uint64{}
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
+		if x.LegacyPerpetualOrderIds == nil {
+			x.LegacyPerpetualOrderIds = []uint64{}
 		}
-		value := &_MsgExecuteOrders_3_list{list: &x.PerpetualOrderIds}
+		value := &_MsgExecuteOrders_3_list{list: &x.LegacyPerpetualOrderIds}
+		return protoreflect.ValueOfList(value)
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		if x.PerpetualOrders == nil {
+			x.PerpetualOrders = []*PerpetualOrderKey{}
+		}
+		value := &_MsgExecuteOrders_4_list{list: &x.PerpetualOrders}
 		return protoreflect.ValueOfList(value)
 	case "elys.tradeshield.MsgExecuteOrders.creator":
 		panic(fmt.Errorf("field creator of message elys.tradeshield.MsgExecuteOrders is not mutable"))
@@ -11867,9 +12276,12 @@ func (x *fastReflection_MsgExecuteOrders) NewField(fd protoreflect.FieldDescript
 	case "elys.tradeshield.MsgExecuteOrders.spot_order_ids":
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_MsgExecuteOrders_2_list{list: &list})
-	case "elys.tradeshield.MsgExecuteOrders.perpetual_order_ids":
+	case "elys.tradeshield.MsgExecuteOrders.legacy_perpetual_order_ids":
 		list := []uint64{}
 		return protoreflect.ValueOfList(&_MsgExecuteOrders_3_list{list: &list})
+	case "elys.tradeshield.MsgExecuteOrders.perpetual_orders":
+		list := []*PerpetualOrderKey{}
+		return protoreflect.ValueOfList(&_MsgExecuteOrders_4_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.MsgExecuteOrders"))
@@ -11950,12 +12362,18 @@ func (x *fastReflection_MsgExecuteOrders) ProtoMethods() *protoiface.Methods {
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
 		}
-		if len(x.PerpetualOrderIds) > 0 {
+		if len(x.LegacyPerpetualOrderIds) > 0 {
 			l = 0
-			for _, e := range x.PerpetualOrderIds {
+			for _, e := range x.LegacyPerpetualOrderIds {
 				l += runtime.Sov(uint64(e))
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if len(x.PerpetualOrders) > 0 {
+			for _, e := range x.PerpetualOrders {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -11986,14 +12404,30 @@ func (x *fastReflection_MsgExecuteOrders) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.PerpetualOrderIds) > 0 {
+		if len(x.PerpetualOrders) > 0 {
+			for iNdEx := len(x.PerpetualOrders) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.PerpetualOrders[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x22
+			}
+		}
+		if len(x.LegacyPerpetualOrderIds) > 0 {
 			var pksize2 int
-			for _, num := range x.PerpetualOrderIds {
+			for _, num := range x.LegacyPerpetualOrderIds {
 				pksize2 += runtime.Sov(uint64(num))
 			}
 			i -= pksize2
 			j1 := i
-			for _, num := range x.PerpetualOrderIds {
+			for _, num := range x.LegacyPerpetualOrderIds {
 				for num >= 1<<7 {
 					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
 					num >>= 7
@@ -12207,7 +12641,7 @@ func (x *fastReflection_MsgExecuteOrders) ProtoMethods() *protoiface.Methods {
 							break
 						}
 					}
-					x.PerpetualOrderIds = append(x.PerpetualOrderIds, v)
+					x.LegacyPerpetualOrderIds = append(x.LegacyPerpetualOrderIds, v)
 				} else if wireType == 2 {
 					var packedLen int
 					for shift := uint(0); ; shift += 7 {
@@ -12242,8 +12676,8 @@ func (x *fastReflection_MsgExecuteOrders) ProtoMethods() *protoiface.Methods {
 						}
 					}
 					elementCount = count
-					if elementCount != 0 && len(x.PerpetualOrderIds) == 0 {
-						x.PerpetualOrderIds = make([]uint64, 0, elementCount)
+					if elementCount != 0 && len(x.LegacyPerpetualOrderIds) == 0 {
+						x.LegacyPerpetualOrderIds = make([]uint64, 0, elementCount)
 					}
 					for iNdEx < postIndex {
 						var v uint64
@@ -12261,11 +12695,45 @@ func (x *fastReflection_MsgExecuteOrders) ProtoMethods() *protoiface.Methods {
 								break
 							}
 						}
-						x.PerpetualOrderIds = append(x.PerpetualOrderIds, v)
+						x.LegacyPerpetualOrderIds = append(x.LegacyPerpetualOrderIds, v)
 					}
 				} else {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualOrderIds", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyPerpetualOrderIds", wireType)
 				}
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualOrders", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PerpetualOrders = append(x.PerpetualOrders, &PerpetualOrderKey{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PerpetualOrders[len(x.PerpetualOrders)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -12622,6 +13090,974 @@ func (x *fastReflection_MsgExecuteOrdersResponse) ProtoMethods() *protoiface.Met
 				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgExecuteOrdersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_PerpetualOrderKey               protoreflect.MessageDescriptor
+	fd_PerpetualOrderKey_owner_address protoreflect.FieldDescriptor
+	fd_PerpetualOrderKey_pool_id       protoreflect.FieldDescriptor
+	fd_PerpetualOrderKey_order_id      protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_tradeshield_tx_proto_init()
+	md_PerpetualOrderKey = File_elys_tradeshield_tx_proto.Messages().ByName("PerpetualOrderKey")
+	fd_PerpetualOrderKey_owner_address = md_PerpetualOrderKey.Fields().ByName("owner_address")
+	fd_PerpetualOrderKey_pool_id = md_PerpetualOrderKey.Fields().ByName("pool_id")
+	fd_PerpetualOrderKey_order_id = md_PerpetualOrderKey.Fields().ByName("order_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_PerpetualOrderKey)(nil)
+
+type fastReflection_PerpetualOrderKey PerpetualOrderKey
+
+func (x *PerpetualOrderKey) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualOrderKey)(x)
+}
+
+func (x *PerpetualOrderKey) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_tradeshield_tx_proto_msgTypes[26]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PerpetualOrderKey_messageType fastReflection_PerpetualOrderKey_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualOrderKey_messageType{}
+
+type fastReflection_PerpetualOrderKey_messageType struct{}
+
+func (x fastReflection_PerpetualOrderKey_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualOrderKey)(nil)
+}
+func (x fastReflection_PerpetualOrderKey_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualOrderKey)
+}
+func (x fastReflection_PerpetualOrderKey_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualOrderKey
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PerpetualOrderKey) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualOrderKey
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PerpetualOrderKey) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualOrderKey_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PerpetualOrderKey) New() protoreflect.Message {
+	return new(fastReflection_PerpetualOrderKey)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PerpetualOrderKey) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualOrderKey)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PerpetualOrderKey) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.OwnerAddress != "" {
+		value := protoreflect.ValueOfString(x.OwnerAddress)
+		if !f(fd_PerpetualOrderKey_owner_address, value) {
+			return
+		}
+	}
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_PerpetualOrderKey_pool_id, value) {
+			return
+		}
+	}
+	if x.OrderId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.OrderId)
+		if !f(fd_PerpetualOrderKey_order_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PerpetualOrderKey) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		return x.OwnerAddress != ""
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		return x.PoolId != uint64(0)
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		return x.OrderId != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderKey) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		x.OwnerAddress = ""
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		x.PoolId = uint64(0)
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		x.OrderId = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PerpetualOrderKey) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		value := x.OwnerAddress
+		return protoreflect.ValueOfString(value)
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		value := x.OrderId
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderKey) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		x.OwnerAddress = value.Interface().(string)
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		x.PoolId = value.Uint()
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		x.OrderId = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderKey) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		panic(fmt.Errorf("field owner_address of message elys.tradeshield.PerpetualOrderKey is not mutable"))
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.tradeshield.PerpetualOrderKey is not mutable"))
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		panic(fmt.Errorf("field order_id of message elys.tradeshield.PerpetualOrderKey is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PerpetualOrderKey) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderKey.owner_address":
+		return protoreflect.ValueOfString("")
+	case "elys.tradeshield.PerpetualOrderKey.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.tradeshield.PerpetualOrderKey.order_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PerpetualOrderKey) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.PerpetualOrderKey", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PerpetualOrderKey) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderKey) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PerpetualOrderKey) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PerpetualOrderKey) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PerpetualOrderKey)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.OwnerAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		if x.OrderId != 0 {
+			n += 1 + runtime.Sov(uint64(x.OrderId))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualOrderKey)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.OrderId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderId))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.OwnerAddress) > 0 {
+			i -= len(x.OwnerAddress)
+			copy(dAtA[i:], x.OwnerAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OwnerAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualOrderKey)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualOrderKey: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualOrderKey: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.OwnerAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
+				}
+				x.OrderId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.OrderId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_PerpetualOrderPoolKey          protoreflect.MessageDescriptor
+	fd_PerpetualOrderPoolKey_pool_id  protoreflect.FieldDescriptor
+	fd_PerpetualOrderPoolKey_order_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_tradeshield_tx_proto_init()
+	md_PerpetualOrderPoolKey = File_elys_tradeshield_tx_proto.Messages().ByName("PerpetualOrderPoolKey")
+	fd_PerpetualOrderPoolKey_pool_id = md_PerpetualOrderPoolKey.Fields().ByName("pool_id")
+	fd_PerpetualOrderPoolKey_order_id = md_PerpetualOrderPoolKey.Fields().ByName("order_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_PerpetualOrderPoolKey)(nil)
+
+type fastReflection_PerpetualOrderPoolKey PerpetualOrderPoolKey
+
+func (x *PerpetualOrderPoolKey) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PerpetualOrderPoolKey)(x)
+}
+
+func (x *PerpetualOrderPoolKey) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_tradeshield_tx_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PerpetualOrderPoolKey_messageType fastReflection_PerpetualOrderPoolKey_messageType
+var _ protoreflect.MessageType = fastReflection_PerpetualOrderPoolKey_messageType{}
+
+type fastReflection_PerpetualOrderPoolKey_messageType struct{}
+
+func (x fastReflection_PerpetualOrderPoolKey_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PerpetualOrderPoolKey)(nil)
+}
+func (x fastReflection_PerpetualOrderPoolKey_messageType) New() protoreflect.Message {
+	return new(fastReflection_PerpetualOrderPoolKey)
+}
+func (x fastReflection_PerpetualOrderPoolKey_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualOrderPoolKey
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PerpetualOrderPoolKey) Descriptor() protoreflect.MessageDescriptor {
+	return md_PerpetualOrderPoolKey
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PerpetualOrderPoolKey) Type() protoreflect.MessageType {
+	return _fastReflection_PerpetualOrderPoolKey_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PerpetualOrderPoolKey) New() protoreflect.Message {
+	return new(fastReflection_PerpetualOrderPoolKey)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PerpetualOrderPoolKey) Interface() protoreflect.ProtoMessage {
+	return (*PerpetualOrderPoolKey)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PerpetualOrderPoolKey) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_PerpetualOrderPoolKey_pool_id, value) {
+			return
+		}
+	}
+	if x.OrderId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.OrderId)
+		if !f(fd_PerpetualOrderPoolKey_order_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PerpetualOrderPoolKey) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		return x.PoolId != uint64(0)
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		return x.OrderId != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderPoolKey) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		x.PoolId = uint64(0)
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		x.OrderId = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PerpetualOrderPoolKey) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		value := x.OrderId
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderPoolKey) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		x.PoolId = value.Uint()
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		x.OrderId = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderPoolKey) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.tradeshield.PerpetualOrderPoolKey is not mutable"))
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		panic(fmt.Errorf("field order_id of message elys.tradeshield.PerpetualOrderPoolKey is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PerpetualOrderPoolKey) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.tradeshield.PerpetualOrderPoolKey.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.tradeshield.PerpetualOrderPoolKey.order_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.PerpetualOrderPoolKey"))
+		}
+		panic(fmt.Errorf("message elys.tradeshield.PerpetualOrderPoolKey does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PerpetualOrderPoolKey) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.PerpetualOrderPoolKey", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PerpetualOrderPoolKey) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PerpetualOrderPoolKey) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PerpetualOrderPoolKey) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PerpetualOrderPoolKey) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PerpetualOrderPoolKey)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		if x.OrderId != 0 {
+			n += 1 + runtime.Sov(uint64(x.OrderId))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualOrderPoolKey)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.OrderId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderId))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PerpetualOrderPoolKey)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualOrderPoolKey: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PerpetualOrderPoolKey: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
+				}
+				x.OrderId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.OrderId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -13214,8 +14650,10 @@ type MsgCreatePerpetualCloseOrder struct {
 
 	OwnerAddress         string                `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
 	LegacyTriggerPriceV1 *LegacyTriggerPriceV1 `protobuf:"bytes,2,opt,name=legacy_trigger_price_v1,json=legacyTriggerPriceV1,proto3" json:"legacy_trigger_price_v1,omitempty"`
-	TriggerPrice         string                `protobuf:"bytes,4,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
 	PositionId           uint64                `protobuf:"varint,3,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	TriggerPrice         string                `protobuf:"bytes,4,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
+	PoolId               uint64                `protobuf:"varint,5,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	ClosePercentage      uint64                `protobuf:"varint,6,opt,name=close_percentage,json=closePercentage,proto3" json:"close_percentage,omitempty"`
 }
 
 func (x *MsgCreatePerpetualCloseOrder) Reset() {
@@ -13252,6 +14690,13 @@ func (x *MsgCreatePerpetualCloseOrder) GetLegacyTriggerPriceV1() *LegacyTriggerP
 	return nil
 }
 
+func (x *MsgCreatePerpetualCloseOrder) GetPositionId() uint64 {
+	if x != nil {
+		return x.PositionId
+	}
+	return 0
+}
+
 func (x *MsgCreatePerpetualCloseOrder) GetTriggerPrice() string {
 	if x != nil {
 		return x.TriggerPrice
@@ -13259,9 +14704,16 @@ func (x *MsgCreatePerpetualCloseOrder) GetTriggerPrice() string {
 	return ""
 }
 
-func (x *MsgCreatePerpetualCloseOrder) GetPositionId() uint64 {
+func (x *MsgCreatePerpetualCloseOrder) GetPoolId() uint64 {
 	if x != nil {
-		return x.PositionId
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *MsgCreatePerpetualCloseOrder) GetClosePercentage() uint64 {
+	if x != nil {
+		return x.ClosePercentage
 	}
 	return 0
 }
@@ -13310,6 +14762,7 @@ type MsgUpdatePerpetualOrder struct {
 	OrderId              uint64                `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 	LegacyTriggerPriceV1 *LegacyTriggerPriceV1 `protobuf:"bytes,3,opt,name=legacy_trigger_price_v1,json=legacyTriggerPriceV1,proto3" json:"legacy_trigger_price_v1,omitempty"`
 	TriggerPrice         string                `protobuf:"bytes,4,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
+	PoolId               uint64                `protobuf:"varint,5,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
 }
 
 func (x *MsgUpdatePerpetualOrder) Reset() {
@@ -13360,6 +14813,13 @@ func (x *MsgUpdatePerpetualOrder) GetTriggerPrice() string {
 	return ""
 }
 
+func (x *MsgUpdatePerpetualOrder) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
 type MsgUpdatePerpetualOrderResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -13393,6 +14853,7 @@ type MsgCancelPerpetualOrder struct {
 
 	OwnerAddress string `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
 	OrderId      uint64 `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	PoolId       uint64 `protobuf:"varint,3,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
 }
 
 func (x *MsgCancelPerpetualOrder) Reset() {
@@ -13425,6 +14886,13 @@ func (x *MsgCancelPerpetualOrder) GetOwnerAddress() string {
 func (x *MsgCancelPerpetualOrder) GetOrderId() uint64 {
 	if x != nil {
 		return x.OrderId
+	}
+	return 0
+}
+
+func (x *MsgCancelPerpetualOrder) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
 	}
 	return 0
 }
@@ -13469,8 +14937,9 @@ type MsgCancelPerpetualOrders struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OwnerAddress string   `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	OrderIds     []uint64 `protobuf:"varint,2,rep,packed,name=order_ids,json=orderIds,proto3" json:"order_ids,omitempty"`
+	OwnerAddress   string                   `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	LegacyOrderIds []uint64                 `protobuf:"varint,2,rep,packed,name=legacy_order_ids,json=legacyOrderIds,proto3" json:"legacy_order_ids,omitempty"`
+	Orders         []*PerpetualOrderPoolKey `protobuf:"bytes,3,rep,name=orders,proto3" json:"orders,omitempty"`
 }
 
 func (x *MsgCancelPerpetualOrders) Reset() {
@@ -13500,9 +14969,16 @@ func (x *MsgCancelPerpetualOrders) GetOwnerAddress() string {
 	return ""
 }
 
-func (x *MsgCancelPerpetualOrders) GetOrderIds() []uint64 {
+func (x *MsgCancelPerpetualOrders) GetLegacyOrderIds() []uint64 {
 	if x != nil {
-		return x.OrderIds
+		return x.LegacyOrderIds
+	}
+	return nil
+}
+
+func (x *MsgCancelPerpetualOrders) GetOrders() []*PerpetualOrderPoolKey {
+	if x != nil {
+		return x.Orders
 	}
 	return nil
 }
@@ -13671,9 +15147,10 @@ type MsgExecuteOrders struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Creator           string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	SpotOrderIds      []uint64 `protobuf:"varint,2,rep,packed,name=spot_order_ids,json=spotOrderIds,proto3" json:"spot_order_ids,omitempty"`
-	PerpetualOrderIds []uint64 `protobuf:"varint,3,rep,packed,name=perpetual_order_ids,json=perpetualOrderIds,proto3" json:"perpetual_order_ids,omitempty"`
+	Creator                 string               `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	SpotOrderIds            []uint64             `protobuf:"varint,2,rep,packed,name=spot_order_ids,json=spotOrderIds,proto3" json:"spot_order_ids,omitempty"`
+	LegacyPerpetualOrderIds []uint64             `protobuf:"varint,3,rep,packed,name=legacy_perpetual_order_ids,json=legacyPerpetualOrderIds,proto3" json:"legacy_perpetual_order_ids,omitempty"`
+	PerpetualOrders         []*PerpetualOrderKey `protobuf:"bytes,4,rep,name=perpetual_orders,json=perpetualOrders,proto3" json:"perpetual_orders,omitempty"`
 }
 
 func (x *MsgExecuteOrders) Reset() {
@@ -13710,9 +15187,16 @@ func (x *MsgExecuteOrders) GetSpotOrderIds() []uint64 {
 	return nil
 }
 
-func (x *MsgExecuteOrders) GetPerpetualOrderIds() []uint64 {
+func (x *MsgExecuteOrders) GetLegacyPerpetualOrderIds() []uint64 {
 	if x != nil {
-		return x.PerpetualOrderIds
+		return x.LegacyPerpetualOrderIds
+	}
+	return nil
+}
+
+func (x *MsgExecuteOrders) GetPerpetualOrders() []*PerpetualOrderKey {
+	if x != nil {
+		return x.PerpetualOrders
 	}
 	return nil
 }
@@ -13741,6 +15225,100 @@ func (*MsgExecuteOrdersResponse) ProtoMessage() {}
 // Deprecated: Use MsgExecuteOrdersResponse.ProtoReflect.Descriptor instead.
 func (*MsgExecuteOrdersResponse) Descriptor() ([]byte, []int) {
 	return file_elys_tradeshield_tx_proto_rawDescGZIP(), []int{25}
+}
+
+type PerpetualOrderKey struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OwnerAddress string `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	PoolId       uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	OrderId      uint64 `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+}
+
+func (x *PerpetualOrderKey) Reset() {
+	*x = PerpetualOrderKey{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_tradeshield_tx_proto_msgTypes[26]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PerpetualOrderKey) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PerpetualOrderKey) ProtoMessage() {}
+
+// Deprecated: Use PerpetualOrderKey.ProtoReflect.Descriptor instead.
+func (*PerpetualOrderKey) Descriptor() ([]byte, []int) {
+	return file_elys_tradeshield_tx_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *PerpetualOrderKey) GetOwnerAddress() string {
+	if x != nil {
+		return x.OwnerAddress
+	}
+	return ""
+}
+
+func (x *PerpetualOrderKey) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *PerpetualOrderKey) GetOrderId() uint64 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+type PerpetualOrderPoolKey struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PoolId  uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	OrderId uint64 `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+}
+
+func (x *PerpetualOrderPoolKey) Reset() {
+	*x = PerpetualOrderPoolKey{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_tradeshield_tx_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PerpetualOrderPoolKey) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PerpetualOrderPoolKey) ProtoMessage() {}
+
+// Deprecated: Use PerpetualOrderPoolKey.ProtoReflect.Descriptor instead.
+func (*PerpetualOrderPoolKey) Descriptor() ([]byte, []int) {
+	return file_elys_tradeshield_tx_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *PerpetualOrderPoolKey) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *PerpetualOrderPoolKey) GetOrderId() uint64 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
 }
 
 var File_elys_tradeshield_tx_proto protoreflect.FileDescriptor
@@ -13907,7 +15485,7 @@ var file_elys_tradeshield_tx_proto_rawDesc = []byte{
 	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f,
 	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49,
-	0x64, 0x22, 0xf9, 0x02, 0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50,
+	0x64, 0x22, 0xbd, 0x03, 0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50,
 	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64,
 	0x65, 0x72, 0x12, 0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72,
 	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
@@ -13919,221 +15497,253 @@ var file_elys_tradeshield_tx_proto_rawDesc = []byte{
 	0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67,
 	0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
 	0x52, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x56, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65,
-	0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1f,
-	0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x3a,
-	0x3c, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x25, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x22, 0x41, 0x0a,
-	0x24, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64,
-	0x22, 0xec, 0x02, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x3d, 0x0a, 0x0d,
-	0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f,
-	0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x63, 0x0a, 0x17, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79,
-	0x5f, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x76,
-	0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x42,
-	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69,
-	0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x56, 0x0a, 0x0d, 0x74,
-	0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
-	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72,
-	0x69, 0x63, 0x65, 0x3a, 0x3a, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f,
-	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x23, 0x74, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74,
-	0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x22,
-	0x21, 0x0a, 0x1f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0xaf, 0x01, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c,
-	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x3d,
-	0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
-	0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x19, 0x0a,
-	0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52,
-	0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x3a, 0x3a, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f,
-	0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a,
-	0x23, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67,
-	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f,
-	0x72, 0x64, 0x65, 0x72, 0x22, 0x3c, 0x0a, 0x1f, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65,
-	0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72,
-	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72,
-	0x49, 0x64, 0x22, 0xb3, 0x01, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c,
-	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12,
-	0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
-	0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1b,
-	0x0a, 0x09, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28,
-	0x04, 0x52, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x73, 0x3a, 0x3b, 0x82, 0xe7, 0xb0,
-	0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a,
-	0xe7, 0xb0, 0x2a, 0x24, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f,
-	0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x22, 0x22, 0x0a, 0x20, 0x4d, 0x73, 0x67, 0x43,
-	0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72,
-	0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x9c, 0x01, 0x0a,
-	0x1b, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x3d, 0x0a, 0x0d,
-	0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f,
-	0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x3e, 0x82, 0xe7, 0xb0,
-	0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a,
-	0xe7, 0xb0, 0x2a, 0x27, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f,
-	0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70,
-	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x22, 0x25, 0x0a, 0x23, 0x4d,
-	0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0xab, 0x01, 0x0a, 0x0f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
-	0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x30,
-	0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
-	0x64, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x3a, 0x2e, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79,
-	0x8a, 0xe7, 0xb0, 0x2a, 0x1b, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x22, 0x19, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xcb, 0x01, 0x0a, 0x10,
-	0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
-	0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65,
-	0x61, 0x74, 0x6f, 0x72, 0x12, 0x24, 0x0a, 0x0e, 0x73, 0x70, 0x6f, 0x74, 0x5f, 0x6f, 0x72, 0x64,
-	0x65, 0x72, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x73, 0x70,
-	0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x73, 0x12, 0x2e, 0x0a, 0x13, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64,
-	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x04, 0x52, 0x11, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x73, 0x3a, 0x2d, 0x82, 0xe7, 0xb0, 0x2a,
-	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x74, 0x72, 0x61,
-	0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63,
-	0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x22, 0x1a, 0x0a, 0x18, 0x4d, 0x73, 0x67,
-	0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xce, 0x0b, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x65, 0x0a,
-	0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f,
-	0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
-	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65,
-	0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x70,
-	0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x2c, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72,
-	0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65, 0x0a, 0x0f, 0x43,
-	0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x24,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
-	0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f,
-	0x72, 0x64, 0x65, 0x72, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65,
-	0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x68, 0x0a, 0x10, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74,
-	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
-	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
-	0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x2d, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72,
-	0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x71, 0x0a, 0x13,
-	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64,
-	0x65, 0x72, 0x73, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
-	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c,
-	0x41, 0x6c, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x30, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x53, 0x70, 0x6f,
-	0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x80, 0x01, 0x0a, 0x18, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x2d, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e,
-	0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x35, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d,
-	0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x83, 0x01, 0x0a, 0x19, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x12, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x1a, 0x36, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x74, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61,
+	0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x56, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67,
+	0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12,
+	0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x29, 0x0a, 0x10, 0x63, 0x6c, 0x6f, 0x73,
+	0x65, 0x5f, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x61, 0x67, 0x65, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x0f, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74,
+	0x61, 0x67, 0x65, 0x3a, 0x3c, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x25, 0x74, 0x72, 0x61, 0x64,
+	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x22, 0x41, 0x0a, 0x24, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x49, 0x64, 0x22, 0x85, 0x03, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
 	0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x31, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x74,
-	0x0a, 0x14, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
-	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
+	0x12, 0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x63, 0x0a, 0x17, 0x6c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x5f, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x5f, 0x76, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x56, 0x31, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12,
+	0x56, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67,
+	0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
+	0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
+	0x3a, 0x3a, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x23, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68,
+	0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x22, 0x21, 0x0a, 0x1f,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0xc8, 0x01, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x3d, 0x0a, 0x0d, 0x6f,
+	0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f, 0x77,
+	0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x3a, 0x3a,
+	0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x23, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x22, 0x3c, 0x0a, 0x1f, 0x4d, 0x73,
+	0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a,
+	0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x87, 0x02, 0x0a, 0x18, 0x4d, 0x73, 0x67,
+	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
+	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x12, 0x28, 0x0a, 0x10, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0e,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x73, 0x12, 0x45,
+	0x0a, 0x06, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x27,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
+	0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72,
+	0x50, 0x6f, 0x6f, 0x6c, 0x4b, 0x65, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x3a, 0x3b, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65,
+	0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x24, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
 	0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x1a, 0x31, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68,
-	0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x77, 0x0a, 0x15, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x2a, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x32, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x72, 0x73, 0x22, 0x22, 0x0a, 0x20, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x9c, 0x01, 0x0a, 0x1b, 0x4d, 0x73, 0x67, 0x43, 0x61,
+	0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x3e, 0x82, 0xe7, 0xb0, 0x2a, 0x0d, 0x6f, 0x77, 0x6e, 0x65,
+	0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x8a, 0xe7, 0xb0, 0x2a, 0x27, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
+	0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x22, 0x25, 0x0a, 0x23, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63,
+	0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xab, 0x01, 0x0a,
+	0x0f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x30, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x3a, 0x2e, 0x82, 0xe7, 0xb0, 0x2a,
+	0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x1b, 0x74,
+	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x19, 0x0a, 0x17, 0x4d, 0x73,
+	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xae, 0x02, 0x0a, 0x10, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65,
+	0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
+	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x24,
+	0x0a, 0x0e, 0x73, 0x70, 0x6f, 0x74, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x73, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x49, 0x64, 0x73, 0x12, 0x3b, 0x0a, 0x1a, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x5f, 0x70,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69,
+	0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x04, 0x52, 0x17, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64,
+	0x73, 0x12, 0x54, 0x0a, 0x10, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x4b, 0x65, 0x79,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x3a, 0x2d, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73,
+	0x68, 0x69, 0x65, 0x6c, 0x64, 0x2f, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x22, 0x1a, 0x0a, 0x18, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65,
+	0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x86, 0x01, 0x0a, 0x11, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x4b, 0x65, 0x79, 0x12, 0x3d, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65,
+	0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
+	0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x4b, 0x0a, 0x15, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x6f, 0x6f,
+	0x6c, 0x4b, 0x65, 0x79, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x19, 0x0a,
+	0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x32, 0xce, 0x0b, 0x0a, 0x03, 0x4d, 0x73, 0x67,
+	0x12, 0x65, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73,
+	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72,
+	0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x70, 0x6f,
+	0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65,
+	0x0a, 0x0f, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68,
+	0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70,
+	0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74,
+	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61,
+	0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x68, 0x0a, 0x10, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53,
+	0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67,
+	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x1a, 0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x70, 0x6f,
+	0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x71, 0x0a, 0x13, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x53, 0x70, 0x6f, 0x74,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e,
+	0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x1a, 0x30, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c,
+	0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x80, 0x01, 0x0a, 0x18, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12,
+	0x2d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x35,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
+	0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x70, 0x65, 0x6e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x83, 0x01, 0x0a, 0x19, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x12, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x1a, 0x36, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x74, 0x0a, 0x14, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x31,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
+	0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x74, 0x0a, 0x14, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73,
 	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67,
 	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f,
-	0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x80, 0x01,
-	0x0a, 0x18, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x2d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73,
-	0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x35, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67,
-	0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x72, 0x64, 0x65, 0x72, 0x1a, 0x31, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64,
+	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65,
+	0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x77, 0x0a, 0x15, 0x43, 0x61, 0x6e, 0x63, 0x65,
+	0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x12, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x32, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e,
+	0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
 	0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x5c, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
-	0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x12, 0x80, 0x01, 0x0a, 0x18, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x2d, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
+	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x35, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e,
+	0x4d, 0x73, 0x67, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x5c, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
 	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5f,
-	0x0a, 0x0d, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12,
-	0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
-	0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64,
-	0x65, 0x72, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
-	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74,
-	0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a,
-	0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xb6, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x42,
-	0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x34, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64,
-	0xa2, 0x02, 0x03, 0x45, 0x54, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x54, 0x72,
-	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73,
-	0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xe2, 0x02, 0x1c, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c,
-	0x79, 0x73, 0x3a, 0x3a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x5f, 0x0a, 0x0d, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73,
+	0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65,
+	0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xb6, 0x01, 0x0a, 0x14, 0x63, 0x6f,
+	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x34, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x37, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0xa2, 0x02, 0x03, 0x45, 0x54, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73,
+	0x2e, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xca, 0x02, 0x10, 0x45,
+	0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xe2,
+	0x02, 0x1c, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x11, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -14148,7 +15758,7 @@ func file_elys_tradeshield_tx_proto_rawDescGZIP() []byte {
 	return file_elys_tradeshield_tx_proto_rawDescData
 }
 
-var file_elys_tradeshield_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_elys_tradeshield_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_elys_tradeshield_tx_proto_goTypes = []interface{}{
 	(*MsgCreateSpotOrder)(nil),                   // 0: elys.tradeshield.MsgCreateSpotOrder
 	(*MsgCreateSpotOrderResponse)(nil),           // 1: elys.tradeshield.MsgCreateSpotOrderResponse
@@ -14176,55 +15786,59 @@ var file_elys_tradeshield_tx_proto_goTypes = []interface{}{
 	(*MsgUpdateParamsResponse)(nil),              // 23: elys.tradeshield.MsgUpdateParamsResponse
 	(*MsgExecuteOrders)(nil),                     // 24: elys.tradeshield.MsgExecuteOrders
 	(*MsgExecuteOrdersResponse)(nil),             // 25: elys.tradeshield.MsgExecuteOrdersResponse
-	(SpotOrderType)(0),                           // 26: elys.tradeshield.SpotOrderType
-	(*LegacyOrderPriceV1)(nil),                   // 27: elys.tradeshield.LegacyOrderPriceV1
-	(*v1beta1.Coin)(nil),                         // 28: cosmos.base.v1beta1.Coin
-	(*LegacyTriggerPriceV1)(nil),                 // 29: elys.tradeshield.LegacyTriggerPriceV1
-	(PerpetualPosition)(0),                       // 30: elys.tradeshield.PerpetualPosition
-	(*Params)(nil),                               // 31: elys.tradeshield.Params
+	(*PerpetualOrderKey)(nil),                    // 26: elys.tradeshield.PerpetualOrderKey
+	(*PerpetualOrderPoolKey)(nil),                // 27: elys.tradeshield.PerpetualOrderPoolKey
+	(SpotOrderType)(0),                           // 28: elys.tradeshield.SpotOrderType
+	(*LegacyOrderPriceV1)(nil),                   // 29: elys.tradeshield.LegacyOrderPriceV1
+	(*v1beta1.Coin)(nil),                         // 30: cosmos.base.v1beta1.Coin
+	(*LegacyTriggerPriceV1)(nil),                 // 31: elys.tradeshield.LegacyTriggerPriceV1
+	(PerpetualPosition)(0),                       // 32: elys.tradeshield.PerpetualPosition
+	(*Params)(nil),                               // 33: elys.tradeshield.Params
 }
 var file_elys_tradeshield_tx_proto_depIdxs = []int32{
-	26, // 0: elys.tradeshield.MsgCreateSpotOrder.order_type:type_name -> elys.tradeshield.SpotOrderType
-	27, // 1: elys.tradeshield.MsgCreateSpotOrder.legacy_order_price_v1:type_name -> elys.tradeshield.LegacyOrderPriceV1
-	28, // 2: elys.tradeshield.MsgCreateSpotOrder.order_amount:type_name -> cosmos.base.v1beta1.Coin
-	27, // 3: elys.tradeshield.MsgUpdateSpotOrder.legacy_order_price_v1:type_name -> elys.tradeshield.LegacyOrderPriceV1
-	29, // 4: elys.tradeshield.MsgCreatePerpetualOpenOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
-	28, // 5: elys.tradeshield.MsgCreatePerpetualOpenOrder.collateral:type_name -> cosmos.base.v1beta1.Coin
-	30, // 6: elys.tradeshield.MsgCreatePerpetualOpenOrder.position:type_name -> elys.tradeshield.PerpetualPosition
-	29, // 7: elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
-	29, // 8: elys.tradeshield.MsgUpdatePerpetualOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
-	31, // 9: elys.tradeshield.MsgUpdateParams.params:type_name -> elys.tradeshield.Params
-	0,  // 10: elys.tradeshield.Msg.CreateSpotOrder:input_type -> elys.tradeshield.MsgCreateSpotOrder
-	2,  // 11: elys.tradeshield.Msg.UpdateSpotOrder:input_type -> elys.tradeshield.MsgUpdateSpotOrder
-	4,  // 12: elys.tradeshield.Msg.CancelSpotOrder:input_type -> elys.tradeshield.MsgCancelSpotOrder
-	6,  // 13: elys.tradeshield.Msg.CancelSpotOrders:input_type -> elys.tradeshield.MsgCancelSpotOrders
-	8,  // 14: elys.tradeshield.Msg.CancelAllSpotOrders:input_type -> elys.tradeshield.MsgCancelAllSpotOrders
-	10, // 15: elys.tradeshield.Msg.CreatePerpetualOpenOrder:input_type -> elys.tradeshield.MsgCreatePerpetualOpenOrder
-	12, // 16: elys.tradeshield.Msg.CreatePerpetualCloseOrder:input_type -> elys.tradeshield.MsgCreatePerpetualCloseOrder
-	14, // 17: elys.tradeshield.Msg.UpdatePerpetualOrder:input_type -> elys.tradeshield.MsgUpdatePerpetualOrder
-	16, // 18: elys.tradeshield.Msg.CancelPerpetualOrder:input_type -> elys.tradeshield.MsgCancelPerpetualOrder
-	18, // 19: elys.tradeshield.Msg.CancelPerpetualOrders:input_type -> elys.tradeshield.MsgCancelPerpetualOrders
-	20, // 20: elys.tradeshield.Msg.CancelAllPerpetualOrders:input_type -> elys.tradeshield.MsgCancelAllPerpetualOrders
-	22, // 21: elys.tradeshield.Msg.UpdateParams:input_type -> elys.tradeshield.MsgUpdateParams
-	24, // 22: elys.tradeshield.Msg.ExecuteOrders:input_type -> elys.tradeshield.MsgExecuteOrders
-	1,  // 23: elys.tradeshield.Msg.CreateSpotOrder:output_type -> elys.tradeshield.MsgCreateSpotOrderResponse
-	3,  // 24: elys.tradeshield.Msg.UpdateSpotOrder:output_type -> elys.tradeshield.MsgUpdateSpotOrderResponse
-	5,  // 25: elys.tradeshield.Msg.CancelSpotOrder:output_type -> elys.tradeshield.MsgCancelSpotOrderResponse
-	7,  // 26: elys.tradeshield.Msg.CancelSpotOrders:output_type -> elys.tradeshield.MsgCancelSpotOrdersResponse
-	9,  // 27: elys.tradeshield.Msg.CancelAllSpotOrders:output_type -> elys.tradeshield.MsgCancelAllSpotOrdersResponse
-	11, // 28: elys.tradeshield.Msg.CreatePerpetualOpenOrder:output_type -> elys.tradeshield.MsgCreatePerpetualOpenOrderResponse
-	13, // 29: elys.tradeshield.Msg.CreatePerpetualCloseOrder:output_type -> elys.tradeshield.MsgCreatePerpetualCloseOrderResponse
-	15, // 30: elys.tradeshield.Msg.UpdatePerpetualOrder:output_type -> elys.tradeshield.MsgUpdatePerpetualOrderResponse
-	17, // 31: elys.tradeshield.Msg.CancelPerpetualOrder:output_type -> elys.tradeshield.MsgCancelPerpetualOrderResponse
-	19, // 32: elys.tradeshield.Msg.CancelPerpetualOrders:output_type -> elys.tradeshield.MsgCancelPerpetualOrdersResponse
-	21, // 33: elys.tradeshield.Msg.CancelAllPerpetualOrders:output_type -> elys.tradeshield.MsgCancelAllPerpetualOrdersResponse
-	23, // 34: elys.tradeshield.Msg.UpdateParams:output_type -> elys.tradeshield.MsgUpdateParamsResponse
-	25, // 35: elys.tradeshield.Msg.ExecuteOrders:output_type -> elys.tradeshield.MsgExecuteOrdersResponse
-	23, // [23:36] is the sub-list for method output_type
-	10, // [10:23] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	28, // 0: elys.tradeshield.MsgCreateSpotOrder.order_type:type_name -> elys.tradeshield.SpotOrderType
+	29, // 1: elys.tradeshield.MsgCreateSpotOrder.legacy_order_price_v1:type_name -> elys.tradeshield.LegacyOrderPriceV1
+	30, // 2: elys.tradeshield.MsgCreateSpotOrder.order_amount:type_name -> cosmos.base.v1beta1.Coin
+	29, // 3: elys.tradeshield.MsgUpdateSpotOrder.legacy_order_price_v1:type_name -> elys.tradeshield.LegacyOrderPriceV1
+	31, // 4: elys.tradeshield.MsgCreatePerpetualOpenOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
+	30, // 5: elys.tradeshield.MsgCreatePerpetualOpenOrder.collateral:type_name -> cosmos.base.v1beta1.Coin
+	32, // 6: elys.tradeshield.MsgCreatePerpetualOpenOrder.position:type_name -> elys.tradeshield.PerpetualPosition
+	31, // 7: elys.tradeshield.MsgCreatePerpetualCloseOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
+	31, // 8: elys.tradeshield.MsgUpdatePerpetualOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
+	27, // 9: elys.tradeshield.MsgCancelPerpetualOrders.orders:type_name -> elys.tradeshield.PerpetualOrderPoolKey
+	33, // 10: elys.tradeshield.MsgUpdateParams.params:type_name -> elys.tradeshield.Params
+	26, // 11: elys.tradeshield.MsgExecuteOrders.perpetual_orders:type_name -> elys.tradeshield.PerpetualOrderKey
+	0,  // 12: elys.tradeshield.Msg.CreateSpotOrder:input_type -> elys.tradeshield.MsgCreateSpotOrder
+	2,  // 13: elys.tradeshield.Msg.UpdateSpotOrder:input_type -> elys.tradeshield.MsgUpdateSpotOrder
+	4,  // 14: elys.tradeshield.Msg.CancelSpotOrder:input_type -> elys.tradeshield.MsgCancelSpotOrder
+	6,  // 15: elys.tradeshield.Msg.CancelSpotOrders:input_type -> elys.tradeshield.MsgCancelSpotOrders
+	8,  // 16: elys.tradeshield.Msg.CancelAllSpotOrders:input_type -> elys.tradeshield.MsgCancelAllSpotOrders
+	10, // 17: elys.tradeshield.Msg.CreatePerpetualOpenOrder:input_type -> elys.tradeshield.MsgCreatePerpetualOpenOrder
+	12, // 18: elys.tradeshield.Msg.CreatePerpetualCloseOrder:input_type -> elys.tradeshield.MsgCreatePerpetualCloseOrder
+	14, // 19: elys.tradeshield.Msg.UpdatePerpetualOrder:input_type -> elys.tradeshield.MsgUpdatePerpetualOrder
+	16, // 20: elys.tradeshield.Msg.CancelPerpetualOrder:input_type -> elys.tradeshield.MsgCancelPerpetualOrder
+	18, // 21: elys.tradeshield.Msg.CancelPerpetualOrders:input_type -> elys.tradeshield.MsgCancelPerpetualOrders
+	20, // 22: elys.tradeshield.Msg.CancelAllPerpetualOrders:input_type -> elys.tradeshield.MsgCancelAllPerpetualOrders
+	22, // 23: elys.tradeshield.Msg.UpdateParams:input_type -> elys.tradeshield.MsgUpdateParams
+	24, // 24: elys.tradeshield.Msg.ExecuteOrders:input_type -> elys.tradeshield.MsgExecuteOrders
+	1,  // 25: elys.tradeshield.Msg.CreateSpotOrder:output_type -> elys.tradeshield.MsgCreateSpotOrderResponse
+	3,  // 26: elys.tradeshield.Msg.UpdateSpotOrder:output_type -> elys.tradeshield.MsgUpdateSpotOrderResponse
+	5,  // 27: elys.tradeshield.Msg.CancelSpotOrder:output_type -> elys.tradeshield.MsgCancelSpotOrderResponse
+	7,  // 28: elys.tradeshield.Msg.CancelSpotOrders:output_type -> elys.tradeshield.MsgCancelSpotOrdersResponse
+	9,  // 29: elys.tradeshield.Msg.CancelAllSpotOrders:output_type -> elys.tradeshield.MsgCancelAllSpotOrdersResponse
+	11, // 30: elys.tradeshield.Msg.CreatePerpetualOpenOrder:output_type -> elys.tradeshield.MsgCreatePerpetualOpenOrderResponse
+	13, // 31: elys.tradeshield.Msg.CreatePerpetualCloseOrder:output_type -> elys.tradeshield.MsgCreatePerpetualCloseOrderResponse
+	15, // 32: elys.tradeshield.Msg.UpdatePerpetualOrder:output_type -> elys.tradeshield.MsgUpdatePerpetualOrderResponse
+	17, // 33: elys.tradeshield.Msg.CancelPerpetualOrder:output_type -> elys.tradeshield.MsgCancelPerpetualOrderResponse
+	19, // 34: elys.tradeshield.Msg.CancelPerpetualOrders:output_type -> elys.tradeshield.MsgCancelPerpetualOrdersResponse
+	21, // 35: elys.tradeshield.Msg.CancelAllPerpetualOrders:output_type -> elys.tradeshield.MsgCancelAllPerpetualOrdersResponse
+	23, // 36: elys.tradeshield.Msg.UpdateParams:output_type -> elys.tradeshield.MsgUpdateParamsResponse
+	25, // 37: elys.tradeshield.Msg.ExecuteOrders:output_type -> elys.tradeshield.MsgExecuteOrdersResponse
+	25, // [25:38] is the sub-list for method output_type
+	12, // [12:25] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_elys_tradeshield_tx_proto_init() }
@@ -14547,6 +16161,30 @@ func file_elys_tradeshield_tx_proto_init() {
 				return nil
 			}
 		}
+		file_elys_tradeshield_tx_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PerpetualOrderKey); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_tradeshield_tx_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PerpetualOrderPoolKey); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -14554,7 +16192,7 @@ func file_elys_tradeshield_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_tradeshield_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   26,
+			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

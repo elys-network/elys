@@ -3,7 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
-	"github.com/elys-network/elys/v6/utils"
+	"github.com/elys-network/elys/v7/utils"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"

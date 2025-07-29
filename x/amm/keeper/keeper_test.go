@@ -15,12 +15,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -178,21 +178,18 @@ func (suite *AmmKeeperTestSuite) SetupStableCoinPrices() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
 		Price:     math.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDA",
 		Price:     math.LegacyNewDec(1),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
@@ -211,7 +208,6 @@ func (suite *AmmKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})

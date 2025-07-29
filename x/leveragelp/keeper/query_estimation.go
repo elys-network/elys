@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -4,7 +4,7 @@ package elys.perpetual;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/perpetual/types";
+option go_package = "github.com/elys-network/elys/v7/x/perpetual/types";
 
 message LegacyParams {
   string leverage_max = 1 [
@@ -218,6 +218,11 @@ message Params {
     (gogoproto.nullable) = false
   ];
   string exit_buffer = 23 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fee = 24 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

@@ -5,9 +5,9 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (types.MTP, types.Pool, ammtypes.Pool, sdk.AccAddress) {
@@ -121,7 +121,7 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.setup()
-			_, _, _, _, _, _, _, _, err := suite.app.PerpetualKeeper.MTPTriggerChecksAndUpdates(suite.ctx, &mtp, &pool, &ammPool)
+			_, _, _, _, _, _, _, _, _, _, err := suite.app.PerpetualKeeper.MTPTriggerChecksAndUpdates(suite.ctx, &mtp, &pool, &ammPool)
 
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)

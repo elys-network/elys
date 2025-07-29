@@ -5,12 +5,12 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/utils"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v7/utils"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -56,13 +56,16 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 			// Calculate
 			stakersEdenAmount := osmomath.BigDecFromSDKInt(stkIncentive.EdenAmountPerYear).QuoInt64(totalBlocksPerYear)
 
+			providerEdenAmount := stakersEdenAmount.Mul(estakingParams.GetBigDecProviderStakingRewardsPortion())
+			consumerEdenAmount := stakersEdenAmount.Sub(providerEdenAmount)
+
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.GetBigDecMaxEdenRewardAprStakers().
 				Mul(osmomath.BigDecFromSDKInt(totalStakedSnapshot)).
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = osmomath.MinBigDec(stakersEdenAmount, stakersMaxEdenAmount)
+			stakersEdenAmount = osmomath.MinBigDec(consumerEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.

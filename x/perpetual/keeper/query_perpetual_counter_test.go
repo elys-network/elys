@@ -1,6 +1,6 @@
 package keeper_test
 
-import "github.com/elys-network/elys/v6/x/perpetual/types"
+import "github.com/elys-network/elys/v7/x/perpetual/types"
 
 func (suite *PerpetualKeeperTestSuite) TestQueryPerpetualCounter_InvalidRequest() {
 	k := suite.app.PerpetualKeeper

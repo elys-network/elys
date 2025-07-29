@@ -8,13 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {

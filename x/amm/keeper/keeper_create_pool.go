@@ -6,10 +6,10 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/amm/utils"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/utils"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
@@ -74,10 +74,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		}
 	}
 
-	//err = k.UpdateOraclePoolId(ctx, poolId)
-	//if err != nil {
-	//	return 0, err
-	//}
+	err = k.UpdateOraclePoolId(ctx, poolId)
+	if err != nil {
+		return 0, err
+	}
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil
 }

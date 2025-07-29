@@ -6,8 +6,8 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/utils"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/utils"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"sort"
 )
@@ -32,7 +32,7 @@ func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64
 	return val, true
 }
 
-func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source string) (val types.Price, found bool) {
+func (k Keeper) GetLatestLegacyPriceFromAssetAndSource(ctx sdk.Context, asset, source string) (val types.Price, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAssetAndSource(asset, source))
 	defer iterator.Close()
@@ -46,7 +46,7 @@ func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source 
 	return val, false
 }
 
-func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val types.Price, found bool) {
+func (k Keeper) GetLatestLegacyPriceFromAnySource(ctx sdk.Context, asset string) (val types.Price, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAsset(asset))
 	defer iterator.Close()
@@ -66,8 +66,8 @@ func (k Keeper) RemovePrice(ctx sdk.Context, asset, source string, timestamp uin
 	store.Delete(types.PriceKey(asset, source, timestamp))
 }
 
-// GetAllPrice returns all price
-func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
+// GetAllLegacyPrice returns all price
+func (k Keeper) GetAllLegacyPrice(ctx sdk.Context) (list []types.Price) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
@@ -97,33 +97,33 @@ func (k Keeper) GetAllAssetPrice(ctx sdk.Context, asset string) (list []types.Pr
 	return
 }
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool) {
+func (k Keeper) GetLegacyAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool) {
 	// try out elys source
-	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)
+	val, found := k.GetLatestLegacyPriceFromAssetAndSource(ctx, asset, types.ELYS)
 	if found {
 		return val.Price, true
 	}
 
 	// try out band source
-	val, found = k.GetLatestPriceFromAssetAndSource(ctx, asset, types.BAND)
+	val, found = k.GetLatestLegacyPriceFromAssetAndSource(ctx, asset, types.BAND)
 	if found {
 		return val.Price, true
 	}
 
 	// find from any source if band source does not exist
-	price, found := k.GetLatestPriceFromAnySource(ctx, asset)
+	price, found := k.GetLatestLegacyPriceFromAnySource(ctx, asset)
 	if found {
 		return price.Price, true
 	}
 	return math.LegacyDec{}, false
 }
 
-func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
+func (k Keeper) GetLegacyDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
 		return osmomath.ZeroBigDec()
 	}
-	price, found := k.GetAssetPrice(ctx, info.Display)
+	price, found := k.GetLegacyAssetPrice(ctx, info.Display)
 	if !found {
 		return osmomath.ZeroBigDec()
 	}

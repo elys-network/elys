@@ -7,8 +7,8 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -59,7 +59,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           "uusdt",
 			swapFee:                osmomath.ZeroBigDec(),
 			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 101010110),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 101010102),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -94,8 +94,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                osmomath.ZeroBigDec(),
-			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006413552900341021378397588793524980"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008668),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006413552840264818738163010162186725"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008663),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -131,7 +131,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                osmomath.ZeroBigDec(),
 			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0.001558845726811989564600000000000000"),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348300),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348298),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based

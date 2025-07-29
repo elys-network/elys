@@ -14,9 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/elys-network/elys/v6/app/keepers"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	"github.com/elys-network/elys/v7/app/keepers"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/spf13/cast"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -58,11 +58,12 @@ import (
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	"github.com/elys-network/elys/v6/app/ante"
+	"github.com/elys-network/elys/v7/app/ante"
+	oracleabci "github.com/ojo-network/ojo/x/oracle/abci"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	"github.com/elys-network/elys/v6/docs"
+	"github.com/elys-network/elys/v7/docs"
 )
 
 const (
@@ -324,20 +325,29 @@ func NewElysApp(
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	//proposalHandler := oracleabci.NewProposalHandler(
-	//	app.Logger(),
-	//	app.OracleKeeper,
-	//	app.StakingKeeper,
-	//)
-	//app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
-	//app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
-	//
-	//voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
-	//	app.Logger(),
-	//	app.OracleKeeper,
-	//)
-	//app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
-	//app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
+	proposalHandler := oracleabci.NewProposalHandler(
+		app.Logger(),
+		app.OracleKeeper,
+		app.ICSValidatorKeeper,
+	)
+
+	// Have to do this for SUT as SUT test is not ICS test
+	if version.Version == "v999999.999999.999999" {
+		proposalHandler = oracleabci.NewProposalHandler(
+			app.Logger(),
+			app.OracleKeeper,
+			app.StakingKeeper,
+		)
+	}
+	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
+	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
+
+	voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
+		app.Logger(),
+		app.OracleKeeper,
+	)
+	app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
+	app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
 
 	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)
@@ -394,10 +404,6 @@ func (app *ElysApp) setPostHandler() {
 
 // Name returns the name of the App
 func (app *ElysApp) Name() string { return app.BaseApp.Name() }
-
-func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	return app.mm.PreBlock(ctx)
-}
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {

@@ -9,7 +9,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {

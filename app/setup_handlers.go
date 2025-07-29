@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -61,21 +60,48 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			//oracleParams := app.OracleKeeper.GetParams(ctx)
-			//if len(oracleParams.MandatoryList) == 0 {
-			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//}
-
-			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
-				pool.MaxLeveragelpRatio = math.LegacyMustNewDecFromStr("0.35")
-				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
-				app.LeveragelpKeeper.SetPool(ctx, pool)
+			for _, profile := range app.AssetprofileKeeper.GetAllEntry(ctx) {
+				if profile.DisplayName == "WBTC" || profile.DisplayName == "wBTC" {
+					profile.DisplayName = "BTC"
+				}
+				if profile.DisplayName == "WETH" || profile.DisplayName == "wETH" {
+					profile.DisplayName = "ETH"
+				}
+				app.AssetprofileKeeper.SetEntry(ctx, profile)
 			}
 
-			app.OracleKeeper.DeleteAXLPrices(ctx)
+			for _, assetInfo := range app.LegacyOracleKeepper.GetAllAssetInfo(ctx) {
+				if assetInfo.Display == "WBTC" || assetInfo.Display == "wBTC" {
+					assetInfo.Display = "BTC"
+					assetInfo.BandTicker = "BTC"
+					assetInfo.ElysTicker = "BTC"
+				}
+				if assetInfo.Display == "WETH" || assetInfo.Display == "wETH" {
+					assetInfo.Display = "ETH"
+					assetInfo.BandTicker = "ETH"
+					assetInfo.ElysTicker = "ETH"
+				}
+				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
+				app.LegacyOracleKeepper.SetAssetInfo(ctx, assetInfo)
+			}
+
+			for _, price := range app.LegacyOracleKeepper.GetAllAssetPrice(ctx, "WBTC") {
+				price.Asset = "BTC"
+				app.LegacyOracleKeepper.SetPrice(ctx, price)
+			}
+
+			for _, price := range app.LegacyOracleKeepper.GetAllAssetPrice(ctx, "WETH") {
+				price.Asset = "ETH"
+				app.LegacyOracleKeepper.SetPrice(ctx, price)
+			}
+
+			oracleParams := app.OracleKeeper.GetParams(ctx)
+			if len(oracleParams.MandatoryList) == 0 {
+				err := app.ojoOracleMigration(ctx, plan.Height+1)
+				if err != nil {
+					return nil, err
+				}
+			}
 
 			return vm, vmErr
 		},
@@ -96,9 +122,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			//Added: []string{ibchookstypes.StoreKey, packetforwardtypes.StoreKey},
+			// Added: []string{ratelimittypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{ibcfeetypes.StoreKey},
+			//Deleted: []string{ratelimittypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

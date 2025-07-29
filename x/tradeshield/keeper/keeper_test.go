@@ -12,14 +12,14 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	aptypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	aptypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/suite"
 )
@@ -103,7 +103,6 @@ func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})
@@ -185,6 +184,10 @@ func (suite *TradeshieldKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress
 func (suite *TradeshieldKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Pool, sdk.AccAddress, ammtypes.Pool) {
 	ctx := suite.ctx
 	k := suite.app.PerpetualKeeper
+
+	params := k.GetParams(ctx)
+	params.EnabledPools = append(params.EnabledPools, poolId)
+	k.SetParams(ctx, &params)
 	//prices
 	suite.SetupCoinPrices()
 	suite.SetupAssetProfile()

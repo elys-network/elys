@@ -5,10 +5,10 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	atypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -37,6 +37,9 @@ type AmmKeeper interface {
 	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
 	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
 	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) osmomath.BigDec
+	OnCollectFee(ctx sdk.Context, pool ammtypes.Pool, fee sdk.Coins) error
+	TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, token sdk.Coin)
+	TrackSlippage(ctx sdk.Context, poolId uint64, amount sdk.Coin)
 }
 
 type BankKeeper interface {
@@ -66,4 +69,8 @@ type OracleKeeper interface {
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+	SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 }

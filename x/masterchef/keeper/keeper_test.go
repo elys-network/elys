@@ -5,12 +5,12 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/masterchef/keeper"
-	"github.com/elys-network/elys/v6/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/v6/x/oracle/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/masterchef/keeper"
+	"github.com/elys-network/elys/v7/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -119,28 +119,24 @@ func (suite *MasterchefKeeperTestSuite) SetupStableCoinPrices() {
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     sdkmath.LegacyNewDec(1000000),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
 		Price:     sdkmath.LegacyNewDec(1000000),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "ELYS",
 		Price:     sdkmath.LegacyNewDec(100),
-		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "ATOM",
 		Price:     sdkmath.LegacyNewDec(100),
-		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})

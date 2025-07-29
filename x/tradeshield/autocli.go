@@ -4,7 +4,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	_ "cosmossdk.io/api/cosmos/crypto/secp256k1" // register to that it shows up in protoregistry.GlobalTypes
 	_ "cosmossdk.io/api/cosmos/crypto/secp256r1" // register to that it shows up in protoregistry.GlobalTypes
-	"github.com/elys-network/elys/v6/api/elys/tradeshield"
+	"github.com/elys-network/elys/v7/api/elys/tradeshield"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -31,9 +31,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "PendingPerpetualOrder",
-					Use:            "show-pending-perpetual-order [id]",
+					Use:            "show-pending-perpetual-order [owner-address] [pool-id] [order-id]",
 					Short:          "shows a pending-perpetual-order",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner_address"}, {ProtoField: "pool_id"}, {ProtoField: "order_id"}},
 				},
 				{
 					RpcMethod: "PendingPerpetualOrderAll",
