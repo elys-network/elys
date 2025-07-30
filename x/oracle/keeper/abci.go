@@ -2,28 +2,29 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"sort"
 )
 
 func (k Keeper) EndBlock(ctx sdk.Context) {
+	for _, info := range k.GetAllAssetInfo(ctx) {
+		prices := k.GetAllAssetPrice(ctx, info.Display)
+		if len(prices) <= 1 {
+			continue // nothing to prune
+		}
 
-	assetInfos := k.GetAllAssetInfo(ctx)
-
-	for _, info := range assetInfos {
-		allAssetPrice := k.GetAllAssetPrice(ctx, info.Display)
-		total := len(allAssetPrice)
-
-		// Need to sort it because order fetched from GetAllAssetPrice will not be in ascending order - depending on source
-		// If we remove the source then this should not be needed
-		sort.Slice(allAssetPrice, func(i, j int) bool {
-			return allAssetPrice[i].Timestamp < allAssetPrice[j].Timestamp
-		})
-
-		for i, price := range allAssetPrice {
-			// We don't remove the last element
-			if i < total-1 {
-				k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
+		// Find the newest price
+		latestIdx, latestTs := 0, prices[0].Timestamp
+		for i := 1; i < len(prices); i++ {
+			if prices[i].Timestamp > latestTs {
+				latestIdx, latestTs = i, prices[i].Timestamp
 			}
+		}
+
+		// Remove everything except the newest
+		for i, p := range prices {
+			if i == latestIdx {
+				continue
+			}
+			k.RemovePrice(ctx, p.Asset, p.Source, p.Timestamp)
 		}
 	}
 }
