@@ -216,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 	for _, v := range denoms {
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
-		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, uint64(ctx.BlockTime().Unix()))
+		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
 }
 
@@ -224,7 +224,7 @@ func (suite *PerpetualKeeperTestSuite) SetPrice(ctx sdk.Context, denom string, p
 	assetInfo, found := suite.app.OracleKeeper.GetAssetInfo(ctx, denom)
 	suite.Require().True(found)
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	suite.app.OracleKeeper.RemovePrice(ctx, assetInfo.Display, uint64(ctx.BlockTime().Unix()))
+	suite.app.OracleKeeper.RemovePrice(ctx, assetInfo.Display, "elys", uint64(ctx.BlockTime().Unix()))
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     assetInfo.Display,
 		Price:     price,
