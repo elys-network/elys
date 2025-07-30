@@ -5,7 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/elys-network/elys/v7/x/vaults/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, vaultId uint64) math.Int {
@@ -36,18 +35,18 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	if totalCommit.IsZero() {
 		return
 	}
-	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare().Add(
-		(osmomath.BigDecFromSDKInt(amount).Mul(ammtypes.OneShareBigDec)).Quo(osmomath.BigDecFromSDKInt(totalCommit)),
-	).Dec()
+	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
+		(math.LegacyNewDecFromInt(amount).Mul(math.LegacyNewDecFromInt(ammtypes.OneShare))).Quo(math.LegacyNewDecFromInt(totalCommit)),
+	)
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
 }
 
 func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, isDeposit bool, amount math.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-	poolAccRewardPerShare := osmomath.ZeroBigDec()
+	poolAccRewardPerShare := math.LegacyZeroDec()
 	if found {
-		poolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare()
+		poolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
@@ -69,21 +68,21 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 		userBalance = userBalance.Add(amount)
 	}
 
-	userRewardInfo.RewardPending = userRewardInfo.GetBigDecRewardPending().Add(
+	userRewardInfo.RewardPending = userRewardInfo.RewardPending.Add(
 		poolAccRewardPerShare.
-			Mul(osmomath.BigDecFromSDKInt(userBalance)).
-			Sub(userRewardInfo.GetBigDecRewardDebt()).
-			Quo(ammtypes.OneShareBigDec),
-	).Dec()
+			Mul(math.LegacyNewDecFromInt(userBalance)).
+			Sub(userRewardInfo.RewardDebt).
+			Quo(math.LegacyNewDecFromInt(ammtypes.OneShare)),
+	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
 }
 
 func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-	poolAccRewardPerShare := osmomath.ZeroBigDec()
+	poolAccRewardPerShare := math.LegacyZeroDec()
 	if found {
-		poolAccRewardPerShare = poolRewardInfo.GetBigDecPoolAccRewardPerShare()
+		poolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
@@ -98,8 +97,8 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	}
 
 	userRewardInfo.RewardDebt = poolAccRewardPerShare.Mul(
-		osmomath.BigDecFromSDKInt(k.GetPoolBalance(ctx, poolId, user)),
-	).Dec()
+		math.LegacyNewDecFromInt(k.GetPoolBalance(ctx, poolId, user)),
+	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
 }

@@ -99,8 +99,8 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				vault.Id,
 				uint64(ctx.BlockTime().Unix()),
 				ctx.BlockHeight(),
-				osmomath.BigDecFromDec(math.LegacyNewDecFromInt(usdcAmount)),
-				osmomath.BigDecFromDec(math.LegacyNewDecFromInt(edenAmount)),
+				math.LegacyNewDecFromInt(usdcAmount),
+				math.LegacyNewDecFromInt(edenAmount),
 			)
 			params := k.pk.GetParams(ctx)
 			dataLifetime := params.RewardsDataLifetime

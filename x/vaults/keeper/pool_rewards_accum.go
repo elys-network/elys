@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v7/x/vaults/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64) (types.PoolRewardsAccum, error) {
@@ -103,7 +102,7 @@ func (k Keeper) LastPoolRewardsAccum(ctx sdk.Context, poolId uint64) types.PoolR
 	}
 }
 
-func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, height int64, usdcReward, edenReward osmomath.BigDec) {
+func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, height int64, usdcReward, edenReward math.LegacyDec) {
 	lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 	lastAccum.Timestamp = timestamp
 	lastAccum.BlockHeight = height
@@ -114,7 +113,7 @@ func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, h
 	if lastAccum.EdenReward.IsNil() {
 		lastAccum.EdenReward = math.LegacyZeroDec()
 	}
-	lastAccum.UsdcReward = lastAccum.UsdcReward.Add(usdcReward.Dec())
-	lastAccum.EdenReward = lastAccum.EdenReward.Add(edenReward.Dec())
+	lastAccum.UsdcReward = lastAccum.UsdcReward.Add(usdcReward)
+	lastAccum.EdenReward = lastAccum.EdenReward.Add(edenReward)
 	k.SetPoolRewardsAccum(ctx, lastAccum)
 }

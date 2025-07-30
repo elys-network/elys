@@ -70,24 +70,24 @@ func (suite *KeeperTestSuite) TestAddPoolRewardsAccum() {
 		poolId     uint64
 		timestamp  uint64
 		height     int64
-		usdcReward osmomath.BigDec
-		edenReward osmomath.BigDec
+		usdcReward math.LegacyDec
+		edenReward math.LegacyDec
 	}{
 		{
 			name:       "Add rewards to new pool",
 			poolId:     1,
 			timestamp:  uint64(time.Now().Unix()),
 			height:     100,
-			usdcReward: osmomath.NewBigDec(5),
-			edenReward: osmomath.NewBigDec(3),
+			usdcReward: math.LegacyNewDec(5),
+			edenReward: math.LegacyNewDec(3),
 		},
 		{
 			name:       "Add rewards to existing pool",
 			poolId:     1,
 			timestamp:  uint64(time.Now().Unix()) + 3600, // 1 hour later
 			height:     200,
-			usdcReward: osmomath.NewBigDec(10),
-			edenReward: osmomath.NewBigDec(6),
+			usdcReward: math.LegacyNewDec(10),
+			edenReward: math.LegacyNewDec(6),
 		},
 	}
 
