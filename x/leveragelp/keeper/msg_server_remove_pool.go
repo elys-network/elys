@@ -29,7 +29,7 @@ func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (
 		return nil, errorsmod.Wrap(types.ErrPoolLeverageAmountNotZero, pool.LeveragedLpAmount.String())
 	}
 
-	k.DeletePool(ctx, msg.Id)
+	k.Keeper.RemovePool(ctx, msg.Id)
 
 	if k.hooks != nil {
 		err := k.hooks.AfterDisablingPool(ctx, ammPool)

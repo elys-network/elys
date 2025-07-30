@@ -26,6 +26,10 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 		}
 	}
 
+	// Check for division by zero
+	if ammPool.TotalShares.Amount.IsZero() {
+		return fmt.Errorf("amm pool %d has zero total shares", ammPool.PoolId)
+	}
 	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	maxRatio := leveragePool.MaxLeveragelpRatio.Add(params.ExitBuffer)

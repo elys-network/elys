@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -10,10 +11,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-)
-
-const (
-	NewMaxBytes = 5 * 1024 * 1024 // 5MB
 )
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
@@ -63,6 +60,11 @@ func (app *ElysApp) setUpgradeHandler() {
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
+
+			for _, pool := range app.LeveragelpKeeper.GetAllPools(ctx) {
+				pool.AdlTriggerRatio = math.LegacyMustNewDecFromStr("0.37")
+				app.LeveragelpKeeper.SetPool(ctx, pool)
+			}
 
 			for _, profile := range app.AssetprofileKeeper.GetAllEntry(ctx) {
 				if profile.DisplayName == "WBTC" || profile.DisplayName == "wBTC" {

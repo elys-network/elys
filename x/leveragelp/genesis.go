@@ -19,9 +19,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	// Set genesis Position count
-	k.SetPositionCount(ctx, (uint64)(len(genState.PositionList)))
+	k.SetLegacyPositionCount(ctx, (uint64)(len(genState.PositionList)))
 	// Set genesis open Position count
-	k.SetOpenPositionCount(ctx, (uint64)(len(genState.PositionList)))
+	k.SetLegacyOpenPositionCount(ctx, (uint64)(len(genState.PositionList)))
 
 	// Set all the whitelisted
 	for _, elem := range genState.AddressWhitelist {
@@ -32,6 +32,16 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	err := k.SetParams(ctx, &genState.Params)
 	if err != nil {
 		panic(err)
+	}
+
+	for _, positionCounter := range genState.PositionCounter {
+		k.SetPositionCounter(ctx, positionCounter)
+	}
+
+	k.SetFallbackCounter(ctx, genState.FallbackCounter)
+
+	for _, adlCounter := range genState.AdlCounter {
+		k.SetADLCounter(ctx, adlCounter)
 	}
 }
 
@@ -48,6 +58,12 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 		whitelistAddressStrings[i] = whitelistAddress.String()
 	}
 	genesis.AddressWhitelist = whitelistAddressStrings
+
+	genesis.PositionCounter = k.GetAllPositionCounters(ctx)
+
+	genesis.FallbackCounter = k.GetFallbackCounter(ctx)
+
+	genesis.AdlCounter = k.GetAllADLCounter(ctx)
 
 	return genesis
 }

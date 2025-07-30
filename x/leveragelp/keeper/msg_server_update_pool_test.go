@@ -12,7 +12,7 @@ import (
 func (suite *KeeperTestSuite) TestMsgUpdatePool() {
 	suite.ResetSuite()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
-	newPool := types.NewPool(1, sdkmath.LegacyMustNewDecFromStr("5.5"), sdkmath.LegacyMustNewDecFromStr("0.6"))
+	newPool := types.NewPool(1, sdkmath.LegacyMustNewDecFromStr("5.5"), sdkmath.LegacyMustNewDecFromStr("0.6"), sdkmath.LegacyMustNewDecFromStr("0.8"))
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, newPool)
 
 	testCases := []struct {

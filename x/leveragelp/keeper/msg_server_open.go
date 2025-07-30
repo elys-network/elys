@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strconv"
@@ -65,14 +64,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
-		return nil, errors.New("stable stake pool max borrow capacity used up")
+		return nil, fmt.Errorf("stable stake pool max borrow capacity used up, borrow ratio: %s, max allowed: %s", borrowRatio.String(), borrowPool.MaxLeverageRatio.String())
 	}
 
 	// Check if it is the same direction position for the same trader.
-	if position, err := k.CheckSamePosition(ctx, msg); position != nil {
-		if err != nil {
-			return nil, err
-		}
+	if position := k.CheckSamePosition(ctx, msg); position != nil {
 		response, err := k.OpenConsolidate(ctx, position, msg)
 		if err != nil {
 			return nil, err
@@ -83,7 +79,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return response, nil
 	}
 
-	if err := k.CheckMaxOpenPositions(ctx); err != nil {
+	if err := k.CheckMaxOpenPositions(ctx, msg.AmmPoolId); err != nil {
 		return nil, err
 	}
 
@@ -111,6 +107,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),

@@ -9,14 +9,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetStatus(goCtx context.Context, req *types.StatusRequest) (*types.StatusResponse, error) {
+func (k Keeper) GetCounter(goCtx context.Context, req *types.CounterRequest) (*types.CounterResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.StatusResponse{
-		OpenPositionCount:     k.GetOpenPositionCount(ctx),
-		LifetimePositionCount: k.GetPositionCount(ctx),
+	return &types.CounterResponse{
+		Result: k.GetPositionCounter(ctx, req.PoolId),
 	}, nil
 }

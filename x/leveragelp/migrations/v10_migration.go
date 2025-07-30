@@ -13,6 +13,6 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		m.keeper.SetPool(ctx, pool)
 	}
 
-	m.keeper.MigrateData(ctx)
+	//m.keeper.MigrateData(ctx)
 	return nil
 }

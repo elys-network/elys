@@ -67,12 +67,15 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
-		{name: "not allowed",
+		{
+			name: "not allowed",
 			input: &types.MsgAddPool{
 				Authority: addresses[0].String(),
 				Pool: types.AddPool{
-					AmmPoolId:   1,
-					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+					AmmPoolId:            1,
+					LeverageMax:          sdkmath.LegacyMustNewDecFromStr("10"),
+					PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+					AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 				},
 			},
 			expectErr:    true,
@@ -80,12 +83,15 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 			prerequisiteFunction: func() {
 			},
 		},
-		{name: "success",
+		{
+			name: "success",
 			input: &types.MsgAddPool{
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				Pool: types.AddPool{
-					AmmPoolId:   1,
-					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+					AmmPoolId:            1,
+					LeverageMax:          sdkmath.LegacyMustNewDecFromStr("10"),
+					PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+					AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 				},
 			},
 			expectErr:            false,

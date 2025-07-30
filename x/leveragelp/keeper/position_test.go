@@ -9,58 +9,7 @@ import (
 	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	paramtypes "github.com/elys-network/elys/v7/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
-	"github.com/stretchr/testify/require"
 )
-
-func TestSetGetPosition(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-
-	leveragelp := app.LeveragelpKeeper
-
-	simapp.SetStakingParam(app, ctx)
-	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
-
-	for i := 0; i < 2; i++ {
-		position := types.Position{
-			Address:        addr[i].String(),
-			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
-			Liabilities:    math.NewInt(0),
-			AmmPoolId:      1,
-			PositionHealth: math.LegacyNewDec(0),
-			Id:             0,
-		}
-		leveragelp.SetPosition(ctx, &position)
-	}
-
-	positionCount := leveragelp.GetPositionCount(ctx)
-	require.Equal(t, positionCount, (uint64)(2))
-}
-
-func TestSetLiquidation(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-
-	leveragelp := app.LeveragelpKeeper
-	simapp.SetStakingParam(app, ctx)
-	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
-
-	for i := 0; i < 2; i++ {
-		position := types.Position{
-			Address:        addr[i].String(),
-			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
-			Liabilities:    math.NewInt(0),
-			AmmPoolId:      1,
-			PositionHealth: math.LegacyNewDec(0),
-			Id:             0,
-		}
-		leveragelp.SetPosition(ctx, &position)
-	}
-	positionCount := leveragelp.GetPositionCount(ctx)
-	require.Equal(t, positionCount, (uint64)(2))
-}
 
 func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)

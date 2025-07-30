@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
-  assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 

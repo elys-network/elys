@@ -11,6 +11,7 @@ import "cosmos_proto/cosmos.proto";
 message PositionRequest {
   string address = 1;
   uint64 id = 2;
+  uint64 pool_id = 3;
 }
 
 message Position {
@@ -42,7 +43,7 @@ message Position {
 }
 
 message QueryPosition {
-  Position position = 1;
+  Position position = 1 [ (gogoproto.nullable) = false ];
   string updated_leverage = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -67,4 +68,21 @@ message PositionAndInterest {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message PositionCounter {
+  uint64 pool_id = 1;
+  uint64 counter = 2;
+  uint64 total_open = 3;
+}
+
+message ADLCounter {
+  uint64 pool_id = 1;
+  uint64 counter = 2;
+  bytes next_key = 3;
+}
+
+message FallbackCounter {
+  uint64 counter = 1;
+  bytes next_key = 2;
 }
