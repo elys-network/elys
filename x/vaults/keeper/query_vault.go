@@ -171,7 +171,7 @@ func (k Keeper) EdenApr(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 
 	firstAccum := k.FirstPoolRewardsAccum(ctx, vaultId)
 	lastAccum := k.LastPoolRewardsAccum(ctx, vaultId)
-	if lastAccum.Timestamp == 0 {
+	if lastAccum.Timestamp == 0 || tvl.IsZero() {
 		return osmomath.ZeroBigDec()
 	}
 
