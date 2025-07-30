@@ -174,7 +174,7 @@ message MsgAddVaultResponse {
   uint64 vault_id = 1;
 }
 
-message MsgPerformActionResponse { uint64 vault_id = 1; }
+message MsgPerformActionResponse {}
 
 message MsgPerformActionJoinPool {
   option (cosmos.msg.v1.signer) = "creator";
@@ -256,7 +256,7 @@ message MsgUpdateVaultCoins {
   repeated string reward_coins = 4;
 }
 
-message MsgUpdateVaultCoinsResponse { uint64 vault_id = 1; }
+message MsgUpdateVaultCoinsResponse {}
 
 message MsgUpdateVaultFees {
   option (cosmos.msg.v1.signer) = "creator";
@@ -281,7 +281,7 @@ message MsgUpdateVaultFees {
   ];
 }
 
-message MsgUpdateVaultFeesResponse { uint64 vault_id = 1; }
+message MsgUpdateVaultFeesResponse {}
 
 message MsgUpdateVaultLockupPeriod {
   option (cosmos.msg.v1.signer) = "creator";
@@ -292,7 +292,7 @@ message MsgUpdateVaultLockupPeriod {
   uint64 lockup_period = 3;
 }
 
-message MsgUpdateVaultLockupPeriodResponse { uint64 vault_id = 1; }
+message MsgUpdateVaultLockupPeriodResponse {}
 
 message MsgUpdateVaultMaxAmountUsd {
   option (cosmos.msg.v1.signer) = "creator";
