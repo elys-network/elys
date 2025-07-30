@@ -20,13 +20,13 @@ import (
 
 func (k Keeper) Vault(goCtx context.Context, req *types.QueryVaultRequest) (*types.QueryVaultResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, fmt.Errorf("invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	vaultAndData, err := k.GetVaultAndData(ctx, req.VaultId, req.Days)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, err
 	}
 
 	return &types.QueryVaultResponse{Vault: vaultAndData}, nil
@@ -43,7 +43,7 @@ func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*t
 	for _, vault := range vaults {
 		vaultAndData, err := k.GetVaultAndData(ctx, vault.Id, req.Days)
 		if err != nil {
-			return nil, status.Error(codes.Internal, err.Error())
+			return nil, err
 		}
 		vaultsAndData = append(vaultsAndData, vaultAndData)
 	}
@@ -54,7 +54,7 @@ func (k Keeper) Vaults(goCtx context.Context, req *types.QueryVaultsRequest) (*t
 func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64, days uint64) (types.VaultAndData, error) {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		return types.VaultAndData{}, status.Error(codes.NotFound, "vault not found")
+		return types.VaultAndData{}, fmt.Errorf("vault not found")
 	}
 
 	edenApr := k.EdenApr(ctx, vaultId)
@@ -86,13 +86,13 @@ func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64, days uint64) (t
 
 func (k Keeper) VaultValue(goCtx context.Context, req *types.QueryVaultValue) (*types.QueryVaultValueResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, fmt.Errorf("invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	_, found := k.GetVault(ctx, req.VaultId)
 	if !found {
-		return nil, status.Error(codes.NotFound, "vault not found")
+		return nil, fmt.Errorf("vault not found")
 	}
 
 	usdValue, err := k.VaultUsdValue(ctx, req.VaultId)
@@ -105,13 +105,13 @@ func (k Keeper) VaultValue(goCtx context.Context, req *types.QueryVaultValue) (*
 
 func (k Keeper) VaultPositions(goCtx context.Context, req *types.QueryVaultPositionsRequest) (*types.QueryVaultPositionsResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, fmt.Errorf("invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	positions, err := k.GetVaultPositions(ctx, req.VaultId)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, err
 	}
 	return &types.QueryVaultPositionsResponse{Positions: positions}, nil
 }

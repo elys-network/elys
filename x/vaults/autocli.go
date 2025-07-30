@@ -19,14 +19,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Vault",
-					Use:            "vault <vault-id>",
+					Use:            "vault <vault-id> <days>",
 					Short:          "Shows the vault details",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "vault_id"}, {ProtoField: "days"}},
 				},
 				{
-					RpcMethod: "Vaults",
-					Use:       "vaults",
-					Short:     "Shows all vaults",
+					RpcMethod:      "Vaults",
+					Use:            "vaults <days>",
+					Short:          "Shows all vaults",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
 					RpcMethod:      "VaultValue",
