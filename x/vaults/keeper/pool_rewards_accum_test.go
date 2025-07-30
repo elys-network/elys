@@ -5,7 +5,6 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/v7/x/vaults/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *KeeperTestSuite) TestPoolRewardsAccum() {
@@ -103,8 +102,8 @@ func (suite *KeeperTestSuite) TestAddPoolRewardsAccum() {
 			suite.Require().Equal(tt.height, accum.BlockHeight)
 
 			if tt.name == "Add rewards to new pool" {
-				suite.Require().Equal(tt.usdcReward, osmomath.BigDecFromDec(accum.UsdcReward))
-				suite.Require().Equal(tt.edenReward, osmomath.BigDecFromDec(accum.EdenReward))
+				suite.Require().Equal(tt.usdcReward, accum.UsdcReward)
+				suite.Require().Equal(tt.edenReward, accum.EdenReward)
 			} else {
 				// For existing pool, rewards should be cumulative
 				suite.Require().Equal(math.LegacyNewDec(15), accum.UsdcReward)
