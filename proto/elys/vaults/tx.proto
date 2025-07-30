@@ -307,7 +307,7 @@ message MsgUpdateVaultMaxAmountUsd {
   ];
 }
 
-message MsgUpdateVaultMaxAmountUsdResponse { uint64 vault_id = 1; }
+message MsgUpdateVaultMaxAmountUsdResponse {}
 
 message MsgClaimRewards {
   option (cosmos.msg.v1.signer) = "sender";

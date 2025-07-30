@@ -19,12 +19,13 @@ service Query {
 
   // Vault queries a vault by its ID.
   rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
-    option (google.api.http).get = "/elys-network/elys/vaults/vault/{vault_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault/{vault_id}/{days}";
   }
 
   // Vaults queries all vaults.
   rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
-    option (google.api.http).get = "/elys-network/elys/vaults/vaults";
+    option (google.api.http).get = "/elys-network/elys/vaults/vaults/{days}";
   }
 
   // VaultValue queries the USD value of a vault.
