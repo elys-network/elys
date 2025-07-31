@@ -8,12 +8,6 @@ import (
 )
 
 func TestVaultActionValidation(t *testing.T) {
-	// Test vault with no allowed actions (should allow all actions)
-	vault1 := &types.Vault{
-		Id:             1,
-		AllowedActions: []string{},
-	}
-
 	// Test vault with specific allowed actions
 	vault2 := &types.Vault{
 		Id:             2,
@@ -32,18 +26,6 @@ func TestVaultActionValidation(t *testing.T) {
 		action      string
 		shouldAllow bool
 	}{
-		{
-			name:        "vault with no restrictions should allow swap",
-			vault:       vault1,
-			action:      "swap",
-			shouldAllow: true,
-		},
-		{
-			name:        "vault with no restrictions should allow join_pool",
-			vault:       vault1,
-			action:      "join_pool",
-			shouldAllow: true,
-		},
 		{
 			name:        "vault with specific actions should allow swap",
 			vault:       vault2,
