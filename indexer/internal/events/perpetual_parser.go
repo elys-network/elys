@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/elys-network/elys/indexer/internal/models"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 	"go.uber.org/zap"
 )
 

@@ -76,6 +76,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 	masterchefmodule "github.com/elys-network/elys/v7/x/masterchef"
 	masterchefmoduletypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	oraclemodule "github.com/elys-network/elys/v7/x/oracle"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	parametermodule "github.com/elys-network/elys/v7/x/parameter"
 	parametermoduletypes "github.com/elys-network/elys/v7/x/parameter/types"
 	perpetualmodule "github.com/elys-network/elys/v7/x/perpetual"
@@ -90,8 +92,6 @@ import (
 	tradeshieldmoduletypes "github.com/elys-network/elys/v7/x/tradeshield/types"
 	vaultsmodule "github.com/elys-network/elys/v7/x/vaults"
 	vaultsmoduletypes "github.com/elys-network/elys/v7/x/vaults/types"
-	oraclemodule "github.com/ojo-network/ojo/x/oracle"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // module account permissions

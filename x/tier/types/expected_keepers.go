@@ -15,10 +15,10 @@ import (
 	estakingtypes "github.com/elys-network/elys/v7/x/estaking/types"
 	leveragelptypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 	mastercheftypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/v7/x/tradeshield/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
