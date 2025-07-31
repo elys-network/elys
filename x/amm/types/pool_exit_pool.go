@@ -7,17 +7,17 @@ import (
 )
 
 // return exitingCoins, weightBalanceBonus, slippage, swapFee, slippageCoins, nil
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, snapshot SnapshotPool, exitingShares math.Int, tokenOutDenom string, params Params, takerFees osmomath.BigDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
-	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, snapshot SnapshotPool, exitingShares math.Int, tokenOutDenom string, params Params, takerFees osmomath.BigDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, swapInfos []SwapInfo, err error) {
+	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 	if err != nil {
-		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
 	}
 
 	if err := p.processExitPool(ctx, exitingCoins, exitingShares); err != nil {
-		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err
+		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, nil, err
 	}
 
-	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
+	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, nil
 }
 
 // processExitPool exits the pool given exitingCoins and exitingShares.

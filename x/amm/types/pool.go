@@ -300,7 +300,7 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	params Params,
 	takerFees osmomath.BigDec,
 	applyWeightBreakingFee bool,
-) (exitedCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
+) (exitedCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, swapInfos []SwapInfo, err error) {
 	return p.CalcExitPool(ctx, oracleKeeper, snapshot, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 }
 
