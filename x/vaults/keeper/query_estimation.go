@@ -50,6 +50,10 @@ func (k Keeper) WithdrawEstimation(goCtx context.Context, req *types.QueryWithdr
 	vaultAddress := types.NewVaultAddress(vault.Id)
 	shareDenom := types.GetShareDenomForVault(vault.Id)
 	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
+	if totalShares.IsZero() {
+		return nil, types.ErrNoShares
+	}
+
 	shareRatio := req.SharesAmount.ToLegacyDec().Quo(totalShares.ToLegacyDec())
 
 	toSendCoins := sdk.NewCoins()

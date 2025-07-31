@@ -50,7 +50,7 @@ func (k Keeper) DeductPerformanceFee(ctx sdk.Context) {
 			}
 			profit := currentValue.Dec().Sub(vault.SumOfDepositsUsdValue).Add(vault.WithdrawalUsdValue)
 			k.TrackVaultPnL(ctx, strconv.FormatUint(vault.Id, 10), profit)
-			if profit.IsPositive() {
+			if profit.IsPositive() && currentValue.IsPositive() {
 				vault.SumOfDepositsUsdValue = vault.SumOfDepositsUsdValue.Add(profit)
 				shares := profit.Quo(currentValue.Dec()).Mul(vault.PerformanceFee)
 				feeUsdValue := k.distributeVaultFees(ctx, vault, shares, totalBlocksPerYear, protocolAddress)
