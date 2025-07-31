@@ -35,13 +35,13 @@ import (
 	estakingmoduletypes "github.com/elys-network/elys/v7/x/estaking/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 	masterchefmoduletypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	parametermoduletypes "github.com/elys-network/elys/v7/x/parameter/types"
 	perpetualmoduletypes "github.com/elys-network/elys/v7/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	tiermoduletypes "github.com/elys-network/elys/v7/x/tier/types"
 	tokenomicsmoduletypes "github.com/elys-network/elys/v7/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v7/x/tradeshield/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

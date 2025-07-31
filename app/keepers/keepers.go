@@ -93,8 +93,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/v7/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/v7/x/masterchef/types"
-	legacyoraclekeeper "github.com/elys-network/elys/v7/x/oracle/keeper"
-	legacyoracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	oraclekeeper "github.com/elys-network/elys/v7/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/v7/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/v7/x/perpetual/keeper"
@@ -107,9 +107,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/v7/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/v7/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/v7/x/tradeshield/types"
-	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
-	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -153,13 +150,11 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
-	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -178,8 +173,6 @@ type AppKeepers struct {
 	HooksICS4Wrapper    ibchooks.ICS4Middleware
 	Ics20WasmHooks      *ibchooks.WasmHooks
 	PacketForwardKeeper *packetforwardkeeper.Keeper
-
-	ICSValidatorKeeper ICSValidatorKeeper
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -257,7 +250,6 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -542,9 +534,6 @@ func NewAppKeeper(
 	)
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
-
-	app.ICSValidatorKeeper = NewICSValidatorKeeper(app.ConsumerKeeper)
-
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -558,22 +547,23 @@ func NewAppKeeper(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.OracleKeeper = oraclekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.ICSValidatorKeeper,
-		distrtypes.ModuleName,
-		cast.ToBool(appOpts.Get("telemetry.enabled")),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
+	//app.OracleKeeper = oraclekeeper.NewKeeper(
+	//	appCodec,
+	//	runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+	//	app.AccountKeeper,
+	//	app.BankKeeper,
+	//	app.DistrKeeper,
+	//	app.StakingKeeper,
+	//	distrtypes.ModuleName,
+	//	cast.ToBool(appOpts.Get("telemetry.enabled")),
+	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	//)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
@@ -881,7 +871,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	//paramsKeeper.Subspace(oracletypes.ModuleName)
+	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)

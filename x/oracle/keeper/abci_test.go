@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	sdkmath "cosmossdk.io/math"
 	"sort"
@@ -112,4 +111,3 @@ func (suite *KeeperTestSuite) TestEndBlock() {
 	suite.Require().Equal(1, len(allPrices))
 	suite.Require().Equal(ethPriceData[len(ethPriceData)-1], allPrices[0])
 }
-*/
