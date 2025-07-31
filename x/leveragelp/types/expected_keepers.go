@@ -8,6 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	parameterstypes "github.com/elys-network/elys/v7/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -35,6 +36,7 @@ type AmmKeeper interface {
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot ammtypes.SnapshotPool, tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec) (tokenIn sdk.Coin, slippage osmomath.BigDec, tokenInDec osmomath.BigDec, err error)
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdkmath.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error)
 	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation, applyWeightBreakingFee bool) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error)
+	OnCollectFee(ctx sdk.Context, pool ammtypes.Pool, coins sdk.Coins) error
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -89,4 +91,8 @@ type MasterchefKeeper interface {
 
 type AccountedPoolKeeper interface {
 	GetAccountedBalance(sdk.Context, uint64, string) sdkmath.Int
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parameterstypes.Params)
 }
