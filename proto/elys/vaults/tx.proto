@@ -51,6 +51,11 @@ service Msg {
       returns (MsgUpdateVaultMaxAmountUsdResponse);
   // ClaimRewards defines a method for claiming rewards from a vault.
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+
+  // UpdateVaultAllowedActions defines a method for updating the allowed actions
+  // of a vault.
+  rpc UpdateVaultAllowedActions(MsgUpdateVaultAllowedActions)
+      returns (MsgUpdateVaultAllowedActionsResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -317,3 +322,14 @@ message MsgClaimRewards {
 }
 
 message MsgClaimRewardsResponse {}
+
+message MsgUpdateVaultAllowedActions {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "vaults/MsgUpdateVaultAllowedActions";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 vault_id = 2;
+  repeated string allowed_actions = 3;
+}
+
+message MsgUpdateVaultAllowedActionsResponse {}

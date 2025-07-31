@@ -20,6 +20,12 @@ func (k msgServer) PerformActionJoinPool(goCtx context.Context, req *types.MsgPe
 	if vault.Manager != req.Creator {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
 	}
+
+	// Validate that join_pool action is allowed
+	if err := vault.ValidateActionAllowed(types.ActionJoinPool); err != nil {
+		return nil, errorsmod.Wrapf(types.ErrActionNotAllowed, "vault %d: %s", req.VaultId, err.Error())
+	}
+
 	vaultAddress := types.NewVaultAddress(req.VaultId)
 
 	_, sharesOut, err := k.amm.JoinPoolNoSwap(ctx, vaultAddress, req.PoolId, req.ShareAmountOut, req.MaxAmountsIn)
@@ -62,6 +68,12 @@ func (k msgServer) PerformActionExitPool(goCtx context.Context, req *types.MsgPe
 	if vault.Manager != req.Creator {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
 	}
+
+	// Validate that exit_pool action is allowed
+	if err := vault.ValidateActionAllowed(types.ActionExitPool); err != nil {
+		return nil, errorsmod.Wrapf(types.ErrActionNotAllowed, "vault %d: %s", req.VaultId, err.Error())
+	}
+
 	vaultAddress := types.NewVaultAddress(req.VaultId)
 
 	exitCoins, weightBalanceBonus, slippage, _, _, err := k.amm.ExitPool(ctx, vaultAddress, req.PoolId, req.ShareAmountIn, req.MinAmountsOut, req.TokenOutDenom, false, true)
@@ -106,6 +118,12 @@ func (k msgServer) PerformActionSwapByDenom(goCtx context.Context, req *types.Ms
 	if vault.Manager != req.Creator {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "vault %d is not managed by %s", req.VaultId, req.Creator)
 	}
+
+	// Validate that swap action is allowed
+	if err := vault.ValidateActionAllowed(types.ActionSwap); err != nil {
+		return nil, errorsmod.Wrapf(types.ErrActionNotAllowed, "vault %d: %s", req.VaultId, err.Error())
+	}
+
 	vaultAddress := types.NewVaultAddress(req.VaultId)
 
 	// denomOut should be in the allowed coins

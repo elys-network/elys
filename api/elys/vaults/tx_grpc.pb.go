@@ -44,6 +44,9 @@ type MsgClient interface {
 	UpdateVaultMaxAmountUsd(ctx context.Context, in *MsgUpdateVaultMaxAmountUsd, opts ...grpc.CallOption) (*MsgUpdateVaultMaxAmountUsdResponse, error)
 	// ClaimRewards defines a method for claiming rewards from a vault.
 	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
+	// UpdateVaultAllowedActions defines a method for updating the allowed actions
+	// of a vault.
+	UpdateVaultAllowedActions(ctx context.Context, in *MsgUpdateVaultAllowedActions, opts ...grpc.CallOption) (*MsgUpdateVaultAllowedActionsResponse, error)
 }
 
 type msgClient struct {
@@ -162,6 +165,15 @@ func (c *msgClient) ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts 
 	return out, nil
 }
 
+func (c *msgClient) UpdateVaultAllowedActions(ctx context.Context, in *MsgUpdateVaultAllowedActions, opts ...grpc.CallOption) (*MsgUpdateVaultAllowedActionsResponse, error) {
+	out := new(MsgUpdateVaultAllowedActionsResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/UpdateVaultAllowedActions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -192,6 +204,9 @@ type MsgServer interface {
 	UpdateVaultMaxAmountUsd(context.Context, *MsgUpdateVaultMaxAmountUsd) (*MsgUpdateVaultMaxAmountUsdResponse, error)
 	// ClaimRewards defines a method for claiming rewards from a vault.
 	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
+	// UpdateVaultAllowedActions defines a method for updating the allowed actions
+	// of a vault.
+	UpdateVaultAllowedActions(context.Context, *MsgUpdateVaultAllowedActions) (*MsgUpdateVaultAllowedActionsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -234,6 +249,9 @@ func (UnimplementedMsgServer) UpdateVaultMaxAmountUsd(context.Context, *MsgUpdat
 }
 func (UnimplementedMsgServer) ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimRewards not implemented")
+}
+func (UnimplementedMsgServer) UpdateVaultAllowedActions(context.Context, *MsgUpdateVaultAllowedActions) (*MsgUpdateVaultAllowedActionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultAllowedActions not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -464,6 +482,24 @@ func _Msg_ClaimRewards_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateVaultAllowedActions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVaultAllowedActions)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVaultAllowedActions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/UpdateVaultAllowedActions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVaultAllowedActions(ctx, req.(*MsgUpdateVaultAllowedActions))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -518,6 +554,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClaimRewards",
 			Handler:    _Msg_ClaimRewards_Handler,
+		},
+		{
+			MethodName: "UpdateVaultAllowedActions",
+			Handler:    _Msg_UpdateVaultAllowedActions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

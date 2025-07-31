@@ -87,3 +87,22 @@ func (k msgServer) UpdateVaultMaxAmountUsd(goCtx context.Context, req *types.Msg
 
 	return &types.MsgUpdateVaultMaxAmountUsdResponse{}, nil
 }
+
+// func (k msgServer) UpdateVaultAllowedActions(goCtx context.Context, req *types.MsgUpdateVaultFees) (*types.MsgUpdateVaultAllowedActionsResponse, error) {
+// 	if k.GetAuthority() != req.Creator {
+// 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid creator; expected %s, got %s", k.GetAuthority(), req.Creator)
+// 	}
+
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+// 	vault, found := k.GetVault(ctx, req.VaultId)
+// 	if !found {
+// 		return nil, types.ErrVaultNotFound
+// 	}
+
+// 	vault.AllowedActions = req.AllowedActions
+
+// 	k.SetVault(ctx, vault)
+
+// 	return &types.MsgUpdateVaultAllowedActionsResponse{}, nil
+// }

@@ -17,4 +17,5 @@ var (
 	ErrInvalidDepositDenom      = sdkerrors.Register(ModuleName, 1106, "invalid deposit denom")
 	ErrDepositValueZero         = sdkerrors.Register(ModuleName, 1107, "deposit value is zero")
 	ErrPoolRewardsAccumNotFound = sdkerrors.Register(ModuleName, 1108, "pool rewards accum not found")
+	ErrActionNotAllowed         = sdkerrors.Register(ModuleName, 1109, "action not allowed by vault")
 )

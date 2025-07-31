@@ -36,13 +36,14 @@ func (suite *KeeperTestSuite) TestVaultFlow() {
 	// Step 1: Add a new vault
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := vaulttypes.MsgAddVault{
-		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:  "uusdc",
-		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
-		RewardCoins:   []string{"uelys"},
-		BenchmarkCoin: "uatom",
-		Manager:       manager.String(),
+		Creator:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		DepositDenom:   "uusdc",
+		MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:   []string{"uusdc", "uatom", "amm/pool/1"},
+		RewardCoins:    []string{"uelys"},
+		BenchmarkCoin:  "uatom",
+		Manager:        manager.String(),
+		AllowedActions: []string{vaulttypes.ActionJoinPool, vaulttypes.ActionExitPool, vaulttypes.ActionSwap},
 	}
 	_, err = msgServer.AddVault(suite.ctx, &addVault)
 	suite.Require().NoError(err)

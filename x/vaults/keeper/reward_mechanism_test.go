@@ -25,13 +25,14 @@ func (suite *KeeperTestSuite) TestRewardMechanism() {
 	// Create the vault
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := types.MsgAddVault{
-		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:  "uusdc",
-		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
-		RewardCoins:   []string{"uelys"},
-		BenchmarkCoin: "uatom",
-		Manager:       manager.String(),
+		Creator:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		DepositDenom:   "uusdc",
+		MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:   []string{"uusdc", "uatom", "amm/pool/1"},
+		RewardCoins:    []string{"uelys"},
+		BenchmarkCoin:  "uatom",
+		Manager:        manager.String(),
+		AllowedActions: []string{types.ActionJoinPool, types.ActionExitPool, types.ActionSwap},
 	}
 	_, err := msgServer.AddVault(suite.ctx, &addVault)
 	suite.Require().NoError(err)
@@ -137,13 +138,14 @@ func (suite *KeeperTestSuite) TestRewardMechanismWithMultipleUsers() {
 	// Create the vault
 	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
 	addVault := types.MsgAddVault{
-		Creator:       authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		DepositDenom:  "uusdc",
-		MaxAmountUsd:  sdkmath.LegacyNewDec(1000000),
-		AllowedCoins:  []string{"uusdc", "uatom", "amm/pool/1"},
-		RewardCoins:   []string{"uelys"},
-		BenchmarkCoin: "uatom",
-		Manager:       manager.String(),
+		Creator:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		DepositDenom:   "uusdc",
+		MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:   []string{"uusdc", "uatom", "amm/pool/1"},
+		RewardCoins:    []string{"uelys"},
+		BenchmarkCoin:  "uatom",
+		Manager:        manager.String(),
+		AllowedActions: []string{types.ActionJoinPool, types.ActionExitPool, types.ActionSwap},
 	}
 	_, err := msgServer.AddVault(suite.ctx, &addVault)
 	suite.Require().NoError(err)
