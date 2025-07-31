@@ -3,7 +3,9 @@ package indexer
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"sort"
 	"time"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -14,6 +16,7 @@ import (
 	"github.com/elys-network/elys/indexer/internal/database"
 	"github.com/elys-network/elys/indexer/internal/events"
 	"github.com/elys-network/elys/indexer/internal/models"
+	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -27,6 +30,7 @@ type Indexer struct {
 	grpcConn          *grpc.ClientConn
 	tradeshieldParser *events.TradeShieldParser
 	perpetualParser   *events.PerpetualParser
+	clobParser        *events.CLOBParser
 	logger            *zap.Logger
 	eventChan         chan *EventBatch
 	stopChan          chan struct{}
@@ -59,6 +63,7 @@ func New(cfg *config.Config, db *database.Repository, cache *cache.Cache, logger
 		grpcConn:          grpcConn,
 		tradeshieldParser: events.NewTradeShieldParser(logger),
 		perpetualParser:   events.NewPerpetualParser(logger),
+		clobParser:        events.NewCLOBParser(logger),
 		logger:            logger,
 		eventChan:         make(chan *EventBatch, cfg.Indexer.EventBufferSize),
 		stopChan:          make(chan struct{}),
@@ -210,6 +215,17 @@ func (i *Indexer) processBlock(ctx context.Context, height int64) error {
 			)
 		}
 		batch.Events = append(batch.Events, perpetualEvents...)
+
+		// Parse CLOB events
+		clobEvents, err := i.clobParser.ParseEvents(ctx, txResult.Events, height, txHash)
+		if err != nil {
+			i.logger.Error("Failed to parse CLOB events",
+				zap.Int64("height", height),
+				zap.Int("tx_index", txIdx),
+				zap.Error(err),
+			)
+		}
+		batch.Events = append(batch.Events, clobEvents...)
 	}
 
 	// Also process end block events (if available)
@@ -247,6 +263,12 @@ func (i *Indexer) processEndBlockEvents(ctx context.Context, events []abci.Event
 		return nil, err
 	}
 	results = append(results, perpetualEvents...)
+
+	clobEvents, err := i.clobParser.ParseEvents(ctx, events, height, "endblock")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, clobEvents...)
 
 	return results, nil
 }
@@ -344,6 +366,111 @@ func (i *Indexer) processEvent(ctx context.Context, tx *sql.Tx, event interface{
 	case *events.PositionUpdate:
 		// Handle position updates (stop loss, take profit, add collateral)
 		// This would need specific update methods in the repository
+
+	// CLOB Events
+	case *models.CLOBMarket:
+		if err := i.db.CreateCLOBMarket(ctx, e); err != nil {
+			return err
+		}
+		// Cache market data
+		i.cache.SetCLOBMarketData(ctx, e.MarketID, map[string]interface{}{
+			"ticker":      e.Ticker,
+			"base_asset":  e.BaseAsset,
+			"quote_asset": e.QuoteAsset,
+			"is_active":   e.IsActive,
+		})
+
+	case *models.CLOBOrder:
+		if err := i.db.CreateCLOBOrder(ctx, e); err != nil {
+			return err
+		}
+		// Add to order book and cache
+		i.cache.AddCLOBOrderToBook(ctx, e)
+		i.publishCLOBOrderUpdate(ctx, e, "created")
+
+	case *models.CLOBTrade:
+		if err := i.db.CreateCLOBTrade(ctx, e); err != nil {
+			return err
+		}
+		// Add to cache and publish
+		i.cache.AddCLOBTrade(ctx, e)
+		i.publishCLOBTradeUpdate(ctx, e)
+		// Update market stats
+		i.db.UpdateCLOBMarketStats(ctx, e.MarketID)
+
+	case *models.CLOBPosition:
+		if err := i.db.CreateCLOBPosition(ctx, e); err != nil {
+			return err
+		}
+		// Cache and publish update
+		i.cache.SetCLOBPosition(ctx, e)
+		i.publishCLOBPositionUpdate(ctx, e, "opened")
+
+	case *events.CLOBOrderUpdate:
+		if err := i.db.UpdateCLOBOrderStatus(ctx, e.OrderID, e.Status, e.FilledQuantity, e.RemainingQty); err != nil {
+			return err
+		}
+		// Update cache
+		if order, err := i.db.GetCLOBOrder(ctx, e.OrderID); err == nil && order != nil {
+			if e.Status == models.CLOBOrderStatusCancelled || e.Status == models.CLOBOrderStatusFilled {
+				i.cache.RemoveCLOBOrderFromBook(ctx, order)
+			}
+			i.publishCLOBOrderUpdate(ctx, order, string(e.Status))
+		}
+
+	case *events.CLOBOrderExecution:
+		if err := i.db.UpdateCLOBOrderStatus(ctx, e.OrderID, e.Status, e.TotalFilled, e.RemainingQty); err != nil {
+			return err
+		}
+
+	case *events.CLOBPositionUpdate:
+		updates := make(map[string]interface{})
+		if e.NewSize != nil {
+			updates["size"] = e.NewSize.String()
+		}
+		if e.NewMargin != nil {
+			updates["margin"] = e.NewMargin.String()
+		}
+		if e.NewMarkPrice != nil {
+			updates["mark_price"] = e.NewMarkPrice.String()
+		}
+		if e.NewLiquidationPrice != nil {
+			updates["liquidation_price"] = e.NewLiquidationPrice.String()
+		}
+		if e.NewUnrealizedPnL != nil {
+			updates["unrealized_pnl"] = e.NewUnrealizedPnL.String()
+		}
+		
+		if e.Action == "closed" && e.ClosePrice != nil && e.RealizedPnL != nil {
+			if err := i.db.CloseCLOBPosition(ctx, e.PositionID, *e.ClosePrice, *e.RealizedPnL); err != nil {
+				return err
+			}
+			// Remove from cache
+			if pos, err := i.db.GetCLOBPosition(ctx, e.PositionID); err == nil && pos != nil {
+				i.cache.RemoveCLOBPosition(ctx, pos)
+				i.publishCLOBPositionUpdate(ctx, pos, "closed")
+			}
+		} else if len(updates) > 0 {
+			if err := i.db.UpdateCLOBPosition(ctx, e.PositionID, updates); err != nil {
+				return err
+			}
+			// Update cache
+			if pos, err := i.db.GetCLOBPosition(ctx, e.PositionID); err == nil && pos != nil {
+				i.cache.SetCLOBPosition(ctx, pos)
+				i.publishCLOBPositionUpdate(ctx, pos, "modified")
+			}
+		}
+
+	case *models.CLOBLiquidation:
+		if err := i.db.CreateCLOBLiquidation(ctx, e); err != nil {
+			return err
+		}
+		// The position should already be closed by a position update event
+
+	case *models.CLOBFundingRate:
+		if err := i.db.CreateCLOBFundingRate(ctx, e); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -384,6 +511,33 @@ func (i *Indexer) publishTradeUpdate(ctx context.Context, trade *models.Trade) {
 	i.cache.PublishTradeUpdate(ctx, trade.Asset, update)
 }
 
+// CLOB publish methods
+func (i *Indexer) publishCLOBOrderUpdate(ctx context.Context, order *models.CLOBOrder, action string) {
+	update := &models.WSCLOBOrderUpdate{
+		Action:    action,
+		Order:     order,
+		Timestamp: time.Now(),
+	}
+	i.cache.PublishCLOBOrderUpdate(ctx, order.Owner, update)
+}
+
+func (i *Indexer) publishCLOBPositionUpdate(ctx context.Context, position *models.CLOBPosition, action string) {
+	update := &models.WSCLOBPositionUpdate{
+		Action:    action,
+		Position:  position,
+		Timestamp: time.Now(),
+	}
+	i.cache.PublishCLOBPositionUpdate(ctx, position.Owner, update)
+}
+
+func (i *Indexer) publishCLOBTradeUpdate(ctx context.Context, trade *models.CLOBTrade) {
+	update := &models.WSCLOBTradeUpdate{
+		Trade:     trade,
+		Timestamp: time.Now(),
+	}
+	i.cache.PublishCLOBTradeUpdate(ctx, trade.MarketID, update)
+}
+
 func (i *Indexer) orderBookAggregator(ctx context.Context) {
 	ticker := time.NewTicker(i.config.Indexer.OrderBookUpdateInterval)
 	defer ticker.Stop()
@@ -401,13 +555,141 @@ func (i *Indexer) orderBookAggregator(ctx context.Context) {
 }
 
 func (i *Indexer) aggregateOrderBooks(ctx context.Context) error {
-	// This would aggregate open orders into order book snapshots
-	// For now, this is a placeholder - actual implementation would:
-	// 1. Query open spot orders grouped by asset pair
-	// 2. Build bid/ask arrays
-	// 3. Save snapshots to database
-	// 4. Publish updates via WebSocket
+	// Aggregate CLOB order books
+	markets, err := i.db.GetActiveCLOBMarkets(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get active CLOB markets: %w", err)
+	}
+
+	for _, market := range markets {
+		if err := i.aggregateCLOBOrderBook(ctx, market.MarketID); err != nil {
+			i.logger.Error("Failed to aggregate CLOB order book",
+				zap.Uint64("market_id", market.MarketID),
+				zap.Error(err),
+			)
+		}
+	}
+
+	// TODO: Also aggregate spot order books when implemented
 	return nil
+}
+
+func (i *Indexer) aggregateCLOBOrderBook(ctx context.Context, marketID uint64) error {
+	// Get active orders for the market
+	orders, err := i.db.GetActiveOrdersForMarket(ctx, marketID)
+	if err != nil {
+		return err
+	}
+
+	// Build order book levels
+	bids := make([]models.OrderBookLevel, 0)
+	asks := make([]models.OrderBookLevel, 0)
+	bidsByPrice := make(map[string]*models.OrderBookLevel)
+	asksByPrice := make(map[string]*models.OrderBookLevel)
+
+	var totalBidVolume, totalAskVolume decimal.Decimal
+
+	for _, order := range orders {
+		priceKey := order.Price.String()
+		
+		if order.OrderType == models.CLOBOrderTypeLimitBuy {
+			if level, exists := bidsByPrice[priceKey]; exists {
+				level.Quantity = level.Quantity.Add(order.RemainingAmount)
+				level.Orders++
+			} else {
+				bidsByPrice[priceKey] = &models.OrderBookLevel{
+					Price:    order.Price,
+					Quantity: order.RemainingAmount,
+					Orders:   1,
+				}
+			}
+			totalBidVolume = totalBidVolume.Add(order.RemainingAmount)
+		} else if order.OrderType == models.CLOBOrderTypeLimitSell {
+			if level, exists := asksByPrice[priceKey]; exists {
+				level.Quantity = level.Quantity.Add(order.RemainingAmount)
+				level.Orders++
+			} else {
+				asksByPrice[priceKey] = &models.OrderBookLevel{
+					Price:    order.Price,
+					Quantity: order.RemainingAmount,
+					Orders:   1,
+				}
+			}
+			totalAskVolume = totalAskVolume.Add(order.RemainingAmount)
+		}
+	}
+
+	// Convert maps to sorted slices
+	for _, level := range bidsByPrice {
+		bids = append(bids, *level)
+	}
+	for _, level := range asksByPrice {
+		asks = append(asks, *level)
+	}
+
+	// Sort bids descending, asks ascending
+	sort.Slice(bids, func(i, j int) bool {
+		return bids[i].Price.GreaterThan(bids[j].Price)
+	})
+	sort.Slice(asks, func(i, j int) bool {
+		return asks[i].Price.LessThan(asks[j].Price)
+	})
+
+	// Calculate best bid/ask and spread
+	var bestBid, bestAsk, midPrice, spread *decimal.Decimal
+	if len(bids) > 0 {
+		bestBid = &bids[0].Price
+	}
+	if len(asks) > 0 {
+		bestAsk = &asks[0].Price
+	}
+	if bestBid != nil && bestAsk != nil {
+		mid := bestBid.Add(*bestAsk).Div(decimal.NewFromInt(2))
+		midPrice = &mid
+		spr := bestAsk.Sub(*bestBid)
+		spread = &spr
+	}
+
+	// Create snapshot
+	bidsJSON, _ := json.Marshal(bids)
+	asksJSON, _ := json.Marshal(asks)
+
+	snapshot := &models.CLOBOrderBookSnapshot{
+		MarketID:       marketID,
+		Bids:           bidsJSON,
+		Asks:           asksJSON,
+		BestBid:        bestBid,
+		BestAsk:        bestAsk,
+		MidPrice:       midPrice,
+		Spread:         spread,
+		TotalBidVolume: totalBidVolume,
+		TotalAskVolume: totalAskVolume,
+		SnapshotTime:   time.Now(),
+		BlockHeight:    0, // Will be updated on next block
+	}
+
+	// Save snapshot
+	if err := i.db.SaveCLOBOrderBookSnapshot(ctx, snapshot); err != nil {
+		return err
+	}
+
+	// Publish WebSocket update
+	update := &models.WSCLOBOrderBookUpdate{
+		MarketID:  marketID,
+		Bids:      bids[:min(20, len(bids))], // Top 20 levels
+		Asks:      asks[:min(20, len(asks))], // Top 20 levels
+		Timestamp: time.Now(),
+	}
+	i.cache.PublishCLOBOrderBookUpdate(ctx, marketID, update)
+
+	return nil
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func getTxHash(tx tmtypes.Tx) string {

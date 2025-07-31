@@ -149,3 +149,6 @@ CREATE TABLE indexer_state (
 INSERT INTO indexer_state (last_processed_height, last_processed_time, updated_at) 
 VALUES (0, NOW(), NOW()) 
 ON CONFLICT DO NOTHING;
+
+-- Include CLOB schema
+\i clob_schema.sql
