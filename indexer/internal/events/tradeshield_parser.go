@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/elys-network/elys/indexer/internal/models"
-	tradeshieldtypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	tradeshieldtypes "github.com/elys-network/elys/v7/x/tradeshield/types"
 	"go.uber.org/zap"
 )
 

@@ -4,18 +4,16 @@ import (
 	"github.com/elys-network/elys/v7/x/amm/types"
 	"testing"
 
-	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
-
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
-	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/v7/app"
+	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -86,13 +84,13 @@ func (suite *KeeperTestSuite) SetupTest() {
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 
-	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, ojooracletypes.AssetInfo{
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
 		Denom:   "uusdc",
 		Display: "USDC",
 		Decimal: 6,
 	})
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	suite.app.OracleKeeper.SetPrice(suite.ctx, ojooracletypes.Price{
+	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyOneDec(),
 		Provider:  provider.String(),
