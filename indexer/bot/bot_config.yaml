@@ -1,0 +1,30 @@
+# Shared Bot Configuration
+
+bot:
+  # Mnemonic for both bots
+  mnemonic: "choose isolate cruise nominee image peanut winter vacant enemy improve practice verb moon satisfy food fuel damage sugar load vendor mirror galaxy subject laptop"
+  
+  # Matching interval
+  matching_interval: 500ms
+  
+  # Markets to monitor
+  markets:
+    - 1  # BTC/USDC
+    - 2  # ETH/USDC
+    - 3  # ATOM/USDC
+
+# Redis configuration
+redis:
+  url: "redis://localhost:6380"
+  
+# PostgreSQL configuration  
+postgres:
+  url: "postgres://indexer:123123123@localhost:5433/elys_indexer?sslmode=disable"
+  
+# Chain configuration (for future blockchain integration)
+chain:
+  chain_id: "elys-1"
+  rpc_endpoint: "http://localhost:26657"
+  grpc_endpoint: "localhost:9090"
+  gas_price: "0.01uelys"
+  gas_limit: 500000
