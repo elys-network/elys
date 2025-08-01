@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/elys-network/elys/indexer/internal/models"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 // CacheInterface defines the cache operations

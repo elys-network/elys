@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: elys_indexer
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./sql:/docker-entrypoint-initdb.d
     ports:
       - "5433:5432"
     healthcheck:
@@ -35,8 +35,8 @@ services:
 
   indexer:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: indexer/Dockerfile
     container_name: elys_indexer
     depends_on:
       postgres:
@@ -46,7 +46,7 @@ services:
     environment:
       - CONFIG_PATH=/app/config.yaml
     volumes:
-      - ./config.yaml:/app/config.yaml:ro
+      - ./config.docker.yaml:/app/config.yaml:ro
     ports:
       - "8080:8080"  # WebSocket server
       - "9090:9090"  # Metrics

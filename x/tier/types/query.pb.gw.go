@@ -1586,37 +1586,37 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "membershiptier", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "membershiptier", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Portfolio_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "membershiptier", "portfolio", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Portfolio_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "membershiptier", "portfolio", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PortfolioAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "membershiptier", "portfolio"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PortfolioAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "membershiptier", "portfolio"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CalculateDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "membershiptier", "calculate_discount", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_CalculateDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "membershiptier", "calculate_discount", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LeverageLpTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "leverage_lp_total", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LeverageLpTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "leverage_lp_total", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_RewardsTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "rewards_total", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RewardsTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "rewards_total", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_StakedPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "staked_pool", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_StakedPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "staked_pool", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Perpetual_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "perpetual", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Perpetual_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "perpetual", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LiquidTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "liquid_total", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidTotal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "liquid_total", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LockedOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "locked_order", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LockedOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "locked_order", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetAmmPrice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tier", "get_amm_price", "denom", "decimal"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetAmmPrice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tier", "get_amm_price", "denom", "decimal"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetConsolidatedPrice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "get_consolidated_price", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetConsolidatedPrice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "get_consolidated_price", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Staked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "staked", "user"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Staked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "staked", "user"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetUsersPoolData_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tier", "get_users_pool_data"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetUsersPoolData_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tier", "get_users_pool_data"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetAllPrices_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tier", "get_all_prices"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetAllPrices_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tier", "get_all_prices"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetOraclePrices_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "get_oracle_prices", "denoms"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetOraclePrices_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tier", "get_oracle_prices", "denoms"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

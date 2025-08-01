@@ -3,10 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"time"
-
 	"github.com/elys-network/elys/indexer/internal/models"
 	"github.com/shopspring/decimal"
 )

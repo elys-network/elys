@@ -23,7 +23,7 @@ clean:
 
 # Docker commands
 docker-build:
-	docker build -t $(DOCKER_IMAGE) .
+	docker build -t $(DOCKER_IMAGE) -f Dockerfile ..
 
 docker-up:
 	docker-compose up -d

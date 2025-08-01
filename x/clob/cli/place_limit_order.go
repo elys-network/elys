@@ -49,12 +49,18 @@ func CmdPlaceLimitOrder() *cobra.Command {
 				return errors.New("invalid order type")
 			}
 
+			isolatedOrder, err := cmd.Flags().GetBool(FlagIsolatedOrder)
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgPlaceLimitOrder{
 				Creator:      clientCtx.GetFromAddress().String(),
 				MarketId:     marketId,
 				BaseQuantity: quantity,
 				OrderType:    orderType,
 				Price:        price,
+				IsIsolated:   isolatedOrder,
 			}
 
 			if err = msg.ValidateBasic(); err != nil {
@@ -65,6 +71,8 @@ func CmdPlaceLimitOrder() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().Bool(FlagIsolatedOrder, true, "place an isolated order")
 
 	return cmd
 }

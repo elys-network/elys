@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/elys-network/elys/indexer/internal/models"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/shopspring/decimal"
 )
 
@@ -28,7 +28,7 @@ func (c *Cache) AddCLOBOrderToBook(ctx context.Context, order *models.CLOBOrder)
 	}
 
 	// Add to sorted set
-	if err := c.client.ZAdd(ctx, key, &redis.Z{
+	if err := c.client.ZAdd(ctx, key, redis.Z{
 		Score:  score,
 		Member: order.OrderID,
 	}).Err(); err != nil {
@@ -36,7 +36,6 @@ func (c *Cache) AddCLOBOrderToBook(ctx context.Context, order *models.CLOBOrder)
 	}
 
 	// Store order details
-	orderKey := fmt.Sprintf("clob:order:%d", order.OrderID)
 	if err := c.SetCLOBOrder(ctx, order); err != nil {
 		return err
 	}

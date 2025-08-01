@@ -1041,23 +1041,23 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AllMarkets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "all-markets"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllMarkets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "all-markets"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Market_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "market-info", "market_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Market_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "market-info", "market_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OrderBook_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "order-book", "market_id", "is_buy"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OrderBook_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "order-book", "market_id", "is_buy"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AllPerpetualADL_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "all-perpetual-adl"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllPerpetualADL_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "clob", "all-perpetual-adl"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SubAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "sub-accounts", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SubAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "sub-accounts", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OwnerPerpetuals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "owner-perpetuals", "address", "sub_account_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OwnerPerpetuals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "owner-perpetuals", "address", "sub_account_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OwnerPerpetualOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "owner-perpetual-order", "address", "sub_account_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OwnerPerpetualOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "clob", "owner-perpetual-order", "address", "sub_account_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AllPerpetuals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "all-perpetuals-with-liquidation-price", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllPerpetuals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "clob", "all-perpetuals-with-liquidation-price", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

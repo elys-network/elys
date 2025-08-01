@@ -64,10 +64,10 @@ service Query {
 
   // if market_id is 0, it will return all perpetual else it will return
   // perpetual for the specified market_id
-  rpc AllPerpetuals(
-    AllPerpetualsRequest) returns (AllPerpetualsResponse) {
+  rpc AllPerpetuals(AllPerpetualsRequest) returns (AllPerpetualsResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/clob/all-perpetuals-with-liquidation-price/{pagination.key}";
+        "/elys-network/elys/clob/all-perpetuals-with-liquidation-price/"
+        "{pagination.key}";
   }
 }
 
@@ -80,9 +80,17 @@ message SubAccountsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+message SubAccountWithData {
+  SubAccount subAccount = 1 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin trading_account_balance = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
 message SubAccountsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 1;
-  repeated SubAccount subAccounts = 2 [ (gogoproto.nullable) = false ];
+  repeated SubAccountWithData results = 2 [ (gogoproto.nullable) = false ];
 }
 
 message OwnerPerpetualsRequest {

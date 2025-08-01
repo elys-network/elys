@@ -407,7 +407,9 @@ func (i *Indexer) processEvent(ctx context.Context, tx *sql.Tx, event interface{
 		i.publishCLOBPositionUpdate(ctx, e, "opened")
 
 	case *events.CLOBOrderUpdate:
-		if err := i.db.UpdateCLOBOrderStatus(ctx, e.OrderID, e.Status, e.FilledQuantity, e.RemainingQty); err != nil {
+		// For status updates without execution details, use zero values for filled/remaining quantities
+		// These will be updated separately when execution events are received
+		if err := i.db.UpdateCLOBOrderStatus(ctx, e.OrderID, e.Status, decimal.Zero, decimal.Zero); err != nil {
 			return err
 		}
 		// Update cache
@@ -440,7 +442,7 @@ func (i *Indexer) processEvent(ctx context.Context, tx *sql.Tx, event interface{
 		if e.NewUnrealizedPnL != nil {
 			updates["unrealized_pnl"] = e.NewUnrealizedPnL.String()
 		}
-		
+
 		if e.Action == "closed" && e.ClosePrice != nil && e.RealizedPnL != nil {
 			if err := i.db.CloseCLOBPosition(ctx, e.PositionID, *e.ClosePrice, *e.RealizedPnL); err != nil {
 				return err
@@ -591,7 +593,7 @@ func (i *Indexer) aggregateCLOBOrderBook(ctx context.Context, marketID uint64) e
 
 	for _, order := range orders {
 		priceKey := order.Price.String()
-		
+
 		if order.OrderType == models.CLOBOrderTypeLimitBuy {
 			if level, exists := bidsByPrice[priceKey]; exists {
 				level.Quantity = level.Quantity.Add(order.RemainingAmount)

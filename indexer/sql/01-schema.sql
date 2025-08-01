@@ -150,5 +150,4 @@ INSERT INTO indexer_state (last_processed_height, last_processed_time, updated_a
 VALUES (0, NOW(), NOW()) 
 ON CONFLICT DO NOTHING;
 
--- Include CLOB schema
-\i clob_schema.sql
+-- CLOB schema will be loaded separately as 02-clob_schema.sql

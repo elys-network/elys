@@ -1,16 +1,19 @@
 # Build stage
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 RUN apk add --no-cache git make
 
-WORKDIR /app
+# Create the expected directory structure for the replace directive
+WORKDIR /workspace
 
-# Copy go mod files
-COPY go.mod go.sum ./
+# Copy the entire elys project to maintain the correct relative paths
+COPY . ./elys
+
+# Change to indexer directory
+WORKDIR /workspace/elys/indexer
+
+# Download dependencies
 RUN go mod download
-
-# Copy source code
-COPY . .
 
 # Build the binary
 RUN go build -o elys-indexer ./cmd/indexer
@@ -23,7 +26,7 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /app
 
 # Copy the binary from builder
-COPY --from=builder /app/elys-indexer /app/elys-indexer
+COPY --from=builder /workspace/elys/indexer/elys-indexer /app/elys-indexer
 
 # Create non-root user
 RUN addgroup -g 1000 -S indexer && \

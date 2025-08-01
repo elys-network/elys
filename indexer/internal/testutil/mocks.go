@@ -11,8 +11,8 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/indexer/internal/models"
-	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 )
 
 // MockCache provides a mock implementation of the cache.Cache interface

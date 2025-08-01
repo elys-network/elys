@@ -24,7 +24,7 @@ func (k Keeper) SubAccounts(goCtx context.Context, req *types.SubAccountsRequest
 
 	pageRes, err := query.Paginate(prefixStore, req.Pagination, func(key []byte, value []byte) error {
 		var val types.SubAccount
-		if err := k.cdc.Unmarshal(value, &val); err != nil {
+		if err = k.cdc.Unmarshal(value, &val); err != nil {
 			return err
 		}
 
@@ -35,5 +35,14 @@ func (k Keeper) SubAccounts(goCtx context.Context, req *types.SubAccountsRequest
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.SubAccountsResponse{SubAccounts: list, Pagination: pageRes}, nil
+	result := make([]types.SubAccountWithData, len(list))
+	for i, subAccount := range list {
+		balance := k.GetSubAccountBalance(ctx, subAccount)
+		result[i] = types.SubAccountWithData{
+			SubAccount:            subAccount,
+			TradingAccountBalance: balance,
+		}
+	}
+
+	return &types.SubAccountsResponse{Results: result, Pagination: pageRes}, nil
 }

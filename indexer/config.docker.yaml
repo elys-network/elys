@@ -1,0 +1,53 @@
+# Elys Chain Indexer Configuration for Docker
+
+chain:
+  rpc_endpoint: "http://host.docker.internal:26657"  # Use host.docker.internal to connect to host
+  grpc_endpoint: "host.docker.internal:9090"
+  chain_id: "elys-1"
+  start_height: 0 # 0 means start from latest
+  poll_interval: "1s"
+  max_retries: 5
+  retry_delay: "5s"
+  batch_size: 100
+
+database:
+  host: "postgres"  # Use service name from docker-compose
+  port: 5432
+  user: "indexer"
+  password: "user123"  # Match password in docker-compose
+  database: "elys_indexer"
+  ssl_mode: "disable"
+  max_open_conns: 25
+  max_idle_conns: 10
+  conn_max_lifetime: "1h"
+
+redis:
+  addr: "redis:6379"  # Use service name from docker-compose
+  password: "foobared"  # No password set in docker-compose
+  db: 0
+  max_retries: 3
+  dial_timeout: "5s"
+  read_timeout: "3s"
+  write_timeout: "3s"
+  pool_size: 10
+  min_idle_conns: 5
+  max_conn_age: "0"
+  pool_timeout: "4s"
+  idle_timeout: "5m"
+
+websocket:
+  listen_addr: ":8080"
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+  max_message_size: 512000
+  write_timeout: "10s"
+  pong_timeout: "60s"
+  ping_interval: "54s"
+  max_connections: 1000
+
+indexer:
+  worker_count: 4
+  event_buffer_size: 1000
+  order_book_update_interval: "1s"
+  metrics_enabled: true
+  metrics_port: 9090

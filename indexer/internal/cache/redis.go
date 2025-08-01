@@ -341,3 +341,31 @@ func (c *Cache) BatchSetOrders(ctx context.Context, orders interface{}) error {
 	_, err := pipe.Exec(ctx)
 	return err
 }
+
+// Basic cache operations to implement CacheInterface
+
+// Get retrieves a value from the cache by key
+func (c *Cache) Get(ctx context.Context, key string) (interface{}, error) {
+	result, err := c.client.Get(ctx, key).Result()
+	if err == redis.Nil {
+		return nil, nil
+	}
+	return result, err
+}
+
+// Set stores a value in the cache with the specified expiration
+func (c *Cache) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Errorf("failed to marshal value: %w", err)
+	}
+	return c.client.Set(ctx, key, data, expiration).Err()
+}
+
+// Delete removes one or more keys from the cache
+func (c *Cache) Delete(ctx context.Context, keys ...string) error {
+	if len(keys) == 0 {
+		return nil
+	}
+	return c.client.Del(ctx, keys...).Err()
+}
