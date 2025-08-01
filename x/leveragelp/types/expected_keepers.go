@@ -37,6 +37,8 @@ type AmmKeeper interface {
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdkmath.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error)
 	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation, applyWeightBreakingFee bool) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error)
 	OnCollectFee(ctx sdk.Context, pool ammtypes.Pool, coins sdk.Coins) error
+	TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, coins sdk.Coin) error
+	TrackSlippage(ctx sdk.Context, poolId uint64, coins sdk.Coin) error
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

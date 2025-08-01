@@ -183,9 +183,20 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, weightBreakingFeePortion)
 		coinsToAmmPool := coinsForAmm.Sub(coinsToAmmRebalancer...)
 
+		// Track weight breaking fee
+		for _, coin := range coinsToAmmPool {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+		}
+
 		// 2. slippageFeePortion
 		slippageFee := slippageValue.Quo(totalFeeValue)
 		coinsForSlippage := ammkeeper.PortionCoins(coinsForAmm, slippageFee)
+
+		// Track slippage fee
+		for _, coin := range coinsForSlippage {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+			k.amm.TrackSlippage(ctx, position.AmmPoolId, coin)
+		}
 
 		// Very important to fetch this again, Updating ammPool
 		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
