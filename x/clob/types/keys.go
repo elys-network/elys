@@ -82,8 +82,8 @@ func GetPerpetualOwnerKey(addr sdk.AccAddress, subAccountId, marketId, perpetual
 	return key
 }
 
-func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, height uint64) []byte {
-	return append(PerpetualOrderPrefix, NewOrderKey(marketId, orderType, price, height).KeyWithoutPrefix()...)
+func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64) []byte {
+	return append(PerpetualOrderPrefix, NewOrderKey(marketId, orderType, price, counter).KeyWithoutPrefix()...)
 }
 
 func GetPerpetualOrderBookIteratorKey(marketId uint64, long bool) []byte {

@@ -67,5 +67,7 @@ var (
 	ErrNotLiquidatable = errorsmod.Register(ModuleName, 39, "position not liquidatable")
 
 	// Order errors
-	ErrOrderNotFound = errorsmod.Register(ModuleName, 40, "order not found")
+	ErrOrderNotFound   = errorsmod.Register(ModuleName, 40, "order not found")
+	ErrNoOrdersToMatch = errorsmod.Register(ModuleName, 41, "no orders to match")
+	ErrInvalidMarket   = errorsmod.Register(ModuleName, 42, "invalid market")
 )

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -178,6 +179,22 @@ func (msg MsgWithdraw) ValidateBasic() error {
 	// Check for positive amount
 	if msg.Coin.Amount.IsNil() || !msg.Coin.Amount.IsPositive() {
 		return errorsmod.Wrapf(ErrInvalidCoin, "coin amount must be positive")
+	}
+
+	return nil
+}
+
+func (msg MsgMatchAndExecuteOrders) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		return errorsmod.Wrapf(ErrInvalidAddress, "invalid sender address: %s", err)
+	}
+
+	if len(msg.MarketIds) == 0 {
+		return errors.New("market ids array cannot be empty")
+	}
+
+	if msg.Limit > 100 {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "limit must be less than 100")
 	}
 
 	return nil

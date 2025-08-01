@@ -99,7 +99,10 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	subAccount.TradeNounce++
 	k.SetSubAccount(ctx, subAccount)
 
-	k.SetPerpetualOrder(ctx, order)
+	err = k.SetPerpetualOrder(ctx, order)
+	if err != nil {
+		return nil, err
+	}
 	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
