@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -55,6 +55,7 @@ type PerpetualKeeper interface {
 }
 
 type OracleKeeper interface {
-	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	// Ojo
+	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

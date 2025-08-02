@@ -5,5 +5,5 @@ import (
 )
 
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	k.UpdateOjoOracleAccountedPool(ctx)
+	//k.UpdateOjoOracleAccountedPool(ctx)
 }

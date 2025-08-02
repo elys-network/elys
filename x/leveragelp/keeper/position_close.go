@@ -4,7 +4,6 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammkeeper "github.com/elys-network/elys/v7/x/amm/keeper"
 	"github.com/elys-network/elys/v7/x/leveragelp/types"
@@ -59,7 +58,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	// Check for division by zero
 	if ammPoolTVL.IsZero() {
-		return math.LegacyDec{}, sdkmath.Int{}, nil, sdkmath.Int{}, nil, osmomath.BigDec{}, false, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.BigDec{}, fmt.Errorf("amm pool %d has zero TVL", position.AmmPoolId)
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("amm pool %d has zero TVL", position.AmmPoolId)
 	}
 	ammPoolTotalShareAmountDec := osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount)
 	lpSharesForRepay := repayValue.Mul(ammPoolTotalShareAmountDec).Quo(ammPoolTVL).Ceil().Dec().TruncateInt() // round up

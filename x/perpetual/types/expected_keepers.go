@@ -8,7 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	atypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -69,8 +69,4 @@ type OracleKeeper interface {
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
-	SetPool(ctx sdk.Context, pool oracletypes.Pool)
-	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
-	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
-	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 }
