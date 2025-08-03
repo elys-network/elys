@@ -771,19 +771,19 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingSpotOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingSpotOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingSpotOrderAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingSpotOrderAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingPerpetualOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order", "owner_address", "pool_id", "order_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingPerpetualOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order", "owner_address", "pool_id", "order_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingPerpetualOrderAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingPerpetualOrderAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingPerpetualOrderForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order_for_address", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingPerpetualOrderForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_perpetual_order_for_address", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PendingSpotOrderForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order_for_address", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PendingSpotOrderForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tradeshield", "pending_spot_order_for_address", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
