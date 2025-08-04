@@ -36,17 +36,17 @@ service Query {
   }
 
   // Queries a list of GetCounter items.
-  rpc GetCounter(CounterRequest) returns (CounterResponse) {
+  rpc QueryPositionCounter(PositionCounterRequest)
+      returns (PositionCounterResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/counter/{pool_id}";
+        "/elys-network/elys/leveragelp/position_counter/{pool_id}";
   }
 
   // Queries a list of GetPositionsForAddress items.
   rpc QueryPositionsForAddress(PositionsForAddressRequest)
       returns (PositionsForAddressResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/positions-for-address/{address}/"
-        "{pagination.key}";
+        "/elys-network/elys/leveragelp/positions-for-address/{address}";
   }
 
   // Queries a list of GetWhitelist items.
@@ -137,20 +137,16 @@ message PositionsByPoolResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message CounterRequest { uint64 pool_id = 1; }
+message PositionCounterRequest { uint64 pool_id = 1; }
 
-message CounterResponse {
+message PositionCounterResponse {
   PositionCounter result = 1 [ (gogoproto.nullable) = false ];
 }
 
-message PositionsForAddressRequest {
-  string address = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
+message PositionsForAddressRequest { string address = 1; }
 
 message PositionsForAddressResponse {
   repeated PositionAndInterest positions = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message WhitelistRequest {
@@ -336,10 +332,7 @@ message QueryCloseEstResponse {
   ];
 }
 
-message QueryCommittedTokensLockedRequest {
-  string address = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
+message QueryCommittedTokensLockedRequest { string address = 1; }
 
 message PositionCommitedToken {
   uint64 amm_pool_id = 1;
@@ -360,5 +353,4 @@ message QueryCommittedTokensLockedResponse {
   string address = 1;
   repeated PositionCommitedToken position_commited_token = 2
       [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }

@@ -12,7 +12,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -40,11 +39,16 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	depositDenom := borrowPool.GetDepositDenom()
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := osmomath.BigDecFromSDKInt(borrowPool.NetAmount.Sub(balance.Amount))
-	borrowRatio := osmomath.ZeroBigDec()
+	borrowRatio := sdkmath.LegacyZeroDec()
 	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.Add(osmomath.BigDecFromDec(msg.Leverage).Mul(osmomath.BigDecFromSDKInt(msg.CollateralAmount))).
-			Quo(borrowPool.GetBigDecNetAmount())
+
+		borrowed := borrowPool.NetAmount.Sub(balance.Amount)
+		borrowRatio = (borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec()))).
+			Quo(borrowPool.NetAmount.ToLegacyDec())
+	}
+
+	if borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
+		return nil, fmt.Errorf("stable stake pool max borrow capacity used up, borrow ratio: %s, max allowed: %s", borrowRatio.String(), borrowPool.MaxLeverageRatio.String())
 	}
 
 	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
@@ -61,10 +65,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrAssetNotSupported, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
-	}
-
-	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
-		return nil, fmt.Errorf("stable stake pool max borrow capacity used up, borrow ratio: %s, max allowed: %s", borrowRatio.String(), borrowPool.MaxLeverageRatio.String())
 	}
 
 	// Check if it is the same direction position for the same trader.
@@ -94,7 +94,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	if k.hooks != nil {
 		// ammPool will have updated values for opening position
-		ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
+		ammPool, found = k.amm.GetPool(ctx, msg.AmmPoolId)
 		if !found {
 			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 		}

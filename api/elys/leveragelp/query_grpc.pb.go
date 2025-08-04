@@ -25,7 +25,7 @@ type QueryClient interface {
 	// Queries a list of GetPositionsByPool items.
 	QueryPositionsByPool(ctx context.Context, in *PositionsByPoolRequest, opts ...grpc.CallOption) (*PositionsByPoolResponse, error)
 	// Queries a list of GetCounter items.
-	GetCounter(ctx context.Context, in *CounterRequest, opts ...grpc.CallOption) (*CounterResponse, error)
+	QueryPositionCounter(ctx context.Context, in *PositionCounterRequest, opts ...grpc.CallOption) (*PositionCounterResponse, error)
 	// Queries a list of GetPositionsForAddress items.
 	QueryPositionsForAddress(ctx context.Context, in *PositionsForAddressRequest, opts ...grpc.CallOption) (*PositionsForAddressResponse, error)
 	// Queries a list of GetWhitelist items.
@@ -84,9 +84,9 @@ func (c *queryClient) QueryPositionsByPool(ctx context.Context, in *PositionsByP
 	return out, nil
 }
 
-func (c *queryClient) GetCounter(ctx context.Context, in *CounterRequest, opts ...grpc.CallOption) (*CounterResponse, error) {
-	out := new(CounterResponse)
-	err := c.cc.Invoke(ctx, "/elys.leveragelp.Query/GetCounter", in, out, opts...)
+func (c *queryClient) QueryPositionCounter(ctx context.Context, in *PositionCounterRequest, opts ...grpc.CallOption) (*PositionCounterResponse, error) {
+	out := new(PositionCounterResponse)
+	err := c.cc.Invoke(ctx, "/elys.leveragelp.Query/QueryPositionCounter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ type QueryServer interface {
 	// Queries a list of GetPositionsByPool items.
 	QueryPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error)
 	// Queries a list of GetCounter items.
-	GetCounter(context.Context, *CounterRequest) (*CounterResponse, error)
+	QueryPositionCounter(context.Context, *PositionCounterRequest) (*PositionCounterResponse, error)
 	// Queries a list of GetPositionsForAddress items.
 	QueryPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error)
 	// Queries a list of GetWhitelist items.
@@ -241,8 +241,8 @@ func (UnimplementedQueryServer) QueryPositions(context.Context, *PositionsReques
 func (UnimplementedQueryServer) QueryPositionsByPool(context.Context, *PositionsByPoolRequest) (*PositionsByPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryPositionsByPool not implemented")
 }
-func (UnimplementedQueryServer) GetCounter(context.Context, *CounterRequest) (*CounterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCounter not implemented")
+func (UnimplementedQueryServer) QueryPositionCounter(context.Context, *PositionCounterRequest) (*PositionCounterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPositionCounter not implemented")
 }
 func (UnimplementedQueryServer) QueryPositionsForAddress(context.Context, *PositionsForAddressRequest) (*PositionsForAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryPositionsForAddress not implemented")
@@ -344,20 +344,20 @@ func _Query_QueryPositionsByPool_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CounterRequest)
+func _Query_QueryPositionCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PositionCounterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetCounter(ctx, in)
+		return srv.(QueryServer).QueryPositionCounter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.leveragelp.Query/GetCounter",
+		FullMethod: "/elys.leveragelp.Query/QueryPositionCounter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetCounter(ctx, req.(*CounterRequest))
+		return srv.(QueryServer).QueryPositionCounter(ctx, req.(*PositionCounterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -580,8 +580,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_QueryPositionsByPool_Handler,
 		},
 		{
-			MethodName: "GetCounter",
-			Handler:    _Query_GetCounter_Handler,
+			MethodName: "QueryPositionCounter",
+			Handler:    _Query_QueryPositionCounter_Handler,
 		},
 		{
 			MethodName: "QueryPositionsForAddress",
