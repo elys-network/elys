@@ -210,9 +210,8 @@ func (suite *KeeperTestSuite) SetupSubAccounts(total uint64, balance sdk.Coins) 
 		subAccountAddress := authtypes.NewModuleAddress("subAccount" + strconv.FormatUint(i, 10))
 
 		subAccount := types.SubAccount{
-			Owner:       subAccountAddress.String(),
-			Id:          MarketId,
-			TradeNounce: 0,
+			Owner: subAccountAddress.String(),
+			Id:    MarketId,
 		}
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, subAccount.GetTradingAccountAddress(), balance)
 		suite.Require().NoError(err)
@@ -394,7 +393,7 @@ func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual, is
 
 // GetPerpetualState gets perpetual via owner mapping
 func (suite *KeeperTestSuite) GetPerpetualState(ownerAddr sdk.AccAddress, marketId uint64) (types.Perpetual, bool) {
-	subAccount := types.SubAccount{Owner: ownerAddr.String(), Id: marketId, TradeNounce: 0}
+	subAccount := types.SubAccount{Owner: ownerAddr.String(), Id: marketId}
 	ownerMapping, found := suite.app.ClobKeeper.CheckAndGetPerpetualOwner(suite.ctx, subAccount, marketId)
 	if !found {
 		return types.Perpetual{}, false

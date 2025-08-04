@@ -32,7 +32,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	filled := math.LegacyZeroDec()
 
 	for ; sellIterator.Valid() && !buyOrderFilled; sellIterator.Next() {
-		var sellOrder types.PerpetualOrder
+		var sellOrder types.Order
 		if err := k.cdc.Unmarshal(sellIterator.Value(), &sellOrder); err != nil {
 			ctx.Logger().Error("failed to unmarshal sell order", "error", err)
 			continue
@@ -64,7 +64,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 			}
 			sellOrdersToDelete = append(sellOrdersToDelete, toDelete)
 		} else {
-			err = k.SetPerpetualOrder(ctx, sellOrder)
+			err = k.SetOrder(ctx, sellOrder)
 			if err != nil {
 				return false, err
 			}
@@ -127,7 +127,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	filled := math.LegacyZeroDec()
 
 	for ; buyIterator.Valid() && !sellOrderFilled; buyIterator.Next() {
-		var buyOrder types.PerpetualOrder
+		var buyOrder types.Order
 		if err := k.cdc.Unmarshal(buyIterator.Value(), &buyOrder); err != nil {
 			ctx.Logger().Error("failed to unmarshal buy order", "error", err)
 			continue
@@ -159,7 +159,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			}
 			buyOrdersToDelete = append(buyOrdersToDelete, toDelete)
 		} else {
-			err = k.SetPerpetualOrder(ctx, buyOrder)
+			err = k.SetOrder(ctx, buyOrder)
 			if err != nil {
 				return false, err
 			}

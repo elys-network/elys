@@ -17,7 +17,7 @@ func (k Keeper) BatchDeleteOrders(ctx sdk.Context, keys []types.PerpetualOrderOw
 	// Delete all orders and their owners in batch
 	for _, key := range keys {
 		// Delete the order
-		orderKey := types.GetPerpetualOrderKey(key.OrderId.MarketId, key.OrderId.OrderType, key.OrderId.PriceTick, key.OrderId.Counter)
+		orderKey := types.GetOrderKey(key.OrderId.MarketId, key.OrderId.OrderType, key.OrderId.PriceTick, key.OrderId.Counter)
 		store.Delete(orderKey)
 
 		// Delete the order owner
@@ -102,7 +102,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 	}
 
 	// Collect orders to match
-	var buyOrders, sellOrders []types.PerpetualOrder
+	var buyOrders, sellOrders []types.Order
 	var buyKeys, sellKeys []types.PerpetualOrderOwner
 	matchCount := 0
 
@@ -111,7 +111,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 	defer buyIterator.Close()
 
 	for ; buyIterator.Valid() && matchCount < maxMatches; buyIterator.Next() {
-		var buyOrder types.PerpetualOrder
+		var buyOrder types.Order
 		if err := k.cdc.Unmarshal(buyIterator.Value(), &buyOrder); err != nil {
 			ctx.Logger().Error("failed to unmarshal buy order", "error", err)
 			continue
@@ -136,7 +136,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 
 	matchCount = 0
 	for ; sellIterator.Valid() && matchCount < maxMatches; sellIterator.Next() {
-		var sellOrder types.PerpetualOrder
+		var sellOrder types.Order
 		if err := k.cdc.Unmarshal(sellIterator.Value(), &sellOrder); err != nil {
 			ctx.Logger().Error("failed to unmarshal sell order", "error", err)
 			continue
@@ -211,13 +211,13 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 		if buyOrder.Filled.Equal(buyOrder.Amount) {
 			ordersToDelete = append(ordersToDelete, buyKeys[i])
 		} else {
-			k.SetPerpetualOrder(ctx, *buyOrder)
+			k.SetOrder(ctx, *buyOrder)
 		}
 
 		if sellOrder.Filled.Equal(sellOrder.Amount) {
 			ordersToDelete = append(ordersToDelete, sellKeys[i])
 		} else {
-			k.SetPerpetualOrder(ctx, *sellOrder)
+			k.SetOrder(ctx, *sellOrder)
 		}
 	}
 

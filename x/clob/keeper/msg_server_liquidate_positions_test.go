@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestLiquidatePositions() {
 				}
 			},
 			orderBookSetup: func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, types.NewPerpetualOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
+				suite.app.ClobKeeper.SetOrder(suite.ctx, types.NewOrder(MarketId, types.OrderType_ORDER_TYPE_LIMIT_BUY, math.LegacyNewDec(94), uint64(suite.ctx.BlockHeight()), counterpartySubAccount.GetOwnerAccAddress(), math.LegacyNewDec(10), math.LegacyZeroDec(), MarketId))
 			},
 			expectedReward:       sdk.NewCoins(sdk.NewCoin(QuoteDenom, math.NewInt(1_000_000))), // 1M reward for each position
 			expectedErrSubstring: "",

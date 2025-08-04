@@ -28,7 +28,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64, limit int64) (to
 		if limit <= 0 {
 			break
 		}
-		var buyOrder types.PerpetualOrder
+		var buyOrder types.Order
 		k.cdc.MustUnmarshal(buyOrderIterator.Value(), &buyOrder)
 
 		sellOrdersExecuted := int64(0)
@@ -83,7 +83,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64, limit int64) (to
 	return totalVolumeValue, ordersProcessed, totalVolume, nil
 }
 
-func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder) (totalVolumeValue math.LegacyDec, tradesExecuted int64, totalTradeVolume math.LegacyDec, buyOrderFilled bool, err error) {
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.Order) (totalVolumeValue math.LegacyDec, tradesExecuted int64, totalTradeVolume math.LegacyDec, buyOrderFilled bool, err error) {
 	totalTradeVolume = math.LegacyZeroDec()
 	totalVolumeValue = math.LegacyZeroDec()
 	buyOrderFilled = false
@@ -108,7 +108,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	stop := false
 
 	for ; sellIterator.Valid() && !buyOrderFilled && !stop; sellIterator.Next() {
-		var sellOrder types.PerpetualOrder
+		var sellOrder types.Order
 		k.cdc.MustUnmarshal(sellIterator.Value(), &sellOrder)
 
 		if sellOrder.IsBuy() {
@@ -148,7 +148,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				}
 				keysToDelete = append(keysToDelete, toDelete)
 			} else {
-				err = k.SetPerpetualOrder(ctx, sellOrder)
+				err = k.SetOrder(ctx, sellOrder)
 				if err != nil {
 					return
 				}
@@ -207,7 +207,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	k.BatchDeleteOrders(ctx, keysToDelete)
 
 	if !buyOrderFilled {
-		err = k.SetPerpetualOrder(ctx, *buyOrder)
+		err = k.SetOrder(ctx, *buyOrder)
 		if err != nil {
 			return
 		}
@@ -235,7 +235,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	return
 }
 
-func getOrderStatus(order *types.PerpetualOrder) string {
+func getOrderStatus(order *types.Order) string {
 	if order.Filled.Equal(order.Amount) {
 		return "filled"
 	} else if order.Filled.IsPositive() {

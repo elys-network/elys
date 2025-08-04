@@ -20,9 +20,8 @@ func (k Keeper) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.Ms
 	subAccount, err := k.GetSubAccount(ctx, sender, types.CrossMarginSubAccountId)
 	if err != nil {
 		subAccount = types.SubAccount{
-			Owner:       msg.Sender,
-			Id:          types.CrossMarginSubAccountId,
-			TradeNounce: 0,
+			Owner: msg.Sender,
+			Id:    types.CrossMarginSubAccountId,
 		}
 		k.SetSubAccount(ctx, subAccount)
 	}

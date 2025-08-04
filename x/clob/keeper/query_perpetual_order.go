@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) OwnerPerpetualOrder(goCtx context.Context, request *types.OwnerPerpetualOrdersRequest) (*types.OwnerPerpetualOrdersResponse, error) {
+func (k Keeper) OwnerOrder(goCtx context.Context, request *types.OwnerOrdersRequest) (*types.OwnerOrdersResponse, error) {
 	if request == nil {
 		return nil, sdkerrors.ErrInvalidRequest
 	}
@@ -23,7 +23,7 @@ func (k Keeper) OwnerPerpetualOrder(goCtx context.Context, request *types.OwnerP
 		return nil, err
 	}
 
-	var orders []types.PerpetualOrder
+	var orders []types.Order
 	var prefixStore prefix.Store
 
 	if request.SubAccountId == 0 {
@@ -54,5 +54,5 @@ func (k Keeper) OwnerPerpetualOrder(goCtx context.Context, request *types.OwnerP
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.OwnerPerpetualOrdersResponse{Orders: orders, Pagination: pageRes}, nil
+	return &types.OwnerOrdersResponse{Orders: orders, Pagination: pageRes}, nil
 }

@@ -8,33 +8,33 @@ import (
 	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderId types.OrderId) (types.PerpetualOrder, bool) {
-	key := types.GetPerpetualOrderKey(orderId.MarketId, orderId.OrderType, orderId.PriceTick, orderId.Counter)
+func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderId types.OrderId) (types.Order, bool) {
+	key := types.GetOrderKey(orderId.MarketId, orderId.OrderType, orderId.PriceTick, orderId.Counter)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
 	if b == nil {
-		return types.PerpetualOrder{}, false
+		return types.Order{}, false
 	}
 
-	var val types.PerpetualOrder
+	var val types.Order
 	if err := k.cdc.Unmarshal(b, &val); err != nil {
 		ctx.Logger().Error("failed to unmarshal perpetual order", "key", orderId, "error", err)
-		return types.PerpetualOrder{}, false
+		return types.Order{}, false
 	}
 	return val, true
 }
 
-func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
+func (k Keeper) GetAllOrders(ctx sdk.Context) []types.Order {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualOrderPrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
-	var list []types.PerpetualOrder
+	var list []types.Order
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.PerpetualOrder
+		var val types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -42,10 +42,10 @@ func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
 	return list
 }
 
-func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error {
+func (k Keeper) SetOrder(ctx sdk.Context, v types.Order) error {
 	if v.GetOrderType() == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.GetOrderType() == types.OrderType_ORDER_TYPE_LIMIT_BUY || v.GetPriceTick() <= 0 {
 		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-		key := types.GetPerpetualOrderKey(v.GetMarketId(), v.GetOrderType(), v.GetPriceTick(), v.GetCounter())
+		key := types.GetOrderKey(v.GetMarketId(), v.GetOrderType(), v.GetPriceTick(), v.GetCounter())
 		b := k.cdc.MustMarshal(&v)
 		store.Set(key, b)
 		return nil
@@ -56,26 +56,26 @@ func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error
 
 func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderId.MarketId, perpetualOrderOwner.OrderId.OrderType, perpetualOrderOwner.OrderId.PriceTick, perpetualOrderOwner.OrderId.Counter)
+	key := types.GetOrderKey(perpetualOrderOwner.OrderId.MarketId, perpetualOrderOwner.OrderId.OrderType, perpetualOrderOwner.OrderId.PriceTick, perpetualOrderOwner.OrderId.Counter)
 	store.Delete(key)
 
 	k.DeleteOrderOwner(ctx, perpetualOrderOwner)
 }
 
 func (k Keeper) GetBuyOrderIterator(ctx sdk.Context, marketId uint64) storetypes.Iterator {
-	key := types.GetPerpetualOrderBookIteratorKey(marketId, true)
+	key := types.GetOrderBookIteratorKey(marketId, true)
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 	return storetypes.KVStoreReversePrefixIterator(store, []byte{})
 
 }
 
 func (k Keeper) GetSellOrderIterator(ctx sdk.Context, marketId uint64) storetypes.Iterator {
-	key := types.GetPerpetualOrderBookIteratorKey(marketId, false)
+	key := types.GetOrderBookIteratorKey(marketId, false)
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 	return storetypes.KVStorePrefixIterator(store, []byte{})
 }
 
-func (k Keeper) RequiredBalanceForOrder(ctx sdk.Context, order types.PerpetualOrder) (sdk.Coin, error) {
+func (k Keeper) RequiredBalanceForOrder(ctx sdk.Context, order types.Order) (sdk.Coin, error) {
 	market, err := k.GetPerpetualMarket(ctx, order.GetMarketId())
 	if err != nil {
 		return sdk.Coin{}, err

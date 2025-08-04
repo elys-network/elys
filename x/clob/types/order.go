@@ -2,12 +2,23 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"github.com/zyedidia/generic/list"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const PriceMultiplier int64 = 1_000_000
+
+type LevelOrder = list.Node[Order]
+
+// Level represents a price level on the CLOB.
+type Level struct {
+	// LevelOrders represents a doubly-linked list of `ClobOrder`s sorted in chronical
+	// order (ascending). Note that this should always be non-`nil`, since the
+	// `Level` should not exist if there are no elements in the linked list.
+	LevelOrders list.List[Order]
+}
 
 func NewOrderId(marketId uint64, orderType OrderType, priceTick PriceTick, counter uint64) OrderId {
 	return OrderId{
@@ -36,9 +47,9 @@ func (o OrderId) KeyWithoutPrefix() []byte {
 	return key
 }
 
-func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec, subAccountId uint64) PerpetualOrder {
+func NewOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec, subAccountId uint64) Order {
 	orderId := NewOrderId(marketId, orderType, PriceTick(price.MulInt64(PriceMultiplier).TruncateInt64()), counter)
-	return PerpetualOrder{
+	return Order{
 		OrderId:      orderId,
 		Owner:        owner.String(),
 		Amount:       amount,
@@ -47,23 +58,23 @@ func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.Legac
 	}
 }
 
-func (order PerpetualOrder) GetMarketId() uint64 {
+func (order Order) GetMarketId() uint64 {
 	return order.OrderId.MarketId
 }
 
-func (order PerpetualOrder) GetOrderType() OrderType {
+func (order Order) GetOrderType() OrderType {
 	return order.OrderId.OrderType
 }
 
-func (order PerpetualOrder) GetPriceTick() PriceTick {
+func (order Order) GetPriceTick() PriceTick {
 	return order.OrderId.PriceTick
 }
 
-func (order PerpetualOrder) GetCounter() uint64 {
+func (order Order) GetCounter() uint64 {
 	return order.OrderId.Counter
 }
 
-func (order PerpetualOrder) IsBuy() bool {
+func (order Order) IsBuy() bool {
 	return IsBuy(order.GetOrderType())
 }
 
@@ -76,14 +87,14 @@ func IsBuy(orderType OrderType) bool {
 	}
 }
 
-func (order PerpetualOrder) GetPrice() sdkmath.LegacyDec {
+func (order Order) GetPrice() sdkmath.LegacyDec {
 	return order.OrderId.PriceTick.ToPrice()
 }
 
-func (order PerpetualOrder) GetOwnerAccAddress() sdk.AccAddress {
+func (order Order) GetOwnerAccAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(order.Owner)
 }
 
-func (order PerpetualOrder) UnfilledValue() sdkmath.LegacyDec {
+func (order Order) UnfilledValue() sdkmath.LegacyDec {
 	return order.GetPrice().Mul(order.Amount.Sub(order.Filled))
 }

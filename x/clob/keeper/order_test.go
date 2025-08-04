@@ -8,7 +8,7 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestBuyOrderBook() {
-	order1 := types.PerpetualOrder{
+	order1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  MarketId,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -39,12 +39,12 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 	order4.Owner = authtypes.NewModuleAddress("4").String()
 	order4.Amount = math.LegacyNewDec(90)
 
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order2)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order4)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order1)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order3)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order2)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order4)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order1)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order3)
 
-	expectedList := []types.PerpetualOrder{order4, order2, order3, order1}
+	expectedList := []types.Order{order4, order2, order3, order1}
 
 	iterator := suite.app.ClobKeeper.GetBuyOrderIterator(suite.ctx, MarketId)
 	defer iterator.Close()
@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 }
 
 func (suite *KeeperTestSuite) TestSellOrderBook() {
-	order1 := types.PerpetualOrder{
+	order1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  MarketId,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -96,12 +96,12 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 	order4.Owner = authtypes.NewModuleAddress("4").String()
 	order4.Amount = math.LegacyNewDec(90)
 
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order2)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order4)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order1)
-	suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, order3)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order2)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order4)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order1)
+	suite.app.ClobKeeper.SetOrder(suite.ctx, order3)
 
-	expectedList := []types.PerpetualOrder{order1, order2, order3, order4}
+	expectedList := []types.Order{order1, order2, order3, order4}
 
 	iterator := suite.app.ClobKeeper.GetSellOrderIterator(suite.ctx, MarketId)
 	defer iterator.Close()
@@ -124,7 +124,7 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 func (suite *KeeperTestSuite) TestRequiredBalanceForOrder() {
 	suite.SetupTest()
 	suite.CreateMarketWithFees(BaseDenom)
-	order1 := types.PerpetualOrder{
+	order1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  MarketId,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,

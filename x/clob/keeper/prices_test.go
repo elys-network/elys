@@ -18,7 +18,7 @@ func (suite *KeeperTestSuite) TestSetTwapPrices() {
 }
 
 func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
-	sell1 := types.PerpetualOrder{
+	sell1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -29,7 +29,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	sell2 := types.PerpetualOrder{
+	sell2 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -41,7 +41,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	sell3 := types.PerpetualOrder{
+	sell3 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -62,21 +62,21 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 			"first price 10.27",
 			sell2.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell2)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell2)
 			},
 		},
 		{
 			"2nd price 10.23",
 			sell1.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell1)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell1)
 			},
 		},
 		{
 			"3rd price is set but price 10.23",
 			sell1.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell3)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell3)
 			},
 		},
 	}
@@ -91,7 +91,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 }
 
 func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
-	buy1 := types.PerpetualOrder{
+	buy1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -102,7 +102,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	buy2 := types.PerpetualOrder{
+	buy2 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -113,7 +113,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	buy3 := types.PerpetualOrder{
+	buy3 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -134,21 +134,21 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 			"first price 10.13",
 			buy1.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy1)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy1)
 			},
 		},
 		{
 			"2nd price 10.17",
 			buy2.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy2)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy2)
 			},
 		},
 		{
 			"3rd price is set but price 10.17",
 			buy2.GetPrice(),
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy3)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy3)
 			},
 		},
 	}
@@ -163,7 +163,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 }
 
 func (suite *KeeperTestSuite) TestGetMidPrice() {
-	sell1 := types.PerpetualOrder{
+	sell1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -174,7 +174,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	sell2 := types.PerpetualOrder{
+	sell2 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -185,7 +185,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	sell3 := types.PerpetualOrder{
+	sell3 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
@@ -197,7 +197,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Filled: math.LegacyZeroDec(),
 	}
 
-	buy1 := types.PerpetualOrder{
+	buy1 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	buy2 := types.PerpetualOrder{
+	buy2 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -219,7 +219,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Amount: math.LegacyNewDec(100),
 		Filled: math.LegacyZeroDec(),
 	}
-	buy3 := types.PerpetualOrder{
+	buy3 := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  1,
 			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
@@ -242,7 +242,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyZeroDec(),
 			"one side of the orderbook is empty",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy1)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy1)
 			},
 		},
 		{
@@ -250,7 +250,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyNewDecWithPrec(1018, 2),
 			"",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell1)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell1)
 			},
 		},
 		{
@@ -258,7 +258,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyNewDecWithPrec(1018, 2),
 			"",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell2)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell2)
 			},
 		},
 		{
@@ -266,7 +266,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyNewDecWithPrec(1018, 2),
 			"",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy2)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy2)
 			},
 		},
 		{
@@ -274,7 +274,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyNewDecWithPrec(10165, 3),
 			"",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell3)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, sell3)
 			},
 		},
 		{
@@ -282,7 +282,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			math.LegacyNewDecWithPrec(102, 1),
 			"",
 			func() {
-				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy3)
+				suite.app.ClobKeeper.SetOrder(suite.ctx, buy3)
 			},
 		},
 	}

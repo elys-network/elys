@@ -217,7 +217,7 @@ func (k Keeper) GetHighestBuyPrice(ctx sdk.Context, marketId uint64) math.Legacy
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.PerpetualOrder
+		var val types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		return val.GetPrice()
 	}
@@ -230,7 +230,7 @@ func (k Keeper) GetLowestSellPrice(ctx sdk.Context, marketId uint64) math.Legacy
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.PerpetualOrder
+		var val types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		return val.GetPrice()
 	}

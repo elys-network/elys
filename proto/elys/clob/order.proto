@@ -24,7 +24,7 @@ message OrderId {
   uint64 counter = 4;
 }
 
-message PerpetualOrder {
+message Order {
   OrderId order_id = 1 [ (gogoproto.nullable) = false ];
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 sub_account_id = 3;

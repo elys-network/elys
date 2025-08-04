@@ -27,7 +27,7 @@ type QueryClient interface {
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
-	OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error)
+	OwnerOrder(ctx context.Context, in *OwnerOrdersRequest, opts ...grpc.CallOption) (*OwnerOrdersResponse, error)
 	// if market_id is 0, it will return all perpetual else it will return
 	// perpetual for the specified market_id
 	AllPerpetuals(ctx context.Context, in *AllPerpetualsRequest, opts ...grpc.CallOption) (*AllPerpetualsResponse, error)
@@ -104,9 +104,9 @@ func (c *queryClient) OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRe
 	return out, nil
 }
 
-func (c *queryClient) OwnerPerpetualOrder(ctx context.Context, in *OwnerPerpetualOrdersRequest, opts ...grpc.CallOption) (*OwnerPerpetualOrdersResponse, error) {
-	out := new(OwnerPerpetualOrdersResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerPerpetualOrder", in, out, opts...)
+func (c *queryClient) OwnerOrder(ctx context.Context, in *OwnerOrdersRequest, opts ...grpc.CallOption) (*OwnerOrdersResponse, error) {
+	out := new(OwnerOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ type QueryServer interface {
 	// set sub_account_id to 0 to get for all subaccounts
 	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
 	// set sub_account_id to 0 to get for all subaccounts
-	OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error)
+	OwnerOrder(context.Context, *OwnerOrdersRequest) (*OwnerOrdersResponse, error)
 	// if market_id is 0, it will return all perpetual else it will return
 	// perpetual for the specified market_id
 	AllPerpetuals(context.Context, *AllPerpetualsRequest) (*AllPerpetualsResponse, error)
@@ -167,8 +167,8 @@ func (UnimplementedQueryServer) SubAccounts(context.Context, *SubAccountsRequest
 func (UnimplementedQueryServer) OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetuals not implemented")
 }
-func (UnimplementedQueryServer) OwnerPerpetualOrder(context.Context, *OwnerPerpetualOrdersRequest) (*OwnerPerpetualOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetualOrder not implemented")
+func (UnimplementedQueryServer) OwnerOrder(context.Context, *OwnerOrdersRequest) (*OwnerOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OwnerOrder not implemented")
 }
 func (UnimplementedQueryServer) AllPerpetuals(context.Context, *AllPerpetualsRequest) (*AllPerpetualsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllPerpetuals not implemented")
@@ -312,20 +312,20 @@ func _Query_OwnerPerpetuals_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_OwnerPerpetualOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OwnerPerpetualOrdersRequest)
+func _Query_OwnerOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OwnerOrdersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).OwnerPerpetualOrder(ctx, in)
+		return srv.(QueryServer).OwnerOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.clob.Query/OwnerPerpetualOrder",
+		FullMethod: "/elys.clob.Query/OwnerOrder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).OwnerPerpetualOrder(ctx, req.(*OwnerPerpetualOrdersRequest))
+		return srv.(QueryServer).OwnerOrder(ctx, req.(*OwnerOrdersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,8 +384,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_OwnerPerpetuals_Handler,
 		},
 		{
-			MethodName: "OwnerPerpetualOrder",
-			Handler:    _Query_OwnerPerpetualOrder_Handler,
+			MethodName: "OwnerOrder",
+			Handler:    _Query_OwnerOrder_Handler,
 		},
 		{
 			MethodName: "AllPerpetuals",

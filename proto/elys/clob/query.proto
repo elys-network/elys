@@ -55,10 +55,9 @@ service Query {
   }
 
   // set sub_account_id to 0 to get for all subaccounts
-  rpc OwnerPerpetualOrder(OwnerPerpetualOrdersRequest)
-      returns (OwnerPerpetualOrdersResponse) {
+  rpc OwnerOrder(OwnerOrdersRequest) returns (OwnerOrdersResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/clob/owner-perpetual-order/{address}/"
+        "/elys-network/elys/clob/owner-order/{address}/"
         "{sub_account_id}";
   }
 
@@ -104,14 +103,14 @@ message OwnerPerpetualsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message OwnerPerpetualOrdersRequest {
+message OwnerOrdersRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
   string address = 2;
   uint64 sub_account_id = 3;
 }
 
-message OwnerPerpetualOrdersResponse {
-  repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
+message OwnerOrdersResponse {
+  repeated Order orders = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -122,7 +121,7 @@ message OrderBookRequest {
 }
 
 message OrderBookResponse {
-  repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
+  repeated Order orders = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

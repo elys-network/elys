@@ -37,9 +37,8 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		subAccountId = market.Id
 	}
 	crossMarginAccount := types.SubAccount{
-		Owner:       msg.Creator,
-		Id:          types.CrossMarginSubAccountId,
-		TradeNounce: 0,
+		Owner: msg.Creator,
+		Id:    types.CrossMarginSubAccountId,
 	}
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -49,9 +48,8 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	if err != nil {
 		if errors.Is(err, types.ErrSubAccountNotFound) {
 			subAccount = types.SubAccount{
-				Owner:       msg.Creator,
-				Id:          subAccountId,
-				TradeNounce: 0,
+				Owner: msg.Creator,
+				Id:    subAccountId,
 			}
 		} else {
 			return nil, err
@@ -64,7 +62,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	}
 
 	counter := k.GetAndIncrementOrderCounter(ctx, market.Id)
-	order := types.PerpetualOrder{
+	order := types.Order{
 		OrderId: types.OrderId{
 			MarketId:  market.Id,
 			OrderType: msg.OrderType,
@@ -98,10 +96,9 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		}
 	}
 
-	subAccount.TradeNounce++
 	k.SetSubAccount(ctx, subAccount)
 
-	err = k.SetPerpetualOrder(ctx, order)
+	err = k.SetOrder(ctx, order)
 	if err != nil {
 		return nil, err
 	}
@@ -176,9 +173,8 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		subAccountId = market.Id
 	}
 	crossMarginAccount := types.SubAccount{
-		Owner:       msg.Creator,
-		Id:          types.CrossMarginSubAccountId,
-		TradeNounce: 0,
+		Owner: msg.Creator,
+		Id:    types.CrossMarginSubAccountId,
 	}
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -188,9 +184,8 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 	if err != nil {
 		if errors.Is(err, types.ErrSubAccountNotFound) {
 			subAccount = types.SubAccount{
-				Owner:       msg.Creator,
-				Id:          subAccountId,
-				TradeNounce: 0,
+				Owner: msg.Creator,
+				Id:    subAccountId,
 			}
 		} else {
 			return nil, err
@@ -216,7 +211,6 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		}
 	}
 
-	subAccount.TradeNounce++
 	k.SetSubAccount(ctx, subAccount)
 
 	fullyFilled := false

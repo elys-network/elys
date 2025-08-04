@@ -13,17 +13,17 @@ import (
 
 func (k Keeper) OrderBook(goCtx context.Context, req *types.OrderBookRequest) (*types.OrderBookResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	var list []types.PerpetualOrder
+	var list []types.Order
 
-	key := types.GetPerpetualOrderBookIteratorKey(req.MarketId, false)
+	key := types.GetOrderBookIteratorKey(req.MarketId, false)
 	if req.IsBuy {
-		key = types.GetPerpetualOrderBookIteratorKey(req.MarketId, true)
+		key = types.GetOrderBookIteratorKey(req.MarketId, true)
 	}
 
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), key)
 
 	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value []byte) error {
-		var val types.PerpetualOrder
+		var val types.Order
 		if err := k.cdc.Unmarshal(value, &val); err != nil {
 			return err
 		}

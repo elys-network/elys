@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
-func (k Keeper) CalculateMaxFees(market types.PerpetualMarket, order types.PerpetualOrder) math.Int {
+func (k Keeper) CalculateMaxFees(market types.PerpetualMarket, order types.Order) math.Int {
 	totalUnfilled := order.Amount.Sub(order.Filled)
 	totalValue := totalUnfilled.Mul(order.GetPrice()) // this should be max value
 	feeRate := math.LegacyMaxDec(market.MakerFeeRate, market.TakerFeeRate)

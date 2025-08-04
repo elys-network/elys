@@ -238,7 +238,7 @@ func (k Keeper) GetSellOrdersUpToQuantity(ctx sdk.Context, marketId uint64, quan
 	totalQuantity := math.LegacyZeroDec()
 
 	for ; sellIterator.Valid() && totalQuantity.LT(quantity); sellIterator.Next() {
-		var order types.PerpetualOrder
+		var order types.Order
 		if err := k.cdc.Unmarshal(sellIterator.Value(), &order); err != nil {
 			ctx.Logger().Error("failed to unmarshal sell order", "error", err)
 			continue
@@ -264,9 +264,9 @@ func (k Keeper) GetBuyOrdersUpToQuantity(ctx sdk.Context, marketId uint64, quant
 	totalQuantity := math.LegacyZeroDec()
 
 	// For buy orders, we want the highest prices first
-	var allOrders []types.PerpetualOrder
+	var allOrders []types.Order
 	for ; buyIterator.Valid(); buyIterator.Next() {
-		var order types.PerpetualOrder
+		var order types.Order
 		if err := k.cdc.Unmarshal(buyIterator.Value(), &order); err != nil {
 			ctx.Logger().Error("failed to unmarshal buy order", "error", err)
 			continue

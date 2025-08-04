@@ -48,9 +48,9 @@ func (k Keeper) GetBuyOrdersUpToDepth(ctx sdk.Context, marketId uint64, maxDepth
 	iterator := k.GetBuyOrderIterator(ctx, marketId)
 	defer iterator.Close()
 
-	var allOrders []types.PerpetualOrder
+	var allOrders []types.Order
 	for ; iterator.Valid(); iterator.Next() {
-		var order types.PerpetualOrder
+		var order types.Order
 		if err := k.cdc.Unmarshal(iterator.Value(), &order); err != nil {
 			ctx.Logger().Error("failed to unmarshal buy order in GetBuyOrdersUpToDepth", "error", err)
 			continue
@@ -82,7 +82,7 @@ func (k Keeper) GetSellOrdersUpToDepth(ctx sdk.Context, marketId uint64, maxDept
 	var count uint32
 
 	for ; iterator.Valid() && count < maxDepth; iterator.Next() {
-		var order types.PerpetualOrder
+		var order types.Order
 		if err := k.cdc.Unmarshal(iterator.Value(), &order); err != nil {
 			ctx.Logger().Error("failed to unmarshal sell order in GetSellOrdersUpToDepth", "error", err)
 			continue
