@@ -66,9 +66,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Position",
-					Use:            "get-position [address] [id]",
+					Use:            "get-position [address] [id] [pool_id]",
 					Short:          "Query position",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}, {ProtoField: "pool_id"}},
 				},
 				{
 					RpcMethod:      "LiquidationPrice",
