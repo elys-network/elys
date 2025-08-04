@@ -70,14 +70,13 @@ func (suite *KeeperTestSuite) TestLiquidatePositions() {
 				Positions:  positions,
 			}
 
-			res, err := suite.app.ClobKeeper.LiquidatePositions(suite.ctx, msg)
+			_, err := suite.app.ClobKeeper.LiquidatePositions(suite.ctx, msg)
 
 			if tc.expectedErrSubstring != "" {
 				suite.Require().Error(err, "Expected an error but got nil")
 				suite.Require().Contains(err.Error(), tc.expectedErrSubstring, "Error message mismatch")
 			} else {
 				suite.Require().NoError(err, "Expected no error but got: %v", err)
-				suite.Require().Equal(tc.expectedReward, res.LiquidatorReward, "Liquidator reward mismatch")
 			}
 		})
 	}

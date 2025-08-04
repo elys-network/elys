@@ -257,7 +257,7 @@ func (suite *KeeperTestSuite) TestForcedLiquidation() { // Using KeeperTestSuite
 			preSetup: func() {
 				suite.SetPrice([]string{"ATOM"}, []math.LegacyDec{math.LegacyZeroDec()})
 			},
-			expectedErrSubstring:         "asset price (0.000000000000000000) is invalid",
+			expectedErrSubstring:         "invalid price 0.000000000000000000",
 			expectedLiquidatorRewardPaid: math.ZeroInt(),
 		},
 		{

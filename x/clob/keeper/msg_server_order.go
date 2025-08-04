@@ -67,7 +67,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	order := types.PerpetualOrder{
 		MarketId:     market.Id,
 		OrderType:    msg.OrderType,
-		Price:        msg.Price,
+		PriceTick:    msg.Price.MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:      counter,
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
@@ -106,7 +106,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
-		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.Price, order.Counter),
+		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.PriceTick, order.Counter),
 	})
 
 	// Emit event

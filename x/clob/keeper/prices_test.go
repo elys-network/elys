@@ -21,7 +21,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 	sell1 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1023, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   1,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -30,7 +30,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 	sell2 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1027, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   2,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -39,7 +39,7 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 	sell3 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1029, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1029, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   3,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -53,21 +53,21 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 	}{
 		{
 			"first price 10.27",
-			sell2.Price,
+			sell2.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell2)
 			},
 		},
 		{
 			"2nd price 10.23",
-			sell1.Price,
+			sell1.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell1)
 			},
 		},
 		{
 			"3rd price is set but price 10.23",
-			sell1.Price,
+			sell1.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, sell3)
 			},
@@ -87,7 +87,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 	buy1 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1013, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   1,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 	buy2 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1017, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1017, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   2,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -105,7 +105,7 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 	buy3 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1011, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   3,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -119,21 +119,21 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 	}{
 		{
 			"first price 10.13",
-			buy1.Price,
+			buy1.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy1)
 			},
 		},
 		{
 			"2nd price 10.17",
-			buy2.Price,
+			buy2.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy2)
 			},
 		},
 		{
 			"3rd price is set but price 10.17",
-			buy2.Price,
+			buy2.GetPrice(),
 			func() {
 				suite.app.ClobKeeper.SetPerpetualOrder(suite.ctx, buy3)
 			},
@@ -153,7 +153,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	sell1 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1023, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   1,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -162,7 +162,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	sell2 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1027, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   2,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -171,7 +171,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	sell3 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:     math.LegacyNewDecWithPrec(1020, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   2,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -181,7 +181,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	buy1 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1013, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   1,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	buy2 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1011, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   2,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),
@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 	buy3 := types.PerpetualOrder{
 		MarketId:  1,
 		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:     math.LegacyNewDecWithPrec(1020, 2),
+		PriceTick: math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:   1,
 		Owner:     authtypes.NewModuleAddress("1").String(),
 		Amount:    math.LegacyNewDec(100),

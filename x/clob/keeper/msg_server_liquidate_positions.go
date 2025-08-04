@@ -56,7 +56,5 @@ func (k Keeper) LiquidatePositions(goCtx context.Context, msg *types.MsgLiquidat
 		}
 	}
 
-	return &types.MsgLiquidatePositionsResponse{
-		LiquidatorReward: liquidatorReward,
-	}, nil
+	return &types.MsgLiquidatePositionsResponse{}, nil
 }

@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 	}{
 		{
 			"oracle price not found",
-			"asset price not found for denom (uatom)",
+			"oracle price not found for uatom",
 			math.LegacyDec{},
 			func() {
 				suite.app.OracleKeeper.RemovePrice(suite.ctx, "ATOM", "test", uint64(suite.ctx.BlockTime().Unix()-15))
@@ -215,8 +215,8 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		},
 		{
 			name:           "Error on zero index price",
-			expectedErrMsg: "asset price",    // Expect error from GetAssetPriceFromDenom containing this
-			result:         math.LegacyDec{}, // Result is irrelevant on error
+			expectedErrMsg: "invalid price 0.000000000000000000", // Expect error from GetAssetPriceFromDenom containing this
+			result:         math.LegacyDec{},                     // Result is irrelevant on error
 			pre: func() {
 				// Set oracle price to zero
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{math.LegacyZeroDec(), math.LegacyNewDec(1)})
@@ -225,8 +225,8 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		},
 		{
 			name:           "Error on negative index price",
-			expectedErrMsg: "asset price",    // Expect error from GetAssetPriceFromDenom containing this
-			result:         math.LegacyDec{}, // Result is irrelevant on error
+			expectedErrMsg: "invalid price -10.000000000000000000", // Expect error from GetAssetPriceFromDenom containing this
+			result:         math.LegacyDec{},                       // Result is irrelevant on error
 			pre: func() {
 				// Set oracle price to negative
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{math.LegacyNewDec(-10), math.LegacyNewDec(1)})

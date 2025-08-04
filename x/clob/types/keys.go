@@ -1,7 +1,6 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -82,8 +81,8 @@ func GetPerpetualOwnerKey(addr sdk.AccAddress, subAccountId, marketId, perpetual
 	return key
 }
 
-func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64) []byte {
-	return append(PerpetualOrderPrefix, NewOrderKey(marketId, orderType, price, counter).KeyWithoutPrefix()...)
+func GetPerpetualOrderKey(marketId uint64, orderType OrderType, priceTick int64, counter uint64) []byte {
+	return append(PerpetualOrderPrefix, NewOrderKey(marketId, orderType, priceTick, counter).KeyWithoutPrefix()...)
 }
 
 func GetPerpetualOrderBookIteratorKey(marketId uint64, long bool) []byte {

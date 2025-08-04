@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) CalculateMaxFees(market types.PerpetualMarket, order types.PerpetualOrder) math.Int {
 	totalUnfilled := order.Amount.Sub(order.Filled)
-	totalValue := totalUnfilled.Mul(order.Price) // this should be max value
+	totalValue := totalUnfilled.Mul(order.GetPrice()) // this should be max value
 	feeRate := math.LegacyMaxDec(market.MakerFeeRate, market.TakerFeeRate)
 	return totalValue.Mul(feeRate).RoundInt()
 }

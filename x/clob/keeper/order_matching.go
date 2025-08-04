@@ -53,7 +53,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64, limit int64) (to
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.Counter),
+				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.PriceTick, buyOrder.Counter),
 			}
 			keysToDelete = append(keysToDelete, toDelete)
 		}
@@ -94,7 +94,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	}
 	var buyerSubAccount, sellerSubAccount types.SubAccount
 
-	highestBuyPrice := buyOrder.Price
+	highestBuyPrice := buyOrder.GetPrice()
 	//lowestSellPrice := k.GetLowestSellPrice(ctx, market.Id)
 
 	sellIterator := k.GetSellOrderIterator(ctx, market.Id)
@@ -115,14 +115,14 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			continue
 		}
 
-		lowestSellPrice := sellOrder.Price
+		lowestSellPrice := sellOrder.GetPrice()
 
 		if highestBuyPrice.GTE(lowestSellPrice) {
 			sellOrderFilled := false
 
-			tradePrice := sellOrder.Price
+			tradePrice := sellOrder.GetPrice()
 			if sellOrder.Counter > buyOrder.Counter {
-				tradePrice = buyOrder.Price
+				tradePrice = buyOrder.GetPrice()
 			}
 
 			// remainingQuantity = buyOrderQuantity at trade price - already filled
@@ -144,7 +144,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				toDelete := types.PerpetualOrderOwner{
 					Owner:        sellOrder.Owner,
 					SubAccountId: sellOrder.SubAccountId,
-					OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.Counter),
+					OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.PriceTick, sellOrder.Counter),
 				}
 				keysToDelete = append(keysToDelete, toDelete)
 			} else {

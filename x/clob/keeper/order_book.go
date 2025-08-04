@@ -64,7 +64,7 @@ func (k Keeper) GetBuyOrdersUpToDepth(ctx sdk.Context, marketId uint64, maxDepth
 	for i := len(allOrders) - 1; i >= 0 && count < maxDepth; i-- {
 		order := allOrders[i]
 		orders = append(orders, types.OrderBookEntry{
-			Price:    order.Price,
+			Price:    order.GetPrice(),
 			Quantity: order.Amount.Sub(order.Filled),
 		})
 		count++
@@ -89,7 +89,7 @@ func (k Keeper) GetSellOrdersUpToDepth(ctx sdk.Context, marketId uint64, maxDept
 		}
 
 		orders = append(orders, types.OrderBookEntry{
-			Price:    order.Price,
+			Price:    order.GetPrice(),
 			Quantity: order.Amount.Sub(order.Filled),
 		})
 		count++

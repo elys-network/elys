@@ -5,14 +5,15 @@ import (
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v7/utils"
 )
 
-func NewOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64) OrderKey {
+const PriceMultiplier int64 = 1_000_000
+
+func NewOrderKey(marketId uint64, orderType OrderType, priceTick int64, counter uint64) OrderKey {
 	return OrderKey{
 		MarketId:  marketId,
 		OrderType: orderType,
-		Price:     price,
+		PriceTick: priceTick,
 		Counter:   counter,
 	}
 }
@@ -28,8 +29,8 @@ func (o OrderKey) KeyWithoutPrefix() []byte {
 	}
 	key = append(key, orderTypeByte)
 	key = append(key, []byte("/")...)
-	paddedPrice := utils.GetPaddedDecString(o.Price)
-	key = append(key, []byte(paddedPrice)...)
+	priceBytes := sdk.Uint64ToBigEndian(uint64(o.PriceTick))
+	key = append(key, priceBytes...)
 	key = append(key, []byte("/")...)
 	key = append(key, counterBytes...)
 	return key
@@ -39,7 +40,7 @@ func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.Legac
 	return PerpetualOrder{
 		MarketId:     marketId,
 		OrderType:    orderType,
-		Price:        price,
+		PriceTick:    price.MulInt64(PriceMultiplier).TruncateInt64(),
 		Counter:      counter,
 		Owner:        owner.String(),
 		Amount:       amount,
@@ -61,10 +62,14 @@ func IsBuy(orderType OrderType) bool {
 	}
 }
 
+func (order PerpetualOrder) GetPrice() sdkmath.LegacyDec {
+	return sdkmath.LegacyNewDec(order.PriceTick).QuoInt64(PriceMultiplier)
+}
+
 func (order PerpetualOrder) GetOwnerAccAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(order.Owner)
 }
 
 func (order PerpetualOrder) UnfilledValue() sdkmath.LegacyDec {
-	return order.Price.Mul(order.Amount.Sub(order.Filled))
+	return order.GetPrice().Mul(order.Amount.Sub(order.Filled))
 }

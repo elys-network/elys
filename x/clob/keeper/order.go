@@ -9,7 +9,7 @@ import (
 )
 
 func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (types.PerpetualOrder, bool) {
-	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.Price, orderKey.Counter)
+	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.PriceTick, orderKey.Counter)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -43,9 +43,9 @@ func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
 }
 
 func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error {
-	if v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_BUY {
+	if v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_BUY || v.PriceTick <= 0 {
 		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-		key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.Price, v.Counter)
+		key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.PriceTick, v.Counter)
 		b := k.cdc.MustMarshal(&v)
 		store.Set(key, b)
 		return nil
@@ -56,7 +56,7 @@ func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error
 
 func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderKey.MarketId, perpetualOrderOwner.OrderKey.OrderType, perpetualOrderOwner.OrderKey.Price, perpetualOrderOwner.OrderKey.Counter)
+	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderKey.MarketId, perpetualOrderOwner.OrderKey.OrderType, perpetualOrderOwner.OrderKey.PriceTick, perpetualOrderOwner.OrderKey.Counter)
 	store.Delete(key)
 
 	k.DeleteOrderOwner(ctx, perpetualOrderOwner)

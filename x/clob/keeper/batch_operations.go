@@ -17,7 +17,7 @@ func (k Keeper) BatchDeleteOrders(ctx sdk.Context, keys []types.PerpetualOrderOw
 	// Delete all orders and their owners in batch
 	for _, key := range keys {
 		// Delete the order
-		orderKey := types.GetPerpetualOrderKey(key.OrderKey.MarketId, key.OrderKey.OrderType, key.OrderKey.Price, key.OrderKey.Counter)
+		orderKey := types.GetPerpetualOrderKey(key.OrderKey.MarketId, key.OrderKey.OrderType, key.OrderKey.PriceTick, key.OrderKey.Counter)
 		store.Delete(orderKey)
 
 		// Delete the order owner
@@ -117,12 +117,12 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 			continue
 		}
 
-		if buyOrder.Price.GTE(bestAsk) {
+		if buyOrder.GetPrice().GTE(bestAsk) {
 			buyOrders = append(buyOrders, buyOrder)
 			buyKeys = append(buyKeys, types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.Counter),
+				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.PriceTick, buyOrder.Counter),
 			})
 			matchCount++
 		} else {
@@ -142,12 +142,12 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 			continue
 		}
 
-		if sellOrder.Price.LTE(bestBid) {
+		if sellOrder.GetPrice().LTE(bestBid) {
 			sellOrders = append(sellOrders, sellOrder)
 			sellKeys = append(sellKeys, types.PerpetualOrderOwner{
 				Owner:        sellOrder.Owner,
 				SubAccountId: sellOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.Counter),
+				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.PriceTick, sellOrder.Counter),
 			})
 			matchCount++
 		} else {
@@ -163,9 +163,9 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 		sellOrder := &sellOrders[i]
 
 		// Determine trade price
-		tradePrice := sellOrder.Price
+		tradePrice := sellOrder.GetPrice()
 		if buyOrder.Counter < sellOrder.Counter {
-			tradePrice = buyOrder.Price
+			tradePrice = buyOrder.GetPrice()
 		}
 
 		// Calculate trade quantity

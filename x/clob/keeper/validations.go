@@ -246,7 +246,7 @@ func (k Keeper) GetSellOrdersUpToQuantity(ctx sdk.Context, marketId uint64, quan
 
 		remainingQty := order.Amount.Sub(order.Filled)
 		orders = append(orders, types.OrderBookEntry{
-			Price:    order.Price,
+			Price:    order.GetPrice(),
 			Quantity: remainingQty,
 		})
 		totalQuantity = totalQuantity.Add(remainingQty)
@@ -279,7 +279,7 @@ func (k Keeper) GetBuyOrdersUpToQuantity(ctx sdk.Context, marketId uint64, quant
 		order := allOrders[i]
 		remainingQty := order.Amount.Sub(order.Filled)
 		orders = append(orders, types.OrderBookEntry{
-			Price:    order.Price,
+			Price:    order.GetPrice(),
 			Quantity: remainingQty,
 		})
 		totalQuantity = totalQuantity.Add(remainingQty)

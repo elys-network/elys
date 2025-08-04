@@ -11,7 +11,7 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 	order1 := types.PerpetualOrder{
 		MarketId:     MarketId,
 		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:        math.LegacyMustNewDecFromStr("1.0"),
+		PriceTick:    math.LegacyMustNewDecFromStr("1.0").MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:      1,
 		Owner:        authtypes.NewModuleAddress("1").String(),
 		SubAccountId: MarketId,
@@ -20,19 +20,19 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 	}
 
 	order2 := order1
-	order2.Price = math.LegacyMustNewDecFromStr("1.5")
+	order2.PriceTick = math.LegacyMustNewDecFromStr("1.5").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order2.Counter = 2
 	order2.Owner = authtypes.NewModuleAddress("2").String()
 	order2.Amount = math.LegacyNewDec(50)
 
 	order3 := order1
-	order3.Price = math.LegacyMustNewDecFromStr("1.5")
+	order3.PriceTick = math.LegacyMustNewDecFromStr("1.5").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order3.Counter = 3
 	order3.Owner = authtypes.NewModuleAddress("3").String()
 	order3.Amount = math.LegacyNewDec(75)
 
 	order4 := order1
-	order4.Price = math.LegacyMustNewDecFromStr("2")
+	order4.PriceTick = math.LegacyMustNewDecFromStr("2").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order4.Counter = 4
 	order4.Owner = authtypes.NewModuleAddress("4").String()
 	order4.Amount = math.LegacyNewDec(90)
@@ -49,7 +49,7 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 
 	index := 0
 	for ; iterator.Valid(); iterator.Next() {
-		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].Price, expectedList[index].Counter)
+		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
 
 		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
 		prefix = append(prefix, types.TrueByte)
@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 	order1 := types.PerpetualOrder{
 		MarketId:     MarketId,
 		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		Price:        math.LegacyMustNewDecFromStr("1.0"),
+		PriceTick:    math.LegacyMustNewDecFromStr("1.0").MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:      1,
 		Owner:        authtypes.NewModuleAddress("1").String(),
 		SubAccountId: MarketId,
@@ -75,19 +75,19 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 	}
 
 	order2 := order1
-	order2.Price = math.LegacyMustNewDecFromStr("1.5")
+	order2.PriceTick = math.LegacyMustNewDecFromStr("1.5").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order2.Counter = 2
 	order2.Owner = authtypes.NewModuleAddress("2").String()
 	order2.Amount = math.LegacyNewDec(50)
 
 	order3 := order1
-	order3.Price = math.LegacyMustNewDecFromStr("1.5")
+	order3.PriceTick = math.LegacyMustNewDecFromStr("1.5").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order3.Counter = 3
 	order3.Owner = authtypes.NewModuleAddress("3").String()
 	order3.Amount = math.LegacyNewDec(75)
 
 	order4 := order1
-	order4.Price = math.LegacyMustNewDecFromStr("2")
+	order4.PriceTick = math.LegacyMustNewDecFromStr("2").MulInt64(types.PriceMultiplier).TruncateInt64()
 	order4.Counter = 4
 	order4.Owner = authtypes.NewModuleAddress("4").String()
 	order4.Amount = math.LegacyNewDec(90)
@@ -104,7 +104,7 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 
 	index := 0
 	for ; iterator.Valid(); iterator.Next() {
-		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].Price, expectedList[index].Counter)
+		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
 
 		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
 		prefix = append(prefix, types.FalseByte)
@@ -123,7 +123,7 @@ func (suite *KeeperTestSuite) TestRequiredBalanceForOrder() {
 	order1 := types.PerpetualOrder{
 		MarketId:     MarketId,
 		OrderType:    types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		Price:        math.LegacyMustNewDecFromStr("10.5"),
+		PriceTick:    math.LegacyMustNewDecFromStr("10.5").MulInt64(types.PriceMultiplier).TruncateInt64(),
 		Counter:      1,
 		Owner:        authtypes.NewModuleAddress("1").String(),
 		SubAccountId: MarketId,
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestRequiredBalanceForOrder() {
 	got, err := suite.app.ClobKeeper.RequiredBalanceForOrder(suite.ctx, order1)
 	suite.Require().NoError(err)
 
-	value := order1.Price.Mul(order1.Amount)
+	value := order1.GetPrice().Mul(order1.Amount)
 	// Assuming taker fees >= maker fees
 	fees := math.LegacyMaxDec(market.TakerFeeRate, market.MakerFeeRate).Mul(value)
 	margin := market.InitialMarginRatio.Mul(value)
