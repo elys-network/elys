@@ -30,19 +30,18 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
 	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
 
-	depositDenom := borrowPool.GetDepositDenom()
-	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowRatio := sdkmath.LegacyZeroDec()
 	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
-
+		moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
+		balance := k.bankKeeper.GetBalance(ctx, moduleAddr, borrowPool.DepositDenom)
 		borrowed := borrowPool.NetAmount.Sub(balance.Amount)
+
 		borrowRatio = (borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec()))).
 			Quo(borrowPool.NetAmount.ToLegacyDec())
 	}
