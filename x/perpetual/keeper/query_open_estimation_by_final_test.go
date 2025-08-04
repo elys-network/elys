@@ -83,8 +83,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom100Us
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -210,8 +211,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Short5XAtom100U
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -325,8 +327,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpenEstimationByFinal_Long5XAtom10Ato
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
