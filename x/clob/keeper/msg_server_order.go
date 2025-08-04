@@ -68,7 +68,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		OrderId: types.OrderId{
 			MarketId:  market.Id,
 			OrderType: msg.OrderType,
-			PriceTick: msg.Price.MulInt64(types.PriceMultiplier).TruncateInt64(),
+			PriceTick: types.PriceTick(msg.Price.MulInt64(types.PriceMultiplier).TruncateInt64()),
 			Counter:   counter,
 		},
 		Owner:        msg.Creator,

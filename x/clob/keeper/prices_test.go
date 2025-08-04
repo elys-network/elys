@@ -19,31 +19,38 @@ func (suite *KeeperTestSuite) TestSetTwapPrices() {
 
 func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 	sell1 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   1,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   1,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	sell2 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   2,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   2,
+		},
+
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	sell3 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1029, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   3,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1029, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   3,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {
@@ -85,31 +92,37 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 
 func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 	buy1 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   1,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   1,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	buy2 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1017, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   2,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1017, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   2,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	buy3 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   3,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   3,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {
@@ -151,59 +164,71 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 
 func (suite *KeeperTestSuite) TestGetMidPrice() {
 	sell1 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   1,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1023, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   1,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	sell2 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   2,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1027, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   2,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	sell3 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
-		PriceTick: math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   2,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_SELL,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   2,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 
 	buy1 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   1,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1013, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   1,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	buy2 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   2,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1011, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   2,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 	buy3 := types.PerpetualOrder{
-		MarketId:  1,
-		OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
-		PriceTick: math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:   1,
-		Owner:     authtypes.NewModuleAddress("1").String(),
-		Amount:    math.LegacyNewDec(100),
-		Filled:    math.LegacyZeroDec(),
+		OrderId: types.OrderId{
+			MarketId:  1,
+			OrderType: types.OrderType_ORDER_TYPE_LIMIT_BUY,
+			PriceTick: types.PriceTick(math.LegacyNewDecWithPrec(1020, 2).MulInt64(types.PriceMultiplier).TruncateInt64()),
+			Counter:   1,
+		},
+		Owner:  authtypes.NewModuleAddress("1").String(),
+		Amount: math.LegacyNewDec(100),
+		Filled: math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {

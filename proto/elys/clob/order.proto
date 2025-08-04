@@ -19,7 +19,8 @@ enum OrderType {
 message OrderId {
   uint64 market_id = 1;
   OrderType order_type = 2;
-  int64 price_tick = 3;
+  uint64 price_tick = 3
+      [ (gogoproto.customtype) = "PriceTick", (gogoproto.nullable) = false ];
   uint64 counter = 4;
 }
 
