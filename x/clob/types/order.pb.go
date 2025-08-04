@@ -60,22 +60,87 @@ func (OrderType) EnumDescriptor() ([]byte, []int) {
 }
 
 // key = market_id + is_long + price + counter
+type OrderId struct {
+	MarketId  uint64    `protobuf:"varint,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	OrderType OrderType `protobuf:"varint,2,opt,name=order_type,json=orderType,proto3,enum=elys.clob.OrderType" json:"order_type,omitempty"`
+	PriceTick int64     `protobuf:"varint,3,opt,name=price_tick,json=priceTick,proto3" json:"price_tick,omitempty"`
+	Counter   uint64    `protobuf:"varint,4,opt,name=counter,proto3" json:"counter,omitempty"`
+}
+
+func (m *OrderId) Reset()         { *m = OrderId{} }
+func (m *OrderId) String() string { return proto.CompactTextString(m) }
+func (*OrderId) ProtoMessage()    {}
+func (*OrderId) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b1c73c2a583cf493, []int{0}
+}
+func (m *OrderId) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *OrderId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_OrderId.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *OrderId) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrderId.Merge(m, src)
+}
+func (m *OrderId) XXX_Size() int {
+	return m.Size()
+}
+func (m *OrderId) XXX_DiscardUnknown() {
+	xxx_messageInfo_OrderId.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OrderId proto.InternalMessageInfo
+
+func (m *OrderId) GetMarketId() uint64 {
+	if m != nil {
+		return m.MarketId
+	}
+	return 0
+}
+
+func (m *OrderId) GetOrderType() OrderType {
+	if m != nil {
+		return m.OrderType
+	}
+	return OrderType_ORDER_TYPE_UNSPECIFIED
+}
+
+func (m *OrderId) GetPriceTick() int64 {
+	if m != nil {
+		return m.PriceTick
+	}
+	return 0
+}
+
+func (m *OrderId) GetCounter() uint64 {
+	if m != nil {
+		return m.Counter
+	}
+	return 0
+}
+
 type PerpetualOrder struct {
-	MarketId     uint64                      `protobuf:"varint,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	OrderType    OrderType                   `protobuf:"varint,2,opt,name=order_type,json=orderType,proto3,enum=elys.clob.OrderType" json:"order_type,omitempty"`
-	PriceTick    int64                       `protobuf:"varint,3,opt,name=price_tick,json=priceTick,proto3" json:"price_tick,omitempty"`
-	Counter      uint64                      `protobuf:"varint,4,opt,name=counter,proto3" json:"counter,omitempty"`
-	Owner        string                      `protobuf:"bytes,5,opt,name=owner,proto3" json:"owner,omitempty"`
-	SubAccountId uint64                      `protobuf:"varint,6,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
-	Amount       cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=amount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"amount"`
-	Filled       cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=filled,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"filled"`
+	OrderId      OrderId                     `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id"`
+	Owner        string                      `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	SubAccountId uint64                      `protobuf:"varint,3,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
+	Amount       cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=amount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"amount"`
+	Filled       cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=filled,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"filled"`
 }
 
 func (m *PerpetualOrder) Reset()         { *m = PerpetualOrder{} }
 func (m *PerpetualOrder) String() string { return proto.CompactTextString(m) }
 func (*PerpetualOrder) ProtoMessage()    {}
 func (*PerpetualOrder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b1c73c2a583cf493, []int{0}
+	return fileDescriptor_b1c73c2a583cf493, []int{1}
 }
 func (m *PerpetualOrder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -104,32 +169,11 @@ func (m *PerpetualOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PerpetualOrder proto.InternalMessageInfo
 
-func (m *PerpetualOrder) GetMarketId() uint64 {
+func (m *PerpetualOrder) GetOrderId() OrderId {
 	if m != nil {
-		return m.MarketId
+		return m.OrderId
 	}
-	return 0
-}
-
-func (m *PerpetualOrder) GetOrderType() OrderType {
-	if m != nil {
-		return m.OrderType
-	}
-	return OrderType_ORDER_TYPE_UNSPECIFIED
-}
-
-func (m *PerpetualOrder) GetPriceTick() int64 {
-	if m != nil {
-		return m.PriceTick
-	}
-	return 0
-}
-
-func (m *PerpetualOrder) GetCounter() uint64 {
-	if m != nil {
-		return m.Counter
-	}
-	return 0
+	return OrderId{}
 }
 
 func (m *PerpetualOrder) GetOwner() string {
@@ -146,80 +190,12 @@ func (m *PerpetualOrder) GetSubAccountId() uint64 {
 	return 0
 }
 
-type OrderKey struct {
-	MarketId  uint64    `protobuf:"varint,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	OrderType OrderType `protobuf:"varint,2,opt,name=order_type,json=orderType,proto3,enum=elys.clob.OrderType" json:"order_type,omitempty"`
-	PriceTick int64     `protobuf:"varint,3,opt,name=price_tick,json=priceTick,proto3" json:"price_tick,omitempty"`
-	Counter   uint64    `protobuf:"varint,4,opt,name=counter,proto3" json:"counter,omitempty"`
-}
-
-func (m *OrderKey) Reset()         { *m = OrderKey{} }
-func (m *OrderKey) String() string { return proto.CompactTextString(m) }
-func (*OrderKey) ProtoMessage()    {}
-func (*OrderKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b1c73c2a583cf493, []int{1}
-}
-func (m *OrderKey) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *OrderKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_OrderKey.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *OrderKey) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrderKey.Merge(m, src)
-}
-func (m *OrderKey) XXX_Size() int {
-	return m.Size()
-}
-func (m *OrderKey) XXX_DiscardUnknown() {
-	xxx_messageInfo_OrderKey.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OrderKey proto.InternalMessageInfo
-
-func (m *OrderKey) GetMarketId() uint64 {
-	if m != nil {
-		return m.MarketId
-	}
-	return 0
-}
-
-func (m *OrderKey) GetOrderType() OrderType {
-	if m != nil {
-		return m.OrderType
-	}
-	return OrderType_ORDER_TYPE_UNSPECIFIED
-}
-
-func (m *OrderKey) GetPriceTick() int64 {
-	if m != nil {
-		return m.PriceTick
-	}
-	return 0
-}
-
-func (m *OrderKey) GetCounter() uint64 {
-	if m != nil {
-		return m.Counter
-	}
-	return 0
-}
-
 // key = owner + sub_account_id + market_id + is_long + price + counter
 // A subaccount can hold multiple orders in case of cross margin account
 type PerpetualOrderOwner struct {
-	Owner        string   `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	SubAccountId uint64   `protobuf:"varint,2,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
-	OrderKey     OrderKey `protobuf:"bytes,3,opt,name=order_key,json=orderKey,proto3" json:"order_key"`
+	Owner        string  `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	SubAccountId uint64  `protobuf:"varint,2,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
+	OrderId      OrderId `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id"`
 }
 
 func (m *PerpetualOrderOwner) Reset()         { *m = PerpetualOrderOwner{} }
@@ -269,58 +245,101 @@ func (m *PerpetualOrderOwner) GetSubAccountId() uint64 {
 	return 0
 }
 
-func (m *PerpetualOrderOwner) GetOrderKey() OrderKey {
+func (m *PerpetualOrderOwner) GetOrderId() OrderId {
 	if m != nil {
-		return m.OrderKey
+		return m.OrderId
 	}
-	return OrderKey{}
+	return OrderId{}
 }
 
 func init() {
 	proto.RegisterEnum("elys.clob.OrderType", OrderType_name, OrderType_value)
+	proto.RegisterType((*OrderId)(nil), "elys.clob.OrderId")
 	proto.RegisterType((*PerpetualOrder)(nil), "elys.clob.PerpetualOrder")
-	proto.RegisterType((*OrderKey)(nil), "elys.clob.OrderKey")
 	proto.RegisterType((*PerpetualOrderOwner)(nil), "elys.clob.PerpetualOrderOwner")
 }
 
 func init() { proto.RegisterFile("elys/clob/order.proto", fileDescriptor_b1c73c2a583cf493) }
 
 var fileDescriptor_b1c73c2a583cf493 = []byte{
-	// 533 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x53, 0xcf, 0x6e, 0xda, 0x30,
-	0x1c, 0xc6, 0x85, 0x52, 0xe2, 0x4d, 0x08, 0xb9, 0x74, 0x4a, 0xa9, 0x96, 0x22, 0xb4, 0x03, 0x9a,
-	0x46, 0xa2, 0xb5, 0xd2, 0x76, 0x86, 0x91, 0x4a, 0x11, 0x74, 0xa0, 0x40, 0x0f, 0xdd, 0x25, 0x0a,
-	0x8e, 0x47, 0xa3, 0x00, 0x46, 0x8e, 0x59, 0x97, 0x27, 0xd8, 0x75, 0xd2, 0xb4, 0x27, 0xd8, 0x2b,
-	0xf4, 0x21, 0x7a, 0xac, 0x7a, 0x9a, 0x76, 0xa8, 0x26, 0x78, 0x91, 0xc9, 0x76, 0x8a, 0x36, 0xb6,
-	0x53, 0x4f, 0xbb, 0xfd, 0x7e, 0xdf, 0x67, 0x7f, 0xbf, 0x3f, 0x9f, 0x0d, 0xf7, 0xc8, 0x24, 0x89,
-	0x2d, 0x3c, 0xa1, 0x23, 0x8b, 0xb2, 0x80, 0x30, 0x73, 0xce, 0x28, 0xa7, 0x48, 0x13, 0xb0, 0x29,
-	0xe0, 0x4a, 0x79, 0x4c, 0xc7, 0x54, 0xa2, 0x96, 0x88, 0xd4, 0x81, 0xca, 0x3e, 0xa6, 0xf1, 0x94,
-	0xc6, 0x9e, 0x22, 0x54, 0xa2, 0xa8, 0xda, 0xa7, 0x2c, 0x2c, 0xf6, 0x09, 0x9b, 0x13, 0xbe, 0xf0,
-	0x27, 0x3d, 0x21, 0x8a, 0x0e, 0xa0, 0x36, 0xf5, 0x59, 0x44, 0xb8, 0x17, 0x06, 0x3a, 0xa8, 0x82,
-	0x7a, 0xce, 0x2d, 0x28, 0xc0, 0x09, 0xd0, 0x31, 0x84, 0xb2, 0xb4, 0xc7, 0x93, 0x39, 0xd1, 0xb7,
-	0xaa, 0xa0, 0x5e, 0x3c, 0x2a, 0x9b, 0xeb, 0x06, 0x4c, 0x29, 0x31, 0x4c, 0xe6, 0xc4, 0xd5, 0xe8,
-	0x7d, 0x88, 0x9e, 0x42, 0x38, 0x67, 0x21, 0x26, 0x1e, 0x0f, 0x71, 0xa4, 0x67, 0xab, 0xa0, 0x9e,
-	0x75, 0x35, 0x89, 0x0c, 0x43, 0x1c, 0x21, 0x1d, 0xee, 0x60, 0xba, 0x98, 0x71, 0xc2, 0xf4, 0x9c,
-	0x2c, 0x77, 0x9f, 0x22, 0x13, 0x6e, 0xd3, 0xcb, 0x19, 0x61, 0xfa, 0x76, 0x15, 0xd4, 0xb5, 0x96,
-	0x7e, 0x7b, 0xd5, 0x28, 0xa7, 0xed, 0x37, 0x83, 0x80, 0x91, 0x38, 0x1e, 0x70, 0x16, 0xce, 0xc6,
-	0xae, 0x3a, 0x86, 0x9e, 0xc1, 0x62, 0xbc, 0x18, 0x79, 0x3e, 0x96, 0x02, 0xa2, 0xff, 0xbc, 0x14,
-	0x7c, 0x1c, 0x2f, 0x46, 0x4d, 0x05, 0x3a, 0x01, 0x72, 0x60, 0xde, 0x9f, 0x8a, 0x58, 0xdf, 0x91,
-	0xb2, 0x2f, 0xaf, 0xef, 0x0e, 0x33, 0x3f, 0xee, 0x0e, 0x0f, 0x94, 0x74, 0x1c, 0x44, 0x66, 0x48,
-	0xad, 0xa9, 0xcf, 0x2f, 0xcc, 0x2e, 0x19, 0xfb, 0x38, 0x69, 0x13, 0x7c, 0x7b, 0xd5, 0x80, 0x69,
-	0xe5, 0x36, 0xc1, 0x6e, 0x2a, 0x20, 0xa4, 0xde, 0x87, 0x93, 0x09, 0x09, 0xf4, 0xc2, 0x83, 0xa5,
-	0x94, 0x40, 0xed, 0x2b, 0x80, 0x05, 0xb9, 0xbd, 0x0e, 0x49, 0xfe, 0x23, 0x0f, 0x6a, 0xdf, 0x00,
-	0xdc, 0xfd, 0xf3, 0x85, 0xf4, 0xe4, 0xae, 0xd7, 0xde, 0x80, 0x87, 0x7a, 0xb3, 0xf5, 0x0f, 0x6f,
-	0x5e, 0x41, 0xd5, 0xb3, 0x17, 0x91, 0x44, 0x76, 0xf9, 0xe8, 0x68, 0x77, 0x73, 0xb4, 0x0e, 0x49,
-	0x5a, 0x39, 0xb1, 0x68, 0xb7, 0x40, 0xd3, 0xfc, 0xf9, 0x17, 0x00, 0xb5, 0xf5, 0xdc, 0xa8, 0x02,
-	0x9f, 0xf4, 0xdc, 0xb6, 0xed, 0x7a, 0xc3, 0xf3, 0xbe, 0xed, 0x9d, 0xbd, 0x1d, 0xf4, 0xed, 0x37,
-	0xce, 0x89, 0x63, 0xb7, 0x4b, 0x19, 0xa4, 0xc3, 0xf2, 0x6f, 0x5c, 0xd7, 0x39, 0x75, 0x86, 0x5e,
-	0xeb, 0xec, 0xbc, 0x04, 0xd0, 0x3e, 0xdc, 0xfb, 0x8b, 0x19, 0xd8, 0xdd, 0x6e, 0x69, 0x6b, 0x83,
-	0x3a, 0x6d, 0xba, 0x1d, 0x5b, 0xdd, 0xca, 0x6e, 0xd4, 0x4a, 0x29, 0x79, 0x2d, 0xd7, 0x3a, 0xb9,
-	0x5e, 0x1a, 0xe0, 0x66, 0x69, 0x80, 0x9f, 0x4b, 0x03, 0x7c, 0x5e, 0x19, 0x99, 0x9b, 0x95, 0x91,
-	0xf9, 0xbe, 0x32, 0x32, 0xef, 0x5e, 0x8c, 0x43, 0x7e, 0xb1, 0x18, 0x99, 0x98, 0x4e, 0x2d, 0x31,
-	0x5e, 0x63, 0x46, 0xf8, 0x25, 0x65, 0x91, 0x4c, 0xac, 0x0f, 0xaf, 0xad, 0x8f, 0xea, 0x9f, 0x0b,
-	0x8b, 0xe3, 0x51, 0x5e, 0x7e, 0xd6, 0xe3, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xba, 0xf9, 0x42,
-	0x7b, 0x01, 0x04, 0x00, 0x00,
+	// 529 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0xcb, 0x6e, 0xd3, 0x40,
+	0x14, 0xcd, 0x24, 0xe9, 0xc3, 0x03, 0x8a, 0xa2, 0x21, 0x45, 0x6e, 0x2a, 0xdc, 0x28, 0x62, 0x11,
+	0x21, 0x62, 0x8b, 0x66, 0xc1, 0x3a, 0x21, 0xae, 0x64, 0x91, 0x92, 0xc8, 0x49, 0x17, 0x65, 0x63,
+	0x39, 0x33, 0x43, 0x6a, 0xe5, 0x31, 0xd1, 0x78, 0x4c, 0xc9, 0x5f, 0x20, 0xc1, 0x07, 0xf0, 0x0b,
+	0x48, 0xfd, 0x88, 0x2e, 0xab, 0xae, 0x10, 0x8b, 0x0a, 0x25, 0x3f, 0x82, 0x66, 0xc6, 0x8d, 0x4a,
+	0x60, 0x81, 0xba, 0x9b, 0x7b, 0x8e, 0xe7, 0x9c, 0x73, 0xef, 0xf8, 0xc2, 0x3d, 0x3a, 0x59, 0xc4,
+	0x0e, 0x9e, 0xb0, 0xa1, 0xc3, 0x38, 0xa1, 0xdc, 0x9e, 0x73, 0x26, 0x18, 0x32, 0x24, 0x6c, 0x4b,
+	0xb8, 0x5c, 0x1a, 0xb1, 0x11, 0x53, 0xa8, 0x23, 0x4f, 0xfa, 0x83, 0xf2, 0x3e, 0x66, 0xf1, 0x94,
+	0xc5, 0x81, 0x26, 0x74, 0xa1, 0xa9, 0xea, 0x57, 0x00, 0x77, 0xba, 0x52, 0xcb, 0x23, 0xe8, 0x00,
+	0x1a, 0xd3, 0x90, 0x8f, 0xa9, 0x08, 0x22, 0x62, 0x82, 0x0a, 0xa8, 0xe5, 0xfd, 0x5d, 0x0d, 0x78,
+	0x04, 0x35, 0x20, 0x54, 0x9e, 0x81, 0x58, 0xcc, 0xa9, 0x99, 0xad, 0x80, 0x5a, 0xe1, 0xa8, 0x64,
+	0xaf, 0x9d, 0x6d, 0x25, 0x32, 0x58, 0xcc, 0xa9, 0x6f, 0xb0, 0xbb, 0x23, 0x7a, 0x06, 0xe1, 0x9c,
+	0x47, 0x98, 0x06, 0x22, 0xc2, 0x63, 0x33, 0x57, 0x01, 0xb5, 0x9c, 0x6f, 0x28, 0x64, 0x10, 0xe1,
+	0x31, 0x32, 0xe1, 0x0e, 0x66, 0xc9, 0x4c, 0x50, 0x6e, 0xe6, 0x95, 0xdd, 0x5d, 0x59, 0xfd, 0x9e,
+	0x85, 0x85, 0x1e, 0xe5, 0x73, 0x2a, 0x92, 0x70, 0xa2, 0xa4, 0x51, 0x03, 0xee, 0xea, 0x00, 0x69,
+	0xb8, 0x47, 0x47, 0x68, 0xd3, 0xde, 0x23, 0xad, 0xfc, 0xd5, 0xed, 0x61, 0xc6, 0xdf, 0x61, 0x69,
+	0x4b, 0x36, 0xdc, 0x62, 0x17, 0x33, 0xca, 0x55, 0x60, 0xa3, 0x65, 0xde, 0x5c, 0xd6, 0x4b, 0x69,
+	0xff, 0x4d, 0x42, 0x38, 0x8d, 0xe3, 0xbe, 0xe0, 0xd1, 0x6c, 0xe4, 0xeb, 0xcf, 0xd0, 0x73, 0x58,
+	0x88, 0x93, 0x61, 0x10, 0x62, 0x15, 0x44, 0x5a, 0xe5, 0x54, 0xb0, 0xc7, 0x71, 0x32, 0x6c, 0x6a,
+	0xd0, 0x23, 0xc8, 0x83, 0xdb, 0xe1, 0x54, 0x9e, 0x55, 0x6c, 0xa3, 0xf5, 0x4a, 0x9a, 0xfe, 0xbc,
+	0x3d, 0x3c, 0xd0, 0xd2, 0x31, 0x19, 0xdb, 0x11, 0x73, 0xa6, 0xa1, 0x38, 0xb7, 0x3b, 0x74, 0x14,
+	0xe2, 0x45, 0x9b, 0xe2, 0x9b, 0xcb, 0x3a, 0x4c, 0x9d, 0xdb, 0x14, 0xfb, 0xa9, 0x80, 0x94, 0xfa,
+	0x10, 0x4d, 0x26, 0x94, 0x98, 0x5b, 0x0f, 0x96, 0xd2, 0x02, 0xd5, 0x6f, 0x00, 0x3e, 0xf9, 0x73,
+	0x66, 0x5d, 0xd5, 0xd3, 0x7a, 0x06, 0xe0, 0xa1, 0x33, 0xc8, 0xfe, 0x63, 0x06, 0xf7, 0x9f, 0x23,
+	0xf7, 0x9f, 0xcf, 0xf1, 0xe2, 0x0b, 0x80, 0xc6, 0xfa, 0x47, 0x41, 0x65, 0xf8, 0xb4, 0xeb, 0xb7,
+	0x5d, 0x3f, 0x18, 0x9c, 0xf5, 0xdc, 0xe0, 0xf4, 0x5d, 0xbf, 0xe7, 0xbe, 0xf1, 0x8e, 0x3d, 0xb7,
+	0x5d, 0xcc, 0x20, 0x13, 0x96, 0xee, 0x71, 0x1d, 0xef, 0xc4, 0x1b, 0x04, 0xad, 0xd3, 0xb3, 0x22,
+	0x40, 0xfb, 0x70, 0xef, 0x2f, 0xa6, 0xef, 0x76, 0x3a, 0xc5, 0xec, 0x06, 0x75, 0xd2, 0xf4, 0xdf,
+	0xba, 0xfa, 0x56, 0x6e, 0xc3, 0x2b, 0xa5, 0xd4, 0xb5, 0x7c, 0xeb, 0xf8, 0x6a, 0x69, 0x81, 0xeb,
+	0xa5, 0x05, 0x7e, 0x2d, 0x2d, 0xf0, 0x79, 0x65, 0x65, 0xae, 0x57, 0x56, 0xe6, 0xc7, 0xca, 0xca,
+	0xbc, 0x7f, 0x39, 0x8a, 0xc4, 0x79, 0x32, 0xb4, 0x31, 0x9b, 0x3a, 0xb2, 0xb9, 0xfa, 0x8c, 0x8a,
+	0x0b, 0xc6, 0xc7, 0xaa, 0x70, 0x3e, 0xbe, 0x76, 0x3e, 0xe9, 0x6d, 0x94, 0x3b, 0x11, 0x0f, 0xb7,
+	0xd5, 0x4a, 0x35, 0x7e, 0x07, 0x00, 0x00, 0xff, 0xff, 0x73, 0x76, 0xb4, 0xf3, 0xa7, 0x03, 0x00,
+	0x00,
+}
+
+func (m *OrderId) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OrderId) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OrderId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Counter != 0 {
+		i = encodeVarintOrder(dAtA, i, uint64(m.Counter))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.PriceTick != 0 {
+		i = encodeVarintOrder(dAtA, i, uint64(m.PriceTick))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.OrderType != 0 {
+		i = encodeVarintOrder(dAtA, i, uint64(m.OrderType))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.MarketId != 0 {
+		i = encodeVarintOrder(dAtA, i, uint64(m.MarketId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *PerpetualOrder) Marshal() (dAtA []byte, err error) {
@@ -352,7 +371,7 @@ func (m *PerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintOrder(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x42
+	dAtA[i] = 0x2a
 	{
 		size := m.Amount.Size()
 		i -= size
@@ -362,82 +381,29 @@ func (m *PerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintOrder(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x3a
+	dAtA[i] = 0x22
 	if m.SubAccountId != 0 {
 		i = encodeVarintOrder(dAtA, i, uint64(m.SubAccountId))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x18
 	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintOrder(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x12
 	}
-	if m.Counter != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.Counter))
-		i--
-		dAtA[i] = 0x20
+	{
+		size, err := m.OrderId.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintOrder(dAtA, i, uint64(size))
 	}
-	if m.PriceTick != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.PriceTick))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.OrderType != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.OrderType))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.MarketId != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.MarketId))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *OrderKey) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *OrderKey) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *OrderKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Counter != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.Counter))
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.PriceTick != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.PriceTick))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.OrderType != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.OrderType))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.MarketId != 0 {
-		i = encodeVarintOrder(dAtA, i, uint64(m.MarketId))
-		i--
-		dAtA[i] = 0x8
-	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -462,7 +428,7 @@ func (m *PerpetualOrderOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size, err := m.OrderKey.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.OrderId.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -497,7 +463,7 @@ func encodeVarintOrder(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *PerpetualOrder) Size() (n int) {
+func (m *OrderId) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -515,6 +481,17 @@ func (m *PerpetualOrder) Size() (n int) {
 	if m.Counter != 0 {
 		n += 1 + sovOrder(uint64(m.Counter))
 	}
+	return n
+}
+
+func (m *PerpetualOrder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.OrderId.Size()
+	n += 1 + l + sovOrder(uint64(l))
 	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovOrder(uint64(l))
@@ -526,27 +503,6 @@ func (m *PerpetualOrder) Size() (n int) {
 	n += 1 + l + sovOrder(uint64(l))
 	l = m.Filled.Size()
 	n += 1 + l + sovOrder(uint64(l))
-	return n
-}
-
-func (m *OrderKey) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.MarketId != 0 {
-		n += 1 + sovOrder(uint64(m.MarketId))
-	}
-	if m.OrderType != 0 {
-		n += 1 + sovOrder(uint64(m.OrderType))
-	}
-	if m.PriceTick != 0 {
-		n += 1 + sovOrder(uint64(m.PriceTick))
-	}
-	if m.Counter != 0 {
-		n += 1 + sovOrder(uint64(m.Counter))
-	}
 	return n
 }
 
@@ -563,7 +519,7 @@ func (m *PerpetualOrderOwner) Size() (n int) {
 	if m.SubAccountId != 0 {
 		n += 1 + sovOrder(uint64(m.SubAccountId))
 	}
-	l = m.OrderKey.Size()
+	l = m.OrderId.Size()
 	n += 1 + l + sovOrder(uint64(l))
 	return n
 }
@@ -574,7 +530,7 @@ func sovOrder(x uint64) (n int) {
 func sozOrder(x uint64) (n int) {
 	return sovOrder(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
+func (m *OrderId) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -597,10 +553,10 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: PerpetualOrder: wiretype end group for non-group")
+			return fmt.Errorf("proto: OrderId: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PerpetualOrder: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: OrderId: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -679,7 +635,90 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipOrder(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthOrder
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowOrder
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PerpetualOrder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PerpetualOrder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOrder
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthOrder
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthOrder
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.OrderId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -711,7 +750,7 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SubAccountId", wireType)
 			}
@@ -730,7 +769,7 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -764,7 +803,7 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Filled", wireType)
 			}
@@ -798,132 +837,6 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipOrder(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthOrder
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *OrderKey) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowOrder
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: OrderKey: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: OrderKey: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MarketId", wireType)
-			}
-			m.MarketId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOrder
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MarketId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderType", wireType)
-			}
-			m.OrderType = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOrder
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OrderType |= OrderType(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PriceTick", wireType)
-			}
-			m.PriceTick = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOrder
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PriceTick |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Counter", wireType)
-			}
-			m.Counter = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOrder
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Counter |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipOrder(dAtA[iNdEx:])
@@ -1027,7 +940,7 @@ func (m *PerpetualOrderOwner) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderKey", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1054,7 +967,7 @@ func (m *PerpetualOrderOwner) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.OrderKey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.OrderId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

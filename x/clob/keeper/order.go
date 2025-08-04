@@ -8,8 +8,8 @@ import (
 	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (types.PerpetualOrder, bool) {
-	key := types.GetPerpetualOrderKey(orderKey.MarketId, orderKey.OrderType, orderKey.PriceTick, orderKey.Counter)
+func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderId types.OrderId) (types.PerpetualOrder, bool) {
+	key := types.GetPerpetualOrderKey(orderId.MarketId, orderId.OrderType, orderId.PriceTick, orderId.Counter)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -19,7 +19,7 @@ func (k Keeper) GetPerpetualOrder(ctx sdk.Context, orderKey types.OrderKey) (typ
 
 	var val types.PerpetualOrder
 	if err := k.cdc.Unmarshal(b, &val); err != nil {
-		ctx.Logger().Error("failed to unmarshal perpetual order", "key", orderKey, "error", err)
+		ctx.Logger().Error("failed to unmarshal perpetual order", "key", orderId, "error", err)
 		return types.PerpetualOrder{}, false
 	}
 	return val, true
@@ -43,9 +43,9 @@ func (k Keeper) GetAllPerpetualOrders(ctx sdk.Context) []types.PerpetualOrder {
 }
 
 func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error {
-	if v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.OrderType == types.OrderType_ORDER_TYPE_LIMIT_BUY || v.PriceTick <= 0 {
+	if v.GetOrderType() == types.OrderType_ORDER_TYPE_LIMIT_SELL || v.GetOrderType() == types.OrderType_ORDER_TYPE_LIMIT_BUY || v.GetPriceTick() <= 0 {
 		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-		key := types.GetPerpetualOrderKey(v.MarketId, v.OrderType, v.PriceTick, v.Counter)
+		key := types.GetPerpetualOrderKey(v.GetMarketId(), v.GetOrderType(), v.GetPriceTick(), v.GetCounter())
 		b := k.cdc.MustMarshal(&v)
 		store.Set(key, b)
 		return nil
@@ -56,7 +56,7 @@ func (k Keeper) SetPerpetualOrder(ctx sdk.Context, v types.PerpetualOrder) error
 
 func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderKey.MarketId, perpetualOrderOwner.OrderKey.OrderType, perpetualOrderOwner.OrderKey.PriceTick, perpetualOrderOwner.OrderKey.Counter)
+	key := types.GetPerpetualOrderKey(perpetualOrderOwner.OrderId.MarketId, perpetualOrderOwner.OrderId.OrderType, perpetualOrderOwner.OrderId.PriceTick, perpetualOrderOwner.OrderId.Counter)
 	store.Delete(key)
 
 	k.DeleteOrderOwner(ctx, perpetualOrderOwner)
@@ -76,7 +76,7 @@ func (k Keeper) GetSellOrderIterator(ctx sdk.Context, marketId uint64) storetype
 }
 
 func (k Keeper) RequiredBalanceForOrder(ctx sdk.Context, order types.PerpetualOrder) (sdk.Coin, error) {
-	market, err := k.GetPerpetualMarket(ctx, order.MarketId)
+	market, err := k.GetPerpetualMarket(ctx, order.GetMarketId())
 	if err != nil {
 		return sdk.Coin{}, err
 	}

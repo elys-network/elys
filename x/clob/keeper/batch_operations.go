@@ -17,7 +17,7 @@ func (k Keeper) BatchDeleteOrders(ctx sdk.Context, keys []types.PerpetualOrderOw
 	// Delete all orders and their owners in batch
 	for _, key := range keys {
 		// Delete the order
-		orderKey := types.GetPerpetualOrderKey(key.OrderKey.MarketId, key.OrderKey.OrderType, key.OrderKey.PriceTick, key.OrderKey.Counter)
+		orderKey := types.GetPerpetualOrderKey(key.OrderId.MarketId, key.OrderId.OrderType, key.OrderId.PriceTick, key.OrderId.Counter)
 		store.Delete(orderKey)
 
 		// Delete the order owner
@@ -27,7 +27,7 @@ func (k Keeper) BatchDeleteOrders(ctx sdk.Context, keys []types.PerpetualOrderOw
 	// Clear any cached market data for affected markets
 	marketSet := make(map[uint64]bool)
 	for _, key := range keys {
-		marketSet[key.OrderKey.MarketId] = true
+		marketSet[key.OrderId.MarketId] = true
 	}
 
 	// Invalidate cache for affected markets
@@ -122,7 +122,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 			buyKeys = append(buyKeys, types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.PriceTick, buyOrder.Counter),
+				OrderId:      types.NewOrderId(buyOrder.GetMarketId(), buyOrder.GetOrderType(), buyOrder.GetPriceTick(), buyOrder.GetCounter()),
 			})
 			matchCount++
 		} else {
@@ -147,7 +147,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 			sellKeys = append(sellKeys, types.PerpetualOrderOwner{
 				Owner:        sellOrder.Owner,
 				SubAccountId: sellOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.PriceTick, sellOrder.Counter),
+				OrderId:      types.NewOrderId(sellOrder.GetMarketId(), sellOrder.GetOrderType(), sellOrder.GetPriceTick(), sellOrder.GetCounter()),
 			})
 			matchCount++
 		} else {
@@ -164,7 +164,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 
 		// Determine trade price
 		tradePrice := sellOrder.GetPrice()
-		if buyOrder.Counter < sellOrder.Counter {
+		if buyOrder.GetCounter() < sellOrder.GetCounter() {
 			tradePrice = buyOrder.GetPrice()
 		}
 
@@ -199,7 +199,7 @@ func (k Keeper) OptimizedOrderMatching(ctx sdk.Context, marketId uint64, maxMatc
 			Quantity:            tradeQuantity,
 			IsBuyerLiquidation:  false,
 			IsSellerLiquidation: false,
-			IsBuyerTaker:        buyOrder.Counter > sellOrder.Counter,
+			IsBuyerTaker:        buyOrder.GetCounter() > sellOrder.GetCounter(),
 		})
 
 		if err != nil {

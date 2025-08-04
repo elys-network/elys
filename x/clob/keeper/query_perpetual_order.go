@@ -42,7 +42,7 @@ func (k Keeper) OwnerPerpetualOrder(goCtx context.Context, request *types.OwnerP
 			return err
 		}
 
-		order, found := k.GetPerpetualOrder(ctx, orderOwner.OrderKey)
+		order, found := k.GetPerpetualOrder(ctx, orderOwner.OrderId)
 		if !found {
 			return types.ErrPerpetualOrderNotFound
 		}

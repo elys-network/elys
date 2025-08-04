@@ -9,8 +9,8 @@ import (
 
 const PriceMultiplier int64 = 1_000_000
 
-func NewOrderKey(marketId uint64, orderType OrderType, priceTick int64, counter uint64) OrderKey {
-	return OrderKey{
+func NewOrderId(marketId uint64, orderType OrderType, priceTick int64, counter uint64) OrderId {
+	return OrderId{
 		MarketId:  marketId,
 		OrderType: orderType,
 		PriceTick: priceTick,
@@ -18,7 +18,7 @@ func NewOrderKey(marketId uint64, orderType OrderType, priceTick int64, counter 
 	}
 }
 
-func (o OrderKey) KeyWithoutPrefix() []byte {
+func (o OrderId) KeyWithoutPrefix() []byte {
 	key := sdk.Uint64ToBigEndian(o.MarketId)
 	key = append(key, []byte("/")...)
 	orderTypeByte := FalseByte
@@ -37,11 +37,9 @@ func (o OrderKey) KeyWithoutPrefix() []byte {
 }
 
 func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, counter uint64, owner sdk.AccAddress, amount, filled sdkmath.LegacyDec, subAccountId uint64) PerpetualOrder {
+	orderId := NewOrderId(marketId, orderType, price.MulInt64(PriceMultiplier).TruncateInt64(), counter)
 	return PerpetualOrder{
-		MarketId:     marketId,
-		OrderType:    orderType,
-		PriceTick:    price.MulInt64(PriceMultiplier).TruncateInt64(),
-		Counter:      counter,
+		OrderId:      orderId,
 		Owner:        owner.String(),
 		Amount:       amount,
 		Filled:       filled,
@@ -49,8 +47,24 @@ func NewPerpetualOrder(marketId uint64, orderType OrderType, price sdkmath.Legac
 	}
 }
 
+func (order PerpetualOrder) GetMarketId() uint64 {
+	return order.OrderId.MarketId
+}
+
+func (order PerpetualOrder) GetOrderType() OrderType {
+	return order.OrderId.OrderType
+}
+
+func (order PerpetualOrder) GetPriceTick() int64 {
+	return order.OrderId.PriceTick
+}
+
+func (order PerpetualOrder) GetCounter() uint64 {
+	return order.OrderId.Counter
+}
+
 func (order PerpetualOrder) IsBuy() bool {
-	return IsBuy(order.OrderType)
+	return IsBuy(order.GetOrderType())
 }
 
 func IsBuy(orderType OrderType) bool {
@@ -63,7 +77,7 @@ func IsBuy(orderType OrderType) bool {
 }
 
 func (order PerpetualOrder) GetPrice() sdkmath.LegacyDec {
-	return sdkmath.LegacyNewDec(order.PriceTick).QuoInt64(PriceMultiplier)
+	return sdkmath.LegacyNewDec(order.OrderId.PriceTick).QuoInt64(PriceMultiplier)
 }
 
 func (order PerpetualOrder) GetOwnerAccAddress() sdk.AccAddress {

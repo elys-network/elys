@@ -65,10 +65,12 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 
 	counter := k.GetAndIncrementOrderCounter(ctx, market.Id)
 	order := types.PerpetualOrder{
-		MarketId:     market.Id,
-		OrderType:    msg.OrderType,
-		PriceTick:    msg.Price.MulInt64(types.PriceMultiplier).TruncateInt64(),
-		Counter:      counter,
+		OrderId: types.OrderId{
+			MarketId:  market.Id,
+			OrderType: msg.OrderType,
+			PriceTick: msg.Price.MulInt64(types.PriceMultiplier).TruncateInt64(),
+			Counter:   counter,
+		},
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
 		Amount:       msg.BaseQuantity,
@@ -106,7 +108,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 	k.SetOrderOwner(ctx, types.PerpetualOrderOwner{
 		Owner:        msg.Creator,
 		SubAccountId: subAccount.Id,
-		OrderKey:     types.NewOrderKey(order.MarketId, order.OrderType, order.PriceTick, order.Counter),
+		OrderId:      types.NewOrderId(order.GetMarketId(), order.GetOrderType(), order.GetPriceTick(), order.GetCounter()),
 	})
 
 	// Emit event
@@ -118,7 +120,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 			sdk.NewAttribute(types.AttributeOrderType, msg.OrderType.String()),
 			sdk.NewAttribute(types.AttributePrice, msg.Price.String()),
 			sdk.NewAttribute(types.AttributeQuantity, msg.BaseQuantity.String()),
-			sdk.NewAttribute(types.AttributeOrderId, fmt.Sprintf("%d", order.Counter)),
+			sdk.NewAttribute(types.AttributeOrderId, fmt.Sprintf("%d", order.GetCounter())),
 		),
 	)
 

@@ -60,7 +60,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        sellOrder.Owner,
 				SubAccountId: sellOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.PriceTick, sellOrder.Counter),
+				OrderId:      types.NewOrderId(sellOrder.GetMarketId(), sellOrder.GetOrderType(), sellOrder.GetPriceTick(), sellOrder.GetCounter()),
 			}
 			sellOrdersToDelete = append(sellOrdersToDelete, toDelete)
 		} else {
@@ -155,7 +155,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.PriceTick, buyOrder.Counter),
+				OrderId:      types.NewOrderId(buyOrder.GetMarketId(), buyOrder.GetOrderType(), buyOrder.GetPriceTick(), buyOrder.GetCounter()),
 			}
 			buyOrdersToDelete = append(buyOrdersToDelete, toDelete)
 		} else {

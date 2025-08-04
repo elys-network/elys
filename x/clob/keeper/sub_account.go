@@ -94,7 +94,7 @@ func (k Keeper) RequiredMinimumBalance(ctx sdk.Context, subAccount types.SubAcco
 
 	// calculate for open orders
 	for _, openOrder := range k.GetAllOrderOwnersForSubAccount(ctx, subAccount) {
-		order, found := k.GetPerpetualOrder(ctx, openOrder.OrderKey)
+		order, found := k.GetPerpetualOrder(ctx, openOrder.OrderId)
 		if !found {
 			return sdk.Coins{}, types.ErrPerpetualOrderNotFound
 		}

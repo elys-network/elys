@@ -53,7 +53,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64, limit int64) (to
 			toDelete := types.PerpetualOrderOwner{
 				Owner:        buyOrder.Owner,
 				SubAccountId: buyOrder.SubAccountId,
-				OrderKey:     types.NewOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.PriceTick, buyOrder.Counter),
+				OrderId:      types.NewOrderId(buyOrder.GetCounter(), buyOrder.GetOrderType(), buyOrder.GetPriceTick(), buyOrder.GetCounter()),
 			}
 			keysToDelete = append(keysToDelete, toDelete)
 		}
@@ -121,7 +121,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			sellOrderFilled := false
 
 			tradePrice := sellOrder.GetPrice()
-			if sellOrder.Counter > buyOrder.Counter {
+			if sellOrder.GetCounter() > buyOrder.GetCounter() {
 				tradePrice = buyOrder.GetPrice()
 			}
 
@@ -144,7 +144,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				toDelete := types.PerpetualOrderOwner{
 					Owner:        sellOrder.Owner,
 					SubAccountId: sellOrder.SubAccountId,
-					OrderKey:     types.NewOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.PriceTick, sellOrder.Counter),
+					OrderId:      types.NewOrderId(sellOrder.GetCounter(), sellOrder.GetOrderType(), sellOrder.GetPriceTick(), sellOrder.GetCounter()),
 				}
 				keysToDelete = append(keysToDelete, toDelete)
 			} else {
@@ -159,7 +159,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				return
 			}
 
-			isBuyerTaker := buyOrder.Counter > sellOrder.Counter
+			isBuyerTaker := buyOrder.GetCounter() > sellOrder.GetCounter()
 			err = k.Exchange(ctx, types.Trade{
 				BuyerSubAccount:     buyerSubAccount,
 				SellerSubAccount:    sellerSubAccount,
@@ -189,8 +189,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 					sdk.NewAttribute(types.AttributeTradePrice, tradePrice.String()),
 					sdk.NewAttribute(types.AttributeTradeQuantity, tradeQuantity.String()),
 					sdk.NewAttribute(types.AttributeIsTaker, fmt.Sprintf("%t", isBuyerTaker)),
-					sdk.NewAttribute("buy_order_counter", fmt.Sprintf("%d", buyOrder.Counter)),
-					sdk.NewAttribute("sell_order_counter", fmt.Sprintf("%d", sellOrder.Counter)),
+					sdk.NewAttribute("buy_order_counter", fmt.Sprintf("%d", buyOrder.GetCounter())),
+					sdk.NewAttribute("sell_order_counter", fmt.Sprintf("%d", sellOrder.GetCounter())),
 				),
 			)
 		} else {
@@ -218,10 +218,10 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventOrderExecuted,
-				sdk.NewAttribute(types.AttributeOrderId, fmt.Sprintf("%d", buyOrder.Counter)),
+				sdk.NewAttribute(types.AttributeOrderId, fmt.Sprintf("%d", buyOrder.GetCounter())),
 				sdk.NewAttribute(types.AttributeOwner, buyOrder.Owner),
-				sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", buyOrder.MarketId)),
-				sdk.NewAttribute(types.AttributeOrderType, buyOrder.OrderType.String()),
+				sdk.NewAttribute(types.AttributeMarketId, fmt.Sprintf("%d", buyOrder.GetMarketId())),
+				sdk.NewAttribute(types.AttributeOrderType, buyOrder.GetOrderType().String()),
 				sdk.NewAttribute(types.AttributeFilledQuantity, buyOrder.Filled.String()),
 				sdk.NewAttribute(types.AttributeRemainingQuantity, buyOrder.Amount.Sub(buyOrder.Filled).String()),
 				sdk.NewAttribute(types.AttributeOrderStatus, getOrderStatus(buyOrder)),

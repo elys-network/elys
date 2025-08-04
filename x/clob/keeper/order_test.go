@@ -49,14 +49,14 @@ func (suite *KeeperTestSuite) TestBuyOrderBook() {
 
 	index := 0
 	for ; iterator.Valid(); iterator.Next() {
-		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
+		expectedOrderId := types.NewOrderId(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
 
 		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
 		prefix = append(prefix, types.TrueByte)
 		prefix = append(prefix, []byte("/")...)
 		iteratorKeyWithMarketId := append(prefix, iterator.Key()...)
 
-		suite.Equal(expectedOrderKey.KeyWithoutPrefix(), iteratorKeyWithMarketId)
+		suite.Equal(expectedOrderId.KeyWithoutPrefix(), iteratorKeyWithMarketId)
 
 		index++
 	}
@@ -104,14 +104,14 @@ func (suite *KeeperTestSuite) TestSellOrderBook() {
 
 	index := 0
 	for ; iterator.Valid(); iterator.Next() {
-		expectedOrderKey := types.NewOrderKey(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
+		expectedOrderId := types.NewOrderId(expectedList[index].MarketId, expectedList[index].OrderType, expectedList[index].PriceTick, expectedList[index].Counter)
 
 		prefix := append(sdk.Uint64ToBigEndian(MarketId), []byte("/")...)
 		prefix = append(prefix, types.FalseByte)
 		prefix = append(prefix, []byte("/")...)
 		iteratorKeyWithMarketId := append(prefix, iterator.Key()...)
 
-		suite.Equal(expectedOrderKey.KeyWithoutPrefix(), iteratorKeyWithMarketId)
+		suite.Equal(expectedOrderId.KeyWithoutPrefix(), iteratorKeyWithMarketId)
 
 		index++
 	}

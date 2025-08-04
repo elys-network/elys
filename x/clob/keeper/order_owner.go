@@ -9,8 +9,8 @@ import (
 	"github.com/elys-network/elys/v7/x/clob/types"
 )
 
-func (k Keeper) GetOrderOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64, orderKey types.OrderKey) (types.PerpetualOrderOwner, error) {
-	key := types.GetOrderOwnerKey(owner, subAccountId, orderKey)
+func (k Keeper) GetOrderOwner(ctx sdk.Context, owner sdk.AccAddress, subAccountId uint64, ordeerId types.OrderId) (types.PerpetualOrderOwner, error) {
+	key := types.GetOrderOwnerKey(owner, subAccountId, ordeerId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -76,13 +76,13 @@ func (k Keeper) GetAllOrderOwners(ctx sdk.Context) []types.PerpetualOrderOwner {
 
 func (k Keeper) SetOrderOwner(ctx sdk.Context, v types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetOrderOwnerKey(v.GetOwnerAccAddress(), v.GetSubAccountId(), v.GetOrderKey())
+	key := types.GetOrderOwnerKey(v.GetOwnerAccAddress(), v.GetSubAccountId(), v.GetOrderId())
 	b := k.cdc.MustMarshal(&v)
 	store.Set(key, b)
 }
 
 func (k Keeper) DeleteOrderOwner(ctx sdk.Context, v types.PerpetualOrderOwner) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetOrderOwnerKey(v.GetOwnerAccAddress(), v.GetSubAccountId(), v.GetOrderKey())
+	key := types.GetOrderOwnerKey(v.GetOwnerAccAddress(), v.GetSubAccountId(), v.GetOrderId())
 	store.Delete(key)
 }
