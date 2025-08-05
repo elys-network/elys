@@ -5,6 +5,7 @@ package types
 
 import (
 	context "context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +15,11 @@ import (
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -28,27 +33,967 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type FeedPrice struct {
+	Asset  string                      `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty"`
+	Price  cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=price,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"price"`
+	Source string                      `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
+}
+
+func (m *FeedPrice) Reset()         { *m = FeedPrice{} }
+func (m *FeedPrice) String() string { return proto.CompactTextString(m) }
+func (*FeedPrice) ProtoMessage()    {}
+func (*FeedPrice) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{0}
+}
+func (m *FeedPrice) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FeedPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FeedPrice.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FeedPrice) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FeedPrice.Merge(m, src)
+}
+func (m *FeedPrice) XXX_Size() int {
+	return m.Size()
+}
+func (m *FeedPrice) XXX_DiscardUnknown() {
+	xxx_messageInfo_FeedPrice.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FeedPrice proto.InternalMessageInfo
+
+func (m *FeedPrice) GetAsset() string {
+	if m != nil {
+		return m.Asset
+	}
+	return ""
+}
+
+func (m *FeedPrice) GetSource() string {
+	if m != nil {
+		return m.Source
+	}
+	return ""
+}
+
+type MsgFeedPrice struct {
+	Provider  string    `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
+	FeedPrice FeedPrice `protobuf:"bytes,2,opt,name=feed_price,json=feedPrice,proto3" json:"feed_price"`
+}
+
+func (m *MsgFeedPrice) Reset()         { *m = MsgFeedPrice{} }
+func (m *MsgFeedPrice) String() string { return proto.CompactTextString(m) }
+func (*MsgFeedPrice) ProtoMessage()    {}
+func (*MsgFeedPrice) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{1}
+}
+func (m *MsgFeedPrice) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgFeedPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgFeedPrice.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgFeedPrice) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgFeedPrice.Merge(m, src)
+}
+func (m *MsgFeedPrice) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgFeedPrice) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgFeedPrice.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgFeedPrice proto.InternalMessageInfo
+
+func (m *MsgFeedPrice) GetProvider() string {
+	if m != nil {
+		return m.Provider
+	}
+	return ""
+}
+
+func (m *MsgFeedPrice) GetFeedPrice() FeedPrice {
+	if m != nil {
+		return m.FeedPrice
+	}
+	return FeedPrice{}
+}
+
+type MsgFeedPriceResponse struct {
+}
+
+func (m *MsgFeedPriceResponse) Reset()         { *m = MsgFeedPriceResponse{} }
+func (m *MsgFeedPriceResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgFeedPriceResponse) ProtoMessage()    {}
+func (*MsgFeedPriceResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{2}
+}
+func (m *MsgFeedPriceResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgFeedPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgFeedPriceResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgFeedPriceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgFeedPriceResponse.Merge(m, src)
+}
+func (m *MsgFeedPriceResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgFeedPriceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgFeedPriceResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgFeedPriceResponse proto.InternalMessageInfo
+
+type MsgSetPriceFeeder struct {
+	Feeder   string `protobuf:"bytes,1,opt,name=feeder,proto3" json:"feeder,omitempty"`
+	IsActive bool   `protobuf:"varint,2,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+}
+
+func (m *MsgSetPriceFeeder) Reset()         { *m = MsgSetPriceFeeder{} }
+func (m *MsgSetPriceFeeder) String() string { return proto.CompactTextString(m) }
+func (*MsgSetPriceFeeder) ProtoMessage()    {}
+func (*MsgSetPriceFeeder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{3}
+}
+func (m *MsgSetPriceFeeder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetPriceFeeder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetPriceFeeder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetPriceFeeder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetPriceFeeder.Merge(m, src)
+}
+func (m *MsgSetPriceFeeder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetPriceFeeder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetPriceFeeder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetPriceFeeder proto.InternalMessageInfo
+
+func (m *MsgSetPriceFeeder) GetFeeder() string {
+	if m != nil {
+		return m.Feeder
+	}
+	return ""
+}
+
+func (m *MsgSetPriceFeeder) GetIsActive() bool {
+	if m != nil {
+		return m.IsActive
+	}
+	return false
+}
+
+type MsgSetPriceFeederResponse struct {
+}
+
+func (m *MsgSetPriceFeederResponse) Reset()         { *m = MsgSetPriceFeederResponse{} }
+func (m *MsgSetPriceFeederResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetPriceFeederResponse) ProtoMessage()    {}
+func (*MsgSetPriceFeederResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{4}
+}
+func (m *MsgSetPriceFeederResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetPriceFeederResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetPriceFeederResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetPriceFeederResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetPriceFeederResponse.Merge(m, src)
+}
+func (m *MsgSetPriceFeederResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetPriceFeederResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetPriceFeederResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetPriceFeederResponse proto.InternalMessageInfo
+
+type MsgDeletePriceFeeder struct {
+	Feeder string `protobuf:"bytes,1,opt,name=feeder,proto3" json:"feeder,omitempty"`
+}
+
+func (m *MsgDeletePriceFeeder) Reset()         { *m = MsgDeletePriceFeeder{} }
+func (m *MsgDeletePriceFeeder) String() string { return proto.CompactTextString(m) }
+func (*MsgDeletePriceFeeder) ProtoMessage()    {}
+func (*MsgDeletePriceFeeder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{5}
+}
+func (m *MsgDeletePriceFeeder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeletePriceFeeder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeletePriceFeeder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeletePriceFeeder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeletePriceFeeder.Merge(m, src)
+}
+func (m *MsgDeletePriceFeeder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeletePriceFeeder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeletePriceFeeder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeletePriceFeeder proto.InternalMessageInfo
+
+func (m *MsgDeletePriceFeeder) GetFeeder() string {
+	if m != nil {
+		return m.Feeder
+	}
+	return ""
+}
+
+type MsgDeletePriceFeederResponse struct {
+}
+
+func (m *MsgDeletePriceFeederResponse) Reset()         { *m = MsgDeletePriceFeederResponse{} }
+func (m *MsgDeletePriceFeederResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeletePriceFeederResponse) ProtoMessage()    {}
+func (*MsgDeletePriceFeederResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{6}
+}
+func (m *MsgDeletePriceFeederResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeletePriceFeederResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeletePriceFeederResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeletePriceFeederResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeletePriceFeederResponse.Merge(m, src)
+}
+func (m *MsgDeletePriceFeederResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeletePriceFeederResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeletePriceFeederResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeletePriceFeederResponse proto.InternalMessageInfo
+
+type MsgFeedMultiplePrices struct {
+	Creator    string      `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	FeedPrices []FeedPrice `protobuf:"bytes,2,rep,name=feed_prices,json=feedPrices,proto3" json:"feed_prices"`
+}
+
+func (m *MsgFeedMultiplePrices) Reset()         { *m = MsgFeedMultiplePrices{} }
+func (m *MsgFeedMultiplePrices) String() string { return proto.CompactTextString(m) }
+func (*MsgFeedMultiplePrices) ProtoMessage()    {}
+func (*MsgFeedMultiplePrices) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{7}
+}
+func (m *MsgFeedMultiplePrices) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgFeedMultiplePrices) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgFeedMultiplePrices.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgFeedMultiplePrices) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgFeedMultiplePrices.Merge(m, src)
+}
+func (m *MsgFeedMultiplePrices) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgFeedMultiplePrices) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgFeedMultiplePrices.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgFeedMultiplePrices proto.InternalMessageInfo
+
+func (m *MsgFeedMultiplePrices) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgFeedMultiplePrices) GetFeedPrices() []FeedPrice {
+	if m != nil {
+		return m.FeedPrices
+	}
+	return nil
+}
+
+type MsgFeedMultiplePricesResponse struct {
+}
+
+func (m *MsgFeedMultiplePricesResponse) Reset()         { *m = MsgFeedMultiplePricesResponse{} }
+func (m *MsgFeedMultiplePricesResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgFeedMultiplePricesResponse) ProtoMessage()    {}
+func (*MsgFeedMultiplePricesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{8}
+}
+func (m *MsgFeedMultiplePricesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgFeedMultiplePricesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgFeedMultiplePricesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgFeedMultiplePricesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgFeedMultiplePricesResponse.Merge(m, src)
+}
+func (m *MsgFeedMultiplePricesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgFeedMultiplePricesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgFeedMultiplePricesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgFeedMultiplePricesResponse proto.InternalMessageInfo
+
+type MsgRemoveAssetInfo struct {
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+func (m *MsgRemoveAssetInfo) Reset()         { *m = MsgRemoveAssetInfo{} }
+func (m *MsgRemoveAssetInfo) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveAssetInfo) ProtoMessage()    {}
+func (*MsgRemoveAssetInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{9}
+}
+func (m *MsgRemoveAssetInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveAssetInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveAssetInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveAssetInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveAssetInfo.Merge(m, src)
+}
+func (m *MsgRemoveAssetInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveAssetInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveAssetInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveAssetInfo proto.InternalMessageInfo
+
+func (m *MsgRemoveAssetInfo) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgRemoveAssetInfo) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+type MsgRemoveAssetInfoResponse struct {
+}
+
+func (m *MsgRemoveAssetInfoResponse) Reset()         { *m = MsgRemoveAssetInfoResponse{} }
+func (m *MsgRemoveAssetInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveAssetInfoResponse) ProtoMessage()    {}
+func (*MsgRemoveAssetInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{10}
+}
+func (m *MsgRemoveAssetInfoResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveAssetInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveAssetInfoResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveAssetInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveAssetInfoResponse.Merge(m, src)
+}
+func (m *MsgRemoveAssetInfoResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveAssetInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveAssetInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveAssetInfoResponse proto.InternalMessageInfo
+
+type MsgAddPriceFeeders struct {
+	Authority string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Feeders   []string `protobuf:"bytes,2,rep,name=feeders,proto3" json:"feeders,omitempty"`
+}
+
+func (m *MsgAddPriceFeeders) Reset()         { *m = MsgAddPriceFeeders{} }
+func (m *MsgAddPriceFeeders) String() string { return proto.CompactTextString(m) }
+func (*MsgAddPriceFeeders) ProtoMessage()    {}
+func (*MsgAddPriceFeeders) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{11}
+}
+func (m *MsgAddPriceFeeders) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddPriceFeeders) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddPriceFeeders.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddPriceFeeders) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddPriceFeeders.Merge(m, src)
+}
+func (m *MsgAddPriceFeeders) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddPriceFeeders) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddPriceFeeders.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddPriceFeeders proto.InternalMessageInfo
+
+func (m *MsgAddPriceFeeders) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgAddPriceFeeders) GetFeeders() []string {
+	if m != nil {
+		return m.Feeders
+	}
+	return nil
+}
+
+type MsgAddPriceFeedersResponse struct {
+}
+
+func (m *MsgAddPriceFeedersResponse) Reset()         { *m = MsgAddPriceFeedersResponse{} }
+func (m *MsgAddPriceFeedersResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddPriceFeedersResponse) ProtoMessage()    {}
+func (*MsgAddPriceFeedersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{12}
+}
+func (m *MsgAddPriceFeedersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddPriceFeedersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddPriceFeedersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddPriceFeedersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddPriceFeedersResponse.Merge(m, src)
+}
+func (m *MsgAddPriceFeedersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddPriceFeedersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddPriceFeedersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddPriceFeedersResponse proto.InternalMessageInfo
+
+type MsgRemovePriceFeeders struct {
+	Authority string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Feeders   []string `protobuf:"bytes,2,rep,name=feeders,proto3" json:"feeders,omitempty"`
+}
+
+func (m *MsgRemovePriceFeeders) Reset()         { *m = MsgRemovePriceFeeders{} }
+func (m *MsgRemovePriceFeeders) String() string { return proto.CompactTextString(m) }
+func (*MsgRemovePriceFeeders) ProtoMessage()    {}
+func (*MsgRemovePriceFeeders) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{13}
+}
+func (m *MsgRemovePriceFeeders) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemovePriceFeeders) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemovePriceFeeders.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemovePriceFeeders) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemovePriceFeeders.Merge(m, src)
+}
+func (m *MsgRemovePriceFeeders) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemovePriceFeeders) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemovePriceFeeders.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemovePriceFeeders proto.InternalMessageInfo
+
+func (m *MsgRemovePriceFeeders) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgRemovePriceFeeders) GetFeeders() []string {
+	if m != nil {
+		return m.Feeders
+	}
+	return nil
+}
+
+type MsgRemovePriceFeedersResponse struct {
+}
+
+func (m *MsgRemovePriceFeedersResponse) Reset()         { *m = MsgRemovePriceFeedersResponse{} }
+func (m *MsgRemovePriceFeedersResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemovePriceFeedersResponse) ProtoMessage()    {}
+func (*MsgRemovePriceFeedersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{14}
+}
+func (m *MsgRemovePriceFeedersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemovePriceFeedersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemovePriceFeedersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemovePriceFeedersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemovePriceFeedersResponse.Merge(m, src)
+}
+func (m *MsgRemovePriceFeedersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemovePriceFeedersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemovePriceFeedersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemovePriceFeedersResponse proto.InternalMessageInfo
+
+type MsgUpdateParams struct {
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	// NOTE: All parameters must be supplied.
+	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
+}
+
+func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
+func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParams) ProtoMessage()    {}
+func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{15}
+}
+func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
+}
+func (m *MsgUpdateParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
+
+func (m *MsgUpdateParams) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateParams) GetParams() Params {
+	if m != nil {
+		return m.Params
+	}
+	return Params{}
+}
+
+type MsgUpdateParamsResponse struct {
+}
+
+func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
+func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{16}
+}
+func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
+}
+func (m *MsgUpdateParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
+
+// this line is used by starport scaffolding # proto/tx/message
+type MsgCreateAssetInfo struct {
+	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Denom      string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Display    string `protobuf:"bytes,3,opt,name=display,proto3" json:"display,omitempty"`
+	BandTicker string `protobuf:"bytes,4,opt,name=band_ticker,json=bandTicker,proto3" json:"band_ticker,omitempty"`
+	ElysTicker string `protobuf:"bytes,5,opt,name=elys_ticker,json=elysTicker,proto3" json:"elys_ticker,omitempty"`
+	Decimal    uint64 `protobuf:"varint,6,opt,name=decimal,proto3" json:"decimal,omitempty"`
+}
+
+func (m *MsgCreateAssetInfo) Reset()         { *m = MsgCreateAssetInfo{} }
+func (m *MsgCreateAssetInfo) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAssetInfo) ProtoMessage()    {}
+func (*MsgCreateAssetInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{17}
+}
+func (m *MsgCreateAssetInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAssetInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAssetInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAssetInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAssetInfo.Merge(m, src)
+}
+func (m *MsgCreateAssetInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAssetInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAssetInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAssetInfo proto.InternalMessageInfo
+
+func (m *MsgCreateAssetInfo) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateAssetInfo) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *MsgCreateAssetInfo) GetDisplay() string {
+	if m != nil {
+		return m.Display
+	}
+	return ""
+}
+
+func (m *MsgCreateAssetInfo) GetBandTicker() string {
+	if m != nil {
+		return m.BandTicker
+	}
+	return ""
+}
+
+func (m *MsgCreateAssetInfo) GetElysTicker() string {
+	if m != nil {
+		return m.ElysTicker
+	}
+	return ""
+}
+
+func (m *MsgCreateAssetInfo) GetDecimal() uint64 {
+	if m != nil {
+		return m.Decimal
+	}
+	return 0
+}
+
+type MsgCreateAssetInfoResponse struct {
+}
+
+func (m *MsgCreateAssetInfoResponse) Reset()         { *m = MsgCreateAssetInfoResponse{} }
+func (m *MsgCreateAssetInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAssetInfoResponse) ProtoMessage()    {}
+func (*MsgCreateAssetInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1fcab3fbd407da0, []int{18}
+}
+func (m *MsgCreateAssetInfoResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAssetInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAssetInfoResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAssetInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAssetInfoResponse.Merge(m, src)
+}
+func (m *MsgCreateAssetInfoResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAssetInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAssetInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAssetInfoResponse proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*FeedPrice)(nil), "elys.oracle.FeedPrice")
+	proto.RegisterType((*MsgFeedPrice)(nil), "elys.oracle.MsgFeedPrice")
+	proto.RegisterType((*MsgFeedPriceResponse)(nil), "elys.oracle.MsgFeedPriceResponse")
+	proto.RegisterType((*MsgSetPriceFeeder)(nil), "elys.oracle.MsgSetPriceFeeder")
+	proto.RegisterType((*MsgSetPriceFeederResponse)(nil), "elys.oracle.MsgSetPriceFeederResponse")
+	proto.RegisterType((*MsgDeletePriceFeeder)(nil), "elys.oracle.MsgDeletePriceFeeder")
+	proto.RegisterType((*MsgDeletePriceFeederResponse)(nil), "elys.oracle.MsgDeletePriceFeederResponse")
+	proto.RegisterType((*MsgFeedMultiplePrices)(nil), "elys.oracle.MsgFeedMultiplePrices")
+	proto.RegisterType((*MsgFeedMultiplePricesResponse)(nil), "elys.oracle.MsgFeedMultiplePricesResponse")
+	proto.RegisterType((*MsgRemoveAssetInfo)(nil), "elys.oracle.MsgRemoveAssetInfo")
+	proto.RegisterType((*MsgRemoveAssetInfoResponse)(nil), "elys.oracle.MsgRemoveAssetInfoResponse")
+	proto.RegisterType((*MsgAddPriceFeeders)(nil), "elys.oracle.MsgAddPriceFeeders")
+	proto.RegisterType((*MsgAddPriceFeedersResponse)(nil), "elys.oracle.MsgAddPriceFeedersResponse")
+	proto.RegisterType((*MsgRemovePriceFeeders)(nil), "elys.oracle.MsgRemovePriceFeeders")
+	proto.RegisterType((*MsgRemovePriceFeedersResponse)(nil), "elys.oracle.MsgRemovePriceFeedersResponse")
+	proto.RegisterType((*MsgUpdateParams)(nil), "elys.oracle.MsgUpdateParams")
+	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.oracle.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgCreateAssetInfo)(nil), "elys.oracle.MsgCreateAssetInfo")
+	proto.RegisterType((*MsgCreateAssetInfoResponse)(nil), "elys.oracle.MsgCreateAssetInfoResponse")
+}
+
 func init() { proto.RegisterFile("elys/oracle/tx.proto", fileDescriptor_f1fcab3fbd407da0) }
 
 var fileDescriptor_f1fcab3fbd407da0 = []byte{
-	// 262 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x90, 0xb1, 0x4e, 0xc3, 0x30,
-	0x10, 0x86, 0x1b, 0x21, 0x18, 0x0a, 0x0b, 0xa8, 0x12, 0x10, 0x21, 0x3f, 0x00, 0x12, 0x39, 0x05,
-	0x06, 0x76, 0x26, 0x16, 0x5e, 0x80, 0x25, 0x72, 0xd2, 0xab, 0xb1, 0xa8, 0x7d, 0x91, 0xcf, 0x84,
-	0x76, 0xe3, 0x11, 0x78, 0x14, 0x1e, 0x83, 0xb1, 0x23, 0x23, 0x4a, 0x06, 0x5e, 0x03, 0x25, 0x76,
-	0x51, 0x10, 0x2c, 0xb6, 0xef, 0xff, 0xce, 0x9f, 0xce, 0x9e, 0xce, 0x70, 0xb9, 0x66, 0x20, 0x27,
-	0xab, 0x25, 0x82, 0x5f, 0x65, 0xb5, 0x23, 0x4f, 0x47, 0xfb, 0x7d, 0x9a, 0x85, 0x34, 0x9d, 0x29,
-	0x52, 0x34, 0xe4, 0xd0, 0x9f, 0x42, 0x4b, 0x2a, 0x2a, 0x62, 0x43, 0x0c, 0xa5, 0x64, 0x84, 0x26,
-	0x2f, 0xd1, 0xcb, 0x1c, 0x2a, 0xd2, 0x36, 0xf2, 0xb3, 0xb1, 0xb8, 0x94, 0x76, 0x5e, 0xd4, 0x4e,
-	0x57, 0xf8, 0x1f, 0x95, 0xcc, 0xe8, 0x0b, 0x6d, 0x17, 0x5b, 0xf7, 0xf1, 0x98, 0x8e, 0xaf, 0x89,
-	0x3f, 0xa0, 0x58, 0x20, 0xce, 0xd1, 0x45, 0x7e, 0xf2, 0x8b, 0x4b, 0x27, 0x0d, 0x6f, 0x95, 0x71,
-	0x5c, 0xc3, 0x0a, 0x9a, 0xbc, 0xdf, 0x22, 0x38, 0x94, 0x46, 0x5b, 0x82, 0x61, 0x8d, 0xd1, 0x69,
-	0xe8, 0x2d, 0xc2, 0x9b, 0x43, 0x11, 0xd0, 0xe5, 0xc1, 0x74, 0xe7, 0x8e, 0x55, 0xba, 0xfb, 0xf2,
-	0xf5, 0x76, 0x9e, 0xdc, 0xdc, 0xbe, 0xb7, 0x22, 0xd9, 0xb4, 0x22, 0xf9, 0x6c, 0x45, 0xf2, 0xda,
-	0x89, 0xc9, 0xa6, 0x13, 0x93, 0x8f, 0x4e, 0x4c, 0xee, 0x33, 0xa5, 0xfd, 0xc3, 0x53, 0x99, 0x55,
-	0x64, 0xa0, 0x9f, 0xe9, 0xc2, 0xa2, 0x7f, 0x26, 0xf7, 0x38, 0x14, 0xd0, 0x5c, 0xc3, 0xea, 0xe7,
-	0xcf, 0xd7, 0x35, 0x72, 0xb9, 0x37, 0xe8, 0xaf, 0xbe, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc1, 0xbf,
-	0xbc, 0xe0, 0x8f, 0x01, 0x00, 0x00,
+	// 1017 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0x4d, 0x6f, 0xdb, 0x46,
+	0x13, 0x36, 0xfd, 0xa1, 0x58, 0xe3, 0xe0, 0x0d, 0xcc, 0xe8, 0x75, 0x28, 0x5a, 0xa5, 0x5c, 0xa2,
+	0x1f, 0x8e, 0x5a, 0x8b, 0x95, 0x5b, 0xb4, 0x80, 0x8a, 0x1e, 0xec, 0x1a, 0x69, 0x03, 0x54, 0x40,
+	0xc0, 0xb4, 0x40, 0xd1, 0x1e, 0x04, 0x8a, 0x5c, 0xd3, 0x84, 0x45, 0xae, 0xc0, 0xa5, 0xd4, 0xe8,
+	0x16, 0xe4, 0x58, 0xf4, 0x90, 0x43, 0x4f, 0xfd, 0x03, 0xed, 0xd1, 0x87, 0x5c, 0xfa, 0x0f, 0x02,
+	0xf4, 0x12, 0xe4, 0x54, 0xf4, 0x10, 0x14, 0xf6, 0xc1, 0x7f, 0xa3, 0x58, 0xee, 0xf2, 0x6b, 0x29,
+	0x87, 0x80, 0x8b, 0x5e, 0x6c, 0xcd, 0xcc, 0xb3, 0xcf, 0x3c, 0xb3, 0x3b, 0x3b, 0x2b, 0x41, 0x03,
+	0x8d, 0xe7, 0xc4, 0xc0, 0xa1, 0x65, 0x8f, 0x91, 0x11, 0x3d, 0xea, 0x4e, 0x42, 0x1c, 0x61, 0x79,
+	0x83, 0x7a, 0xbb, 0xcc, 0xab, 0x36, 0x5c, 0xec, 0xe2, 0xd8, 0x6f, 0xd0, 0x4f, 0x0c, 0xa2, 0x6a,
+	0x36, 0x26, 0x3e, 0x26, 0xc6, 0xc8, 0x22, 0xc8, 0x98, 0xf5, 0x46, 0x28, 0xb2, 0x7a, 0x86, 0x8d,
+	0xbd, 0x80, 0xc7, 0x5b, 0x79, 0xe2, 0x91, 0x15, 0x38, 0xc3, 0x49, 0xe8, 0xd9, 0x68, 0x51, 0xd4,
+	0x22, 0x04, 0x45, 0x43, 0x2f, 0x38, 0x4e, 0xb8, 0xef, 0xe4, 0xa3, 0xf9, 0x65, 0x5a, 0x29, 0x30,
+	0x3c, 0x46, 0xc8, 0x41, 0x21, 0x8f, 0x2b, 0x85, 0xb8, 0x15, 0x5a, 0x3e, 0x49, 0x28, 0xb9, 0x5c,
+	0x9f, 0xb8, 0xc6, 0xac, 0x47, 0xff, 0xf1, 0xc0, 0xa6, 0xe5, 0x7b, 0x01, 0x36, 0xe2, 0xbf, 0xdc,
+	0xd5, 0x64, 0xd8, 0x21, 0xab, 0x99, 0x19, 0x2c, 0xa4, 0x3f, 0x91, 0xa0, 0x7e, 0x0f, 0x21, 0xe7,
+	0x01, 0xcd, 0x2d, 0x37, 0x60, 0x2d, 0xd6, 0xae, 0x48, 0x3b, 0xd2, 0x6e, 0xdd, 0x64, 0x86, 0xfc,
+	0x05, 0xac, 0xc5, 0xd2, 0x94, 0x65, 0xea, 0x3d, 0xec, 0x3d, 0x7f, 0xd5, 0x5e, 0xfa, 0xeb, 0x55,
+	0x7b, 0x9b, 0x11, 0x11, 0xe7, 0xb4, 0xeb, 0x61, 0xc3, 0xb7, 0xa2, 0x93, 0xee, 0x57, 0xc8, 0xb5,
+	0xec, 0xf9, 0x11, 0xb2, 0x5f, 0x3e, 0xdb, 0x03, 0x9e, 0xe7, 0x08, 0xd9, 0x26, 0x5b, 0x2f, 0x6f,
+	0x41, 0x8d, 0xe0, 0x69, 0x68, 0x23, 0x65, 0x25, 0xe6, 0xe7, 0x96, 0xfe, 0x9b, 0x04, 0x37, 0x07,
+	0xc4, 0xcd, 0x74, 0x7c, 0x04, 0xeb, 0x93, 0x10, 0xcf, 0x3c, 0x07, 0x85, 0x4c, 0xca, 0xa1, 0xf2,
+	0xf2, 0xd9, 0x5e, 0x83, 0x33, 0x1e, 0x38, 0x4e, 0x88, 0x08, 0x79, 0x18, 0x85, 0x5e, 0xe0, 0x9a,
+	0x29, 0x52, 0xfe, 0x14, 0x80, 0x6e, 0xde, 0x30, 0x13, 0xbb, 0xb1, 0xbf, 0xd5, 0xcd, 0x9d, 0x7c,
+	0x37, 0xcd, 0x70, 0xb8, 0x4a, 0x8b, 0x30, 0xeb, 0xc7, 0x89, 0xa3, 0xff, 0xf6, 0x93, 0xcb, 0xb3,
+	0x4e, 0xca, 0xf5, 0xe3, 0xe5, 0x59, 0xe7, 0x36, 0xdf, 0xf6, 0xbc, 0x32, 0x7d, 0x0b, 0x1a, 0x79,
+	0xdb, 0x44, 0x64, 0x82, 0x03, 0x82, 0xf4, 0x9f, 0x24, 0xd8, 0x1c, 0x10, 0xf7, 0x21, 0x8a, 0x62,
+	0xff, 0xbd, 0xf8, 0x10, 0xe5, 0x0f, 0xa0, 0xc6, 0x8e, 0xb3, 0xb2, 0x0a, 0x8e, 0x93, 0xb7, 0xa1,
+	0xee, 0x91, 0xa1, 0x65, 0x47, 0xde, 0x8c, 0x95, 0xb0, 0x6e, 0xae, 0x7b, 0xe4, 0x20, 0xb6, 0xfb,
+	0xbb, 0x54, 0x23, 0x47, 0x52, 0x85, 0x4a, 0xa6, 0xb0, 0x98, 0x58, 0xdf, 0x86, 0x66, 0xc9, 0x99,
+	0x6a, 0x9d, 0xc6, 0x35, 0x1c, 0xa1, 0x31, 0x8a, 0xd0, 0xbf, 0x52, 0xdb, 0x7f, 0x4f, 0x10, 0xb4,
+	0x9d, 0x09, 0x2a, 0xd1, 0xeb, 0x1a, 0xb4, 0x16, 0xf9, 0x53, 0x59, 0xbf, 0x4b, 0xf0, 0x7f, 0xbe,
+	0xb7, 0x83, 0xe9, 0x38, 0xf2, 0x26, 0x63, 0x06, 0x23, 0xf2, 0x3e, 0xdc, 0xb0, 0x43, 0x64, 0x45,
+	0xb8, 0x5a, 0x59, 0x02, 0x94, 0x3f, 0x83, 0x8d, 0xac, 0x19, 0x88, 0xb2, 0xbc, 0xb3, 0x52, 0xd9,
+	0x0d, 0x90, 0x76, 0x03, 0xe9, 0xef, 0xd1, 0xca, 0x12, 0x32, 0x5a, 0x5a, 0xab, 0xd8, 0x0d, 0x45,
+	0x85, 0x7a, 0x1b, 0xde, 0x58, 0x18, 0x48, 0x8b, 0x7b, 0x2a, 0x81, 0x3c, 0x20, 0xae, 0x89, 0x7c,
+	0x3c, 0x43, 0x07, 0xf4, 0x5a, 0xdd, 0x0f, 0x8e, 0xb1, 0xfc, 0x31, 0xd4, 0xad, 0x69, 0x74, 0x82,
+	0x43, 0x2f, 0x9a, 0x57, 0xd6, 0x96, 0x41, 0xe9, 0x45, 0x75, 0x50, 0x80, 0x7d, 0x76, 0x25, 0x4d,
+	0x66, 0xf4, 0xdf, 0xa7, 0xa2, 0x33, 0x14, 0x95, 0xdd, 0xcc, 0x64, 0x0b, 0xb9, 0xf5, 0x16, 0xa8,
+	0x65, 0x6f, 0x2a, 0xf8, 0x67, 0x26, 0xf8, 0xc0, 0x71, 0x72, 0x67, 0x45, 0xae, 0x2d, 0x58, 0x81,
+	0x1b, 0xac, 0x4d, 0xd8, 0x51, 0xd4, 0xcd, 0xc4, 0xac, 0x10, 0x2d, 0xe4, 0xe7, 0xa2, 0x05, 0x6f,
+	0x2a, 0xfa, 0x17, 0xd6, 0x42, 0xac, 0xa6, 0xff, 0x58, 0xb7, 0x51, 0xd6, 0xdd, 0x12, 0x37, 0xbb,
+	0x20, 0x9d, 0xf5, 0x48, 0x39, 0x90, 0xaa, 0xff, 0x55, 0x82, 0x5b, 0x03, 0xe2, 0x7e, 0x33, 0x71,
+	0xac, 0x08, 0x3d, 0x88, 0x87, 0xfd, 0xb5, 0x75, 0xf7, 0xa0, 0xc6, 0x9e, 0x0b, 0x3e, 0x07, 0x6f,
+	0x17, 0x3a, 0x9f, 0x91, 0xf3, 0xb6, 0xe7, 0xc0, 0xfe, 0xdd, 0x72, 0x41, 0x5b, 0x59, 0x41, 0x79,
+	0x55, 0x7a, 0x13, 0xee, 0x08, 0xae, 0xb4, 0x88, 0xc7, 0xcb, 0x71, 0xdf, 0x7c, 0x4e, 0x6f, 0x4e,
+	0xae, 0xd1, 0xaf, 0x73, 0x85, 0x17, 0x36, 0x39, 0x3d, 0x11, 0xc7, 0x23, 0x93, 0xb1, 0x35, 0xe7,
+	0xaf, 0x48, 0x62, 0xca, 0x6d, 0xd8, 0x88, 0xdf, 0xe5, 0xc8, 0xb3, 0x4f, 0x51, 0xa8, 0xac, 0xc6,
+	0x51, 0xa0, 0xae, 0xaf, 0x63, 0x0f, 0x05, 0xd0, 0x5d, 0x48, 0x00, 0x6b, 0x0c, 0x40, 0x5d, 0x1c,
+	0x40, 0xb9, 0x91, 0xed, 0xf9, 0xd6, 0x58, 0xa9, 0xed, 0x48, 0xbb, 0xab, 0x66, 0x62, 0xf6, 0x3b,
+	0xe2, 0x3c, 0xc8, 0xf5, 0xa8, 0x50, 0x2b, 0xef, 0x51, 0xc1, 0x9b, 0x6c, 0xd0, 0xfe, 0x1f, 0x35,
+	0x58, 0x19, 0x10, 0x57, 0xbe, 0x9f, 0x7f, 0x78, 0x9b, 0x85, 0xe3, 0xc9, 0xbf, 0x30, 0xea, 0x9b,
+	0x57, 0x86, 0x12, 0x4a, 0xd9, 0x01, 0x79, 0xc1, 0xd4, 0xd4, 0x17, 0x2d, 0x2c, 0x62, 0xd4, 0x4e,
+	0x35, 0x26, 0xcd, 0xf2, 0x2d, 0xfc, 0x4f, 0x78, 0xde, 0x34, 0x71, 0x75, 0x31, 0xae, 0xbe, 0xf3,
+	0xfa, 0x78, 0xca, 0x6c, 0xc1, 0x66, 0xf9, 0x35, 0x2a, 0xd5, 0x5d, 0x82, 0xa8, 0x77, 0x2b, 0x21,
+	0x69, 0x8a, 0xef, 0xe1, 0x96, 0x38, 0x7b, 0xdb, 0xe2, 0x6a, 0x01, 0xa0, 0xbe, 0x5b, 0x01, 0xc8,
+	0x93, 0x8b, 0x73, 0xb2, 0x44, 0x2e, 0x00, 0xca, 0xe4, 0x57, 0xcc, 0x34, 0x7a, 0xb8, 0x0b, 0xe6,
+	0x99, 0xbe, 0x58, 0x5b, 0x21, 0x45, 0xa7, 0x1a, 0x93, 0x66, 0x31, 0xe1, 0x66, 0x61, 0xee, 0xb4,
+	0xc4, 0xb5, 0xf9, 0xa8, 0xfa, 0xd6, 0xeb, 0xa2, 0xf9, 0x6d, 0x11, 0xc7, 0x40, 0x69, 0x5b, 0x04,
+	0x40, 0x79, 0x5b, 0xae, 0xb8, 0x46, 0xea, 0xda, 0xe3, 0xcb, 0xb3, 0x8e, 0x74, 0xf8, 0xe5, 0xf3,
+	0x73, 0x4d, 0x7a, 0x71, 0xae, 0x49, 0x7f, 0x9f, 0x6b, 0xd2, 0xd3, 0x0b, 0x6d, 0xe9, 0xc5, 0x85,
+	0xb6, 0xf4, 0xe7, 0x85, 0xb6, 0xf4, 0x5d, 0xd7, 0xf5, 0xa2, 0x93, 0xe9, 0xa8, 0x6b, 0x63, 0xdf,
+	0xa0, 0x9c, 0x7b, 0x01, 0x8a, 0x7e, 0xc0, 0xe1, 0x69, 0x6c, 0x18, 0xb3, 0x4f, 0x8c, 0x47, 0xe9,
+	0xaf, 0x84, 0xf9, 0x04, 0x91, 0x51, 0x2d, 0xfe, 0x42, 0xfc, 0xe1, 0x3f, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x92, 0x7d, 0x0e, 0xd7, 0x41, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -63,6 +1008,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	FeedPrice(ctx context.Context, in *MsgFeedPrice, opts ...grpc.CallOption) (*MsgFeedPriceResponse, error)
+	FeedMultiplePrices(ctx context.Context, in *MsgFeedMultiplePrices, opts ...grpc.CallOption) (*MsgFeedMultiplePricesResponse, error)
+	SetPriceFeeder(ctx context.Context, in *MsgSetPriceFeeder, opts ...grpc.CallOption) (*MsgSetPriceFeederResponse, error)
+	DeletePriceFeeder(ctx context.Context, in *MsgDeletePriceFeeder, opts ...grpc.CallOption) (*MsgDeletePriceFeederResponse, error)
+	// proposals
+	RemoveAssetInfo(ctx context.Context, in *MsgRemoveAssetInfo, opts ...grpc.CallOption) (*MsgRemoveAssetInfoResponse, error)
+	AddPriceFeeders(ctx context.Context, in *MsgAddPriceFeeders, opts ...grpc.CallOption) (*MsgAddPriceFeedersResponse, error)
+	RemovePriceFeeders(ctx context.Context, in *MsgRemovePriceFeeders, opts ...grpc.CallOption) (*MsgRemovePriceFeedersResponse, error)
+	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// this line is used by starport scaffolding # proto/tx/rpc
+	CreateAssetInfo(ctx context.Context, in *MsgCreateAssetInfo, opts ...grpc.CallOption) (*MsgCreateAssetInfoResponse, error)
 }
 
 type msgClient struct {
@@ -73,23 +1029,3033 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) FeedPrice(ctx context.Context, in *MsgFeedPrice, opts ...grpc.CallOption) (*MsgFeedPriceResponse, error) {
+	out := new(MsgFeedPriceResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/FeedPrice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) FeedMultiplePrices(ctx context.Context, in *MsgFeedMultiplePrices, opts ...grpc.CallOption) (*MsgFeedMultiplePricesResponse, error) {
+	out := new(MsgFeedMultiplePricesResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/FeedMultiplePrices", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetPriceFeeder(ctx context.Context, in *MsgSetPriceFeeder, opts ...grpc.CallOption) (*MsgSetPriceFeederResponse, error) {
+	out := new(MsgSetPriceFeederResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/SetPriceFeeder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeletePriceFeeder(ctx context.Context, in *MsgDeletePriceFeeder, opts ...grpc.CallOption) (*MsgDeletePriceFeederResponse, error) {
+	out := new(MsgDeletePriceFeederResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/DeletePriceFeeder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveAssetInfo(ctx context.Context, in *MsgRemoveAssetInfo, opts ...grpc.CallOption) (*MsgRemoveAssetInfoResponse, error) {
+	out := new(MsgRemoveAssetInfoResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/RemoveAssetInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddPriceFeeders(ctx context.Context, in *MsgAddPriceFeeders, opts ...grpc.CallOption) (*MsgAddPriceFeedersResponse, error) {
+	out := new(MsgAddPriceFeedersResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/AddPriceFeeders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemovePriceFeeders(ctx context.Context, in *MsgRemovePriceFeeders, opts ...grpc.CallOption) (*MsgRemovePriceFeedersResponse, error) {
+	out := new(MsgRemovePriceFeedersResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/RemovePriceFeeders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/UpdateParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateAssetInfo(ctx context.Context, in *MsgCreateAssetInfo, opts ...grpc.CallOption) (*MsgCreateAssetInfoResponse, error) {
+	out := new(MsgCreateAssetInfoResponse)
+	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/CreateAssetInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	FeedPrice(context.Context, *MsgFeedPrice) (*MsgFeedPriceResponse, error)
+	FeedMultiplePrices(context.Context, *MsgFeedMultiplePrices) (*MsgFeedMultiplePricesResponse, error)
+	SetPriceFeeder(context.Context, *MsgSetPriceFeeder) (*MsgSetPriceFeederResponse, error)
+	DeletePriceFeeder(context.Context, *MsgDeletePriceFeeder) (*MsgDeletePriceFeederResponse, error)
+	// proposals
+	RemoveAssetInfo(context.Context, *MsgRemoveAssetInfo) (*MsgRemoveAssetInfoResponse, error)
+	AddPriceFeeders(context.Context, *MsgAddPriceFeeders) (*MsgAddPriceFeedersResponse, error)
+	RemovePriceFeeders(context.Context, *MsgRemovePriceFeeders) (*MsgRemovePriceFeedersResponse, error)
+	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// this line is used by starport scaffolding # proto/tx/rpc
+	CreateAssetInfo(context.Context, *MsgCreateAssetInfo) (*MsgCreateAssetInfoResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) FeedPrice(ctx context.Context, req *MsgFeedPrice) (*MsgFeedPriceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FeedPrice not implemented")
+}
+func (*UnimplementedMsgServer) FeedMultiplePrices(ctx context.Context, req *MsgFeedMultiplePrices) (*MsgFeedMultiplePricesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FeedMultiplePrices not implemented")
+}
+func (*UnimplementedMsgServer) SetPriceFeeder(ctx context.Context, req *MsgSetPriceFeeder) (*MsgSetPriceFeederResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPriceFeeder not implemented")
+}
+func (*UnimplementedMsgServer) DeletePriceFeeder(ctx context.Context, req *MsgDeletePriceFeeder) (*MsgDeletePriceFeederResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePriceFeeder not implemented")
+}
+func (*UnimplementedMsgServer) RemoveAssetInfo(ctx context.Context, req *MsgRemoveAssetInfo) (*MsgRemoveAssetInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveAssetInfo not implemented")
+}
+func (*UnimplementedMsgServer) AddPriceFeeders(ctx context.Context, req *MsgAddPriceFeeders) (*MsgAddPriceFeedersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddPriceFeeders not implemented")
+}
+func (*UnimplementedMsgServer) RemovePriceFeeders(ctx context.Context, req *MsgRemovePriceFeeders) (*MsgRemovePriceFeedersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemovePriceFeeders not implemented")
+}
+func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) CreateAssetInfo(ctx context.Context, req *MsgCreateAssetInfo) (*MsgCreateAssetInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAssetInfo not implemented")
+}
+
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-var Msg_serviceDesc = _Msg_serviceDesc
+func _Msg_FeedPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgFeedPrice)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).FeedPrice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/FeedPrice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).FeedPrice(ctx, req.(*MsgFeedPrice))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_FeedMultiplePrices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgFeedMultiplePrices)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).FeedMultiplePrices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/FeedMultiplePrices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).FeedMultiplePrices(ctx, req.(*MsgFeedMultiplePrices))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetPriceFeeder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetPriceFeeder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetPriceFeeder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/SetPriceFeeder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetPriceFeeder(ctx, req.(*MsgSetPriceFeeder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeletePriceFeeder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeletePriceFeeder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeletePriceFeeder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/DeletePriceFeeder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeletePriceFeeder(ctx, req.(*MsgDeletePriceFeeder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveAssetInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveAssetInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveAssetInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/RemoveAssetInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveAssetInfo(ctx, req.(*MsgRemoveAssetInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddPriceFeeders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddPriceFeeders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddPriceFeeders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/AddPriceFeeders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddPriceFeeders(ctx, req.(*MsgAddPriceFeeders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemovePriceFeeders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemovePriceFeeders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemovePriceFeeders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/RemovePriceFeeders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemovePriceFeeders(ctx, req.(*MsgRemovePriceFeeders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/UpdateParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateAssetInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateAssetInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateAssetInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.oracle.Msg/CreateAssetInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateAssetInfo(ctx, req.(*MsgCreateAssetInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.oracle.Msg",
 	HandlerType: (*MsgServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "elys/oracle/tx.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FeedPrice",
+			Handler:    _Msg_FeedPrice_Handler,
+		},
+		{
+			MethodName: "FeedMultiplePrices",
+			Handler:    _Msg_FeedMultiplePrices_Handler,
+		},
+		{
+			MethodName: "SetPriceFeeder",
+			Handler:    _Msg_SetPriceFeeder_Handler,
+		},
+		{
+			MethodName: "DeletePriceFeeder",
+			Handler:    _Msg_DeletePriceFeeder_Handler,
+		},
+		{
+			MethodName: "RemoveAssetInfo",
+			Handler:    _Msg_RemoveAssetInfo_Handler,
+		},
+		{
+			MethodName: "AddPriceFeeders",
+			Handler:    _Msg_AddPriceFeeders_Handler,
+		},
+		{
+			MethodName: "RemovePriceFeeders",
+			Handler:    _Msg_RemovePriceFeeders_Handler,
+		},
+		{
+			MethodName: "UpdateParams",
+			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "CreateAssetInfo",
+			Handler:    _Msg_CreateAssetInfo_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "elys/oracle/tx.proto",
 }
+
+func (m *FeedPrice) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FeedPrice) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FeedPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Source) > 0 {
+		i -= len(m.Source)
+		copy(dAtA[i:], m.Source)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Source)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	{
+		size := m.Price.Size()
+		i -= size
+		if _, err := m.Price.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Asset) > 0 {
+		i -= len(m.Asset)
+		copy(dAtA[i:], m.Asset)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Asset)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgFeedPrice) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgFeedPrice) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgFeedPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.FeedPrice.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Provider) > 0 {
+		i -= len(m.Provider)
+		copy(dAtA[i:], m.Provider)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Provider)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgFeedPriceResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgFeedPriceResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgFeedPriceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetPriceFeeder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetPriceFeeder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetPriceFeeder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.IsActive {
+		i--
+		if m.IsActive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Feeder) > 0 {
+		i -= len(m.Feeder)
+		copy(dAtA[i:], m.Feeder)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Feeder)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetPriceFeederResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetPriceFeederResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetPriceFeederResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeletePriceFeeder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeletePriceFeeder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeletePriceFeeder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Feeder) > 0 {
+		i -= len(m.Feeder)
+		copy(dAtA[i:], m.Feeder)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Feeder)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeletePriceFeederResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeletePriceFeederResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeletePriceFeederResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgFeedMultiplePrices) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgFeedMultiplePrices) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgFeedMultiplePrices) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.FeedPrices) > 0 {
+		for iNdEx := len(m.FeedPrices) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FeedPrices[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgFeedMultiplePricesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgFeedMultiplePricesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgFeedMultiplePricesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveAssetInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveAssetInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveAssetInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveAssetInfoResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveAssetInfoResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveAssetInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAddPriceFeeders) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddPriceFeeders) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddPriceFeeders) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Feeders) > 0 {
+		for iNdEx := len(m.Feeders) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Feeders[iNdEx])
+			copy(dAtA[i:], m.Feeders[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Feeders[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAddPriceFeedersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddPriceFeedersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddPriceFeedersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemovePriceFeeders) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemovePriceFeeders) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemovePriceFeeders) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Feeders) > 0 {
+		for iNdEx := len(m.Feeders) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Feeders[iNdEx])
+			copy(dAtA[i:], m.Feeders[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Feeders[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemovePriceFeedersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemovePriceFeedersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemovePriceFeedersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateAssetInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAssetInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAssetInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Decimal != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Decimal))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.ElysTicker) > 0 {
+		i -= len(m.ElysTicker)
+		copy(dAtA[i:], m.ElysTicker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ElysTicker)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.BandTicker) > 0 {
+		i -= len(m.BandTicker)
+		copy(dAtA[i:], m.BandTicker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BandTicker)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Display) > 0 {
+		i -= len(m.Display)
+		copy(dAtA[i:], m.Display)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Display)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateAssetInfoResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAssetInfoResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAssetInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *FeedPrice) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Asset)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Price.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Source)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgFeedPrice) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Provider)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.FeedPrice.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgFeedPriceResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgSetPriceFeeder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Feeder)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.IsActive {
+		n += 2
+	}
+	return n
+}
+
+func (m *MsgSetPriceFeederResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeletePriceFeeder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Feeder)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeletePriceFeederResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgFeedMultiplePrices) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.FeedPrices) > 0 {
+		for _, e := range m.FeedPrices {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgFeedMultiplePricesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemoveAssetInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRemoveAssetInfoResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgAddPriceFeeders) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Feeders) > 0 {
+		for _, s := range m.Feeders {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgAddPriceFeedersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemovePriceFeeders) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Feeders) > 0 {
+		for _, s := range m.Feeders {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgRemovePriceFeedersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Params.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgCreateAssetInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Display)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BandTicker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ElysTicker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Decimal != 0 {
+		n += 1 + sovTx(uint64(m.Decimal))
+	}
+	return n
+}
+
+func (m *MsgCreateAssetInfoResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *FeedPrice) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FeedPrice: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FeedPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Asset", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Asset = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Price", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Price.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Source", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Source = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgFeedPrice) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgFeedPrice: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgFeedPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Provider", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Provider = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeedPrice", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.FeedPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgFeedPriceResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgFeedPriceResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgFeedPriceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetPriceFeeder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetPriceFeeder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetPriceFeeder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Feeder", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Feeder = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsActive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsActive = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetPriceFeederResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetPriceFeederResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetPriceFeederResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeletePriceFeeder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeletePriceFeeder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeletePriceFeeder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Feeder", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Feeder = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeletePriceFeederResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeletePriceFeederResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeletePriceFeederResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgFeedMultiplePrices) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgFeedMultiplePrices: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgFeedMultiplePrices: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeedPrices", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FeedPrices = append(m.FeedPrices, FeedPrice{})
+			if err := m.FeedPrices[len(m.FeedPrices)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgFeedMultiplePricesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgFeedMultiplePricesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgFeedMultiplePricesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveAssetInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveAssetInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveAssetInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveAssetInfoResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveAssetInfoResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveAssetInfoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddPriceFeeders) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddPriceFeeders: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddPriceFeeders: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Feeders", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Feeders = append(m.Feeders, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddPriceFeedersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddPriceFeedersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddPriceFeedersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemovePriceFeeders) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemovePriceFeeders: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemovePriceFeeders: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Feeders", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Feeders = append(m.Feeders, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemovePriceFeedersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemovePriceFeedersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemovePriceFeedersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAssetInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAssetInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAssetInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Display", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Display = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BandTicker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BandTicker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ElysTicker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ElysTicker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Decimal", wireType)
+			}
+			m.Decimal = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Decimal |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAssetInfoResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAssetInfoResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAssetInfoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

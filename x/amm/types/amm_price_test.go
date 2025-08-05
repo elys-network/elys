@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 func TestGetTokenARate(t *testing.T) {

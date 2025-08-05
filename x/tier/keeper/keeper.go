@@ -22,7 +22,7 @@ type (
 		amm                types.AmmKeeper
 		estaking           types.EstakingKeeper
 		masterchef         types.MasterchefKeeper
-		commitement        types.CommitmentKeeper
+		commitment         types.CommitmentKeeper
 		perpetual          types.PerpetualKeeper
 		stakingKeeper      types.StakingKeeper
 		leveragelp         types.LeverageLpKeeper
@@ -40,7 +40,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	estaking types.EstakingKeeper,
 	masterchef types.MasterchefKeeper,
-	commitement types.CommitmentKeeper,
+	commitment types.CommitmentKeeper,
 	stakingKeeper types.StakingKeeper,
 	perpetual types.PerpetualKeeper,
 	leveragelp types.LeverageLpKeeper,
@@ -57,7 +57,7 @@ func NewKeeper(
 		amm:                amm,
 		estaking:           estaking,
 		masterchef:         masterchef,
-		commitement:        commitement,
+		commitment:         commitment,
 		stakingKeeper:      stakingKeeper,
 		perpetual:          perpetual,
 		leveragelp:         leveragelp,
