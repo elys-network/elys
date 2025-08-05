@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/elys-network/elys/v7/x/vaults/types"
@@ -144,8 +145,7 @@ func (k Keeper) SwapToDepositDenom(ctx sdk.Context, depositDenom string, toSendC
 				DenomIn:   coin.Denom,
 				DenomOut:  depositDenom,
 				Recipient: recipient.String(),
-				// MinAmount: sdk.NewInt(0)
-				// MaxAmount: ,
+				MinAmount: sdk.NewCoin(depositDenom, sdkmath.ZeroInt()),
 			})
 			if err != nil {
 				return nil, err
