@@ -65,9 +65,9 @@ func (k Keeper) GetVaultAndData(ctx sdk.Context, vaultId uint64, days uint64) (t
 	depositDenomUsdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, balance.Amount)
 	var depositsUsed osmomath.BigDec
 	if totalDepositsUsd.Equal(depositDenomUsdValue) {
-		depositsUsed = osmomath.OneBigDec()
+		depositsUsed = osmomath.ZeroBigDec()
 	} else {
-		depositsUsed = depositDenomUsdValue.Quo(totalDepositsUsd.Sub(depositDenomUsdValue))
+		depositsUsed = osmomath.OneBigDec().Sub(depositDenomUsdValue.Quo(totalDepositsUsd.Sub(depositDenomUsdValue)))
 	}
 	positions, err := k.GetVaultPositions(ctx, vaultId)
 	if err != nil {
