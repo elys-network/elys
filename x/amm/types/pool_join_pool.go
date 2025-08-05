@@ -117,11 +117,11 @@ func (p *Pool) JoinPool(
 		tokenAmountOut := osmomath.ZeroBigDec()
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, tokenAmountOut, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
+				swappedTokenIn := sdk.NewCoin(tokenIn.Denom, osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weight.Weight).Dec().TruncateInt())
+				_, slippage, tokenAmountOut, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, sdk.Coins{swappedTokenIn}, weight.Asset, osmomath.ZeroBigDec())
 				if err == nil {
-					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
-					swappedTokenIn := sdk.NewCoin(tokenIn.Denom, osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weight.Weight).Dec().TruncateInt())
-					swappedTokenOut := sdk.NewCoin(weight.Asset, tokenAmountOut.Mul(weight.Weight).Dec().TruncateInt())
+					totalSlippage = totalSlippage.Add(slippage)
+					swappedTokenOut := sdk.NewCoin(weight.Asset, tokenAmountOut.Dec().TruncateInt())
 					swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, swappedTokenOut))
 				}
 			}
