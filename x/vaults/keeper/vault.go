@@ -35,7 +35,7 @@ func (k Keeper) GetAllVaults(ctx sdk.Context) []types.Vault {
 	return vaults
 }
 
-// SetParams set the params
+// SetVault set the valut
 func (k Keeper) SetVault(ctx sdk.Context, vault types.Vault) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := k.cdc.MustMarshal(&vault)
