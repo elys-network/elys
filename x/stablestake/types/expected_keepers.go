@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 type AmmKeeper interface {
@@ -48,7 +48,6 @@ type AssetProfileKeeper interface {
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
-	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 

@@ -14,9 +14,9 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/elys-network/elys/v7/x/perpetual/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 

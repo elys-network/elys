@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v7/x/oracle/types"
 )
@@ -28,11 +27,6 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 	}
-}
-
-func (k Keeper) DeletePort(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.PortKey)
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
