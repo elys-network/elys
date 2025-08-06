@@ -1584,37 +1584,37 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "pool", "pool_id", "days"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "pool", "pool_id", "days"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PoolAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "pool", "days"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PoolAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "pool", "days"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_DenomLiquidity_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "denom_liquidity", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_DenomLiquidity_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "denom_liquidity", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_DenomLiquidityAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "denom_liquidity"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_DenomLiquidityAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "denom_liquidity"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SwapEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SwapEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SwapEstimationExactAmountOut_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation_exact_amount_out"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SwapEstimationExactAmountOut_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation_exact_amount_out"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_JoinPoolEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "join_pool_estimation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_JoinPoolEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "join_pool_estimation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ExitPoolEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "exit_pool_estimation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ExitPoolEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "exit_pool_estimation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SlippageTrack_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "slippage_track", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SlippageTrack_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "amm", "slippage_track", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SlippageTrackAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "slippage_tracks"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SlippageTrackAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "slippage_tracks"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "balance", "address", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "balance", "address", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_InRouteByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "in_route_by_denom", "denom_in", "denom_out"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_InRouteByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "in_route_by_denom", "denom_in", "denom_out"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OutRouteByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "out_route_by_denom", "denom_out", "denom_in"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OutRouteByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "out_route_by_denom", "denom_out", "denom_in"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SwapEstimationByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation_by_denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SwapEstimationByDenom_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "amm", "swap_estimation_by_denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_WeightAndSlippageFee_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "saved_value", "pool_id", "date"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_WeightAndSlippageFee_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "amm", "saved_value", "pool_id", "date"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

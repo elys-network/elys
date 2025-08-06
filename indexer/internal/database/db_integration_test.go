@@ -1,3 +1,4 @@
+//go:build integration
 // +build integration
 
 package database
@@ -34,22 +35,22 @@ func setupIntegrationTest(t *testing.T) *TestDatabase {
 	if dbHost == "" {
 		dbHost = "localhost"
 	}
-	
+
 	dbPort := os.Getenv("TEST_DB_PORT")
 	if dbPort == "" {
 		dbPort = "5432"
 	}
-	
+
 	dbUser := os.Getenv("TEST_DB_USER")
 	if dbUser == "" {
 		dbUser = "postgres"
 	}
-	
+
 	dbPass := os.Getenv("TEST_DB_PASS")
 	if dbPass == "" {
 		dbPass = "postgres"
 	}
-	
+
 	dbName := os.Getenv("TEST_DB_NAME")
 	if dbName == "" {
 		dbName = "elys_indexer_test"
@@ -58,11 +59,11 @@ func setupIntegrationTest(t *testing.T) *TestDatabase {
 	// Create test database if it doesn't exist
 	masterDSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=postgres sslmode=disable",
 		dbHost, dbPort, dbUser, dbPass)
-	
+
 	masterDB, err := sql.Open("postgres", masterDSN)
 	require.NoError(t, err)
 	defer masterDB.Close()
-	
+
 	// Create test database
 	_, err = masterDB.Exec(fmt.Sprintf("CREATE DATABASE %s", dbName))
 	if err != nil && !isAlreadyExistsError(err) {
@@ -82,20 +83,20 @@ func setupIntegrationTest(t *testing.T) *TestDatabase {
 		MaxIdleConns:    5,
 		ConnMaxLifetime: time.Hour,
 	}
-	
+
 	logger := zap.NewNop()
 	db, err := New(cfg, logger)
 	require.NoError(t, err)
-	
+
 	// Run migrations
 	err = runMigrations(db.DB, "./../../sql/schema.sql")
 	require.NoError(t, err)
-	
+
 	// Clear all tables before tests
 	clearAllTables(t, db.DB)
-	
+
 	repo := NewRepository(db, logger)
-	
+
 	return &TestDatabase{
 		DB:   db,
 		Repo: repo,
@@ -116,7 +117,7 @@ func runMigrations(db *sql.DB, schemaPath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to read schema file: %w", err)
 	}
-	
+
 	_, err = db.Exec(string(schema))
 	return err
 }
@@ -131,7 +132,7 @@ func clearAllTables(t *testing.T, db *sql.DB) {
 		"websocket_subscriptions",
 		"indexer_state",
 	}
-	
+
 	for _, table := range tables {
 		_, err := db.Exec(fmt.Sprintf("TRUNCATE TABLE %s CASCADE", table))
 		require.NoError(t, err)
@@ -141,7 +142,7 @@ func clearAllTables(t *testing.T, db *sql.DB) {
 func TestSpotOrderLifecycle(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	// Create a spot order
 	order := &models.SpotOrder{
 		OrderID:          uint64(time.Now().UnixNano()),
@@ -153,23 +154,23 @@ func TestSpotOrderLifecycle(t *testing.T) {
 		Status:           models.OrderStatusPending,
 		CreatedAt:        time.Now(),
 		BlockHeight:      100,
-		TxHash:          "0xabc123",
+		TxHash:           "0xabc123",
 	}
-	
+
 	// Test Create
 	err := td.Repo.CreateSpotOrder(td.ctx, order)
 	assert.NoError(t, err)
-	
+
 	// Test Get by Owner
 	orders, err := td.Repo.GetSpotOrdersByOwner(td.ctx, order.OwnerAddress, 10)
 	assert.NoError(t, err)
 	assert.Len(t, orders, 1)
 	assert.Equal(t, order.OrderID, orders[0].OrderID)
-	
+
 	// Test Update Status
 	err = td.Repo.UpdateSpotOrderStatus(td.ctx, order.OrderID, models.OrderStatusExecuted)
 	assert.NoError(t, err)
-	
+
 	// Verify update
 	orders, err = td.Repo.GetSpotOrdersByOwner(td.ctx, order.OwnerAddress, 10)
 	assert.NoError(t, err)
@@ -180,7 +181,7 @@ func TestSpotOrderLifecycle(t *testing.T) {
 func TestPerpetualPositionLifecycle(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	// Create a perpetual position
 	pos := &models.PerpetualPosition{
 		MtpID:           uint64(time.Now().UnixNano()),
@@ -199,21 +200,21 @@ func TestPerpetualPositionLifecycle(t *testing.T) {
 		BlockHeight:     200,
 		TxHash:          "0xpos123",
 	}
-	
+
 	// Test Create
 	err := td.Repo.CreatePerpetualPosition(td.ctx, pos)
 	assert.NoError(t, err)
-	
+
 	// Test Get Open Positions
 	positions, err := td.Repo.GetOpenPositions(td.ctx, pos.OwnerAddress)
 	assert.NoError(t, err)
 	assert.Len(t, positions, 1)
 	assert.Equal(t, pos.MtpID, positions[0].MtpID)
-	
+
 	// Test Close Position
 	err = td.Repo.ClosePerpetualPosition(td.ctx, pos.MtpID, "1500.00", "50.00", "USER", "MANUAL")
 	assert.NoError(t, err)
-	
+
 	// Verify position is closed
 	positions, err = td.Repo.GetOpenPositions(td.ctx, pos.OwnerAddress)
 	assert.NoError(t, err)
@@ -223,9 +224,9 @@ func TestPerpetualPositionLifecycle(t *testing.T) {
 func TestTradeHistory(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	owner := "elys1trader"
-	
+
 	// Create multiple trades
 	for i := 0; i < 5; i++ {
 		trade := &models.Trade{
@@ -241,16 +242,16 @@ func TestTradeHistory(t *testing.T) {
 			TxHash:       fmt.Sprintf("0xtrade%d", i),
 			EventType:    "OrderExecuted",
 		}
-		
+
 		err := td.Repo.CreateTrade(td.ctx, trade)
 		assert.NoError(t, err)
 	}
-	
+
 	// Test Get Trade History
 	trades, err := td.Repo.GetTradeHistory(td.ctx, owner, 3)
 	assert.NoError(t, err)
 	assert.Len(t, trades, 3)
-	
+
 	// Verify order (should be descending by executed_at)
 	for i := 0; i < len(trades)-1; i++ {
 		assert.True(t, trades[i].ExecutedAt.After(trades[i+1].ExecutedAt))
@@ -260,9 +261,9 @@ func TestTradeHistory(t *testing.T) {
 func TestOrderBookSnapshots(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	assetPair := "ATOM/USDC"
-	
+
 	// Create snapshots at different times
 	for i := 0; i < 3; i++ {
 		snapshot := &models.OrderBookSnapshot{
@@ -278,13 +279,13 @@ func TestOrderBookSnapshots(t *testing.T) {
 			SnapshotTime: time.Now().Add(time.Duration(i) * time.Second),
 			BlockHeight:  int64(400 + i),
 		}
-		
+
 		err := td.Repo.SaveOrderBookSnapshot(td.ctx, snapshot)
 		assert.NoError(t, err)
-		
+
 		time.Sleep(10 * time.Millisecond) // Ensure different timestamps
 	}
-	
+
 	// Test Get Latest Snapshot
 	latest, err := td.Repo.GetLatestOrderBookSnapshot(td.ctx, assetPair)
 	assert.NoError(t, err)
@@ -297,23 +298,23 @@ func TestOrderBookSnapshots(t *testing.T) {
 func TestIndexerState(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	// Test initial state (no rows)
 	state, err := td.Repo.GetIndexerState(td.ctx)
 	assert.NoError(t, err)
 	assert.Equal(t, int64(0), state.LastProcessedHeight)
-	
+
 	// Initialize indexer state
-	_, err = td.DB.ExecContext(td.ctx, 
+	_, err = td.DB.ExecContext(td.ctx,
 		"INSERT INTO indexer_state (last_processed_height, last_processed_time) VALUES ($1, $2)",
 		int64(0), time.Now())
 	assert.NoError(t, err)
-	
+
 	// Test Update State
 	newHeight := int64(1000)
 	err = td.Repo.UpdateIndexerState(td.ctx, newHeight)
 	assert.NoError(t, err)
-	
+
 	// Verify update
 	state, err = td.Repo.GetIndexerState(td.ctx)
 	assert.NoError(t, err)
@@ -324,9 +325,9 @@ func TestIndexerState(t *testing.T) {
 func TestWebSocketSubscriptionManagement(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	clientID := "test-client-123"
-	
+
 	// Create subscriptions
 	sub1 := &models.WebSocketSubscription{
 		ID:               "sub1",
@@ -336,7 +337,7 @@ func TestWebSocketSubscriptionManagement(t *testing.T) {
 		CreatedAt:        time.Now(),
 		LastPing:         time.Now(),
 	}
-	
+
 	sub2 := &models.WebSocketSubscription{
 		ID:               "sub2",
 		ClientID:         clientID,
@@ -345,23 +346,23 @@ func TestWebSocketSubscriptionManagement(t *testing.T) {
 		CreatedAt:        time.Now(),
 		LastPing:         time.Now(),
 	}
-	
+
 	// Test Create
 	err := td.Repo.CreateSubscription(td.ctx, sub1)
 	assert.NoError(t, err)
-	
+
 	err = td.Repo.CreateSubscription(td.ctx, sub2)
 	assert.NoError(t, err)
-	
+
 	// Test Update Ping
 	time.Sleep(100 * time.Millisecond)
 	err = td.Repo.UpdateSubscriptionPing(td.ctx, clientID)
 	assert.NoError(t, err)
-	
+
 	// Test Delete
 	err = td.Repo.DeleteSubscription(td.ctx, sub1.ID)
 	assert.NoError(t, err)
-	
+
 	// Test Cleanup Stale
 	// Create an old subscription
 	oldSub := &models.WebSocketSubscription{
@@ -372,17 +373,17 @@ func TestWebSocketSubscriptionManagement(t *testing.T) {
 		CreatedAt:        time.Now().Add(-time.Hour),
 		LastPing:         time.Now().Add(-time.Hour),
 	}
-	
+
 	err = td.Repo.CreateSubscription(td.ctx, oldSub)
 	assert.NoError(t, err)
-	
+
 	// Cleanup subscriptions older than 5 minutes
 	err = td.Repo.CleanupStaleSubscriptions(td.ctx, 5*time.Minute)
 	assert.NoError(t, err)
-	
+
 	// Verify old subscription was deleted
 	var count int
-	err = td.DB.QueryRowContext(td.ctx, 
+	err = td.DB.QueryRowContext(td.ctx,
 		"SELECT COUNT(*) FROM websocket_subscriptions WHERE id = $1", oldSub.ID).Scan(&count)
 	assert.NoError(t, err)
 	assert.Equal(t, 0, count)
@@ -391,10 +392,10 @@ func TestWebSocketSubscriptionManagement(t *testing.T) {
 func TestConcurrentOperations(t *testing.T) {
 	td := setupIntegrationTest(t)
 	defer td.cleanup()
-	
+
 	// Test concurrent writes
 	done := make(chan bool, 3)
-	
+
 	// Concurrent spot order creation
 	go func() {
 		for i := 0; i < 10; i++ {
@@ -408,15 +409,15 @@ func TestConcurrentOperations(t *testing.T) {
 				Status:           models.OrderStatusPending,
 				CreatedAt:        time.Now(),
 				BlockHeight:      int64(100 + i),
-				TxHash:          fmt.Sprintf("0xconcurrent%d", i),
+				TxHash:           fmt.Sprintf("0xconcurrent%d", i),
 			}
-			
+
 			err := td.Repo.CreateSpotOrder(td.ctx, order)
 			assert.NoError(t, err)
 		}
 		done <- true
 	}()
-	
+
 	// Concurrent trade creation
 	go func() {
 		for i := 0; i < 10; i++ {
@@ -433,13 +434,13 @@ func TestConcurrentOperations(t *testing.T) {
 				TxHash:       fmt.Sprintf("0xtradeconcurrent%d", i),
 				EventType:    "OrderExecuted",
 			}
-			
+
 			err := td.Repo.CreateTrade(td.ctx, trade)
 			assert.NoError(t, err)
 		}
 		done <- true
 	}()
-	
+
 	// Concurrent indexer state updates
 	go func() {
 		for i := 0; i < 10; i++ {
@@ -449,12 +450,12 @@ func TestConcurrentOperations(t *testing.T) {
 		}
 		done <- true
 	}()
-	
+
 	// Wait for all goroutines to complete
 	for i := 0; i < 3; i++ {
 		<-done
 	}
-	
+
 	// Verify final state
 	state, err := td.Repo.GetIndexerState(td.ctx)
 	assert.NoError(t, err)
