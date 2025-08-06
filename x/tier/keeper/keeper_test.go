@@ -238,6 +238,7 @@ func (suite *TierKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOr
 			AmmPoolId:            poolId,
 			LeverageMax:          math.LegacyMustNewDecFromStr("10"),
 			PoolMaxLeverageRatio: math.LegacyMustNewDecFromStr("0.99"),
+			AdlTriggerRatio:      math.LegacyNewDec(1),
 		},
 	}
 

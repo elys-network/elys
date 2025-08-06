@@ -29,6 +29,11 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   repeated AssetLeverageAmount asset_leverage_amounts = 6;
+  string adl_trigger_ratio = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message LegacyPool {

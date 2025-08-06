@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strconv"
@@ -13,7 +12,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -32,20 +30,24 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
 	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
 
-	depositDenom := borrowPool.GetDepositDenom()
-	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := osmomath.BigDecFromSDKInt(borrowPool.NetAmount.Sub(balance.Amount))
-	borrowRatio := osmomath.ZeroBigDec()
+	borrowRatio := sdkmath.LegacyZeroDec()
 	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.Add(osmomath.BigDecFromDec(msg.Leverage).Mul(osmomath.BigDecFromSDKInt(msg.CollateralAmount))).
-			Quo(borrowPool.GetBigDecNetAmount())
+		moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
+		balance := k.bankKeeper.GetBalance(ctx, moduleAddr, borrowPool.DepositDenom)
+		borrowed := borrowPool.NetAmount.Sub(balance.Amount)
+
+		borrowRatio = (borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec()))).
+			Quo(borrowPool.NetAmount.ToLegacyDec())
+	}
+
+	if borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
+		return nil, fmt.Errorf("stable stake pool max borrow capacity used up, borrow ratio: %s, max allowed: %s", borrowRatio.String(), borrowPool.MaxLeverageRatio.String())
 	}
 
 	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
@@ -64,15 +66,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, errorsmod.Wrap(types.ErrAssetNotSupported, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
 
-	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
-		return nil, errors.New("stable stake pool max borrow capacity used up")
-	}
-
 	// Check if it is the same direction position for the same trader.
-	if position, err := k.CheckSamePosition(ctx, msg); position != nil {
-		if err != nil {
-			return nil, err
-		}
+	if position := k.CheckSamePosition(ctx, msg); position != nil {
 		response, err := k.OpenConsolidate(ctx, position, msg)
 		if err != nil {
 			return nil, err
@@ -83,7 +78,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return response, nil
 	}
 
-	if err := k.CheckMaxOpenPositions(ctx); err != nil {
+	if err := k.CheckMaxOpenPositions(ctx, msg.AmmPoolId); err != nil {
 		return nil, err
 	}
 
@@ -98,7 +93,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	if k.hooks != nil {
 		// ammPool will have updated values for opening position
-		ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
+		ammPool, found = k.amm.GetPool(ctx, msg.AmmPoolId)
 		if !found {
 			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 		}
@@ -111,6 +106,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),

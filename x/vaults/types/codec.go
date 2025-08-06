@@ -21,7 +21,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultFees{}, "vaults/MsgUpdateVaultFees")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultLockupPeriod{}, "vaults/MsgUpdateVaultLockupPeriod")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultMaxAmountUsd{}, "vaults/MsgUpdateVaultMaxAmountUsd")
-
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "vaults/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateVaultAllowedActions{}, "vaults/MsgUpdateVaultAllowedActions")
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -39,6 +40,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateVaultFees{},
 		&MsgUpdateVaultLockupPeriod{},
 		&MsgUpdateVaultMaxAmountUsd{},
+		&MsgClaimRewards{},
+		&MsgUpdateVaultAllowedActions{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

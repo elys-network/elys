@@ -947,23 +947,23 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_BorrowRatio_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "borrow-ratio", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_BorrowRatio_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "borrow-ratio", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "pool", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "pool", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Pools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "pool", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "pool", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AmmPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "amm-pool", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AmmPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "amm-pool", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AllAmmPools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "all-amm-pools"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllAmmPools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "all-amm-pools"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Debt_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "stablestake", "debt", "pool_id", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Debt_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "stablestake", "debt", "pool_id", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetInterest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "stablestake", "interest", "pool_id", "block_height"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetInterest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "stablestake", "interest", "pool_id", "block_height"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_MaxBondableAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "max_bondable_amount", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MaxBondableAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "max_bondable_amount", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

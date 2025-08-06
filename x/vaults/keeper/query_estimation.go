@@ -21,10 +21,9 @@ func (k Keeper) DepositEstimation(goCtx context.Context, req *types.QueryDeposit
 	}
 
 	redemptionRate := k.CalculateRedemptionRateForVault(ctx, vault.Id)
-	var usdValue osmomath.BigDec
+	usdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, req.Amount)
 	var shareAmount sdkmath.Int
 	if redemptionRate.IsZero() {
-		usdValue = k.amm.CalculateUSDValue(ctx, vault.DepositDenom, req.Amount)
 		if usdValue.IsZero() {
 			return nil, types.ErrDepositValueZero
 		}

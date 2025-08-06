@@ -691,19 +691,19 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AssetInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "asset_info", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AssetInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "asset_info", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AssetInfoAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "asset_info"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AssetInfoAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "asset_info"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Price_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price", "asset"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Price_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price", "asset"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PriceAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "prices"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PriceAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "prices"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PriceFeeder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price_feeder", "feeder"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PriceFeeder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price_feeder", "feeder"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PriceFeederAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "price_feeder"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PriceFeederAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "price_feeder"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

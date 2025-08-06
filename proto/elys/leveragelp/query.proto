@@ -35,17 +35,18 @@ service Query {
         "{pagination.key}";
   }
 
-  // Queries a list of GetStatus items.
-  rpc GetStatus(StatusRequest) returns (StatusResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/status";
+  // Queries a list of GetCounter items.
+  rpc QueryPositionCounter(PositionCounterRequest)
+      returns (PositionCounterResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/position_counter/{pool_id}";
   }
 
   // Queries a list of GetPositionsForAddress items.
   rpc QueryPositionsForAddress(PositionsForAddressRequest)
       returns (PositionsForAddressResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/positions-for-address/{address}/"
-        "{pagination.key}";
+        "/elys-network/elys/leveragelp/positions-for-address/{address}";
   }
 
   // Queries a list of GetWhitelist items.
@@ -136,21 +137,16 @@ message PositionsByPoolResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message StatusRequest {}
+message PositionCounterRequest { uint64 pool_id = 1; }
 
-message StatusResponse {
-  uint64 open_position_count = 1;
-  uint64 lifetime_position_count = 2;
+message PositionCounterResponse {
+  PositionCounter result = 1 [ (gogoproto.nullable) = false ];
 }
 
-message PositionsForAddressRequest {
-  string address = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
+message PositionsForAddressRequest { string address = 1; }
 
 message PositionsForAddressResponse {
   repeated PositionAndInterest positions = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message WhitelistRequest {
@@ -194,6 +190,7 @@ message PositionResponse {
 message QueryLiquidationPriceRequest {
   string address = 1;
   uint64 position_id = 2;
+  uint64 pool_id = 3;
 }
 
 message QueryLiquidationPriceResponse {
@@ -262,19 +259,18 @@ message QueryCloseEstRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
-message QueryRewardsRequest {
-  string address = 1;
-  repeated uint64 ids = 2;
-}
+message QueryRewardsRequest { string address = 1; }
 
 message RewardInfo {
-  uint64 position_id = 1;
-  repeated cosmos.base.v1beta1.Coin reward = 2 [
+  repeated cosmos.base.v1beta1.Coin reward = 1 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
+  uint64 position_id = 2;
+  uint64 pool_id = 3;
 }
 
 message QueryRewardsResponse {
@@ -336,10 +332,7 @@ message QueryCloseEstResponse {
   ];
 }
 
-message QueryCommittedTokensLockedRequest {
-  string address = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
+message QueryCommittedTokensLockedRequest { string address = 1; }
 
 message PositionCommitedToken {
   uint64 amm_pool_id = 1;
@@ -360,5 +353,4 @@ message QueryCommittedTokensLockedResponse {
   string address = 1;
   repeated PositionCommitedToken position_commited_token = 2
       [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }

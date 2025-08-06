@@ -248,7 +248,7 @@ func TestWebSocketBroadcast(t *testing.T) {
 
 	// Create two WebSocket connections
 	wsURL := strings.Replace(httpServer.URL, "http", "ws", 1) + "/ws"
-	
+
 	ws1, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
 	require.NoError(t, err)
 	defer ws1.Close()
@@ -271,10 +271,10 @@ func TestWebSocketBroadcast(t *testing.T) {
 		Type: models.WSMessageTypeSubscribe,
 		Data: json.RawMessage(`{"type":"order_book","filters":{}}`),
 	}
-	
+
 	err = ws1.WriteJSON(subscribeMsg)
 	require.NoError(t, err)
-	
+
 	err = ws2.WriteJSON(subscribeMsg)
 	require.NoError(t, err)
 
@@ -317,10 +317,10 @@ func TestClientChannelSubscription(t *testing.T) {
 	// Create client with specific ID
 	clientID := "test-client-123"
 	wsURL := strings.Replace(httpServer.URL, "http", "ws", 1) + "/ws"
-	
+
 	header := http.Header{}
 	header.Add("X-Client-ID", clientID)
-	
+
 	ws, _, err := websocket.DefaultDialer.Dial(wsURL, header)
 	require.NoError(t, err)
 	defer ws.Close()

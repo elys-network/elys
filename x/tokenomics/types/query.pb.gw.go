@@ -580,17 +580,17 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Airdrop_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tokenomics", "airdrop", "intent"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Airdrop_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "tokenomics", "airdrop", "intent"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AirdropAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "airdrop"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AirdropAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "airdrop"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GenesisInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "genesis_inflation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GenesisInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "genesis_inflation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TimeBasedInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation", "start_block_height", "end_block_height"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_TimeBasedInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation", "start_block_height", "end_block_height"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TimeBasedInflationAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_TimeBasedInflationAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

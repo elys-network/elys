@@ -58,7 +58,7 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, snapshot SnapshotPool,
 	weightedAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightMultiplier)
 	resizedAmount := weightedAmount.
 		Quo(externalLiquidityRatio).Dec().RoundInt()
-	slippageAmount, err := p.CalcGivenInSlippage(
+	slippageAmount, _, err := p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
 		snapshot,
@@ -92,44 +92,48 @@ func (p *Pool) JoinPool(
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
 	takerFees osmomath.BigDec,
-) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error) {
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, swapsInfos []SwapInfo, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		// We calculate based on snapshot, if there no accounted pool then it will be same as normal pool
 		numShares, tokensJoined, err = snapshot.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		// if it's accounted pool, we increase liquidity on the original pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
-		return tokensJoined, numShares, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil
+		return tokensJoined, numShares, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), swapsInfos, nil
 	}
 
 	if !p.PoolParams.UseOracle {
 		tokenIn := tokensIn[0]
 		totalSlippage := osmomath.ZeroBigDec()
 		normalizedWeights := NormalizedWeights(p.PoolAssets)
+		tokenAmountOut := osmomath.ZeroBigDec()
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, _, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
+				swappedTokenIn := sdk.NewCoin(tokenIn.Denom, osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weight.Weight).Dec().TruncateInt())
+				_, slippage, tokenAmountOut, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, sdk.Coins{swappedTokenIn}, weight.Asset, osmomath.ZeroBigDec())
 				if err == nil {
-					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
+					totalSlippage = totalSlippage.Add(slippage)
+					swappedTokenOut := sdk.NewCoin(weight.Asset, tokenAmountOut.Dec().TruncateInt())
+					swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, swappedTokenOut))
 				}
 			}
 		}
 
 		numShares, tokensJoined, err = p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
 		poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
 		totalWeight := p.GetBigDecTotalWeight()
 		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].GetBigDecWeight().Quo(totalWeight)
@@ -140,9 +144,9 @@ func (p *Pool) JoinPool(
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 		}
-		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, nil
+		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, swapsInfos, nil
 	}
 
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, oracleKeeper, snapshot.PoolAssets, tokensIn[0].Denom)
@@ -150,22 +154,32 @@ func (p *Pool) JoinPool(
 
 	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, snapshot, oracleKeeper, tokensIn[0], initialWeightOut, params)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
+	}
+
+	secondTokenDenom, err := p.GetSecondAssetDenomFromTwoAssetPool(tokensIn[0].Denom)
+	if err != nil {
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
+	}
+	swappedTokenIn := sdk.NewCoin(tokensIn[0].Denom, osmomath.BigDecFromSDKInt(tokensIn[0].Amount).Mul(initialWeightOut).Dec().TruncateInt())
+	secondTokenOut, _, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, sdk.Coins{swappedTokenIn}, secondTokenDenom, osmomath.ZeroBigDec())
+	if err != nil {
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrAmountTooLow
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, ErrAmountTooLow
 	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.NewCoins(), snapshot.PoolAssets)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
 	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, snapshot.PoolAssets, newAssetPools, tokensIn[0].Denom, params, osmomath.OneBigDec())
@@ -181,6 +195,13 @@ func (p *Pool) JoinPool(
 
 	takerFeesFinal = takerFees.Mul(initialWeightOut)
 
+	secondTokenOut.Amount = sdkmath.Int(osmomath.BigDecFromSDKInt(secondTokenOut.Amount).
+		Mul(joinValueWithSlippage).Quo(tvl).
+		Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
+		Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal))).Dec().RoundInt())
+
+	swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, secondTokenOut))
+
 	totalShares := p.GetTotalShares()
 	numSharesDec := osmomath.BigDecFromSDKInt(totalShares.Amount).
 		Mul(joinValueWithSlippage).Quo(tvl).
@@ -189,8 +210,20 @@ func (p *Pool) JoinPool(
 	numShares = numSharesDec.Dec().RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
 
-	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, nil
+	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, swapsInfos, nil
+}
+
+func (p *Pool) GetSecondAssetDenomFromTwoAssetPool(firstAssetDenom string) (string, error) {
+	if len(p.PoolAssets) != 2 {
+		return "", fmt.Errorf("pool does not have exactly two assets")
+	}
+	for _, asset := range p.PoolAssets {
+		if asset.Token.Denom != firstAssetDenom {
+			return asset.Token.Denom, nil
+		}
+	}
+	return "", fmt.Errorf("pool's both asset denoms are same with denom %s", firstAssetDenom)
 }
