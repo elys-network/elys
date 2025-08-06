@@ -8,7 +8,7 @@ import "elys/vaults/params.proto";
 import "elys/vaults/vault.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/elys-network/elys/v6/x/vaults/types";
+option go_package = "github.com/elys-network/elys/v7/x/vaults/types";
 
 // Query defines the gRPC querier service.
 service Query {

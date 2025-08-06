@@ -24,8 +24,9 @@ func (suite *PerpetualKeeperTestSuite) TestBeginBlocker() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   ammPool.PoolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       ammPool.PoolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)

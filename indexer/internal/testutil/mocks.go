@@ -32,7 +32,7 @@ func NewMockCache() *MockCache {
 func (m *MockCache) Get(ctx context.Context, key string) (interface{}, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	val, ok := m.data[key]
 	if !ok {
 		return nil, redis.Nil
@@ -43,7 +43,7 @@ func (m *MockCache) Get(ctx context.Context, key string) (interface{}, error) {
 func (m *MockCache) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.data[key] = value
 	return nil
 }
@@ -51,7 +51,7 @@ func (m *MockCache) Set(ctx context.Context, key string, value interface{}, expi
 func (m *MockCache) Delete(ctx context.Context, keys ...string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	for _, key := range keys {
 		delete(m.data, key)
 	}
@@ -61,7 +61,7 @@ func (m *MockCache) Delete(ctx context.Context, keys ...string) error {
 func (m *MockCache) AddSubscription(ctx context.Context, clientID string, sub *models.WebSocketSubscription) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.subscriptions[clientID] = append(m.subscriptions[clientID], sub)
 	return nil
 }
@@ -69,7 +69,7 @@ func (m *MockCache) AddSubscription(ctx context.Context, clientID string, sub *m
 func (m *MockCache) GetSubscriptions(ctx context.Context, clientID string) ([]*models.WebSocketSubscription, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	return m.subscriptions[clientID], nil
 }
 
@@ -117,13 +117,13 @@ func (h *TestHelpers) CreateTestSpotOrder(overrides ...func(*models.SpotOrder)) 
 		Status:           models.OrderStatusPending,
 		CreatedAt:        time.Now(),
 		BlockHeight:      100,
-		TxHash:          "0xtest123",
+		TxHash:           "0xtest123",
 	}
-	
+
 	for _, override := range overrides {
 		override(order)
 	}
-	
+
 	return order
 }
 
@@ -139,11 +139,11 @@ func (h *TestHelpers) CreateTestPerpetualPosition(overrides ...func(*models.Perp
 		BlockHeight:     200,
 		TxHash:          "0xpos123",
 	}
-	
+
 	for _, override := range overrides {
 		override(pos)
 	}
-	
+
 	return pos
 }
 
@@ -160,11 +160,11 @@ func (h *TestHelpers) CreateTestTrade(overrides ...func(*models.Trade)) *models.
 		TxHash:       "0xtrade123",
 		EventType:    "OrderExecuted",
 	}
-	
+
 	for _, override := range overrides {
 		override(trade)
 	}
-	
+
 	return trade
 }
 
@@ -218,7 +218,7 @@ func (h *TestHelpers) WaitForWebSocketConnection(ws *websocket.Conn, timeout tim
 			close(done)
 		}
 	}()
-	
+
 	select {
 	case <-done:
 		return nil

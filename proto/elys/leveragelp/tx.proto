@@ -67,6 +67,7 @@ message MsgClose {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message MsgCloseResponse {}
@@ -75,7 +76,9 @@ message MsgClaimRewards {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "leveragelp/MsgClaimRewards";
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated uint64 ids = 2;
+  repeated uint64 ids = 2; // not used anymore
+  uint64 pool_id = 3;
+  uint64 position_id = 4;
 }
 
 message MsgClaimRewardsResponse {}
@@ -121,6 +124,7 @@ message MsgUpdateStopLoss {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 4;
 }
 
 message MsgUpdateStopLossResponse {}
@@ -133,6 +137,11 @@ message AddPool {
     (gogoproto.nullable) = false
   ];
   string leverage_max = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string adl_trigger_ratio = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

@@ -13,9 +13,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{
-		PerformanceFeeEpochLength: 100,
-	}
+	return Params{PerformanceFeeEpochLength: 100}
 }
 
 // DefaultParams returns a default set of parameters
