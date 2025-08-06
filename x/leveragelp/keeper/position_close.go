@@ -227,12 +227,12 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), rebalanceTreasury, coinsForSwap)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		err = k.amm.OnCollectFee(ctx, ammPool, coinsForSwap)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		// 4. takerFeePortion
@@ -241,7 +241,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress), coinsForTaker)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 	}
 
