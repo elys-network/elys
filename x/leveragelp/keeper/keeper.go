@@ -32,6 +32,7 @@ type (
 		commKeeper          types.CommitmentKeeper
 		masterchefKeeper    types.MasterchefKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
+		parameterKeeper     types.ParameterKeeper
 
 		hooks types.LeverageLpHooks
 	}
@@ -48,6 +49,7 @@ func NewKeeper(
 	commitmentKeeper types.CommitmentKeeper,
 	masterchefKeeper types.MasterchefKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
+	parameterKeeper types.ParameterKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -65,6 +67,7 @@ func NewKeeper(
 		commKeeper:          commitmentKeeper,
 		masterchefKeeper:    masterchefKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
+		parameterKeeper:     parameterKeeper,
 	}
 
 	return keeper

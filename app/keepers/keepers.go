@@ -693,6 +693,7 @@ func NewAppKeeper(
 		app.CommitmentKeeper,
 		app.MasterchefKeeper,
 		app.AccountedPoolKeeper,
+		app.ParameterKeeper,
 	)
 
 	app.StablestakeKeeper.SetLeverageLpKeeper(app.LeveragelpKeeper)
