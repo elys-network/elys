@@ -180,18 +180,37 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	var coinsForAmm sdk.Coins
 	if percentageExitLeverageFee.IsPositive() && len(coinsLeftAfterRepay) > 0 {
 		coinsForAmm = ammkeeper.PortionCoins(coinsLeftAfterRepay, percentageExitLeverageFee)
-		weightBreakingFeePortion := k.amm.GetParams(ctx).WeightBreakingFeePortion
 
-		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, osmomath.BigDecFromDec(weightBreakingFeePortion))
+		totalFeeValue := weightBreakingFeeValue.Add(slippageValue).Add(swapFeeValue).Add(takerFeeValue)
+		// 1. weightBreakingFeePortion
+		weightBreakingFee := weightBreakingFeeValue.Quo(totalFeeValue)
+		weightBreakingFeePortion := osmomath.BigDecFromDec(k.amm.GetParams(ctx).WeightBreakingFeePortion).Mul(weightBreakingFee)
+
+		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, weightBreakingFeePortion)
 		coinsToAmmPool := coinsForAmm.Sub(coinsToAmmRebalancer...)
+
+		// Track weight breaking fee
+		for _, coin := range coinsToAmmPool {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+		}
+
+		// 2. slippageFeePortion
+		slippageFee := slippageValue.Quo(totalFeeValue)
+		coinsForSlippage := ammkeeper.PortionCoins(coinsForAmm, slippageFee)
+
+		// Track slippage fee
+		for _, coin := range coinsForSlippage {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+			k.amm.TrackSlippage(ctx, position.AmmPoolId, coin)
+		}
 
 		// Very important to fetch this again, Updating ammPool
 		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
-		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool)
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool.Add(coinsForSlippage...))
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
-		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool)
+		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool.Add(coinsForSlippage...))
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
@@ -201,6 +220,29 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
+		// 3. swapFeePortion
+		swapFee := swapFeeValue.Quo(totalFeeValue)
+		coinsForSwap := ammkeeper.PortionCoins(coinsForAmm, swapFee)
+
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), rebalanceTreasury, coinsForSwap)
+		if err != nil {
+			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		err = k.amm.OnCollectFee(ctx, ammPool, coinsForSwap)
+		if err != nil {
+			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		// 4. takerFeePortion
+		takerFee := takerFeeValue.Quo(totalFeeValue)
+		coinsForTaker := ammkeeper.PortionCoins(coinsForAmm, takerFee)
+
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress), coinsForTaker)
+		if err != nil {
+			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
 	}
 
 	// anything left over in position balance goes to user
