@@ -14,6 +14,7 @@ const (
 	TypeEvtUpFrontTokenSwapped  = "upfront_token_swapped"
 	TypeEvtTokenSwappedFee      = "token_swapped_fee"
 	TypeEvtSwapTokenPriceChange = "swap_token_price_change"
+	TypeEvtVirtualSwaps         = "virtual_swaps"
 
 	AttributeValueCategory = ModuleName
 	AttributeKeyPoolId     = "pool_id"
@@ -65,6 +66,17 @@ func EmitAddLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64
 func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
 		NewRemoveLiquidityEvent(sender, poolId, liquidity),
+	})
+}
+
+func EmitSwapsInfoEvent(ctx sdk.Context, poolId uint64, sender string, swapInfos []SwapInfo) {
+	tokensIn, tokensOut := sdk.Coins{}, sdk.Coins{}
+	for _, swap := range swapInfos {
+		tokensIn = tokensIn.Add(swap.TokenIn)
+		tokensOut = tokensOut.Add(swap.TokenOut)
+	}
+	ctx.EventManager().EmitEvents(sdk.Events{
+		NewSwapInfoEvent(poolId, sender, tokensIn, tokensOut),
 	})
 }
 
@@ -129,5 +141,15 @@ func NewRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk
 		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensOut, liquidity.String()),
+	)
+}
+
+func NewSwapInfoEvent(poolId uint64, sender string, tokensIn, tokensOut sdk.Coins) sdk.Event {
+	return sdk.NewEvent(
+		TypeEvtVirtualSwaps,
+		sdk.NewAttribute(sdk.AttributeKeySender, sender),
+		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
+		sdk.NewAttribute(AttributeKeyTokensIn, tokensIn.String()),
+		sdk.NewAttribute(AttributeKeyTokensOut, tokensOut.String()),
 	)
 }
