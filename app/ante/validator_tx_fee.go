@@ -9,7 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
