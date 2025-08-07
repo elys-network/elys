@@ -14,7 +14,7 @@ const (
 	TypeEvtUpFrontTokenSwapped  = "upfront_token_swapped"
 	TypeEvtTokenSwappedFee      = "token_swapped_fee"
 	TypeEvtSwapTokenPriceChange = "swap_token_price_change"
-	TypeEvtVirtualSwaps         = "virtual_swaps"
+	TypeEvtInternalSwaps        = "internal_swaps"
 
 	AttributeValueCategory = ModuleName
 	AttributeKeyPoolId     = "pool_id"
@@ -146,7 +146,7 @@ func NewRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk
 
 func NewSwapInfoEvent(poolId uint64, sender string, tokensIn, tokensOut sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
-		TypeEvtVirtualSwaps,
+		TypeEvtInternalSwaps,
 		sdk.NewAttribute(sdk.AttributeKeySender, sender),
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensIn, tokensIn.String()),

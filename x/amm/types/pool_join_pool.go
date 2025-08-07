@@ -166,6 +166,7 @@ func (p *Pool) JoinPool(
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil, err
 	}
+	swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, secondTokenOut))
 
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
@@ -194,13 +195,6 @@ func (p *Pool) JoinPool(
 	}
 
 	takerFeesFinal = takerFees.Mul(initialWeightOut)
-
-	secondTokenOut.Amount = sdkmath.Int(osmomath.BigDecFromSDKInt(secondTokenOut.Amount).
-		Mul(joinValueWithSlippage).Quo(tvl).
-		Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
-		Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal))).Dec().RoundInt())
-
-	swapsInfos = append(swapsInfos, NewSwapInfo(swappedTokenIn, secondTokenOut))
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := osmomath.BigDecFromSDKInt(totalShares.Amount).
