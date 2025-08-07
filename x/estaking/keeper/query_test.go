@@ -5,10 +5,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	exdistr "github.com/elys-network/elys/v6/x/estaking/modules/distribution"
-	"github.com/elys-network/elys/v6/x/estaking/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	exdistr "github.com/elys-network/elys/v7/x/estaking/modules/distribution"
+	"github.com/elys-network/elys/v7/x/estaking/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 func (suite *EstakingKeeperTestSuite) TestQuery() {

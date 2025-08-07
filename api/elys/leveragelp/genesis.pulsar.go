@@ -161,12 +161,117 @@ func (x *_GenesisState_4_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_GenesisState_5_list)(nil)
+
+type _GenesisState_5_list struct {
+	list *[]*PositionCounter
+}
+
+func (x *_GenesisState_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PositionCounter)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PositionCounter)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_5_list) AppendMutable() protoreflect.Value {
+	v := new(PositionCounter)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_5_list) NewElement() protoreflect.Value {
+	v := new(PositionCounter)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_6_list)(nil)
+
+type _GenesisState_6_list struct {
+	list *[]*ADLCounter
+}
+
+func (x *_GenesisState_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*ADLCounter)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*ADLCounter)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_6_list) AppendMutable() protoreflect.Value {
+	v := new(ADLCounter)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_6_list) NewElement() protoreflect.Value {
+	v := new(ADLCounter)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_GenesisState                   protoreflect.MessageDescriptor
 	fd_GenesisState_params            protoreflect.FieldDescriptor
 	fd_GenesisState_pool_list         protoreflect.FieldDescriptor
 	fd_GenesisState_position_list     protoreflect.FieldDescriptor
 	fd_GenesisState_address_whitelist protoreflect.FieldDescriptor
+	fd_GenesisState_position_counter  protoreflect.FieldDescriptor
+	fd_GenesisState_adl_counter       protoreflect.FieldDescriptor
+	fd_GenesisState_fallback_counter  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -176,6 +281,9 @@ func init() {
 	fd_GenesisState_pool_list = md_GenesisState.Fields().ByName("pool_list")
 	fd_GenesisState_position_list = md_GenesisState.Fields().ByName("position_list")
 	fd_GenesisState_address_whitelist = md_GenesisState.Fields().ByName("address_whitelist")
+	fd_GenesisState_position_counter = md_GenesisState.Fields().ByName("position_counter")
+	fd_GenesisState_adl_counter = md_GenesisState.Fields().ByName("adl_counter")
+	fd_GenesisState_fallback_counter = md_GenesisState.Fields().ByName("fallback_counter")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -267,6 +375,24 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if len(x.PositionCounter) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_5_list{list: &x.PositionCounter})
+		if !f(fd_GenesisState_position_counter, value) {
+			return
+		}
+	}
+	if len(x.AdlCounter) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_6_list{list: &x.AdlCounter})
+		if !f(fd_GenesisState_adl_counter, value) {
+			return
+		}
+	}
+	if x.FallbackCounter != nil {
+		value := protoreflect.ValueOfMessage(x.FallbackCounter.ProtoReflect())
+		if !f(fd_GenesisState_fallback_counter, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -290,6 +416,12 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.PositionList) != 0
 	case "elys.leveragelp.GenesisState.address_whitelist":
 		return len(x.AddressWhitelist) != 0
+	case "elys.leveragelp.GenesisState.position_counter":
+		return len(x.PositionCounter) != 0
+	case "elys.leveragelp.GenesisState.adl_counter":
+		return len(x.AdlCounter) != 0
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		return x.FallbackCounter != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -314,6 +446,12 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.PositionList = nil
 	case "elys.leveragelp.GenesisState.address_whitelist":
 		x.AddressWhitelist = nil
+	case "elys.leveragelp.GenesisState.position_counter":
+		x.PositionCounter = nil
+	case "elys.leveragelp.GenesisState.adl_counter":
+		x.AdlCounter = nil
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		x.FallbackCounter = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -351,6 +489,21 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_4_list{list: &x.AddressWhitelist}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.GenesisState.position_counter":
+		if len(x.PositionCounter) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_5_list{})
+		}
+		listValue := &_GenesisState_5_list{list: &x.PositionCounter}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.GenesisState.adl_counter":
+		if len(x.AdlCounter) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_6_list{})
+		}
+		listValue := &_GenesisState_6_list{list: &x.AdlCounter}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		value := x.FallbackCounter
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -385,6 +538,16 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_4_list)
 		x.AddressWhitelist = *clv.list
+	case "elys.leveragelp.GenesisState.position_counter":
+		lv := value.List()
+		clv := lv.(*_GenesisState_5_list)
+		x.PositionCounter = *clv.list
+	case "elys.leveragelp.GenesisState.adl_counter":
+		lv := value.List()
+		clv := lv.(*_GenesisState_6_list)
+		x.AdlCounter = *clv.list
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		x.FallbackCounter = value.Message().Interface().(*FallbackCounter)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -428,6 +591,23 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_4_list{list: &x.AddressWhitelist}
 		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.GenesisState.position_counter":
+		if x.PositionCounter == nil {
+			x.PositionCounter = []*PositionCounter{}
+		}
+		value := &_GenesisState_5_list{list: &x.PositionCounter}
+		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.GenesisState.adl_counter":
+		if x.AdlCounter == nil {
+			x.AdlCounter = []*ADLCounter{}
+		}
+		value := &_GenesisState_6_list{list: &x.AdlCounter}
+		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		if x.FallbackCounter == nil {
+			x.FallbackCounter = new(FallbackCounter)
+		}
+		return protoreflect.ValueOfMessage(x.FallbackCounter.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -453,6 +633,15 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "elys.leveragelp.GenesisState.address_whitelist":
 		list := []string{}
 		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "elys.leveragelp.GenesisState.position_counter":
+		list := []*PositionCounter{}
+		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
+	case "elys.leveragelp.GenesisState.adl_counter":
+		list := []*ADLCounter{}
+		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
+	case "elys.leveragelp.GenesisState.fallback_counter":
+		m := new(FallbackCounter)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.GenesisState"))
@@ -544,6 +733,22 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		if len(x.PositionCounter) > 0 {
+			for _, e := range x.PositionCounter {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.AdlCounter) > 0 {
+			for _, e := range x.AdlCounter {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.FallbackCounter != nil {
+			l = options.Size(x.FallbackCounter)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -572,6 +777,52 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.FallbackCounter != nil {
+			encoded, err := options.Marshal(x.FallbackCounter)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.AdlCounter) > 0 {
+			for iNdEx := len(x.AdlCounter) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.AdlCounter[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
+		}
+		if len(x.PositionCounter) > 0 {
+			for iNdEx := len(x.PositionCounter) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.PositionCounter[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
 		}
 		if len(x.AddressWhitelist) > 0 {
 			for iNdEx := len(x.AddressWhitelist) - 1; iNdEx >= 0; iNdEx-- {
@@ -813,6 +1064,110 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				}
 				x.AddressWhitelist = append(x.AddressWhitelist, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionCounter", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PositionCounter = append(x.PositionCounter, &PositionCounter{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PositionCounter[len(x.PositionCounter)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AdlCounter", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AdlCounter = append(x.AdlCounter, &ADLCounter{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AdlCounter[len(x.AdlCounter)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FallbackCounter", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.FallbackCounter == nil {
+					x.FallbackCounter = &FallbackCounter{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FallbackCounter); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -867,10 +1222,13 @@ type GenesisState struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Params           *Params     `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	PoolList         []*Pool     `protobuf:"bytes,2,rep,name=pool_list,json=poolList,proto3" json:"pool_list,omitempty"`
-	PositionList     []*Position `protobuf:"bytes,3,rep,name=position_list,json=positionList,proto3" json:"position_list,omitempty"`
-	AddressWhitelist []string    `protobuf:"bytes,4,rep,name=address_whitelist,json=addressWhitelist,proto3" json:"address_whitelist,omitempty"`
+	Params           *Params            `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	PoolList         []*Pool            `protobuf:"bytes,2,rep,name=pool_list,json=poolList,proto3" json:"pool_list,omitempty"`
+	PositionList     []*Position        `protobuf:"bytes,3,rep,name=position_list,json=positionList,proto3" json:"position_list,omitempty"`
+	AddressWhitelist []string           `protobuf:"bytes,4,rep,name=address_whitelist,json=addressWhitelist,proto3" json:"address_whitelist,omitempty"`
+	PositionCounter  []*PositionCounter `protobuf:"bytes,5,rep,name=position_counter,json=positionCounter,proto3" json:"position_counter,omitempty"`
+	AdlCounter       []*ADLCounter      `protobuf:"bytes,6,rep,name=adl_counter,json=adlCounter,proto3" json:"adl_counter,omitempty"`
+	FallbackCounter  *FallbackCounter   `protobuf:"bytes,7,opt,name=fallback_counter,json=fallbackCounter,proto3" json:"fallback_counter,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -921,6 +1279,27 @@ func (x *GenesisState) GetAddressWhitelist() []string {
 	return nil
 }
 
+func (x *GenesisState) GetPositionCounter() []*PositionCounter {
+	if x != nil {
+		return x.PositionCounter
+	}
+	return nil
+}
+
+func (x *GenesisState) GetAdlCounter() []*ADLCounter {
+	if x != nil {
+		return x.AdlCounter
+	}
+	return nil
+}
+
+func (x *GenesisState) GetFallbackCounter() *FallbackCounter {
+	if x != nil {
+		return x.FallbackCounter
+	}
+	return nil
+}
+
 var File_elys_leveragelp_genesis_proto protoreflect.FileDescriptor
 
 var file_elys_leveragelp_genesis_proto_rawDesc = []byte{
@@ -933,7 +1312,7 @@ var file_elys_leveragelp_genesis_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1a, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72,
 	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x1b, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf2, 0x01,
+	0x70, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdc, 0x03,
 	0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x35,
 	0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
@@ -949,19 +1328,33 @@ var file_elys_leveragelp_genesis_proto_rawDesc = []byte{
 	0x6e, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x2b, 0x0a, 0x11, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
 	0x5f, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09,
 	0x52, 0x10, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x57, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
-	0x73, 0x74, 0x42, 0xb5, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65,
-	0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xa2,
-	0x02, 0x03, 0x45, 0x4c, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65, 0x76,
-	0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73,
-	0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a,
-	0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x73, 0x74, 0x12, 0x51, 0x0a, 0x10, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f,
+	0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x42, 0x0a, 0x0b, 0x61, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x65, 0x72, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x41, 0x44, 0x4c,
+	0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x61,
+	0x64, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x51, 0x0a, 0x10, 0x66, 0x61, 0x6c,
+	0x6c, 0x62, 0x61, 0x63, 0x6b, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x07, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x46, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x43, 0x6f,
+	0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0f, 0x66, 0x61, 0x6c,
+	0x6c, 0x62, 0x61, 0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0xb5, 0x01, 0x0a,
+	0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x6c, 0x70, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x76, 0x37, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c,
+	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xa2, 0x02, 0x03, 0x45, 0x4c, 0x58, 0xaa,
+	0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
+	0x70, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
+	0x65, 0x6c, 0x70, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x6c, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -978,20 +1371,26 @@ func file_elys_leveragelp_genesis_proto_rawDescGZIP() []byte {
 
 var file_elys_leveragelp_genesis_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_elys_leveragelp_genesis_proto_goTypes = []interface{}{
-	(*GenesisState)(nil), // 0: elys.leveragelp.GenesisState
-	(*Params)(nil),       // 1: elys.leveragelp.Params
-	(*Pool)(nil),         // 2: elys.leveragelp.Pool
-	(*Position)(nil),     // 3: elys.leveragelp.Position
+	(*GenesisState)(nil),    // 0: elys.leveragelp.GenesisState
+	(*Params)(nil),          // 1: elys.leveragelp.Params
+	(*Pool)(nil),            // 2: elys.leveragelp.Pool
+	(*Position)(nil),        // 3: elys.leveragelp.Position
+	(*PositionCounter)(nil), // 4: elys.leveragelp.PositionCounter
+	(*ADLCounter)(nil),      // 5: elys.leveragelp.ADLCounter
+	(*FallbackCounter)(nil), // 6: elys.leveragelp.FallbackCounter
 }
 var file_elys_leveragelp_genesis_proto_depIdxs = []int32{
 	1, // 0: elys.leveragelp.GenesisState.params:type_name -> elys.leveragelp.Params
 	2, // 1: elys.leveragelp.GenesisState.pool_list:type_name -> elys.leveragelp.Pool
 	3, // 2: elys.leveragelp.GenesisState.position_list:type_name -> elys.leveragelp.Position
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 3: elys.leveragelp.GenesisState.position_counter:type_name -> elys.leveragelp.PositionCounter
+	5, // 4: elys.leveragelp.GenesisState.adl_counter:type_name -> elys.leveragelp.ADLCounter
+	6, // 5: elys.leveragelp.GenesisState.fallback_counter:type_name -> elys.leveragelp.FallbackCounter
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_elys_leveragelp_genesis_proto_init() }

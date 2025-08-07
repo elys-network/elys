@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/v6/x/masterchef/keeper"
+	"github.com/elys-network/elys/v7/x/masterchef/keeper"
 )
 
 type Migrator struct {

@@ -1,14 +1,15 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,22 +22,41 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	params := k.GetParams(ctx)
 
 	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
+
+		// number of elements here will be equal to the number of leverage lp enabled pools
+		totalOpen := uint64(0)
+		for _, elem := range k.GetAllPositionCounters(ctx) {
+			totalOpen = totalOpen + elem.TotalOpen
+		}
+
 		pageReq := &query.PageRequest{
 			Limit:      uint64(params.NumberPerBlock),
 			CountTotal: true,
 		}
-		offset, _ := k.GetOffset(ctx)
-		pageReq.Offset = offset
-		positions, _, err := k.GetPositions(ctx, pageReq)
+		fallbackCounter := k.GetFallbackCounter(ctx)
+		if len(fallbackCounter.NextKey) != 0 {
+			pageReq.Key = fallbackCounter.NextKey
+		} else {
+			pageReq.Offset = 0
+		}
+		if fallbackCounter.Counter+uint64(params.NumberPerBlock) >= totalOpen {
+			fallbackCounter.Counter = 0
+		} else {
+			fallbackCounter.Counter += uint64(params.NumberPerBlock)
+		}
+
+		positions, pageResponse, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
 			ctx.Logger().Error(errorsmod.Wrap(err, "error fetching paginated positions").Error())
 			return
 		}
-		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
-			k.DeleteOffset(ctx)
+
+		if fallbackCounter.Counter == 0 {
+			fallbackCounter.NextKey = nil
 		} else {
-			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
+			fallbackCounter.NextKey = pageResponse.NextKey
 		}
+		k.SetFallbackCounter(ctx, fallbackCounter)
 
 		for _, position := range positions {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
@@ -46,7 +66,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			}
 
 			cacheContextForUnhealthy, writeForUnhealthy := ctx.CacheContext()
-			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, position, pool)
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, &position, pool)
 			if err == nil {
 				writeForUnhealthy()
 				continue
@@ -58,7 +78,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					continue
 				}
 				cacheContextForStopLoss, writeForStopLoss := ctx.CacheContext()
-				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, position, pool, ammPool)
+				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, &position, pool, ammPool)
 				if err == nil {
 					writeForStopLoss()
 				}
@@ -90,7 +110,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		return true, false, h, errors.New("position is healthy to close")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), true)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing liquidation for unhealthy").Error())
 		return isHealthy, true, h, err
@@ -98,6 +118,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
 		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
@@ -107,8 +128,12 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		sdk.NewAttribute("reason", "unhealthy"),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
+		sdk.NewAttribute("exit_slippage_fee_value_in_usd", slippageValue.String()),
 		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_swap_fee_value_in_usd", swapFeeValue.String()),
 		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
+		sdk.NewAttribute("exit_taker_fee_value_in_usd", takerFeeValue.String()),
+		sdk.NewAttribute("exit_weight_breaking_fee_value_in_usd", weightBreakingFeeValue.String()),
 	))
 	return isHealthy, true, h, nil
 }
@@ -138,7 +163,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, osmomath.OneBigDec(), false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
@@ -146,6 +171,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
 		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
@@ -155,8 +181,12 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		sdk.NewAttribute("reason", "stop_loss"),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
+		sdk.NewAttribute("exit_slippage_fee_value_in_usd", slippageValue.String()),
 		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_swap_fee_value_in_usd", swapFeeValue.String()),
 		sdk.NewAttribute("exit_taker_fee", exitFee.String()),
+		sdk.NewAttribute("exit_taker_fee_value_in_usd", takerFeeValue.String()),
+		sdk.NewAttribute("exit_weight_breaking_fee_value_in_usd", weightBreakingFeeValue.String()),
 	))
 	return underStopLossPrice, true, nil
 }

@@ -7,9 +7,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (suite *KeeperTestSuite) TestCheckUserAuthorization() {
@@ -54,7 +54,7 @@ func (suite *KeeperTestSuite) TestCheckSameAssets() {
 	}
 
 	// Expect no error
-	position, _ = k.CheckSamePosition(suite.ctx, msg)
+	position = k.CheckSamePosition(suite.ctx, msg)
 	suite.Require().NotNil(position)
 }
 
@@ -96,18 +96,30 @@ func (suite *KeeperTestSuite) TestCheckMaxOpenPositions() {
 	k.SetParams(suite.ctx, &params)
 
 	// OpenPositionsBelowMax
-	k.SetOpenPositionCount(suite.ctx, 0)
-	err := k.CheckMaxOpenPositions(suite.ctx)
+	k.SetPositionCounter(suite.ctx, types.PositionCounter{
+		PoolId:    1,
+		Counter:   0,
+		TotalOpen: 0,
+	})
+	err := k.CheckMaxOpenPositions(suite.ctx, 1)
 	suite.Require().NoError(err)
 
 	//  Expect an error about max open positions
-	k.SetOpenPositionCount(suite.ctx, 10)
-	_ = k.CheckMaxOpenPositions(suite.ctx)
+	k.SetPositionCounter(suite.ctx, types.PositionCounter{
+		PoolId:    1,
+		Counter:   10,
+		TotalOpen: 10,
+	})
+	_ = k.CheckMaxOpenPositions(suite.ctx, 1)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 
 	// OpenPositionsExceedMax
-	k.SetOpenPositionCount(suite.ctx, 11)
-	_ = k.CheckMaxOpenPositions(suite.ctx)
+	k.SetPositionCounter(suite.ctx, types.PositionCounter{
+		PoolId:    1,
+		Counter:   11,
+		TotalOpen: 11,
+	})
+	_ = k.CheckMaxOpenPositions(suite.ctx, 1)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 }
 

@@ -8,8 +8,8 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/tier/types"
-	tradeshieldkeeper "github.com/elys-network/elys/v6/x/tradeshield/keeper"
+	"github.com/elys-network/elys/v7/x/tier/types"
+	tradeshieldkeeper "github.com/elys-network/elys/v7/x/tradeshield/keeper"
 )
 
 type (
@@ -22,7 +22,7 @@ type (
 		amm                types.AmmKeeper
 		estaking           types.EstakingKeeper
 		masterchef         types.MasterchefKeeper
-		commitement        types.CommitmentKeeper
+		commitment         types.CommitmentKeeper
 		perpetual          types.PerpetualKeeper
 		stakingKeeper      types.StakingKeeper
 		leveragelp         types.LeverageLpKeeper
@@ -40,7 +40,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	estaking types.EstakingKeeper,
 	masterchef types.MasterchefKeeper,
-	commitement types.CommitmentKeeper,
+	commitment types.CommitmentKeeper,
 	stakingKeeper types.StakingKeeper,
 	perpetual types.PerpetualKeeper,
 	leveragelp types.LeverageLpKeeper,
@@ -57,7 +57,7 @@ func NewKeeper(
 		amm:                amm,
 		estaking:           estaking,
 		masterchef:         masterchef,
-		commitement:        commitement,
+		commitment:         commitment,
 		stakingKeeper:      stakingKeeper,
 		perpetual:          perpetual,
 		leveragelp:         leveragelp,

@@ -1,15 +1,14 @@
 package keeper_test
 
-/*
 import (
 	"strconv"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/oracle/keeper"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/oracle/keeper"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 func createNPriceFeeder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PriceFeeder {
@@ -61,4 +60,3 @@ func (suite *KeeperTestSuite) TestPriceFeederGetAll() {
 		nullify.Fill(keeper.GetAllPriceFeeder(ctx)),
 	)
 }
-*/

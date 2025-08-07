@@ -9,7 +9,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
@@ -34,10 +34,14 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		return nil, fmt.Errorf("pool already exists")
 	}
 
-	maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
-	leverage := sdkmath.LegacyMinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
+	params := k.GetParams(ctx)
+	leverage := sdkmath.LegacyMinDec(msg.Pool.LeverageMax, params.LeverageMax)
 
-	newPool := types.NewPool(ammPool.PoolId, leverage, msg.Pool.PoolMaxLeverageRatio)
+	if msg.Pool.AdlTriggerRatio.GT(leverage.Add(params.ExitBuffer)) {
+		return nil, fmt.Errorf("pool adl trigger ratio cannot be greater than leverage + exit buffer")
+	}
+
+	newPool := types.NewPool(ammPool.PoolId, leverage, msg.Pool.PoolMaxLeverageRatio, msg.Pool.AdlTriggerRatio)
 	for _, asset := range ammPool.PoolAssets {
 		newPool.AssetLeverageAmounts = append(newPool.AssetLeverageAmounts, &types.AssetLeverageAmount{
 			Denom:           asset.Token.Denom,

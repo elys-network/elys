@@ -1447,31 +1447,31 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetPositions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "positions", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetPositions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "positions", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetPositionsByPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtps-by-pool", "amm_pool_id", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetPositionsByPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtps-by-pool", "amm_pool_id", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PerpetualCounter_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "counter", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PerpetualCounter_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "counter", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetPositionsForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtps-for-address", "address", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetPositionsForAddress_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtps-for-address", "address", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GetWhitelist_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "whitelist", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GetWhitelist_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "whitelist", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_IsWhitelisted_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "is-whitelisted"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_IsWhitelisted_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "is-whitelisted"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "pool", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "pool", "index"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Pools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "pool", "pagination.key"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "pool", "pagination.key"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_MTP_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtp", "address", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MTP_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "perpetual", "mtp", "address", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OpenEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "open-estimation"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OpenEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "open-estimation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CloseEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "close-estimation", "position_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_CloseEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "perpetual", "close-estimation", "position_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_OpenEstimationByFinal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "open-estimation-by-final"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OpenEstimationByFinal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "perpetual", "open-estimation-by-final"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

@@ -9,14 +9,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -268,8 +268,9 @@ func TestCheckAndLiquidatePosition(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     sdkmath.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: sdkmath.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -447,8 +448,9 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     sdkmath.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: sdkmath.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)

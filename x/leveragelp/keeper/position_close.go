@@ -2,65 +2,71 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammkeeper "github.com/elys-network/elys/v6/x/amm/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ammkeeper "github.com/elys-network/elys/v7/x/amm/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio osmomath.BigDec, isLiquidation bool) (osmomath.BigDec, math.Int, sdk.Coins, math.Int, sdk.Coins, osmomath.BigDec, bool, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, error) {
+func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.LegacyDec, math.Int, sdk.Coins, math.Int, sdk.Coins, osmomath.BigDec, bool, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, error) {
 
 	positionHealth, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 	safetyFactor := osmomath.BigDecFromDec(k.GetSafetyFactor(ctx))
 
 	if positionHealth.LTE(safetyFactor) {
-		closingRatio = osmomath.OneBigDec()
+		closingRatio = math.LegacyOneDec()
 	}
 
 	ammPool, found := k.amm.GetPool(ctx, position.AmmPoolId)
 	if !found {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmmPoolNotFound
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmmPoolNotFound
 	}
 
 	// Note this price of One Share (multiplied by 1^18)
 	lpTokenPrice, err := ammPool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	stopLossReached := position.CheckStopLossReached(lpTokenPrice)
 	if stopLossReached {
-		closingRatio = osmomath.OneBigDec()
+		closingRatio = math.LegacyOneDec()
 	}
 
-	if closingRatio.IsNil() || closingRatio.IsNegative() || closingRatio.IsZero() || closingRatio.GT(osmomath.OneBigDec()) {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrInvalidClosingRatio
+	if closingRatio.IsNil() || closingRatio.IsNegative() || closingRatio.IsZero() || closingRatio.GT(math.LegacyOneDec()) {
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrInvalidClosingRatio
 	}
 
 	// This will be the net amount that will be closed
-	totalLpAmountToClose := closingRatio.Mul(osmomath.BigDecFromSDKInt(position.LeveragedLpAmount)).Dec().TruncateInt()
+	totalLpAmountToClose := closingRatio.Mul(position.LeveragedLpAmount.ToLegacyDec()).TruncateInt()
 
 	ammPoolTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 	collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
 
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 	// Amount required to pay back
-	repayAmount := debt.GetBigDecTotalLiablities().Mul(closingRatio).Dec().TruncateInt()
+	repayAmount := debt.GetTotalLiablities().ToLegacyDec().Mul(closingRatio).TruncateInt()
 	repayValue := collateralDenomPrice.Mul(osmomath.BigDecFromSDKInt(repayAmount))
 
+	// Check for division by zero
+	if ammPoolTVL.IsZero() {
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("amm pool %d has zero TVL", position.AmmPoolId)
+	}
 	ammPoolTotalShareAmountDec := osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount)
 	lpSharesForRepay := repayValue.Mul(ammPoolTotalShareAmountDec).Quo(ammPoolTVL).Ceil().Dec().TruncateInt() // round up
 
 	// Bot failed to close position here, Position is unhealthy, override closing ratio to 1 and position health is < 1
 	// Also important because round up above. If position health is 1, then lpSharesForRepay == totalLpAmountToClose, rounding up before might have made it 1 higher
 	if lpSharesForRepay.GT(totalLpAmountToClose) {
-		closingRatio = osmomath.OneBigDec()
+		closingRatio = math.LegacyOneDec()
 		totalLpAmountToClose = position.LeveragedLpAmount
 		repayAmount = debt.GetTotalLiablities()
 		repayValue = collateralDenomPrice.Mul(osmomath.BigDecFromSDKInt(repayAmount))
@@ -70,7 +76,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	// we calculate weight breaking fee (-ve of weightBalanceBonus if there is one) that could have occurred
 	_, weightBalanceBonus, slippage, swapFee, takerFee, err := k.amm.ExitPoolEst(ctx, position.AmmPoolId, lpSharesForRepay, position.Collateral.Denom)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	exitFeeOnClosingPosition := osmomath.ZeroBigDec()
@@ -109,13 +115,13 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	// Subtract amount that is being reduced from lp pool as it gets checked in CheckAmmBalance
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpSharesForRepay)
-	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, lpSharesForRepay, false)
+	pool.UpdateAssetLeveragedAmount(position.Collateral.Denom, lpSharesForRepay, false)
 	// pool is set here
 	k.UpdatePoolHealth(ctx, pool)
 
 	_, _, _, _, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpSharesForRepay, sdk.Coins{}, position.Collateral.Denom, isLiquidation, false)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 	// Updating ammPool
 	ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
@@ -133,7 +139,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	if repayAmount.IsPositive() {
 		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.BorrowPoolId, position.AmmPoolId)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 	}
 
@@ -144,20 +150,20 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		sharesLeft = totalLpAmountToClose.Sub(lpSharesForRepay)
 		coinsLeftAfterRepay, _, _, _, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, sharesLeft, sdk.Coins{}, "", isLiquidation, false)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		// Updating ammPool
 		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 	}
 
 	// Set collateral to same % as reduction in LP position
-	collateralReduced := osmomath.BigDecFromSDKInt(position.Collateral.Amount).Mul(closingRatio).Dec().TruncateInt()
+	collateralReduced := position.Collateral.Amount.ToLegacyDec().Mul(closingRatio).TruncateInt()
 	position.Collateral.Amount = position.Collateral.Amount.Sub(collateralReduced)
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(totalLpAmountToClose)
 	posHealth, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 	position.PositionHealth = posHealth.Dec()
 
@@ -168,33 +174,75 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	// Update the pool health.
 	if sharesLeft.IsPositive() {
 		pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(sharesLeft)
-		pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, sharesLeft, false)
+		pool.UpdateAssetLeveragedAmount(position.Collateral.Denom, sharesLeft, false)
 	}
 
 	var coinsForAmm sdk.Coins
 	if percentageExitLeverageFee.IsPositive() && len(coinsLeftAfterRepay) > 0 {
 		coinsForAmm = ammkeeper.PortionCoins(coinsLeftAfterRepay, percentageExitLeverageFee)
-		weightBreakingFeePortion := k.amm.GetParams(ctx).WeightBreakingFeePortion
 
-		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, osmomath.BigDecFromDec(weightBreakingFeePortion))
+		totalFeeValue := weightBreakingFeeValue.Add(slippageValue).Add(swapFeeValue).Add(takerFeeValue)
+		// 1. weightBreakingFeePortion
+		weightBreakingFee := weightBreakingFeeValue.Quo(totalFeeValue)
+		weightBreakingFeePortion := osmomath.BigDecFromDec(k.amm.GetParams(ctx).WeightBreakingFeePortion).Mul(weightBreakingFee)
+
+		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, weightBreakingFeePortion)
 		coinsToAmmPool := coinsForAmm.Sub(coinsToAmmRebalancer...)
+
+		// Track weight breaking fee
+		for _, coin := range coinsToAmmPool {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+		}
+
+		// 2. slippageFeePortion
+		slippageFee := slippageValue.Quo(totalFeeValue)
+		coinsForSlippage := ammkeeper.PortionCoins(coinsForAmm, slippageFee)
+
+		// Track slippage fee
+		for _, coin := range coinsForSlippage {
+			k.amm.TrackWeightBreakingSlippage(ctx, position.AmmPoolId, coin)
+			k.amm.TrackSlippage(ctx, position.AmmPoolId, coin)
+		}
 
 		// Very important to fetch this again, Updating ammPool
 		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
-		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool)
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool.Add(coinsForSlippage...))
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
-		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool)
+		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool.Add(coinsForSlippage...))
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.RebalanceTreasury), coinsToAmmRebalancer)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
+		// 3. swapFeePortion
+		swapFee := swapFeeValue.Quo(totalFeeValue)
+		coinsForSwap := ammkeeper.PortionCoins(coinsForAmm, swapFee)
+
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), rebalanceTreasury, coinsForSwap)
+		if err != nil {
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		err = k.amm.OnCollectFee(ctx, ammPool, coinsForSwap)
+		if err != nil {
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		// 4. takerFeePortion
+		takerFee := takerFeeValue.Quo(totalFeeValue)
+		coinsForTaker := ammkeeper.PortionCoins(coinsForAmm, takerFee)
+
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress), coinsForTaker)
+		if err != nil {
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
 	}
 
 	// anything left over in position balance goes to user
@@ -204,7 +252,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	if len(finalUserTokens) > 0 {
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, finalUserTokens)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 	}
 
@@ -216,18 +264,18 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		// As we have already exited the pool, we need to delete the position
 		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
-		err = k.DestroyPosition(ctx, positionOwner, position.Id)
+		err = k.DestroyPosition(ctx, *position)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		// Delete Debt even if it's not paid fully, can happen only if bot fails to close and position health goes below 1
 		if position.Liabilities.IsPositive() {
 			err = k.stableKeeper.CloseOnUnableToRepay(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 			if err != nil {
-				return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+				return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 			}
 		}
 	}
@@ -238,9 +286,9 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 		err = k.hooks.AfterLeverageLpPositionClose(ctx, position.GetOwnerAddress(), ammPool)
 		if err != nil {
-			return osmomath.ZeroBigDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, osmomath.ZeroBigDec(), stopLossReached, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 	}
 
-	return closingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserTokens, exitFeeOnClosingPosition, stopLossReached, weightBreakingFee, exitSlippageFeeOnClosingPosition, exitSwapFeeOnClosingPosition, exitTakerFeeOnClosingPosition, nil
+	return closingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserTokens, exitFeeOnClosingPosition, stopLossReached, weightBreakingFee, exitSlippageFeeOnClosingPosition, exitSwapFeeOnClosingPosition, exitTakerFeeOnClosingPosition, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, nil
 }

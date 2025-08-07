@@ -3,7 +3,7 @@ package keeper
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -13,6 +13,7 @@ func (k Keeper) ApplyExitPoolStateChange(
 	exitCoins sdk.Coins, isLiquidation bool,
 	weightBalanceBonus osmomath.BigDec, takerFees osmomath.BigDec,
 	swapFee osmomath.BigDec, slippageCoins sdk.Coins,
+	swapInfos []types.SwapInfo,
 ) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
@@ -102,6 +103,10 @@ func (k Keeper) ApplyExitPoolStateChange(
 			"0",
 			takerFeesAmountInUSD.String(),
 		)
+	}
+
+	if exitCoins.Len() == 1 {
+		types.EmitSwapsInfoEvent(ctx, pool.PoolId, exiter.String(), swapInfos)
 	}
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)

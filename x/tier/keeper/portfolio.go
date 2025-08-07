@@ -15,16 +15,16 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
-	estakingtypes "github.com/elys-network/elys/v6/x/estaking/types"
-	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
-	tradeshieldtypes "github.com/elys-network/elys/v6/x/tradeshield/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/v7/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/v7/x/tradeshield/types"
 
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	"github.com/elys-network/elys/v6/x/tier/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/tier/types"
 )
 
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
@@ -77,7 +77,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
 	totalValue := osmomath.ZeroBigDec()
-	commitments := k.commitement.GetCommitments(ctx, user)
+	commitments := k.commitment.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
@@ -100,9 +100,9 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) osmomath
 
 func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
 	totalCommit := osmomath.ZeroBigDec()
-	commitments := k.commitement.GetCommitments(ctx, user)
+	commitments := k.commitment.GetCommitments(ctx, user)
 	totalVested := osmomath.ZeroBigDec()
-	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
+	vestingResp, vestErr := k.commitment.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
 		totalVested = osmomath.BigDecFromSDKInt(vestingResp.Total)
 	}
@@ -276,27 +276,25 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 }
 
 func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
-	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	positions := k.leveragelp.GetPositionsForAddress(ctx, user)
 	totalValue := osmomath.ZeroBigDec()
 	totalBorrow := osmomath.ZeroBigDec()
 	netValue := osmomath.ZeroBigDec()
-	if err == nil {
-		for _, position := range positions {
-			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
-			if !found {
-				continue
-			}
-			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
-			amount := position.GetBigDecLeveragedLpAmount()
-			totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
-			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
-			collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
-			liab := debt.GetBigDecTotalLiablities()
-			totalBorrow = totalBorrow.Add(liab.Mul(collateralDenomPrice))
+	for _, position := range positions {
+		pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+		if !found {
+			continue
 		}
-		netValue = totalValue.Sub(totalBorrow)
+		info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+		amount := position.GetBigDecLeveragedLpAmount()
+		totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
+		// USD value of debt
+		debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+		collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+		liab := debt.GetBigDecTotalLiablities()
+		totalBorrow = totalBorrow.Add(liab.Mul(collateralDenomPrice))
 	}
+	netValue = totalValue.Sub(totalBorrow)
 	return totalValue, totalBorrow, netValue
 }
 

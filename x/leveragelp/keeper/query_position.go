@@ -4,8 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,11 +17,11 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(req.Address)
-	position, err := k.GetPosition(ctx, creator, req.Id)
+	position, err := k.GetPosition(ctx, req.PoolId, creator, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []*types.Position{&position})
+	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []types.Position{position})
 
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creator := sdk.MustAccAddressFromBech32(req.Address)
-	position, err := k.GetPosition(ctx, creator, req.PositionId)
+	position, err := k.GetPosition(ctx, req.PoolId, creator, req.PositionId)
 	if err != nil {
 		return nil, err
 	}

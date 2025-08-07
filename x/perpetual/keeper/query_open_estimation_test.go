@@ -6,18 +6,18 @@ import (
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	leveragelpmodulekeeper "github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	leveragelpmoduletypes "github.com/elys-network/elys/v6/x/leveragelp/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/v7/x/leveragelp/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	"github.com/elys-network/elys/v6/x/perpetual/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	simapp "github.com/elys-network/elys/v6/app"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -94,8 +94,9 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -212,8 +213,9 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -347,8 +349,9 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -481,8 +484,9 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -604,8 +608,9 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:       poolId,
+			LeverageMax:     math.LegacyMustNewDecFromStr("10"),
+			AdlTriggerRatio: math.LegacyNewDec(1),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)

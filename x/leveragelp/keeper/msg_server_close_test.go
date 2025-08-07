@@ -4,17 +4,17 @@ import (
 	"time"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
-	stablekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -58,17 +58,19 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 	enablePoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   poolId,
-			LeverageMax: sdkmath.LegacyNewDec(10),
+			AmmPoolId:            poolId,
+			LeverageMax:          sdkmath.LegacyNewDec(10),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6")))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6"), sdkmath.LegacyMustNewDecFromStr("0.8")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
-		Amount:  issueAmount.QuoRaw(20),
+		Amount:  issueAmount.QuoRaw(100),
 		PoolId:  1,
 	}
 
@@ -112,6 +114,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.NewInt(0),
+				PoolId:   1,
 			},
 			true,
 			types.ErrPositionDoesNotExist.Error(),
@@ -125,6 +128,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.NewInt(0),
+				PoolId:   1,
 			},
 			true,
 			"your funds will be locked for 1 hour",
@@ -148,6 +152,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -175,6 +180,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.MulRaw(2),
+				PoolId:   1,
 			},
 			true,
 			"invalid closing ratio for leverage lp",
@@ -202,6 +208,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2000000),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -222,7 +229,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(1000000 * time.Hour)
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
@@ -231,6 +238,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2000000),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -251,7 +259,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(1000000 * time.Hour)
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
@@ -260,6 +268,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: leverageLPShares.QuoRaw(2),
+				PoolId:   1,
 			},
 			false,
 			"",
@@ -280,8 +289,8 @@ func (suite *KeeperTestSuite) TestClose() {
 				suite.AddBlockTime(time.Hour)
 			},
 			func() {
-				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdkmath.NewIntFromString("9991380952380952380")
+				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
+				actualShares, ok := sdkmath.NewIntFromString("9991380952380952379")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
 			},
@@ -291,13 +300,14 @@ func (suite *KeeperTestSuite) TestClose() {
 				Creator:  addresses[0].String(),
 				Id:       1,
 				LpAmount: sdkmath.LegacyMustNewDecFromStr("9991380952380952380").TruncateInt(),
+				PoolId:   1,
 			},
 			false,
 			"",
 			func() {
 			},
 			func() {
-				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, 1, addresses[0], 1)
 				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},

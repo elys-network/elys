@@ -2,21 +2,18 @@ package keeper
 
 import (
 	"context"
-	"errors"
-	"strconv"
-
 	errorsmod "cosmossdk.io/errors"
-
+	"cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	position, err := k.GetPosition(ctx, creator, msg.Id)
+	position, err := k.GetPosition(ctx, msg.PoolId, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -31,30 +28,16 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	closingRatio := osmomath.BigDecFromSDKInt(msg.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
-	if closingRatio.GT(osmomath.OneBigDec()) {
+	closingRatio := msg.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	if closingRatio.GT(math.LegacyOneDec()) {
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
-		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-		sdk.NewAttribute("address", msg.Creator),
-		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
-		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
-		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
-		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
-		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
-		sdk.NewAttribute("health", position.PositionHealth.String()),
-		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
-		sdk.NewAttribute("exit_slippage_fee", exitSlippageFeeOnClosingPosition.String()),
-		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
-		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
-	))
+	k.EmitCloseEvent(ctx, "user_tx", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue)
 	return &types.MsgCloseResponse{}, nil
 }

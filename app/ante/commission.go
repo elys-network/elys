@@ -10,9 +10,9 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
-	parameterkeeper "github.com/elys-network/elys/v6/x/parameter/keeper"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	parameterkeeper "github.com/elys-network/elys/v7/x/parameter/keeper"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 type MinCommissionDecorator struct {

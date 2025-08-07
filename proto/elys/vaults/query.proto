@@ -1,0 +1,211 @@
+syntax = "proto3";
+package elys.vaults;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "elys/vaults/params.proto";
+import "elys/vaults/vault.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/v7/x/vaults/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/params";
+  }
+
+  // Vault queries a vault by its ID.
+  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault/{vault_id}/{days}";
+  }
+
+  // Vaults queries all vaults.
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/elys-network/elys/vaults/vaults/{days}";
+  }
+
+  // VaultValue queries the USD value of a vault.
+  rpc VaultValue(QueryVaultValue) returns (QueryVaultValueResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault_value/{vault_id}";
+  }
+
+  // VaultPositions queries the positions of a vault.
+  rpc VaultPositions(QueryVaultPositionsRequest)
+      returns (QueryVaultPositionsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/vault_positions/{vault_id}";
+  }
+
+  // DepositEstimation queries the estimated deposit amount for a vault.
+  rpc DepositEstimation(QueryDepositEstimationRequest)
+      returns (QueryDepositEstimationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/deposit_estimation";
+  }
+
+  // WithdrawEstimation queries the estimated withdraw amount for a vault.
+  rpc WithdrawEstimation(QueryWithdrawEstimationRequest)
+      returns (QueryWithdrawEstimationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/vaults/withdraw_estimation";
+  }
+}
+
+message VaultAndData {
+  Vault vault = 1;
+  string eden_apr = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string pnl_usd = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_deposits_usd = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string deposits_used = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PositionToken positions = 6 [ (gogoproto.nullable) = false ];
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryVaultRequest {
+  uint64 vault_id = 1;
+  uint64 days = 2;
+}
+
+message QueryVaultResponse {
+  VaultAndData vault = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryVaultsRequest { uint64 days = 1; }
+
+message QueryVaultsResponse {
+  repeated VaultAndData vaults = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryVaultValue { uint64 vault_id = 1; }
+
+message QueryVaultValueResponse {
+  string usd_value = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PositionToken {
+  string token_denom = 1;
+  string token_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string token_usd_value = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryVaultPositionsRequest { uint64 vault_id = 1; }
+
+message QueryVaultPositionsResponse {
+  repeated PositionToken positions = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryDepositEstimationRequest {
+  uint64 vault_id = 1;
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryDepositEstimationResponse {
+  string shares_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string shares_usd_value = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWithdrawEstimationRequest {
+  uint64 vault_id = 1;
+  string shares_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWithdrawEstimationResponse {
+  string amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string usd_value = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// message QueryPnLRequest { string address = 1; }
+
+// message QueryPnLResponse {
+//   repeated PnlResponse pnls = 1 [ (gogoproto.nullable) = false ];
+// }
+
+// message PnlResponse {
+//   string pnl_usd = 1 [
+//     (cosmos_proto.scalar) = "cosmos.Dec",
+//     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+//     (gogoproto.nullable) = false
+//   ];
+//   string eden_usd_value = 2 [
+//     (cosmos_proto.scalar) = "cosmos.Dec",
+//     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+//     (gogoproto.nullable) = false
+//   ];
+//   string current_balance_usd = 3 [
+//     (cosmos_proto.scalar) = "cosmos.Dec",
+//     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+//     (gogoproto.nullable) = false
+//   ];
+//   uint64 vault_id = 4;
+//   string eden_amount = 5 [
+//     (cosmos_proto.scalar) = "cosmos.Int",
+//     (gogoproto.customtype) = "cosmossdk.io/math.Int",
+//     (gogoproto.nullable) = false
+//   ];
+// }

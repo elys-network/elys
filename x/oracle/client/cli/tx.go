@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -19,6 +19,10 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdFeedPrice())
+	cmd.AddCommand(CmdSetPriceFeeder())
+	cmd.AddCommand(CmdDeletePriceFeeder())
+	cmd.AddCommand(CmdCreateAssetInfo())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

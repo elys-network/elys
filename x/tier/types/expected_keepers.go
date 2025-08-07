@@ -9,16 +9,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v6/x/assetprofile/types"
-	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
-	estakingtypes "github.com/elys-network/elys/v6/x/estaking/types"
-	leveragelptypes "github.com/elys-network/elys/v6/x/leveragelp/types"
-	mastercheftypes "github.com/elys-network/elys/v6/x/masterchef/types"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
-	tradeshieldtypes "github.com/elys-network/elys/v6/x/tradeshield/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
+	commitmenttypes "github.com/elys-network/elys/v7/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/v7/x/estaking/types"
+	leveragelptypes "github.com/elys-network/elys/v7/x/leveragelp/types"
+	mastercheftypes "github.com/elys-network/elys/v7/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/v7/x/tradeshield/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -101,7 +101,7 @@ type StakingKeeper interface {
 }
 
 type LeverageLpKeeper interface {
-	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*leveragelptypes.Position, *query.PageResponse, error)
+	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress) []leveragelptypes.Position
 }
 
 type StablestakeKeeper interface {

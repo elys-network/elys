@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"strconv"
@@ -8,9 +7,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/oracle/keeper"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/oracle/keeper"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {
@@ -271,4 +270,3 @@ func (suite *KeeperTestSuite) TestGetAssetPriceAndGetDenomPrice() {
 	suite.Require().NotEqual(price.String(), denomPrice.String())
 	suite.Require().Equal("0.000000000000000000000000034452320000", denomPrice.String())
 }
-*/

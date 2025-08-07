@@ -1,0 +1,68 @@
+syntax = "proto3";
+package elys.vaults;
+
+option go_package = "github.com/elys-network/elys/v7/x/vaults/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+message PoolInfo {
+  uint64 pool_id = 1;
+  // reward wallet address
+  string reward_wallet = 2;
+  // Eden APR, updated at every distribution
+  string eden_apr = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // USDC APR, updated based on 24hr accumulation
+  string usdc_apr = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolRewardInfo {
+  uint64 pool_id = 1;
+  string reward_denom = 2;
+  string pool_acc_reward_per_share = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 last_updated_block = 4;
+}
+
+message UserRewardInfo {
+  string user = 1;
+  uint64 pool_id = 2;
+  string reward_denom = 3;
+  string reward_debt = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string reward_pending = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolRewardsAccum {
+  uint64 pool_id = 1;
+  int64 block_height = 2;
+  uint64 timestamp = 3;
+  string usdc_reward = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_reward = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

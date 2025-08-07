@@ -5,10 +5,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryGetPosition() {
@@ -101,22 +101,22 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	}, 1)
 
-	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
+	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id, PoolId: position.AmmPoolId})
 	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253084466940841678")
 
-	suite.Require().Equal(position, res.Position.Position)
+	suite.Require().Equal(*position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
 
 	expected := types.PositionAndInterest{
 		Position: &types.QueryPosition{
-			Position:         position,
+			Position:         *position,
 			UpdatedLeverage:  updated_leverage,
 			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940493900624814"),
 		},
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671232"),
 		InterestRateHourUsd: sdkmath.LegacyMustNewDecFromStr("0.000000068493150684"),
 	}
-	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil})
+	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String()})
 
 	suite.Require().Equal(expected.Position, pos_for_address_res.Positions[0].Position)
 	suite.Require().True(expected.InterestRateHour.Equal(pos_for_address_res.Positions[0].InterestRateHour))

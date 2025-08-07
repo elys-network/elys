@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
-	"github.com/elys-network/elys/v6/x/tier/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
+	"github.com/elys-network/elys/v7/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -26,7 +26,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	listCommitments, pagination, err := k.commitement.GetAllCommitmentsWithPagination(ctx, req.Pagination)
+	listCommitments, pagination, err := k.commitment.GetAllCommitmentsWithPagination(ctx, req.Pagination)
 
 	if err != nil {
 		return nil, err

@@ -6,17 +6,17 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/v6/testutil/keeper"
-	"github.com/elys-network/elys/v6/testutil/nullify"
-	"github.com/elys-network/elys/v6/x/leveragelp/keeper"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	keepertest "github.com/elys-network/elys/v7/testutil/keeper"
+	"github.com/elys-network/elys/v7/testutil/nullify"
+	"github.com/elys-network/elys/v7/x/leveragelp/keeper"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 )
 
 func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
-		items[i] = types.NewPool((uint64)(i), math.LegacyMustNewDecFromStr("10"), math.LegacyMustNewDecFromStr("0.6"))
+		items[i] = types.NewPool((uint64)(i), math.LegacyMustNewDecFromStr("10"), math.LegacyMustNewDecFromStr("0.6"), math.LegacyMustNewDecFromStr("0.8"))
 
 		keeper.SetPool(ctx, items[i])
 	}

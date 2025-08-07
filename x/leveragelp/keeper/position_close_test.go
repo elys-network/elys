@@ -7,10 +7,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -126,7 +126,7 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 		Quo(math.LegacyNewDec(86400 * 365))).TruncateInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -145,7 +145,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -166,12 +166,12 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	// close 50%
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec().QuoInt64(2), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 
 	// Collateral should be reduced by 50%
-	after, _ := k.GetPosition(suite.ctx, addr, 1)
+	after, _ := k.GetPosition(suite.ctx, 1, addr, 1)
 	suite.Require().Equal(originalPosition.Collateral.Amount.Quo(math.NewInt(2)).String(), after.Collateral.Amount.String())
 }
 

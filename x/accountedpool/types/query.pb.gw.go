@@ -260,9 +260,9 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_AccountedPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "accountedpool", "accounted_pool", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AccountedPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "accountedpool", "accounted_pool", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AccountedPoolAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "accountedpool", "accounted_pool"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AccountedPoolAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "accountedpool", "accounted_pool"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

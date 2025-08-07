@@ -5,7 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 )
 
 func (k Keeper) GetSlippageTrack(ctx sdk.Context, poolId uint64, timestamp uint64) types.OraclePoolSlippageTrack {

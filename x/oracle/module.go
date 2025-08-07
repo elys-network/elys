@@ -17,14 +17,15 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/v6/x/oracle/client/cli"
-	"github.com/elys-network/elys/v6/x/oracle/keeper"
-	"github.com/elys-network/elys/v6/x/oracle/migrations"
-	"github.com/elys-network/elys/v6/x/oracle/types"
+	"github.com/elys-network/elys/v7/x/oracle/client/cli"
+	"github.com/elys-network/elys/v7/x/oracle/keeper"
+	"github.com/elys-network/elys/v7/x/oracle/migrations"
+	"github.com/elys-network/elys/v7/x/oracle/types"
 )
 
 var (
 	_ module.AppModuleBasic      = AppModule{}
+	_ module.AppModuleSimulation = AppModule{}
 	_ module.HasGenesis          = AppModule{}
 	_ module.HasServices         = AppModule{}
 	_ module.HasConsensusVersion = AppModule{}
@@ -79,6 +80,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
 
 // GetTxCmd returns the root Tx command for the module. The subcommands of this root command are used by end-users to generate new transactions containing messages defined in the module

@@ -16,8 +16,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v6/x/assetprofile/keeper"
-	"github.com/elys-network/elys/v6/x/assetprofile/types"
+	"github.com/elys-network/elys/v7/x/assetprofile/keeper"
+	"github.com/elys-network/elys/v7/x/assetprofile/types"
 	"github.com/stretchr/testify/require"
 )
 

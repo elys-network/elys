@@ -382,13 +382,13 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "estaking", "rewards", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "estaking", "rewards", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Invariant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "invariant"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Invariant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "invariant"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_EdenBBurnAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "edenb-burn-amount"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_EdenBBurnAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "estaking", "edenb-burn-amount"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

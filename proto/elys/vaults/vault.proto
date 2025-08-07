@@ -1,0 +1,97 @@
+syntax = "proto3";
+package elys.vaults;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "elys/vaults/tx.proto";
+
+option go_package = "github.com/elys-network/elys/v7/x/vaults/types";
+
+// Vault is a structure that defines a vault
+message Vault {
+  string deposit_denom = 1;
+  // Max amount vault can hold in USD
+  string max_amount_usd = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // Coins allowed to trade in the vault
+  repeated string allowed_coins = 3;
+  repeated string reward_coins = 4;
+  string benchmark_coin = 5;
+  string manager = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 id = 7;
+  string management_fee = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string performance_fee = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string protocol_fee_share = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 lockup_period = 11; // in seconds
+  string sum_of_deposits_usd_value = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string withdrawal_usd_value = 13 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string address = 14 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string cumulative_management_fee = 15 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string cumulative_performance_fee = 16 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string description = 17;
+  repeated string allowed_actions = 18;
+}
+
+message UserData {
+  string total_deposits_usd = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_withdrawals_usd = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_usd_value = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message VaultPnL {
+  string vault_id = 1;
+  string pnl_usd = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string date = 3;
+}

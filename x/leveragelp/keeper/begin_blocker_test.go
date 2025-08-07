@@ -6,9 +6,9 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/v6/app"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	simapp "github.com/elys-network/elys/v7/app"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestBeginBlocker() {
@@ -118,8 +118,8 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				return position1
 			},
 			func() {
-				offset, _ := suite.app.LeveragelpKeeper.GetOffset(suite.ctx)
-				suite.Require().Equal(offset, uint64(0))
+				offset := suite.app.LeveragelpKeeper.GetFallbackCounter(suite.ctx)
+				suite.Require().Equal(offset.Counter, uint64(0))
 			},
 		},
 		{

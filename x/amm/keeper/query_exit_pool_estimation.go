@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -54,7 +54,7 @@ func (k Keeper) ExitPoolEst(
 	params := k.GetParams(ctx)
 	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, _, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takerFees, true)
+	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, _, _, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takerFees, true)
 	if err != nil {
 		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}

@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (*types.MsgRemovePoolResponse, error) {
@@ -29,7 +29,7 @@ func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (
 		return nil, errorsmod.Wrap(types.ErrPoolLeverageAmountNotZero, pool.LeveragedLpAmount.String())
 	}
 
-	k.DeletePool(ctx, msg.Id)
+	k.Keeper.RemovePool(ctx, msg.Id)
 
 	if k.hooks != nil {
 		err := k.hooks.AfterDisablingPool(ctx, ammPool)

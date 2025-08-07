@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 )
 
 func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
@@ -18,7 +19,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, errors.New("stop loss price not enabled")
 	}
 
-	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)
+	position, found := k.GetPositionWithId(ctx, msg.PoolId, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPositionDoesNotExist, fmt.Sprintf("positionId: %d", msg.Position))
 
@@ -40,6 +41,9 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	event := sdk.NewEvent(types.EventUpdateStopLoss,
+		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
+		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),

@@ -7,10 +7,10 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
-	stablestakekeeper "github.com/elys-network/elys/v6/x/stablestake/keeper"
-	stablestaketypes "github.com/elys-network/elys/v6/x/stablestake/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
+	stablestakekeeper "github.com/elys-network/elys/v7/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/v7/x/stablestake/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryEstimation() {
@@ -109,6 +109,7 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		Owner:    addr.String(),
 		Id:       position.Id,
 		LpAmount: sdkmath.NewInt(10000000000000000),
+		PoolId:   1,
 	})
 	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount

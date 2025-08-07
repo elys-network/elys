@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
+	"github.com/elys-network/elys/v7/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -31,7 +31,7 @@ func (k Keeper) ExitPool(
 	params := k.GetParams(ctx)
 	takersFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err := pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takersFees, applyWeightBreakingFee)
+	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, err := pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takersFees, applyWeightBreakingFee)
 	if err != nil {
 		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
@@ -59,7 +59,7 @@ func (k Keeper) ExitPool(
 			exitCoins, tokenOutMins)
 	}
 
-	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins)
+	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins, swapInfos)
 	if err != nil {
 		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}

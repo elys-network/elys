@@ -8,14 +8,18 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/elys-network/elys/v6/x/commitment/types"
-	ptypes "github.com/elys-network/elys/v6/x/parameter/types"
+	"github.com/elys-network/elys/v7/x/commitment/types"
+	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 // CancelVest cancel the user's vesting and the user reject to get vested tokens
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.CancelVest(ctx, msg)
+}
+
+func (k Keeper) CancelVest(ctx sdk.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	if msg.Denom != ptypes.Eden {
 		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
@@ -27,7 +31,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	// claim pending rewards
 	claimVestingMsg := types.MsgClaimVesting{Sender: msg.Creator}
-	_, err := k.Keeper.ClaimVesting(ctx, &claimVestingMsg)
+	_, err := k.ClaimVesting(ctx, &claimVestingMsg)
 	if err != nil {
 		return nil, err
 	}

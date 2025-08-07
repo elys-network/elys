@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
-	ammtypes "github.com/elys-network/elys/v6/x/amm/types"
+	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/leveragelp/types"
+	"github.com/elys-network/elys/v7/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,10 +25,7 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 		return nil, err
 	}
 
-	positions, pageResponse, err := k.GetPositionsForAddress(ctx, address, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
+	positions := k.GetPositionsForAddress(ctx, address)
 
 	var positionCommitedTokens []types.PositionCommitedToken
 
@@ -58,6 +55,5 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 	return &types.QueryCommittedTokensLockedResponse{
 		Address:               address.String(),
 		PositionCommitedToken: positionCommitedTokens,
-		Pagination:            pageResponse,
 	}, nil
 }

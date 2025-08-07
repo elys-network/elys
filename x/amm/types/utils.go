@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/elys-network/elys/v6/utils"
+	"github.com/elys-network/elys/v7/utils"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -14,6 +14,19 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
+
+// SwapInfo holds the information for swap
+type SwapInfo struct {
+	TokenIn  sdk.Coin
+	TokenOut sdk.Coin
+}
+
+func NewSwapInfo(tokenIn, tokenOut sdk.Coin) SwapInfo {
+	return SwapInfo{
+		TokenIn:  tokenIn,
+		TokenOut: tokenOut,
+	}
+}
 
 func GetPoolShareDenom(poolId uint64) string {
 	return fmt.Sprintf("amm/pool/%d", poolId)

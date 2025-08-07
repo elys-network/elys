@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	perpetualtypes "github.com/elys-network/elys/v6/x/perpetual/types"
-	"github.com/elys-network/elys/v6/x/tradeshield/types"
+	perpetualtypes "github.com/elys-network/elys/v7/x/perpetual/types"
+	"github.com/elys-network/elys/v7/x/tradeshield/types"
 )
 
 // GetPendingPerpetualOrderCount get the total number of pendingPerpetualOrder
@@ -214,28 +214,24 @@ func (k Keeper) MigratePendingOrders(ctx sdk.Context) {
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// Check final execution price
-	response, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
-		Position:        perpetualtypes.Position(order.Position),
-		Leverage:        order.Leverage,
-		Collateral:      order.Collateral,
-		TakeProfitPrice: order.TakeProfitPrice,
-		PoolId:          order.PoolId,
-		LimitPrice:      order.TriggerPrice,
-	})
+	tradingAsset, err := k.perpetual.GetTradingAsset(ctx, order.PoolId)
 	if err != nil {
 		return err
 	}
 
-	executionPrice := response.OpenPrice
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
+	if err != nil {
+		return err
+	}
+
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if executionPrice.GT(order.TriggerPrice) {
+		if marketPrice.GT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if executionPrice.LT(order.TriggerPrice) {
+		if marketPrice.LT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
@@ -276,7 +272,30 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// get position info
+	tradingAsset, err := k.perpetual.GetTradingAsset(ctx, order.PoolId)
+	if err != nil {
+		return err
+	}
+
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
+	if err != nil {
+		return err
+	}
+
+	switch order.Position {
+	case types.PerpetualPosition_LONG:
+		if marketPrice.LT(order.TriggerPrice) {
+			// skip the order
+			return nil
+		}
+	case types.PerpetualPosition_SHORT:
+		if marketPrice.GT(order.TriggerPrice) {
+			// skip the order
+			return nil
+		}
+	}
+
+	// get the position info
 	position, err := k.perpetual.GetMTP(ctx, order.PoolId, sdk.MustAccAddressFromBech32(order.OwnerAddress), order.PositionId)
 	if err != nil {
 		return err
@@ -284,30 +303,6 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 	closePercentage := sdkmath.LegacyNewDec(int64(order.ClosePercentage)).Quo(sdkmath.LegacyNewDec(100))
 	closeAmount := closePercentage.Mul(sdkmath.LegacyNewDecFromInt(position.Custody)).TruncateInt()
-
-	response, err := k.perpetual.HandleCloseEstimation(ctx, &perpetualtypes.QueryCloseEstimationRequest{
-		Address:     order.OwnerAddress,
-		PositionId:  order.PositionId,
-		PoolId:      order.PoolId,
-		CloseAmount: closeAmount,
-	})
-	if err != nil {
-		return err
-	}
-
-	executionPrice := response.ClosingPrice
-	switch order.Position {
-	case types.PerpetualPosition_LONG:
-		if executionPrice.LT(order.TriggerPrice) {
-			// skip the order
-			return nil
-		}
-	case types.PerpetualPosition_SHORT:
-		if executionPrice.GT(order.TriggerPrice) {
-			// skip the order
-			return nil
-		}
-	}
 
 	closeMsg := perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
