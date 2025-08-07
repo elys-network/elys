@@ -106,6 +106,7 @@ func (k Keeper) ApplyExitPoolStateChange(
 	}
 
 	if exitCoins.Len() == 1 {
+		// swapInfos contains the internal swaps without fees
 		types.EmitSwapsInfoEvent(ctx, pool.PoolId, exiter.String(), swapInfos)
 	}
 
