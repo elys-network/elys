@@ -151,6 +151,7 @@ func (p Pool) CalcExitPool(
 		}
 
 		swapInfo := NewSwapInfo(swappedWeightedTokenIn, tokenOut)
+		swapInfos = append(swapInfos, swapInfo)
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
@@ -198,16 +199,10 @@ func (p Pool) CalcExitPool(
 
 			takerFeesFinal = takerFees.Mul(initialWeightIn)
 
-			swapInfo.TokenOut.Amount = osmomath.BigDecFromSDKInt(swapInfo.TokenOut.Amount).
-				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
-				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal))).Dec().RoundInt()
-
 			tokenOutAmount = (oracleOutAmount.
 				Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
 				Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFeesFinal)))).Dec().RoundInt()
 		}
-
-		swapInfos = append(swapInfos, swapInfo)
 
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, swapInfos, nil
 	}

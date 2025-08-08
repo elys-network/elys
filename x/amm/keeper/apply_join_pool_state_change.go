@@ -176,6 +176,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 
 	if joinCoins.Len() == 1 {
+		// swapInfos contains the internal swaps without fees
 		types.EmitSwapsInfoEvent(ctx, pool.PoolId, joiner.String(), swapInfos)
 	}
 

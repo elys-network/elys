@@ -70,7 +70,7 @@ func (k Keeper) JoinPoolNoSwap(
 		params := k.GetParams(ctx)
 		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, virtualSwaps, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
+		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, swapInfos, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
 		}
@@ -83,7 +83,7 @@ func (k Keeper) JoinPoolNoSwap(
 		// slippage will be 0 as tokensIn.Len() != 1
 		slippageCoins := sdk.Coins{}
 
-		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins, virtualSwaps)
+		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins, swapInfos)
 		if err != nil {
 			return nil, sdkmath.Int{}, err
 		}
@@ -100,7 +100,7 @@ func (k Keeper) JoinPoolNoSwap(
 	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, virtualSwaps, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, swapInfos, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
@@ -148,7 +148,7 @@ func (k Keeper) JoinPoolNoSwap(
 			shareOutAmount, sharesOut))
 	}
 
-	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins, virtualSwaps)
+	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins, swapInfos)
 	if err != nil {
 		return nil, sdkmath.Int{}, err
 	}
