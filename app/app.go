@@ -59,6 +59,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/v7/app/ante"
+	clobabci "github.com/elys-network/elys/v7/x/clob/abci"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -324,20 +325,38 @@ func NewElysApp(
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	//proposalHandler := oracleabci.NewProposalHandler(
+	// Set up CLOB vote extensions and proposal handlers
+	clobProposalHandler := clobabci.NewProposalHandler(
+		app.Logger(),
+		app.ClobKeeper,
+		txConfig.TxEncoder(),
+		txConfig.TxDecoder(),
+	)
+	app.SetPrepareProposal(clobProposalHandler.PrepareProposalHandler())
+	app.SetProcessProposal(clobProposalHandler.ProcessProposalHandler())
+
+	clobVoteExtensionsHandler := clobabci.NewVoteExtensionHandler(
+		app.Logger(),
+		app.ClobKeeper,
+	)
+	app.SetExtendVoteHandler(clobVoteExtensionsHandler.ExtendVoteHandler())
+	app.SetVerifyVoteExtensionHandler(clobVoteExtensionsHandler.VerifyVoteExtensionHandler())
+
+	// Uncomment to enable oracle vote extensions as well
+	//oracleProposalHandler := oracleabci.NewProposalHandler(
 	//	app.Logger(),
 	//	app.OracleKeeper,
 	//	app.StakingKeeper,
 	//)
-	//app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
-	//app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
+	//app.SetPrepareProposal(oracleProposalHandler.PrepareProposalHandler())
+	//app.SetProcessProposal(oracleProposalHandler.ProcessProposalHandler())
 	//
-	//voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
+	//oracleVoteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
 	//	app.Logger(),
 	//	app.OracleKeeper,
 	//)
-	//app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
-	//app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
+	//app.SetExtendVoteHandler(oracleVoteExtensionsHandler.ExtendVoteHandler())
+	//app.SetVerifyVoteExtensionHandler(oracleVoteExtensionsHandler.VerifyVoteExtensionHandler())
 
 	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)

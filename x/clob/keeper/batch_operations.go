@@ -22,6 +22,13 @@ func (k Keeper) BatchDeleteOrders(ctx sdk.Context, keys []types.PerpetualOrderOw
 
 		// Delete the order owner
 		k.DeleteOrderOwner(ctx, key)
+
+		// Remove from memory orderbook
+		k.memoryOrderBook.RemoveOrder(
+			key.OrderId.MarketId,
+			key.OrderId.Counter,
+			types.IsBuy(key.OrderId.OrderType),
+		)
 	}
 
 	// Clear any cached market data for affected markets

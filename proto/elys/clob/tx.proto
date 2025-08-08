@@ -36,6 +36,9 @@ service Msg {
 
   rpc MatchAndExecuteOrders(MsgMatchAndExecuteOrders)
       returns (MsgMatchAndExecuteOrdersResponse);
+
+  rpc ExecuteMatchedOrders(MsgExecuteMatchedOrders)
+      returns (MsgExecuteMatchedOrdersResponse);
 }
 
 message MsgUpdateParams {
@@ -182,3 +185,38 @@ message MsgMatchAndExecuteOrders {
 }
 
 message MsgMatchAndExecuteOrdersResponse {}
+
+message MatchedOrderExecution {
+  uint64 buy_order_counter = 1;
+  uint64 sell_order_counter = 2;
+  uint64 market_id = 3;
+  string price = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string quantity = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string buyer = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string seller = 7 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 buyer_sub_account_id = 8;
+  uint64 seller_sub_account_id = 9;
+}
+
+message MsgExecuteMatchedOrders {
+  option (amino.name) = "clob/MsgExecuteMatchedOrders";
+  repeated MatchedOrderExecution matched_orders = 2
+      [ (gogoproto.nullable) = false ];
+}
+
+message MsgExecuteMatchedOrdersResponse {
+  uint64 orders_executed = 1;
+  string total_volume = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

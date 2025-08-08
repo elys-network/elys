@@ -8136,6 +8136,1820 @@ func (x *fastReflection_MsgMatchAndExecuteOrdersResponse) ProtoMethods() *protoi
 	}
 }
 
+var (
+	md_MatchedOrderExecution                       protoreflect.MessageDescriptor
+	fd_MatchedOrderExecution_buy_order_counter     protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_sell_order_counter    protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_market_id             protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_price                 protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_quantity              protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_buyer                 protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_seller                protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_buyer_sub_account_id  protoreflect.FieldDescriptor
+	fd_MatchedOrderExecution_seller_sub_account_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_clob_tx_proto_init()
+	md_MatchedOrderExecution = File_elys_clob_tx_proto.Messages().ByName("MatchedOrderExecution")
+	fd_MatchedOrderExecution_buy_order_counter = md_MatchedOrderExecution.Fields().ByName("buy_order_counter")
+	fd_MatchedOrderExecution_sell_order_counter = md_MatchedOrderExecution.Fields().ByName("sell_order_counter")
+	fd_MatchedOrderExecution_market_id = md_MatchedOrderExecution.Fields().ByName("market_id")
+	fd_MatchedOrderExecution_price = md_MatchedOrderExecution.Fields().ByName("price")
+	fd_MatchedOrderExecution_quantity = md_MatchedOrderExecution.Fields().ByName("quantity")
+	fd_MatchedOrderExecution_buyer = md_MatchedOrderExecution.Fields().ByName("buyer")
+	fd_MatchedOrderExecution_seller = md_MatchedOrderExecution.Fields().ByName("seller")
+	fd_MatchedOrderExecution_buyer_sub_account_id = md_MatchedOrderExecution.Fields().ByName("buyer_sub_account_id")
+	fd_MatchedOrderExecution_seller_sub_account_id = md_MatchedOrderExecution.Fields().ByName("seller_sub_account_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_MatchedOrderExecution)(nil)
+
+type fastReflection_MatchedOrderExecution MatchedOrderExecution
+
+func (x *MatchedOrderExecution) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MatchedOrderExecution)(x)
+}
+
+func (x *MatchedOrderExecution) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_clob_tx_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MatchedOrderExecution_messageType fastReflection_MatchedOrderExecution_messageType
+var _ protoreflect.MessageType = fastReflection_MatchedOrderExecution_messageType{}
+
+type fastReflection_MatchedOrderExecution_messageType struct{}
+
+func (x fastReflection_MatchedOrderExecution_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MatchedOrderExecution)(nil)
+}
+func (x fastReflection_MatchedOrderExecution_messageType) New() protoreflect.Message {
+	return new(fastReflection_MatchedOrderExecution)
+}
+func (x fastReflection_MatchedOrderExecution_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MatchedOrderExecution
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MatchedOrderExecution) Descriptor() protoreflect.MessageDescriptor {
+	return md_MatchedOrderExecution
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MatchedOrderExecution) Type() protoreflect.MessageType {
+	return _fastReflection_MatchedOrderExecution_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MatchedOrderExecution) New() protoreflect.Message {
+	return new(fastReflection_MatchedOrderExecution)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MatchedOrderExecution) Interface() protoreflect.ProtoMessage {
+	return (*MatchedOrderExecution)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MatchedOrderExecution) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.BuyOrderCounter != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.BuyOrderCounter)
+		if !f(fd_MatchedOrderExecution_buy_order_counter, value) {
+			return
+		}
+	}
+	if x.SellOrderCounter != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.SellOrderCounter)
+		if !f(fd_MatchedOrderExecution_sell_order_counter, value) {
+			return
+		}
+	}
+	if x.MarketId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.MarketId)
+		if !f(fd_MatchedOrderExecution_market_id, value) {
+			return
+		}
+	}
+	if x.Price != "" {
+		value := protoreflect.ValueOfString(x.Price)
+		if !f(fd_MatchedOrderExecution_price, value) {
+			return
+		}
+	}
+	if x.Quantity != "" {
+		value := protoreflect.ValueOfString(x.Quantity)
+		if !f(fd_MatchedOrderExecution_quantity, value) {
+			return
+		}
+	}
+	if x.Buyer != "" {
+		value := protoreflect.ValueOfString(x.Buyer)
+		if !f(fd_MatchedOrderExecution_buyer, value) {
+			return
+		}
+	}
+	if x.Seller != "" {
+		value := protoreflect.ValueOfString(x.Seller)
+		if !f(fd_MatchedOrderExecution_seller, value) {
+			return
+		}
+	}
+	if x.BuyerSubAccountId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.BuyerSubAccountId)
+		if !f(fd_MatchedOrderExecution_buyer_sub_account_id, value) {
+			return
+		}
+	}
+	if x.SellerSubAccountId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.SellerSubAccountId)
+		if !f(fd_MatchedOrderExecution_seller_sub_account_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MatchedOrderExecution) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		return x.BuyOrderCounter != uint64(0)
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		return x.SellOrderCounter != uint64(0)
+	case "elys.clob.MatchedOrderExecution.market_id":
+		return x.MarketId != uint64(0)
+	case "elys.clob.MatchedOrderExecution.price":
+		return x.Price != ""
+	case "elys.clob.MatchedOrderExecution.quantity":
+		return x.Quantity != ""
+	case "elys.clob.MatchedOrderExecution.buyer":
+		return x.Buyer != ""
+	case "elys.clob.MatchedOrderExecution.seller":
+		return x.Seller != ""
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		return x.BuyerSubAccountId != uint64(0)
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		return x.SellerSubAccountId != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MatchedOrderExecution) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		x.BuyOrderCounter = uint64(0)
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		x.SellOrderCounter = uint64(0)
+	case "elys.clob.MatchedOrderExecution.market_id":
+		x.MarketId = uint64(0)
+	case "elys.clob.MatchedOrderExecution.price":
+		x.Price = ""
+	case "elys.clob.MatchedOrderExecution.quantity":
+		x.Quantity = ""
+	case "elys.clob.MatchedOrderExecution.buyer":
+		x.Buyer = ""
+	case "elys.clob.MatchedOrderExecution.seller":
+		x.Seller = ""
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		x.BuyerSubAccountId = uint64(0)
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		x.SellerSubAccountId = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MatchedOrderExecution) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		value := x.BuyOrderCounter
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		value := x.SellOrderCounter
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.MatchedOrderExecution.market_id":
+		value := x.MarketId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.MatchedOrderExecution.price":
+		value := x.Price
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.MatchedOrderExecution.quantity":
+		value := x.Quantity
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.MatchedOrderExecution.buyer":
+		value := x.Buyer
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.MatchedOrderExecution.seller":
+		value := x.Seller
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		value := x.BuyerSubAccountId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		value := x.SellerSubAccountId
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MatchedOrderExecution) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		x.BuyOrderCounter = value.Uint()
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		x.SellOrderCounter = value.Uint()
+	case "elys.clob.MatchedOrderExecution.market_id":
+		x.MarketId = value.Uint()
+	case "elys.clob.MatchedOrderExecution.price":
+		x.Price = value.Interface().(string)
+	case "elys.clob.MatchedOrderExecution.quantity":
+		x.Quantity = value.Interface().(string)
+	case "elys.clob.MatchedOrderExecution.buyer":
+		x.Buyer = value.Interface().(string)
+	case "elys.clob.MatchedOrderExecution.seller":
+		x.Seller = value.Interface().(string)
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		x.BuyerSubAccountId = value.Uint()
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		x.SellerSubAccountId = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MatchedOrderExecution) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		panic(fmt.Errorf("field buy_order_counter of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		panic(fmt.Errorf("field sell_order_counter of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.market_id":
+		panic(fmt.Errorf("field market_id of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.price":
+		panic(fmt.Errorf("field price of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.quantity":
+		panic(fmt.Errorf("field quantity of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.buyer":
+		panic(fmt.Errorf("field buyer of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.seller":
+		panic(fmt.Errorf("field seller of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		panic(fmt.Errorf("field buyer_sub_account_id of message elys.clob.MatchedOrderExecution is not mutable"))
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		panic(fmt.Errorf("field seller_sub_account_id of message elys.clob.MatchedOrderExecution is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MatchedOrderExecution) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MatchedOrderExecution.buy_order_counter":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.MatchedOrderExecution.sell_order_counter":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.MatchedOrderExecution.market_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.MatchedOrderExecution.price":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.MatchedOrderExecution.quantity":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.MatchedOrderExecution.buyer":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.MatchedOrderExecution.seller":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.MatchedOrderExecution.buyer_sub_account_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.MatchedOrderExecution.seller_sub_account_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MatchedOrderExecution"))
+		}
+		panic(fmt.Errorf("message elys.clob.MatchedOrderExecution does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MatchedOrderExecution) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.clob.MatchedOrderExecution", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MatchedOrderExecution) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MatchedOrderExecution) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MatchedOrderExecution) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MatchedOrderExecution) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MatchedOrderExecution)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.BuyOrderCounter != 0 {
+			n += 1 + runtime.Sov(uint64(x.BuyOrderCounter))
+		}
+		if x.SellOrderCounter != 0 {
+			n += 1 + runtime.Sov(uint64(x.SellOrderCounter))
+		}
+		if x.MarketId != 0 {
+			n += 1 + runtime.Sov(uint64(x.MarketId))
+		}
+		l = len(x.Price)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Quantity)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Buyer)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Seller)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.BuyerSubAccountId != 0 {
+			n += 1 + runtime.Sov(uint64(x.BuyerSubAccountId))
+		}
+		if x.SellerSubAccountId != 0 {
+			n += 1 + runtime.Sov(uint64(x.SellerSubAccountId))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MatchedOrderExecution)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.SellerSubAccountId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.SellerSubAccountId))
+			i--
+			dAtA[i] = 0x48
+		}
+		if x.BuyerSubAccountId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.BuyerSubAccountId))
+			i--
+			dAtA[i] = 0x40
+		}
+		if len(x.Seller) > 0 {
+			i -= len(x.Seller)
+			copy(dAtA[i:], x.Seller)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Seller)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.Buyer) > 0 {
+			i -= len(x.Buyer)
+			copy(dAtA[i:], x.Buyer)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Buyer)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.Quantity) > 0 {
+			i -= len(x.Quantity)
+			copy(dAtA[i:], x.Quantity)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Quantity)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.Price) > 0 {
+			i -= len(x.Price)
+			copy(dAtA[i:], x.Price)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Price)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if x.MarketId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.MarketId))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.SellOrderCounter != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.SellOrderCounter))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.BuyOrderCounter != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.BuyOrderCounter))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MatchedOrderExecution)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MatchedOrderExecution: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MatchedOrderExecution: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BuyOrderCounter", wireType)
+				}
+				x.BuyOrderCounter = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.BuyOrderCounter |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SellOrderCounter", wireType)
+				}
+				x.SellOrderCounter = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.SellOrderCounter |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MarketId", wireType)
+				}
+				x.MarketId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.MarketId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Price", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Price = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Quantity", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Quantity = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Buyer", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Buyer = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Seller", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Seller = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BuyerSubAccountId", wireType)
+				}
+				x.BuyerSubAccountId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.BuyerSubAccountId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SellerSubAccountId", wireType)
+				}
+				x.SellerSubAccountId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.SellerSubAccountId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_MsgExecuteMatchedOrders_2_list)(nil)
+
+type _MsgExecuteMatchedOrders_2_list struct {
+	list *[]*MatchedOrderExecution
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*MatchedOrderExecution)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*MatchedOrderExecution)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) AppendMutable() protoreflect.Value {
+	v := new(MatchedOrderExecution)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) NewElement() protoreflect.Value {
+	v := new(MatchedOrderExecution)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MsgExecuteMatchedOrders_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MsgExecuteMatchedOrders                protoreflect.MessageDescriptor
+	fd_MsgExecuteMatchedOrders_matched_orders protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_clob_tx_proto_init()
+	md_MsgExecuteMatchedOrders = File_elys_clob_tx_proto.Messages().ByName("MsgExecuteMatchedOrders")
+	fd_MsgExecuteMatchedOrders_matched_orders = md_MsgExecuteMatchedOrders.Fields().ByName("matched_orders")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgExecuteMatchedOrders)(nil)
+
+type fastReflection_MsgExecuteMatchedOrders MsgExecuteMatchedOrders
+
+func (x *MsgExecuteMatchedOrders) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgExecuteMatchedOrders)(x)
+}
+
+func (x *MsgExecuteMatchedOrders) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_clob_tx_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgExecuteMatchedOrders_messageType fastReflection_MsgExecuteMatchedOrders_messageType
+var _ protoreflect.MessageType = fastReflection_MsgExecuteMatchedOrders_messageType{}
+
+type fastReflection_MsgExecuteMatchedOrders_messageType struct{}
+
+func (x fastReflection_MsgExecuteMatchedOrders_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgExecuteMatchedOrders)(nil)
+}
+func (x fastReflection_MsgExecuteMatchedOrders_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgExecuteMatchedOrders)
+}
+func (x fastReflection_MsgExecuteMatchedOrders_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgExecuteMatchedOrders
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgExecuteMatchedOrders) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgExecuteMatchedOrders
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgExecuteMatchedOrders) Type() protoreflect.MessageType {
+	return _fastReflection_MsgExecuteMatchedOrders_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgExecuteMatchedOrders) New() protoreflect.Message {
+	return new(fastReflection_MsgExecuteMatchedOrders)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgExecuteMatchedOrders) Interface() protoreflect.ProtoMessage {
+	return (*MsgExecuteMatchedOrders)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgExecuteMatchedOrders) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.MatchedOrders) != 0 {
+		value := protoreflect.ValueOfList(&_MsgExecuteMatchedOrders_2_list{list: &x.MatchedOrders})
+		if !f(fd_MsgExecuteMatchedOrders_matched_orders, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgExecuteMatchedOrders) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		return len(x.MatchedOrders) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrders) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		x.MatchedOrders = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgExecuteMatchedOrders) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		if len(x.MatchedOrders) == 0 {
+			return protoreflect.ValueOfList(&_MsgExecuteMatchedOrders_2_list{})
+		}
+		listValue := &_MsgExecuteMatchedOrders_2_list{list: &x.MatchedOrders}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrders) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		lv := value.List()
+		clv := lv.(*_MsgExecuteMatchedOrders_2_list)
+		x.MatchedOrders = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrders) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		if x.MatchedOrders == nil {
+			x.MatchedOrders = []*MatchedOrderExecution{}
+		}
+		value := &_MsgExecuteMatchedOrders_2_list{list: &x.MatchedOrders}
+		return protoreflect.ValueOfList(value)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgExecuteMatchedOrders) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrders.matched_orders":
+		list := []*MatchedOrderExecution{}
+		return protoreflect.ValueOfList(&_MsgExecuteMatchedOrders_2_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrders"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrders does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgExecuteMatchedOrders) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.clob.MsgExecuteMatchedOrders", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgExecuteMatchedOrders) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrders) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgExecuteMatchedOrders) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgExecuteMatchedOrders) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrders)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.MatchedOrders) > 0 {
+			for _, e := range x.MatchedOrders {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrders)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MatchedOrders) > 0 {
+			for iNdEx := len(x.MatchedOrders) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.MatchedOrders[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x12
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrders)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgExecuteMatchedOrders: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgExecuteMatchedOrders: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MatchedOrders", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MatchedOrders = append(x.MatchedOrders, &MatchedOrderExecution{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MatchedOrders[len(x.MatchedOrders)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_MsgExecuteMatchedOrdersResponse                 protoreflect.MessageDescriptor
+	fd_MsgExecuteMatchedOrdersResponse_orders_executed protoreflect.FieldDescriptor
+	fd_MsgExecuteMatchedOrdersResponse_total_volume    protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_clob_tx_proto_init()
+	md_MsgExecuteMatchedOrdersResponse = File_elys_clob_tx_proto.Messages().ByName("MsgExecuteMatchedOrdersResponse")
+	fd_MsgExecuteMatchedOrdersResponse_orders_executed = md_MsgExecuteMatchedOrdersResponse.Fields().ByName("orders_executed")
+	fd_MsgExecuteMatchedOrdersResponse_total_volume = md_MsgExecuteMatchedOrdersResponse.Fields().ByName("total_volume")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgExecuteMatchedOrdersResponse)(nil)
+
+type fastReflection_MsgExecuteMatchedOrdersResponse MsgExecuteMatchedOrdersResponse
+
+func (x *MsgExecuteMatchedOrdersResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgExecuteMatchedOrdersResponse)(x)
+}
+
+func (x *MsgExecuteMatchedOrdersResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_clob_tx_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgExecuteMatchedOrdersResponse_messageType fastReflection_MsgExecuteMatchedOrdersResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgExecuteMatchedOrdersResponse_messageType{}
+
+type fastReflection_MsgExecuteMatchedOrdersResponse_messageType struct{}
+
+func (x fastReflection_MsgExecuteMatchedOrdersResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgExecuteMatchedOrdersResponse)(nil)
+}
+func (x fastReflection_MsgExecuteMatchedOrdersResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgExecuteMatchedOrdersResponse)
+}
+func (x fastReflection_MsgExecuteMatchedOrdersResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgExecuteMatchedOrdersResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgExecuteMatchedOrdersResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgExecuteMatchedOrdersResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgExecuteMatchedOrdersResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgExecuteMatchedOrdersResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.OrdersExecuted != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.OrdersExecuted)
+		if !f(fd_MsgExecuteMatchedOrdersResponse_orders_executed, value) {
+			return
+		}
+	}
+	if x.TotalVolume != "" {
+		value := protoreflect.ValueOfString(x.TotalVolume)
+		if !f(fd_MsgExecuteMatchedOrdersResponse_total_volume, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		return x.OrdersExecuted != uint64(0)
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		return x.TotalVolume != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		x.OrdersExecuted = uint64(0)
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		x.TotalVolume = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		value := x.OrdersExecuted
+		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		value := x.TotalVolume
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		x.OrdersExecuted = value.Uint()
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		x.TotalVolume = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		panic(fmt.Errorf("field orders_executed of message elys.clob.MsgExecuteMatchedOrdersResponse is not mutable"))
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		panic(fmt.Errorf("field total_volume of message elys.clob.MsgExecuteMatchedOrdersResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.orders_executed":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.MsgExecuteMatchedOrdersResponse.total_volume":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.MsgExecuteMatchedOrdersResponse"))
+		}
+		panic(fmt.Errorf("message elys.clob.MsgExecuteMatchedOrdersResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.clob.MsgExecuteMatchedOrdersResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgExecuteMatchedOrdersResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrdersResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.OrdersExecuted != 0 {
+			n += 1 + runtime.Sov(uint64(x.OrdersExecuted))
+		}
+		l = len(x.TotalVolume)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrdersResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TotalVolume) > 0 {
+			i -= len(x.TotalVolume)
+			copy(dAtA[i:], x.TotalVolume)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TotalVolume)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.OrdersExecuted != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrdersExecuted))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgExecuteMatchedOrdersResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgExecuteMatchedOrdersResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgExecuteMatchedOrdersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrdersExecuted", wireType)
+				}
+				x.OrdersExecuted = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.OrdersExecuted |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalVolume", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TotalVolume = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -8869,6 +10683,183 @@ func (*MsgMatchAndExecuteOrdersResponse) Descriptor() ([]byte, []int) {
 	return file_elys_clob_tx_proto_rawDescGZIP(), []int{15}
 }
 
+type MatchedOrderExecution struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	BuyOrderCounter    uint64 `protobuf:"varint,1,opt,name=buy_order_counter,json=buyOrderCounter,proto3" json:"buy_order_counter,omitempty"`
+	SellOrderCounter   uint64 `protobuf:"varint,2,opt,name=sell_order_counter,json=sellOrderCounter,proto3" json:"sell_order_counter,omitempty"`
+	MarketId           uint64 `protobuf:"varint,3,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	Price              string `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
+	Quantity           string `protobuf:"bytes,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Buyer              string `protobuf:"bytes,6,opt,name=buyer,proto3" json:"buyer,omitempty"`
+	Seller             string `protobuf:"bytes,7,opt,name=seller,proto3" json:"seller,omitempty"`
+	BuyerSubAccountId  uint64 `protobuf:"varint,8,opt,name=buyer_sub_account_id,json=buyerSubAccountId,proto3" json:"buyer_sub_account_id,omitempty"`
+	SellerSubAccountId uint64 `protobuf:"varint,9,opt,name=seller_sub_account_id,json=sellerSubAccountId,proto3" json:"seller_sub_account_id,omitempty"`
+}
+
+func (x *MatchedOrderExecution) Reset() {
+	*x = MatchedOrderExecution{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_clob_tx_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MatchedOrderExecution) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MatchedOrderExecution) ProtoMessage() {}
+
+// Deprecated: Use MatchedOrderExecution.ProtoReflect.Descriptor instead.
+func (*MatchedOrderExecution) Descriptor() ([]byte, []int) {
+	return file_elys_clob_tx_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *MatchedOrderExecution) GetBuyOrderCounter() uint64 {
+	if x != nil {
+		return x.BuyOrderCounter
+	}
+	return 0
+}
+
+func (x *MatchedOrderExecution) GetSellOrderCounter() uint64 {
+	if x != nil {
+		return x.SellOrderCounter
+	}
+	return 0
+}
+
+func (x *MatchedOrderExecution) GetMarketId() uint64 {
+	if x != nil {
+		return x.MarketId
+	}
+	return 0
+}
+
+func (x *MatchedOrderExecution) GetPrice() string {
+	if x != nil {
+		return x.Price
+	}
+	return ""
+}
+
+func (x *MatchedOrderExecution) GetQuantity() string {
+	if x != nil {
+		return x.Quantity
+	}
+	return ""
+}
+
+func (x *MatchedOrderExecution) GetBuyer() string {
+	if x != nil {
+		return x.Buyer
+	}
+	return ""
+}
+
+func (x *MatchedOrderExecution) GetSeller() string {
+	if x != nil {
+		return x.Seller
+	}
+	return ""
+}
+
+func (x *MatchedOrderExecution) GetBuyerSubAccountId() uint64 {
+	if x != nil {
+		return x.BuyerSubAccountId
+	}
+	return 0
+}
+
+func (x *MatchedOrderExecution) GetSellerSubAccountId() uint64 {
+	if x != nil {
+		return x.SellerSubAccountId
+	}
+	return 0
+}
+
+type MsgExecuteMatchedOrders struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	MatchedOrders []*MatchedOrderExecution `protobuf:"bytes,2,rep,name=matched_orders,json=matchedOrders,proto3" json:"matched_orders,omitempty"`
+}
+
+func (x *MsgExecuteMatchedOrders) Reset() {
+	*x = MsgExecuteMatchedOrders{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_clob_tx_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgExecuteMatchedOrders) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgExecuteMatchedOrders) ProtoMessage() {}
+
+// Deprecated: Use MsgExecuteMatchedOrders.ProtoReflect.Descriptor instead.
+func (*MsgExecuteMatchedOrders) Descriptor() ([]byte, []int) {
+	return file_elys_clob_tx_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *MsgExecuteMatchedOrders) GetMatchedOrders() []*MatchedOrderExecution {
+	if x != nil {
+		return x.MatchedOrders
+	}
+	return nil
+}
+
+type MsgExecuteMatchedOrdersResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrdersExecuted uint64 `protobuf:"varint,1,opt,name=orders_executed,json=ordersExecuted,proto3" json:"orders_executed,omitempty"`
+	TotalVolume    string `protobuf:"bytes,2,opt,name=total_volume,json=totalVolume,proto3" json:"total_volume,omitempty"`
+}
+
+func (x *MsgExecuteMatchedOrdersResponse) Reset() {
+	*x = MsgExecuteMatchedOrdersResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_clob_tx_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgExecuteMatchedOrdersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgExecuteMatchedOrdersResponse) ProtoMessage() {}
+
+// Deprecated: Use MsgExecuteMatchedOrdersResponse.ProtoReflect.Descriptor instead.
+func (*MsgExecuteMatchedOrdersResponse) Descriptor() ([]byte, []int) {
+	return file_elys_clob_tx_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *MsgExecuteMatchedOrdersResponse) GetOrdersExecuted() uint64 {
+	if x != nil {
+		return x.OrdersExecuted
+	}
+	return 0
+}
+
+func (x *MsgExecuteMatchedOrdersResponse) GetTotalVolume() string {
+	if x != nil {
+		return x.TotalVolume
+	}
+	return ""
+}
+
 var File_elys_clob_tx_proto protoreflect.FileDescriptor
 
 var file_elys_clob_tx_proto_rawDesc = []byte{
@@ -9068,7 +11059,57 @@ var file_elys_clob_tx_proto_rawDesc = []byte{
 	0x68, 0x41, 0x6e, 0x64, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72,
 	0x73, 0x22, 0x22, 0x0a, 0x20, 0x4d, 0x73, 0x67, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x41, 0x6e, 0x64,
 	0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xcc, 0x05, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x4e, 0x0a,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xec, 0x03, 0x0a, 0x15, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65,
+	0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x2a, 0x0a, 0x11, 0x62, 0x75, 0x79, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0f, 0x62, 0x75, 0x79, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x2c, 0x0a, 0x12, 0x73,
+	0x65, 0x6c, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65,
+	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x73, 0x65, 0x6c, 0x6c, 0x4f, 0x72, 0x64,
+	0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72,
+	0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61,
+	0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x47, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12,
+	0x4d, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x2e,
+	0x0a, 0x05, 0x62, 0x75, 0x79, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x62, 0x75, 0x79, 0x65, 0x72, 0x12, 0x30,
+	0x0a, 0x06, 0x73, 0x65, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
+	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x73, 0x65, 0x6c, 0x6c, 0x65, 0x72,
+	0x12, 0x2f, 0x0a, 0x14, 0x62, 0x75, 0x79, 0x65, 0x72, 0x5f, 0x73, 0x75, 0x62, 0x5f, 0x61, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x11,
+	0x62, 0x75, 0x79, 0x65, 0x72, 0x53, 0x75, 0x62, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49,
+	0x64, 0x12, 0x31, 0x0a, 0x15, 0x73, 0x65, 0x6c, 0x6c, 0x65, 0x72, 0x5f, 0x73, 0x75, 0x62, 0x5f,
+	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x09, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x12, 0x73, 0x65, 0x6c, 0x6c, 0x65, 0x72, 0x53, 0x75, 0x62, 0x41, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x49, 0x64, 0x22, 0x8b, 0x01, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63,
+	0x75, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x12, 0x4d, 0x0a, 0x0e, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x5f, 0x6f, 0x72, 0x64, 0x65,
+	0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0d, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x3a,
+	0x21, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x63, 0x6c, 0x6f, 0x62, 0x2f, 0x4d, 0x73, 0x67, 0x45, 0x78,
+	0x65, 0x63, 0x75, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x73, 0x22, 0xa0, 0x01, 0x0a, 0x1f, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74,
+	0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x5f, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x0e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x64, 0x12,
+	0x54, 0x0a, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56,
+	0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x32, 0xb4, 0x06, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x4e, 0x0a,
 	0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73,
@@ -9112,17 +11153,24 @@ var file_elys_clob_tx_proto_rawDesc = []byte{
 	0x41, 0x6e, 0x64, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
 	0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x4d, 0x73, 0x67,
 	0x4d, 0x61, 0x74, 0x63, 0x68, 0x41, 0x6e, 0x64, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4f,
-	0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80,
-	0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x8c, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x2d, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x76, 0x37, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62,
-	0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c,
-	0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02,
-	0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43,
-	0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x66, 0x0a,
+	0x14, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f,
+	0x62, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63,
+	0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x4d, 0x73, 0x67, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65,
+	0x4d, 0x61, 0x74, 0x63, 0x68, 0x65, 0x64, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x8c, 0x01, 0x0a,
+	0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x07,
+	0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2d, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
+	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x37, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02,
+	0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79,
+	0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c,
+	0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -9137,7 +11185,7 @@ func file_elys_clob_tx_proto_rawDescGZIP() []byte {
 	return file_elys_clob_tx_proto_rawDescData
 }
 
-var file_elys_clob_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_elys_clob_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_elys_clob_tx_proto_goTypes = []interface{}{
 	(*MsgUpdateParams)(nil),                  // 0: elys.clob.MsgUpdateParams
 	(*MsgUpdateParamsResponse)(nil),          // 1: elys.clob.MsgUpdateParamsResponse
@@ -9155,39 +11203,45 @@ var file_elys_clob_tx_proto_goTypes = []interface{}{
 	(*MsgLiquidatePositionsResponse)(nil),    // 13: elys.clob.MsgLiquidatePositionsResponse
 	(*MsgMatchAndExecuteOrders)(nil),         // 14: elys.clob.MsgMatchAndExecuteOrders
 	(*MsgMatchAndExecuteOrdersResponse)(nil), // 15: elys.clob.MsgMatchAndExecuteOrdersResponse
-	(*Params)(nil),                           // 16: elys.clob.Params
-	(*v1beta1.Coin)(nil),                     // 17: cosmos.base.v1beta1.Coin
-	(OrderType)(0),                           // 18: elys.clob.OrderType
-	(*LiquidatePosition)(nil),                // 19: elys.clob.LiquidatePosition
+	(*MatchedOrderExecution)(nil),            // 16: elys.clob.MatchedOrderExecution
+	(*MsgExecuteMatchedOrders)(nil),          // 17: elys.clob.MsgExecuteMatchedOrders
+	(*MsgExecuteMatchedOrdersResponse)(nil),  // 18: elys.clob.MsgExecuteMatchedOrdersResponse
+	(*Params)(nil),                           // 19: elys.clob.Params
+	(*v1beta1.Coin)(nil),                     // 20: cosmos.base.v1beta1.Coin
+	(OrderType)(0),                           // 21: elys.clob.OrderType
+	(*LiquidatePosition)(nil),                // 22: elys.clob.LiquidatePosition
 }
 var file_elys_clob_tx_proto_depIdxs = []int32{
-	16, // 0: elys.clob.MsgUpdateParams.params:type_name -> elys.clob.Params
-	17, // 1: elys.clob.MsgDeposit.coin:type_name -> cosmos.base.v1beta1.Coin
-	17, // 2: elys.clob.MsgWithdraw.coin:type_name -> cosmos.base.v1beta1.Coin
-	18, // 3: elys.clob.MsgPlaceLimitOrder.order_type:type_name -> elys.clob.OrderType
-	18, // 4: elys.clob.MsgPlaceMarketOrder.order_type:type_name -> elys.clob.OrderType
-	19, // 5: elys.clob.MsgLiquidatePositions.positions:type_name -> elys.clob.LiquidatePosition
-	0,  // 6: elys.clob.Msg.UpdateParams:input_type -> elys.clob.MsgUpdateParams
-	2,  // 7: elys.clob.Msg.Deposit:input_type -> elys.clob.MsgDeposit
-	4,  // 8: elys.clob.Msg.Withdraw:input_type -> elys.clob.MsgWithdraw
-	6,  // 9: elys.clob.Msg.CreatePerpetualMarket:input_type -> elys.clob.MsgCreatPerpetualMarket
-	8,  // 10: elys.clob.Msg.PlaceLimitOrder:input_type -> elys.clob.MsgPlaceLimitOrder
-	10, // 11: elys.clob.Msg.PlaceMarketOrder:input_type -> elys.clob.MsgPlaceMarketOrder
-	12, // 12: elys.clob.Msg.LiquidatePositions:input_type -> elys.clob.MsgLiquidatePositions
-	14, // 13: elys.clob.Msg.MatchAndExecuteOrders:input_type -> elys.clob.MsgMatchAndExecuteOrders
-	1,  // 14: elys.clob.Msg.UpdateParams:output_type -> elys.clob.MsgUpdateParamsResponse
-	3,  // 15: elys.clob.Msg.Deposit:output_type -> elys.clob.MsgDepositResponse
-	5,  // 16: elys.clob.Msg.Withdraw:output_type -> elys.clob.MsgWithdrawResponse
-	7,  // 17: elys.clob.Msg.CreatePerpetualMarket:output_type -> elys.clob.MsgCreatPerpetualMarketResponse
-	9,  // 18: elys.clob.Msg.PlaceLimitOrder:output_type -> elys.clob.MsgPlaceLimitOrderResponse
-	11, // 19: elys.clob.Msg.PlaceMarketOrder:output_type -> elys.clob.MsgPlaceMarketOrderResponse
-	13, // 20: elys.clob.Msg.LiquidatePositions:output_type -> elys.clob.MsgLiquidatePositionsResponse
-	15, // 21: elys.clob.Msg.MatchAndExecuteOrders:output_type -> elys.clob.MsgMatchAndExecuteOrdersResponse
-	14, // [14:22] is the sub-list for method output_type
-	6,  // [6:14] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	19, // 0: elys.clob.MsgUpdateParams.params:type_name -> elys.clob.Params
+	20, // 1: elys.clob.MsgDeposit.coin:type_name -> cosmos.base.v1beta1.Coin
+	20, // 2: elys.clob.MsgWithdraw.coin:type_name -> cosmos.base.v1beta1.Coin
+	21, // 3: elys.clob.MsgPlaceLimitOrder.order_type:type_name -> elys.clob.OrderType
+	21, // 4: elys.clob.MsgPlaceMarketOrder.order_type:type_name -> elys.clob.OrderType
+	22, // 5: elys.clob.MsgLiquidatePositions.positions:type_name -> elys.clob.LiquidatePosition
+	16, // 6: elys.clob.MsgExecuteMatchedOrders.matched_orders:type_name -> elys.clob.MatchedOrderExecution
+	0,  // 7: elys.clob.Msg.UpdateParams:input_type -> elys.clob.MsgUpdateParams
+	2,  // 8: elys.clob.Msg.Deposit:input_type -> elys.clob.MsgDeposit
+	4,  // 9: elys.clob.Msg.Withdraw:input_type -> elys.clob.MsgWithdraw
+	6,  // 10: elys.clob.Msg.CreatePerpetualMarket:input_type -> elys.clob.MsgCreatPerpetualMarket
+	8,  // 11: elys.clob.Msg.PlaceLimitOrder:input_type -> elys.clob.MsgPlaceLimitOrder
+	10, // 12: elys.clob.Msg.PlaceMarketOrder:input_type -> elys.clob.MsgPlaceMarketOrder
+	12, // 13: elys.clob.Msg.LiquidatePositions:input_type -> elys.clob.MsgLiquidatePositions
+	14, // 14: elys.clob.Msg.MatchAndExecuteOrders:input_type -> elys.clob.MsgMatchAndExecuteOrders
+	17, // 15: elys.clob.Msg.ExecuteMatchedOrders:input_type -> elys.clob.MsgExecuteMatchedOrders
+	1,  // 16: elys.clob.Msg.UpdateParams:output_type -> elys.clob.MsgUpdateParamsResponse
+	3,  // 17: elys.clob.Msg.Deposit:output_type -> elys.clob.MsgDepositResponse
+	5,  // 18: elys.clob.Msg.Withdraw:output_type -> elys.clob.MsgWithdrawResponse
+	7,  // 19: elys.clob.Msg.CreatePerpetualMarket:output_type -> elys.clob.MsgCreatPerpetualMarketResponse
+	9,  // 20: elys.clob.Msg.PlaceLimitOrder:output_type -> elys.clob.MsgPlaceLimitOrderResponse
+	11, // 21: elys.clob.Msg.PlaceMarketOrder:output_type -> elys.clob.MsgPlaceMarketOrderResponse
+	13, // 22: elys.clob.Msg.LiquidatePositions:output_type -> elys.clob.MsgLiquidatePositionsResponse
+	15, // 23: elys.clob.Msg.MatchAndExecuteOrders:output_type -> elys.clob.MsgMatchAndExecuteOrdersResponse
+	18, // 24: elys.clob.Msg.ExecuteMatchedOrders:output_type -> elys.clob.MsgExecuteMatchedOrdersResponse
+	16, // [16:25] is the sub-list for method output_type
+	7,  // [7:16] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_elys_clob_tx_proto_init() }
@@ -9391,6 +11445,42 @@ func file_elys_clob_tx_proto_init() {
 				return nil
 			}
 		}
+		file_elys_clob_tx_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MatchedOrderExecution); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_clob_tx_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgExecuteMatchedOrders); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_clob_tx_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgExecuteMatchedOrdersResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -9398,7 +11488,7 @@ func file_elys_clob_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_clob_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

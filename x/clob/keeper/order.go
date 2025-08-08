@@ -48,6 +48,17 @@ func (k Keeper) SetOrder(ctx sdk.Context, v types.Order) error {
 		key := types.GetOrderKey(v.GetMarketId(), v.GetOrderType(), v.GetPriceTick(), v.GetCounter())
 		b := k.cdc.MustMarshal(&v)
 		store.Set(key, b)
+
+		// Sync with memory orderbook
+		// Check if this is a new order or an update
+		if v.Filled.IsZero() {
+			// New order - add to memory
+			k.memoryOrderBook.AddOrder(v.GetMarketId(), &v)
+		} else {
+			// Update existing order in memory
+			k.memoryOrderBook.UpdateOrder(v.GetMarketId(), &v)
+		}
+
 		return nil
 	} else {
 		return types.ErrInvalidOrderType
@@ -60,6 +71,13 @@ func (k Keeper) DeleteOrder(ctx sdk.Context, perpetualOrderOwner types.Perpetual
 	store.Delete(key)
 
 	k.DeleteOrderOwner(ctx, perpetualOrderOwner)
+
+	// Remove from memory orderbook
+	k.memoryOrderBook.RemoveOrder(
+		perpetualOrderOwner.OrderId.MarketId,
+		perpetualOrderOwner.OrderId.Counter,
+		types.IsBuy(perpetualOrderOwner.OrderId.OrderType),
+	)
 }
 
 func (k Keeper) GetBuyOrderIterator(ctx sdk.Context, marketId uint64) storetypes.Iterator {

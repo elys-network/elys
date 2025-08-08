@@ -16,6 +16,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgPlaceLimitOrder{}, "clob/MsgPlaceLimitOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgPlaceMarketOrder{}, "clob/MsgPlaceMarketOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgMatchAndExecuteOrders{}, "clob/MsgMatchAndExecuteOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgExecuteMatchedOrders{}, "clob/MsgExecuteMatchedOrders")
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -27,6 +28,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgPlaceMarketOrder{},
 		&MsgCreatPerpetualMarket{},
 		&MsgMatchAndExecuteOrders{},
+		&MsgExecuteMatchedOrders{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

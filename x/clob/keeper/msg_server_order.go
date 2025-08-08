@@ -14,6 +14,9 @@ import (
 func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitOrder) (*types.MsgPlaceLimitOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// Ensure memory orderbook is initialized
+	k.InitializeMemoryOrderBook(ctx)
+
 	market, err := k.GetPerpetualMarket(ctx, msg.MarketId)
 	if err != nil {
 		return nil, err
@@ -108,6 +111,9 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		OrderId:      types.NewOrderId(order.GetMarketId(), order.GetOrderType(), order.GetPriceTick(), order.GetCounter()),
 	})
 
+	// Add to in-memory orderbook for efficient matching
+	k.memoryOrderBook.AddOrder(market.Id, &order)
+
 	// Emit event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -126,6 +132,9 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 
 func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarketOrder) (*types.MsgPlaceMarketOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure memory orderbook is initialized
+	k.InitializeMemoryOrderBook(ctx)
 
 	market, err := k.GetPerpetualMarket(ctx, msg.MarketId)
 	if err != nil {

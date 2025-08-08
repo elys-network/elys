@@ -52,7 +52,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "sub_account_id"}},
 				},
 				{
-					RpcMethod:      "OwnerPerpetualOrder",
+					RpcMethod:      "OwnerOrder",
 					Use:            "owner_orders [address] [sub_account_id]",
 					Short:          "Query perpetual order",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "sub_account_id"}},

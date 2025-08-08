@@ -154,8 +154,12 @@ func (AppModule) ConsensusVersion() uint64 { return 17 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
 func (am AppModule) BeginBlock(goCtx context.Context) error {
-	//ctx := sdk.UnwrapSDKContext(goCtx)
-	//am.keeper.BeginBlocker(ctx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Initialize memory orderbook if not already initialized
+	// This ensures the in-memory CLOB is ready for order matching
+	am.keeper.InitializeMemoryOrderBook(ctx)
+
 	return nil
 }
 

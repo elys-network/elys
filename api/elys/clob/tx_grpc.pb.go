@@ -26,6 +26,7 @@ type MsgClient interface {
 	PlaceMarketOrder(ctx context.Context, in *MsgPlaceMarketOrder, opts ...grpc.CallOption) (*MsgPlaceMarketOrderResponse, error)
 	LiquidatePositions(ctx context.Context, in *MsgLiquidatePositions, opts ...grpc.CallOption) (*MsgLiquidatePositionsResponse, error)
 	MatchAndExecuteOrders(ctx context.Context, in *MsgMatchAndExecuteOrders, opts ...grpc.CallOption) (*MsgMatchAndExecuteOrdersResponse, error)
+	ExecuteMatchedOrders(ctx context.Context, in *MsgExecuteMatchedOrders, opts ...grpc.CallOption) (*MsgExecuteMatchedOrdersResponse, error)
 }
 
 type msgClient struct {
@@ -108,6 +109,15 @@ func (c *msgClient) MatchAndExecuteOrders(ctx context.Context, in *MsgMatchAndEx
 	return out, nil
 }
 
+func (c *msgClient) ExecuteMatchedOrders(ctx context.Context, in *MsgExecuteMatchedOrders, opts ...grpc.CallOption) (*MsgExecuteMatchedOrdersResponse, error) {
+	out := new(MsgExecuteMatchedOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Msg/ExecuteMatchedOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -120,6 +130,7 @@ type MsgServer interface {
 	PlaceMarketOrder(context.Context, *MsgPlaceMarketOrder) (*MsgPlaceMarketOrderResponse, error)
 	LiquidatePositions(context.Context, *MsgLiquidatePositions) (*MsgLiquidatePositionsResponse, error)
 	MatchAndExecuteOrders(context.Context, *MsgMatchAndExecuteOrders) (*MsgMatchAndExecuteOrdersResponse, error)
+	ExecuteMatchedOrders(context.Context, *MsgExecuteMatchedOrders) (*MsgExecuteMatchedOrdersResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -150,6 +161,9 @@ func (UnimplementedMsgServer) LiquidatePositions(context.Context, *MsgLiquidateP
 }
 func (UnimplementedMsgServer) MatchAndExecuteOrders(context.Context, *MsgMatchAndExecuteOrders) (*MsgMatchAndExecuteOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MatchAndExecuteOrders not implemented")
+}
+func (UnimplementedMsgServer) ExecuteMatchedOrders(context.Context, *MsgExecuteMatchedOrders) (*MsgExecuteMatchedOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExecuteMatchedOrders not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -308,6 +322,24 @@ func _Msg_MatchAndExecuteOrders_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ExecuteMatchedOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgExecuteMatchedOrders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ExecuteMatchedOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Msg/ExecuteMatchedOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ExecuteMatchedOrders(ctx, req.(*MsgExecuteMatchedOrders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -346,6 +378,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MatchAndExecuteOrders",
 			Handler:    _Msg_MatchAndExecuteOrders_Handler,
+		},
+		{
+			MethodName: "ExecuteMatchedOrders",
+			Handler:    _Msg_ExecuteMatchedOrders_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
