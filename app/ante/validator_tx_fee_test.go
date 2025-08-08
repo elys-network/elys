@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 
-	parametertypes "github.com/elys-network/elys/v6/x/parameter/types"
+	parametertypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
 // Mock implementation of sdk.FeeTx for testing
