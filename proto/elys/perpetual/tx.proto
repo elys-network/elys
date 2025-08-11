@@ -165,6 +165,20 @@ message MsgUpdateMaxLeverageForPool {
 }
 
 message MsgUpdateMaxLeverageForPoolResponse {}
+
+message PoolParams {
+  uint64 pool_id = 1;
+  string mtp_safety_factor = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string leverage_max = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
 message MsgUpdateEnabledPools {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "perpetual/MsgUpdateEnabledPools";
@@ -174,6 +188,7 @@ message MsgUpdateEnabledPools {
   repeated uint64 enabled_pools = 2;
   repeated uint64 add_pools = 3;
   repeated uint64 remove_pools = 4;
+  repeated PoolParams update_pool_params = 5 [ (gogoproto.nullable) = false ];
 }
 
 message MsgUpdateEnabledPoolsResponse {}

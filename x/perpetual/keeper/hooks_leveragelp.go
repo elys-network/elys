@@ -11,7 +11,7 @@ import (
 
 func (k Keeper) OnLeverageLpEnablePool(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	params := k.GetParams(ctx)
-	pool := types.NewPool(ammPool, params.LeverageMax)
+	pool := types.NewPool(ammPool, params.LeverageMax, params.SafetyFactor)
 	k.SetPool(ctx, pool)
 	return nil
 }

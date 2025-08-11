@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
 	errorsmod "cosmossdk.io/errors"
@@ -33,6 +34,22 @@ func (k msgServer) UpdateEnabledPools(goCtx context.Context, msg *types.MsgUpdat
 	slices.Sort(params.EnabledPools)
 	if err := k.SetParams(ctx, &params); err != nil {
 		return nil, err
+	}
+
+	for _, poolParams := range msg.UpdatePoolParams {
+		pool, found := k.GetPool(ctx, poolParams.PoolId)
+		if !found {
+			return nil, fmt.Errorf("pool (id: %d) not found", poolParams.PoolId)
+		}
+		pool.MtpSafetyFactor = poolParams.MtpSafetyFactor
+
+		if params.LeverageMax.LT(poolParams.LeverageMax) {
+			return nil, fmt.Errorf("max leverage allowed is less than the leverage max")
+		}
+
+		pool.LeverageMax = poolParams.LeverageMax
+
+		k.SetPool(ctx, pool)
 	}
 
 	return &types.MsgUpdateEnabledPoolsResponse{}, nil
