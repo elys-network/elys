@@ -67,8 +67,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	// Check if the MTP is unhealthy
-	safetyFactor := k.GetSafetyFactor(ctx)
-	if existingMtp.MtpHealth.LTE(safetyFactor) {
+	if existingMtp.MtpHealth.LTE(pool.MtpSafetyFactor) {
 		return nil, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", existingMtp.MtpHealth.String())
 	}
 

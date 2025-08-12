@@ -327,18 +327,23 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 
 func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
 	liquidationPriceDenomRatio := osmomath.ZeroBigDec()
-	params := k.GetParams(ctx)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return math.LegacyZeroDec(), fmt.Errorf("pool (%d) not found", mtp.AmmPoolId)
+	}
+
+	safetyFactor := osmomath.BigDecFromDec(pool.MtpSafetyFactor)
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
 		if !mtp.Custody.IsZero() {
-			liquidationPriceDenomRatio = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
+			liquidationPriceDenomRatio = safetyFactor.Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)
 		if !mtp.Liabilities.IsZero() {
-			liquidationPriceDenomRatio = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
+			liquidationPriceDenomRatio = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(safetyFactor))
 		}
 	}
 

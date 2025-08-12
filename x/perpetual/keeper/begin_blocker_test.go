@@ -46,7 +46,7 @@ func (suite *PerpetualKeeperTestSuite) TestComputeFundingRate() {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"))
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"), math.LegacyMustNewDecFromStr("1.025000000000000000"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),

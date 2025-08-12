@@ -172,10 +172,6 @@ func (p Params) GetBigDecMaximumShortTakeProfitPriceRatio() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.MaximumShortTakeProfitPriceRatio)
 }
 
-func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
-	return osmomath.BigDecFromDec(p.SafetyFactor)
-}
-
 func (p Params) GetBigDecBorrowInterestRateMin() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.BorrowInterestRateMin)
 }

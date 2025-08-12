@@ -100,8 +100,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 	}
 
 	// Check if the MTP is unhealthy
-	safetyFactor := k.GetSafetyFactor(ctx)
-	if mtp.MtpHealth.LTE(safetyFactor) {
+	if mtp.MtpHealth.LTE(pool.MtpSafetyFactor) {
 		return types.PerpetualFees{}, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", mtp.MtpHealth.String())
 	}
 

@@ -73,9 +73,8 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 
 	k.SetPool(ctx, *pool)
 
-	safetyFactor := k.GetSafetyFactor(ctx)
 	// Position is unhealthy, close the position
-	if mtp.MtpHealth.LTE(safetyFactor) {
+	if mtp.MtpHealth.LTE(pool.MtpSafetyFactor) {
 		forceClosed = true
 		repayAmt, returnAmt, perpetualFeesCoins, closingPrice, err = k.ForceClose(ctx, mtp, pool, ammPool)
 		if err != nil {
