@@ -94,10 +94,6 @@ func (k Keeper) GetBorrowInterestPaymentEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).BorrowInterestPaymentEnabled
 }
 
-func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.GetParams(ctx).SafetyFactor
-}
-
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }
