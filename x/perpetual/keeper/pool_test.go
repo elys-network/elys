@@ -42,7 +42,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			PoolAssets:  poolAssets,
 			TotalWeight: math.ZeroInt(),
 		}
-		items[i] = types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10.5"))
+		items[i] = types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10.5"), math.LegacyMustNewDecFromStr("1.025000000000000000"))
 
 		keeper.SetPool(ctx, items[i])
 	}

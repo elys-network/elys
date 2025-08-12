@@ -33,7 +33,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 			"Pool health is low LONG",
 			"pool (1) base asset liabilities ratio (0.950000000000000000) too high for the operation",
 			func() {
-				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"))
+				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"), sdkmath.LegacyMustNewDecFromStr("1.025000000000000000"))
 				pool.BaseAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
@@ -42,7 +42,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 			"Pool health is low SHORT",
 			"pool (1) quote asset liabilities ratio (0.950000000000000000) too high for the operation",
 			func() {
-				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"))
+				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"), sdkmath.LegacyMustNewDecFromStr("1.025000000000000000"))
 				pool.QuoteAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
