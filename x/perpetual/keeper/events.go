@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, closedMTP types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec, initialCollateral sdk.Coin, initialCustody, initialLiabilities math.Int, usdcPrice math.LegacyDec) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, closedMTP types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec, initialCollateral sdk.Coin, initialCustody, initialLiabilities math.Int, usdcPrice, closingRatio math.LegacyDec) {
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
 	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMTP.CustodyAsset, initialCollateral, math.LegacyOneDec())
@@ -29,6 +29,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, closedMTP types.
 		sdk.NewAttribute("initial_liabilities_amount", initialLiabilities.String()),
 		sdk.NewAttribute("final_liabilities_amount", closedMTP.Liabilities.String()),
 		sdk.NewAttribute("closing_price", closingPrice.String()),
+		sdk.NewAttribute("closing_ratio", closingRatio.String()),
 		sdk.NewAttribute("usdc_price", usdcPrice.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("return_amount", returnAmt.String()),

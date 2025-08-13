@@ -34,17 +34,17 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, 
 	}
 
 	// this also handles edge case where bot is unable to close position in time.
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 	if err != nil {
 		return types.MTP{}, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, zeroPerpFees, math.LegacyZeroDec(), initialCollateral, initialCustody, initialLiabilities, err
 	}
 
 	if forceClosed {
-		return mtp, repayAmt, math.LegacyOneDec(), returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, nil
+		return mtp, repayAmt, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, nil
 	}
 
-	// Should be declared after SettleMTPBorrowInterestUnpaidLiability and settling funding
-	closingRatio := msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
+	// Should be reset after MTPTriggerChecksAndUpdates
+	closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
 	if mtp.Position == types.Position_SHORT {
 		closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 	}
