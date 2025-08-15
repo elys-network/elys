@@ -53,7 +53,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, 
 	}
 
 	// Estimate swap and repay
-	repayAmt, returnAmt, perpFees, closingPrice, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, closingRatio)
+	repayAmt, returnAmt, perpFees, closingPrice, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, closingRatio, false)
 	if err != nil {
 		return mtp, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), allInterestsPaid, forceClosed, perpetualFeesCoins, math.LegacyZeroDec(), initialCollateral, initialCustody, initialLiabilities, err
 	}

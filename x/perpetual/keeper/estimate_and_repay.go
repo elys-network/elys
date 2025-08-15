@@ -3,19 +3,16 @@ package keeper
 import (
 	"fmt"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/v7/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // EstimateAndRepay ammPool has to be pointer because RemoveFromPoolBalance (in Repay) updates pool assets
 // Important to send pointer mtp and pool
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, error) {
 
 	if closingRatio.LTE(math.LegacyZeroDec()) || closingRatio.GT(math.LegacyOneDec()) {
 		return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
@@ -42,14 +39,8 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, math.LegacyZeroDec(), err
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
-
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency, &perpFees, repayAmount); err != nil {
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, &perpFees, repayAmount, isLiquidation); err != nil {
 		return math.ZeroInt(), math.ZeroInt(), zeroPerpFees, math.LegacyZeroDec(), err
 	}
 

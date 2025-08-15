@@ -36,6 +36,7 @@ func NewParams() Params {
 		ExitBuffer:                          math.LegacyMustNewDecFromStr("0.15"),
 		TakerFee:                            math.LegacyMustNewDecFromStr("0.00075"),
 		MinimumFundingRate:                  math.LegacyMustNewDecFromStr("0.1"),
+		SecondLiquidationTriggerRatio:       math.LegacyMustNewDecFromStr("0.67"),
 	}
 }
 
@@ -132,6 +133,13 @@ func (p Params) Validate() error {
 	}
 	if p.TakerFee.GTE(math.LegacyOneDec()) {
 		return errors.New("TakerFee must be less than 1")
+	}
+
+	if err := CheckLegacyDecNilAndNegative(p.SecondLiquidationTriggerRatio, "SecondLiquidationTriggerRatio"); err != nil {
+		return err
+	}
+	if p.SecondLiquidationTriggerRatio.GTE(math.LegacyOneDec()) {
+		return errors.New("SecondLiquidationTriggerRatio must be less than 1")
 	}
 
 	return nil

@@ -91,7 +91,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	mtp.Custody = mtp.Custody.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 	mtp.Collateral = mtp.Collateral.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 
-	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp, pool)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}

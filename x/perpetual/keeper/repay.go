@@ -8,7 +8,7 @@ import (
 )
 
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio math.LegacyDec, baseCurrency string, perpFees *types.PerpetualFees, repayAmount math.Int) error {
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio math.LegacyDec, perpFees *types.PerpetualFees, repayAmount math.Int, isLiquidation bool) error {
 	if returnAmount.IsPositive() {
 		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
 		if err != nil {
@@ -24,11 +24,20 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		// to prevent zero return amount
 		if totalFees.LT(returnAmount) {
 			returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount.Sub(totalFees)))
-			err = k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
+			returnReceiver := mtp.GetAccountAddress()
+			if isLiquidation && mtp.PartialLiquidationDone {
+				returnReceiver = sdk.MustAccAddressFromBech32(k.tierKeeper.GetMasterChefParams(ctx).ProtocolRevenueAddress)
+			}
+
+			err = k.SendFromAmmPool(ctx, ammPool, returnReceiver, returnCoins)
 			if err != nil {
 				return err
 			}
 		}
+	}
+
+	if isLiquidation && !mtp.PartialLiquidationDone {
+		mtp.PartialLiquidationDone = true
 	}
 
 	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
