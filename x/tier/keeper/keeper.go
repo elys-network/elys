@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	masterchefmoduletypes "github.com/elys-network/elys/v7/x/masterchef/types"
 
 	"cosmossdk.io/core/store"
 
@@ -72,4 +73,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 func (k *Keeper) SetTradeshieldKeeper(tk *tradeshieldkeeper.Keeper) {
 	k.tradeshieldKeeper = tk
+}
+
+func (k Keeper) GetMasterChefParams(ctx sdk.Context) masterchefmoduletypes.Params {
+	return k.masterchef.GetParams(ctx)
 }

@@ -7,21 +7,28 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, error) {
+// ForceClose Three possible cases ForceClose can be called:
+// 1. Liquidation - if first we close only 50%
+// 2. Stop Loss or Take Profit: We close fully
+func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, isLiquidation bool) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, math.LegacyDec, error) {
 	// Estimate swap and repay
-	repayAmt, returnAmount, perpetualFeesCoins, closingPrice, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, math.LegacyOneDec())
+	closingRatio := math.LegacyOneDec()
+	if isLiquidation && !mtp.PartialLiquidationDone {
+		closingRatio = math.LegacyOneDec().QuoInt64(2)
+	}
+	repayAmt, returnAmount, perpetualFeesCoins, closingPrice, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, closingRatio, isLiquidation)
 	if err != nil {
-		return math.ZeroInt(), math.ZeroInt(), types.NewPerpetualFeesWithEmptyCoins(), math.LegacyZeroDec(), err
+		return math.ZeroInt(), math.ZeroInt(), types.NewPerpetualFeesWithEmptyCoins(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	address := sdk.MustAccAddressFromBech32(mtp.Address)
 	// EpochHooks after perpetual position closed
 	if k.hooks != nil {
-		err = k.hooks.AfterPerpetualPositionClosed(ctx, *ammPool, *pool, address, math.LegacyOneDec(), mtp.Id)
+		address := sdk.MustAccAddressFromBech32(mtp.Address)
+		err = k.hooks.AfterPerpetualPositionClosed(ctx, *ammPool, *pool, address, closingRatio, mtp.Id)
 		if err != nil {
-			return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), err
+			return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 
-	return repayAmt, returnAmount, perpetualFeesCoins, closingPrice, nil
+	return repayAmt, returnAmount, perpetualFeesCoins, closingPrice, closingRatio, nil
 }

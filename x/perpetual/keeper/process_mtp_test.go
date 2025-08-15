@@ -500,6 +500,12 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)
+	suite.Require().Equal(len(mtps)-1, 0)
+
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &ammPool, "")
+	suite.Require().NoError(err)
+
+	mtps = mk.GetAllMTPs(ctx)
 	suite.Require().Equal(len(mtps), 0)
 }
 

@@ -18,6 +18,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 		setup                  func() *types.MsgClosePositions
 		expectedErrMsg         string
 		expectedTotalPositions int
+		doubleLiquidation      bool
 	}{
 		{
 			"BaseCurrency not found in asset profile",
@@ -29,6 +30,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 			},
 			"",
 			0,
+			false,
 		},
 		{
 			"Pool Not found for the close positions requests, just continue",
@@ -122,6 +124,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 			},
 			"",
 			2,
+			false,
 		},
 		{
 			"Liquidate unhealthy position",
@@ -171,6 +174,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 			},
 			"",
 			0,
+			true,
 		},
 		{
 			"Close at stop Loss",
@@ -189,7 +193,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				firstOpenPositionMsg := &types.MsgOpen{
 					Creator:         firstPositionCreator.String(),
-					Leverage:        math.LegacyNewDec(5),
+					Leverage:        math.LegacyMustNewDecFromStr("1.05"),
 					Position:        types.Position_LONG,
 					PoolId:          firstPool,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
@@ -222,6 +226,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 			},
 			"",
 			0,
+			false,
 		},
 		{
 			"Close at Take Profit Price",
@@ -273,6 +278,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 			},
 			"",
 			0,
+			false,
 		},
 	}
 
@@ -287,9 +293,20 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
 			} else {
 				suite.Require().NoError(err)
-				totalMTPs := suite.app.PerpetualKeeper.GetAllMTPs(suite.ctx)
-				suite.Require().Equal(tc.expectedTotalPositions, len(totalMTPs))
 			}
+			if tc.doubleLiquidation {
+				_, err = msgSrvr.ClosePositions(suite.ctx, msg)
+
+				if tc.expectedErrMsg != "" {
+					suite.Require().Error(err)
+					suite.Require().Contains(err.Error(), tc.expectedErrMsg)
+				} else {
+					suite.Require().NoError(err)
+				}
+			}
+
+			totalMTPs := suite.app.PerpetualKeeper.GetAllMTPs(suite.ctx)
+			suite.Require().Equal(tc.expectedTotalPositions, len(totalMTPs))
 		})
 	}
 }

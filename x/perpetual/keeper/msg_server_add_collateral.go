@@ -56,7 +56,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			return nil, err
 		}
 
-		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 		if err != nil {
 			return nil, err
 		}
@@ -71,7 +71,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 			if err != nil {
 				return nil, err
 			}
-			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
+			k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
 			// hooks are being called inside MTPTriggerChecksAndUpdates
 			return &types.MsgAddCollateralResponse{}, nil
 		}

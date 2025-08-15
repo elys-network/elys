@@ -189,7 +189,7 @@ func (k Keeper) HandleOpenEstimationByFinal(ctx sdk.Context, req *types.QueryOpe
 		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.TakeProfitBorrowFactor)
 	}
 
-	liquidationPrice, err := k.GetLiquidationPrice(ctx, *mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, *mtp, pool)
 	if err != nil {
 		return nil, err
 	}

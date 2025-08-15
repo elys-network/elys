@@ -91,6 +91,7 @@ type EstakingKeeper interface {
 
 type MasterchefKeeper interface {
 	UserPendingReward(goCtx context.Context, req *mastercheftypes.QueryUserPendingRewardRequest) (*mastercheftypes.QueryUserPendingRewardResponse, error)
+	GetParams(ctx sdk.Context) mastercheftypes.Params
 }
 
 type StakingKeeper interface {

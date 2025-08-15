@@ -59,7 +59,7 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	suite.Require().Nil(err)
 
-	_, _, _, _, err = k.ForceClose(ctx, &mtp, &pool, &ammPool)
+	_, _, _, _, _, err = k.ForceClose(ctx, &mtp, &pool, &ammPool, true)
 
 	suite.Require().Nil(err)
 }

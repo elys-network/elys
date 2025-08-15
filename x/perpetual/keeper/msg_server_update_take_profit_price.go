@@ -35,7 +35,7 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, errorsmod.Wrap(err, "amm pool not found")
 	}
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, totalPerpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		if err != nil {
 			return nil, err
 		}
-		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
+		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
 		return &types.MsgUpdateTakeProfitPriceResponse{}, nil
 	}
 
