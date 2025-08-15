@@ -107,10 +107,10 @@ func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRat
 
 // returnAmount is in custody asset
 // closingCollatoralCoin is the collateral coin before closing position
-func (k Keeper) CalcNetPnLAtClosing(ctx sdk.Context, returnAmount math.Int, custodyAsset string, closingCollatoralCoin sdk.Coin, closingRatio math.LegacyDec) (netPnLInUSD math.LegacyDec) {
+func (k Keeper) CalcNetPnLAtClosing(ctx sdk.Context, returnAmount math.Int, custodyAsset string, closingCollateralCoin sdk.Coin, closingRatio math.LegacyDec) (netPnLInUSD math.LegacyDec) {
 
-	closedCollateralAmount := closingRatio.MulInt(closingCollatoralCoin.Amount).TruncateInt()
-	closedCollateralInUSD := k.amm.CalculateUSDValue(ctx, closingCollatoralCoin.Denom, closedCollateralAmount).Dec()
+	closedCollateralAmount := closingRatio.MulInt(closingCollateralCoin.Amount).TruncateInt()
+	closedCollateralInUSD := k.amm.CalculateUSDValue(ctx, closingCollateralCoin.Denom, closedCollateralAmount).Dec()
 
 	// returnAmount will always be >=0
 	returnAmountInUSD := k.amm.CalculateUSDValue(ctx, custodyAsset, returnAmount).Dec()

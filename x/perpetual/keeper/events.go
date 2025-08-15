@@ -11,7 +11,7 @@ import (
 func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, closedMTP types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec, totalPerpetualFeesCoins types.PerpetualFees, closingPrice math.LegacyDec, initialCollateral sdk.Coin, initialCustody, initialLiabilities math.Int, usdcPrice, closingRatio math.LegacyDec) {
 
 	perpFeesInUsd, slippageFeesInUsd, weightBreakingFeesInUsd, takerFeesInUsd := k.GetPerpFeesInUSD(ctx, totalPerpetualFeesCoins)
-	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMTP.CustodyAsset, initialCollateral, math.LegacyOneDec())
+	netPnLInUSD := k.CalcNetPnLAtClosing(ctx, returnAmt, closedMTP.CustodyAsset, initialCollateral, closingRatio)
 	interestAmtInUSD := k.amm.CalculateUSDValue(ctx, closedMTP.CustodyAsset, interestAmt).Dec()
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
