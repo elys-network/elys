@@ -329,9 +329,12 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP, pool types.P
 	liquidationPriceDenomRatio := osmomath.ZeroBigDec()
 
 	safetyFactor := osmomath.BigDecFromDec(pool.MtpSafetyFactor)
+
+	// if pool.MtpSafetyFactor is 1.025, then next should be at 1 + (0.025 * 2 /3)
 	if mtp.PartialLiquidationDone {
 		params := k.GetParams(ctx)
-		safetyFactor = osmomath.BigDecFromDec(pool.MtpSafetyFactor.Mul(params.SecondLiquidationTriggerRatio))
+		diff := pool.MtpSafetyFactor.Sub(math.LegacyOneDec())
+		safetyFactor = osmomath.BigDecFromDec(math.LegacyOneDec().Add(diff.Mul(params.SecondLiquidationTriggerRatio)))
 	}
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
