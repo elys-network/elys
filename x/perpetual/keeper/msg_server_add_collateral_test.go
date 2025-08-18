@@ -84,7 +84,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					PoolId:        ammPool.PoolId,
 				}
 			},
-			"asset uusdc not found",
+			"uusdc not found",
 			func(msg *types.MsgAddCollateral) {
 
 			},

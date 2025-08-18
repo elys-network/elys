@@ -13,8 +13,10 @@ import (
 func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, isLiquidation bool) (math.Int, math.Int, types.PerpetualFees, math.LegacyDec, math.LegacyDec, error) {
 	// Estimate swap and repay
 	closingRatio := math.LegacyOneDec()
+	addCollateral := false
 	if isLiquidation && !mtp.PartialLiquidationDone {
 		closingRatio = math.LegacyOneDec().QuoInt64(2)
+		addCollateral = true
 	}
 	repayAmt, returnAmount, perpetualFeesCoins, closingPrice, collateralToAdd, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, closingRatio, isLiquidation)
 	if err != nil {
@@ -30,9 +32,11 @@ func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, am
 		}
 	}
 
-	_, err = k.AddCollateral(ctx, mtp, pool, collateralToAdd, ammPool)
-	if err != nil {
-		return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+	if addCollateral && !collateralToAdd.IsNil() && collateralToAdd.IsPositive() {
+		_, err = k.AddCollateral(ctx, mtp, pool, collateralToAdd, ammPool)
+		if err != nil {
+			return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+		}
 	}
 	return repayAmt, returnAmount, perpetualFeesCoins, closingPrice, closingRatio, nil
 }
