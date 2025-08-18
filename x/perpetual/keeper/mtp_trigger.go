@@ -74,8 +74,10 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 
 	k.SetPool(ctx, *pool)
 
+	params := k.GetParams(ctx)
+	secondarySafetyFactor := math.LegacyOneDec().Add((pool.MtpSafetyFactor.Sub(math.LegacyOneDec())).Mul(params.SecondLiquidationTriggerRatio))
 	// Position is unhealthy, close the position
-	if mtp.MtpHealth.LTE(pool.MtpSafetyFactor) {
+	if (!mtp.PartialLiquidationDone && mtp.MtpHealth.LTE(pool.MtpSafetyFactor)) || (mtp.PartialLiquidationDone && mtp.MtpHealth.LTE(secondarySafetyFactor)) {
 		forceClosed = true
 		repayAmt, returnAmt, perpetualFeesCoins, closingPrice, closingRatio, err = k.ForceClose(ctx, mtp, pool, ammPool, true)
 		if err != nil {
