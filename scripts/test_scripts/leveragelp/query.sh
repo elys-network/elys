@@ -105,7 +105,7 @@ done
 echo "Querying rewards ..."
 ASK_USER=true
 while [ "$ASK_USER" = true ]; do
-    echo "Enter address and positon id"
+    echo "Enter address and position id"
     read address position_id
     $BINARY q leveragelp rewards $address $position_id
     echo "Want to make another query, true/false"
