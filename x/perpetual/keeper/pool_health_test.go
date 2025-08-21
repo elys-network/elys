@@ -51,6 +51,16 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
 		},
+		{
+			"Pool health is low SHORT but maxLiabilitiesRatioAllowed is without buffer ",
+			"pool (id: 1) quote asset liabilities ratio (0.950000000000000000) too high for the operation",
+			types.Position_UNSPECIFIED,
+			func() {
+				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"), sdkmath.LegacyMustNewDecFromStr("1.025000000000000000"))
+				pool.QuoteAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+		},
 	}
 
 	for _, tc := range testCases {
