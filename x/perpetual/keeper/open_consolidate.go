@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset, baseCurrency string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
@@ -95,7 +95,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		}
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, true); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, msg.Position); err != nil {
 		return nil, err
 	}
 

@@ -20,18 +20,21 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
+		positionType         types.Position
 		prerequisiteFunction func()
 	}{
 		{
 			"Pool not found",
 			types.ErrPoolDoesNotExist.Error(),
+			types.Position_UNSPECIFIED,
 			func() {
 			},
 		},
 		// "Pool health is nil" case is not possible because Getter function always give 0 value of health
 		{
 			"Pool health is low LONG",
-			"pool (1) base asset liabilities ratio (0.950000000000000000) too high for the operation",
+			"pool (id: 1) base asset liabilities ratio (0.950000000000000000) too high for the operation",
+			types.Position_LONG,
 			func() {
 				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"), sdkmath.LegacyMustNewDecFromStr("1.025000000000000000"))
 				pool.BaseAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
@@ -40,7 +43,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 		},
 		{
 			"Pool health is low SHORT",
-			"pool (1) quote asset liabilities ratio (0.950000000000000000) too high for the operation",
+			"pool (id: 1) quote asset liabilities ratio (0.950000000000000000) too high for the operation",
+			types.Position_SHORT,
 			func() {
 				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"), sdkmath.LegacyMustNewDecFromStr("1.025000000000000000"))
 				pool.QuoteAssetLiabilitiesRatio = sdkmath.LegacyMustNewDecFromStr("0.95")
@@ -52,7 +56,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			err = suite.app.PerpetualKeeper.CheckLowPoolHealthAndMinimumCustody(suite.ctx, 1, true)
+			err = suite.app.PerpetualKeeper.CheckLowPoolHealthAndMinimumCustody(suite.ctx, 1, tc.positionType)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

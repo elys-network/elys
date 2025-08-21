@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/v7/x/amm/types"
+	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
 // EpochHooks wrapper struct for tvl keeper
@@ -39,7 +40,7 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}
@@ -61,7 +62,7 @@ func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}
@@ -82,7 +83,7 @@ func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammt
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}
