@@ -132,4 +132,4 @@ To maintain the stability and health of the pool, the following equations are us
    - **Liabilities**: The total amount of liabilities associated with the position. This includes any borrowed amounts that the trader is responsible for repaying.
    - **Borrow Interest Unpaid**: The total amount of unpaid interest accrued on the borrowed liabilities. This includes any interest that has not yet been paid by the trader.
 
-   If Position Health falls below the Safety Factor threshold (5%), the perpetual position position is automatically liquidated to protect the underlying liquidity pool.
+   If Position Health falls below the Safety Factor threshold (5%), the perpetual position is automatically liquidated to protect the underlying liquidity pool.
