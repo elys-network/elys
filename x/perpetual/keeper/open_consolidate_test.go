@@ -224,7 +224,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
 
-				// make new Positon leverage 0 to add collateral
+				// make new Position leverage 0 to add collateral
 				msg.Leverage = math.LegacyNewDec(0)
 
 				return &msg
