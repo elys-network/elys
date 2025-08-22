@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"fmt"
+	oracletypes "github.com/elys-network/elys/v7/x/oracle/types"
 	"strings"
 
 	storetypes "cosmossdk.io/store/types"
@@ -63,13 +64,17 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			//oracleParams := app.OracleKeeper.GetParams(ctx)
-			//if len(oracleParams.MandatoryList) == 0 {
-			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//}
+			if ctx.ChainID() == "elys-1" {
+				newPriceFeeders := []sdk.AccAddress{}
+
+				for _, accAddress := range newPriceFeeders {
+					v := oracletypes.PriceFeeder{
+						Feeder:   accAddress.String(),
+						IsActive: true,
+					}
+					app.OracleKeeper.SetPriceFeeder(ctx, v)
+				}
+			}
 
 			receiver := sdk.MustAccAddressFromBech32("elys1kxgan4uq0m8gqztd09n6qm627p6v4ayzngxyx8")
 			sender := sdk.MustAccAddressFromBech32("elys1p2fhrn9zfra9lv5062nvzkmp9hduhm9hkk6kz6a3ucwktjvuzv9smry5sk")
