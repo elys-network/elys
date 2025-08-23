@@ -65,7 +65,10 @@ func (app *ElysApp) setUpgradeHandler() {
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			if ctx.ChainID() == "elys-1" {
-				newPriceFeeders := []sdk.AccAddress{}
+				newPriceFeeders := []sdk.AccAddress{
+					sdk.MustAccAddressFromBech32("elys1y5jeztqtf7vwqe6wd7tv2z8mzjg38hn6zkpmvq"),
+					sdk.MustAccAddressFromBech32("elys16r4y6hdehvntgg70avg6f0s2x55k3wekeyw8vw"),
+				}
 
 				for _, accAddress := range newPriceFeeders {
 					v := oracletypes.PriceFeeder{
