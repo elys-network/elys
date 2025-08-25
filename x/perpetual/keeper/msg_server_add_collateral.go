@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v7/x/perpetual/types"
@@ -52,6 +53,9 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		}
 		k.EmitForceClose(ctx, "add_collateral", mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpetualFeesCoins, closingPrice, initialCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
 		// hooks are being called inside MTPTriggerChecksAndUpdates
+	}
+
+	if forceClosed && closingRatio.Equal(math.LegacyOneDec()) {
 		return &types.MsgAddCollateralResponse{}, nil
 	}
 
