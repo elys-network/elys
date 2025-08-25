@@ -37,6 +37,7 @@ func NewParams() Params {
 		TakerFee:                            math.LegacyMustNewDecFromStr("0.00075"),
 		MinimumFundingRate:                  math.LegacyMustNewDecFromStr("0.1"),
 		SecondLiquidationTriggerRatio:       math.LegacyMustNewDecFromStr("0.67"),
+		FirstLiquidationClosingRatio:        math.LegacyMustNewDecFromStr("0.5"),
 	}
 }
 

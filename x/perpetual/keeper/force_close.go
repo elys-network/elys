@@ -15,7 +15,8 @@ func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, am
 	closingRatio := math.LegacyOneDec()
 	addCollateral := false
 	if isLiquidation && !mtp.PartialLiquidationDone {
-		closingRatio = math.LegacyOneDec().QuoInt64(2)
+		params := k.GetParams(ctx)
+		closingRatio = params.FirstLiquidationClosingRatio
 		addCollateral = true
 	}
 	repayAmt, returnAmount, perpetualFeesCoins, closingPrice, collateralToAdd, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, closingRatio, isLiquidation)
