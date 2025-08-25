@@ -55,7 +55,8 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		return &types.MsgAddCollateralResponse{}, nil
 	}
 
-	finalCollateralCoin, err := k.Keeper.AddCollateral(ctx, &mtp, &pool, msg.AddCollateral, &ammPool)
+	// trigger check happened just above
+	finalCollateralCoin, err := k.Keeper.AddCollateral(ctx, &mtp, &pool, msg.AddCollateral, &ammPool, true)
 	if err != nil {
 		return nil, err
 	}

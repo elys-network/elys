@@ -51,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	position, err := k.Open(ctx, openPositionMsg)
+	position, err := k.Open(ctx, openPositionMsg, false)
 
 	suite.Require().Nil(err)
 

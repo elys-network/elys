@@ -49,7 +49,7 @@ type AssetProfileKeeper interface {
 //
 //go:generate mockery --srcpkg . --name PerpetualKeeper --structname PerpetualKeeper --filename perpetual_keeper.go --with-expecter
 type PerpetualKeeper interface {
-	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)
+	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen, skipTriggerCheck bool) (*perpetualtypes.MsgOpenResponse, error)
 	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
 	GetMTP(ctx sdk.Context, poolId uint64, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
 	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)

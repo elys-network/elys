@@ -37,9 +37,9 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	mtpOpenResponse, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+	mtpOpenResponse, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 	suite.Require().NoError(err)
-	_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg2)
+	_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg2, false)
 	suite.Require().NoError(err)
 	mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, ammPool.PoolId, positionCreator, mtpOpenResponse.Id)
 	suite.Require().NoError(err)

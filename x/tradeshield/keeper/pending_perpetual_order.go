@@ -257,7 +257,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 	if err = openMsg.ValidateBasic(); err != nil {
 		return err
 	}
-	res, err := k.perpetual.Open(ctx, &openMsg)
+	res, err := k.perpetual.Open(ctx, &openMsg, false)
 	if err != nil {
 		return err
 	}
@@ -343,7 +343,7 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 	if err := openMsg.ValidateBasic(); err != nil {
 		return err
 	}
-	_, err := k.perpetual.Open(ctx, &openMsg)
+	_, err := k.perpetual.Open(ctx, &openMsg, false)
 	if err != nil {
 		return err
 	}
