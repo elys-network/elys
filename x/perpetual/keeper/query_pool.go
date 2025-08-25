@@ -59,6 +59,7 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				TotalLongOpenInterest:                pool.GetTotalLongOpenInterest(),
 				TotalShortOpenInterest:               pool.GetTotalShortOpenInterest(),
 				LeverageMax:                          pool.LeverageMax,
+				MtpSafetyFactor:                      pool.MtpSafetyFactor,
 			})
 		}
 
@@ -108,6 +109,7 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		TotalLongOpenInterest:                val.GetTotalLongOpenInterest(),
 		TotalShortOpenInterest:               val.GetTotalShortOpenInterest(),
 		LeverageMax:                          val.LeverageMax,
+		MtpSafetyFactor:                      val.MtpSafetyFactor,
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil

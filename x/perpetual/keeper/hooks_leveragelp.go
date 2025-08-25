@@ -54,7 +54,7 @@ func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, _ sdk.Acc
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context,
 		return err
 	}
 
-	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, false)
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId, types.Position_UNSPECIFIED)
 	if err != nil {
 		return err
 	}

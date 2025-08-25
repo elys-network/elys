@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset, baseCurrency string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
@@ -25,7 +25,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		if err != nil {
 			return nil, err
 		}
-		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, initialCustody, initialLiabilities, usdcPrice)
+		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
 		return &types.MsgOpenResponse{
 			Id: existingMtp.Id,
 		}, nil
@@ -73,7 +73,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		liquidationPrice, err := k.GetLiquidationPrice(ctx, *existingMtp)
+		liquidationPrice, err := k.GetLiquidationPrice(ctx, *existingMtp, pool)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get liquidation price: %s", err.Error())
 		}
@@ -95,7 +95,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		}
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, true); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, msg.Position); err != nil {
 		return nil, err
 	}
 

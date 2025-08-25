@@ -13,7 +13,11 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64, openedPosition bool) error {
+// CheckLowPoolHealthAndMinimumCustody for openingPositionType:
+// Position_UNSPECIFIED means it's not a check on opening a position and everything needs to be checked
+// Position_SHORT new short position is being opened, no need to check for base asset (like ATOM)
+// Position_LONG new long position is being opened, no need to check for quote asset (like USDC)
+func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64, openingPositionType types.Position) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
@@ -22,17 +26,22 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 	params := k.GetParams(ctx)
 
 	maxLiabilitiesRatioAllowed := math.LegacyZeroDec()
-	if openedPosition {
+
+	if openingPositionType != types.Position_UNSPECIFIED {
+		// new position is being opened
 		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold
 	} else {
+		// checks after exit or swap in amm pool or some other tx in leveragelp
 		maxLiabilitiesRatioAllowed = params.PoolMaxLiabilitiesThreshold.Add(params.ExitBuffer)
 	}
 
-	if !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
-		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
+	//For base asset, check only if the position is unspecified or is long
+	if openingPositionType != types.Position_SHORT && !pool.BaseAssetLiabilitiesRatio.IsNil() && pool.BaseAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
+		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (id: %d) base asset liabilities ratio (%s) too high for the operation", poolId, pool.BaseAssetLiabilitiesRatio.String())
 	}
-	if !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
-		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
+	//For quote asset, check only if the position is unspecified or is short
+	if openingPositionType != types.Position_LONG && !pool.QuoteAssetLiabilitiesRatio.IsNil() && pool.QuoteAssetLiabilitiesRatio.GTE(maxLiabilitiesRatioAllowed) {
+		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (id: %d) quote asset liabilities ratio (%s) too high for the operation", poolId, pool.QuoteAssetLiabilitiesRatio.String())
 	}
 	err := k.CheckMinimumCustodyAmt(ctx, poolId)
 	if err != nil {

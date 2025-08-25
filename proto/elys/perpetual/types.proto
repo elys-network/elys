@@ -86,6 +86,7 @@ message MTP {
   uint64 last_interest_calc_block = 23;
   uint64 last_funding_calc_time = 24;
   uint64 last_funding_calc_block = 25;
+  bool partial_liquidation_done = 26;
 }
 
 message InterestBlock {

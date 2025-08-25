@@ -108,7 +108,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, pool *types.Pool, ammPool *ammtypes
 	// If consolidating or adding collateral, this needs to be calculated again
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice, err = k.GetLiquidationPrice(ctx, *mtp)
+		stopLossPrice, err = k.GetLiquidationPrice(ctx, *mtp, *pool)
 		if err != nil {
 			return types.PerpetualFees{}, fmt.Errorf("failed to get liquidation price: %s", err.Error())
 		}

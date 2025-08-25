@@ -160,7 +160,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	if err != nil {
 		return nil, err
 	}
-	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice, err := k.GetLiquidationPrice(ctx, mtp, pool)
 	if err != nil {
 		return nil, err
 	}
@@ -325,14 +325,17 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP, pool types.Pool) (math.LegacyDec, error) {
 	liquidationPriceDenomRatio := osmomath.ZeroBigDec()
-	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return math.LegacyZeroDec(), fmt.Errorf("pool (%d) not found", mtp.AmmPoolId)
-	}
 
 	safetyFactor := osmomath.BigDecFromDec(pool.MtpSafetyFactor)
+
+	// if pool.MtpSafetyFactor is 1.025, then next should be at 1 + (0.025 * 2 /3)
+	if mtp.PartialLiquidationDone {
+		params := k.GetParams(ctx)
+		diff := pool.MtpSafetyFactor.Sub(math.LegacyOneDec())
+		safetyFactor = osmomath.BigDecFromDec(math.LegacyOneDec().Add(diff.Mul(params.SecondLiquidationTriggerRatio)))
+	}
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
