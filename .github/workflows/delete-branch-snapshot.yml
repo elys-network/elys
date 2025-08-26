@@ -2,8 +2,6 @@ name: Delete Snapshot on Branch Deletion
 
 on:
   delete:
-    branches:
-      - "**"
 
 jobs:
   delete-snapshot:
