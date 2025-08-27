@@ -47,9 +47,12 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, 
 		return types.MTP{}, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, zeroPerpFees, math.LegacyZeroDec(), initialCollateral, initialCustody, initialLiabilities, err
 	}
 
-	// user didn't want close position fully & it got only partially closed, we return as the value user wanted to close is different now
-	if !userClosingRatio.Equal(math.LegacyOneDec()) && forceClosed && !closingRatio.Equal(math.LegacyOneDec()) {
-		return mtp, repayAmt, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, nil
+	if forceClosed {
+		// user didn't want close position fully and it got only partially closed, we return as the value user wanted to close is different now
+		// OR it got fully liquidated
+		if (!userClosingRatio.Equal(math.LegacyOneDec()) && !closingRatio.Equal(math.LegacyOneDec())) || closingRatio.Equal(math.LegacyOneDec()) {
+			return mtp, repayAmt, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, initialCollateral, initialCustody, initialLiabilities, nil
+		}
 	}
 
 	// Should be reset after MTPTriggerChecksAndUpdates
