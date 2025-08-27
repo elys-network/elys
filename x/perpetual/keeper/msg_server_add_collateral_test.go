@@ -74,7 +74,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 				suite.Require().NoError(err)
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 				return &types.MsgAddCollateral{
@@ -109,7 +109,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 				suite.Require().NoError(err)
 
 				return &types.MsgAddCollateral{
@@ -144,7 +144,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 				suite.Require().NoError(err)
 
 				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
@@ -190,7 +190,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 				suite.Require().NoError(err)
 
 				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
@@ -239,7 +239,7 @@ func (suite *PerpetualKeeperTestSuite) TestAddCollateral() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 				suite.Require().NoError(err)
 
 				initialPoolBankBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, sdk.MustAccAddressFromBech32(ammPool.Address))

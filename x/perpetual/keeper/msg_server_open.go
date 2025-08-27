@@ -19,5 +19,5 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.PoolId))
 	}
 
-	return k.Keeper.Open(ctx, msg)
+	return k.Keeper.Open(ctx, msg, false)
 }

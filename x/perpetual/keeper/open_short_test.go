@@ -87,7 +87,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			tc.prerequisiteFunction()
 			err := msg.ValidateBasic()
 			suite.Require().NoError(err)
-			_, err = suite.app.PerpetualKeeper.Open(suite.ctx, msg)
+			_, err = suite.app.PerpetualKeeper.Open(suite.ctx, msg, false)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

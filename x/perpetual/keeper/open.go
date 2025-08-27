@@ -13,7 +13,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, skipTriggerCheck bool) (*types.MsgOpenResponse, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -95,7 +95,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	if existingMtp != nil {
-		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, totalPerpFeesCoins)
+		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, tradingAsset, totalPerpFeesCoins, skipTriggerCheck)
 	}
 
 	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, msg.PoolId, msg.Position); err != nil {

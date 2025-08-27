@@ -36,7 +36,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 					returnReceiver = sdk.MustAccAddressFromBech32(k.tierKeeper.GetMasterChefParams(ctx).ProtocolRevenueAddress)
 				} else {
 					// This means this is first liquidation
-
+					collateralToAdd = returnCoins[0]
 					// If this is the first liquidation due to poor health, then we return the amount to the user then later we use that amount as collateral
 					// so we need to convert return amount to collateral asset denom.
 					// For AMM, in case 2 and 3 below, there won't be change in balance

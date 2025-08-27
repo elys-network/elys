@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"strconv"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset string, prevPerpFeesCoins types.PerpetualFees) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, tradingAsset string, prevPerpFeesCoins types.PerpetualFees, skipTriggerCheck bool) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
@@ -25,25 +26,31 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
-	if err != nil {
-		return nil, err
-	}
-	totalPerpFeesCoins := perpetualFeesCoins.Add(prevPerpFeesCoins)
+	totalPerpFeesCoins := prevPerpFeesCoins
+	interestAmt := math.ZeroInt()
+	if !skipTriggerCheck {
+		repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmtOnClose, insuranceAmt, allInterestsPaid, forceClosed, perpetualFeesCoins, closingPrice, closingRatio, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
+		if err != nil {
+			return nil, err
+		}
 
-	if forceClosed {
-		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
-		if err != nil {
-			return nil, err
+		totalPerpFeesCoins = totalPerpFeesCoins.Add(perpetualFeesCoins)
+		interestAmt = interestAmtOnClose
+
+		if forceClosed {
+			tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
+			if err != nil {
+				return nil, err
+			}
+			usdcPrice, err := k.GetUSDCPrice(ctx)
+			if err != nil {
+				return nil, err
+			}
+			k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
+			return &types.MsgOpenResponse{
+				Id: existingMtp.Id,
+			}, nil
 		}
-		usdcPrice, err := k.GetUSDCPrice(ctx)
-		if err != nil {
-			return nil, err
-		}
-		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice, totalPerpFeesCoins, closingPrice, existingMtpCollateralCoin, initialCustody, initialLiabilities, usdcPrice, closingRatio)
-		return &types.MsgOpenResponse{
-			Id: existingMtp.Id,
-		}, nil
 	}
 
 	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, existingMtp, newMtp)

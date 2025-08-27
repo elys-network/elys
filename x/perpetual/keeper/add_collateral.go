@@ -12,7 +12,7 @@ import (
 	"github.com/elys-network/elys/v7/x/perpetual/types"
 )
 
-func (k Keeper) AddCollateral(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, collateral sdk.Coin, ammPool *ammtypes.Pool) (sdk.Coin, error) {
+func (k Keeper) AddCollateral(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, collateral sdk.Coin, ammPool *ammtypes.Pool, skipTriggerCheck bool) (sdk.Coin, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdk.Coin{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -89,7 +89,7 @@ func (k Keeper) AddCollateral(ctx sdk.Context, mtp *types.MTP, pool *types.Pool,
 		if err := msgOpen.ValidateBasic(); err != nil {
 			return sdk.Coin{}, err
 		}
-		_, err := k.Open(ctx, &msgOpen)
+		_, err := k.Open(ctx, &msgOpen, skipTriggerCheck)
 		if err != nil {
 			return sdk.Coin{}, err
 		}

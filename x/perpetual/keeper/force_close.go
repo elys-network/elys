@@ -34,7 +34,7 @@ func (k Keeper) ForceClose(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, am
 	}
 
 	if addCollateral && !collateralToAdd.IsNil() && collateralToAdd.IsPositive() {
-		_, err = k.AddCollateral(ctx, mtp, pool, collateralToAdd, ammPool)
+		_, err = k.AddCollateral(ctx, mtp, pool, collateralToAdd, ammPool, true)
 		if err != nil {
 			return math.Int{}, math.Int{}, types.PerpetualFees{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
