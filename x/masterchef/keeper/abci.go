@@ -343,7 +343,8 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 			continue
 		}
 
-		tokenOutAmount, _, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
+		cacheCtx, write := ctx.CacheContext()
+		tokenOutAmount, _, err := k.amm.InternalSwapExactAmountIn(cacheCtx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 		if err != nil {
 			// Continue as we can swap it when this amount is higher
 			if err == ammtypes.ErrTokenOutAmountZero {
@@ -355,10 +356,10 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 						sdk.NewAttribute("Token amount", "0"),
 					),
 				})
-				continue
 			}
-			return sdk.Coins{}, err
+			continue
 		}
+		write()
 
 		// Swapped USDC coin
 		swappedCoins := sdk.NewCoins(sdk.NewCoin(baseCurrency, tokenOutAmount))
