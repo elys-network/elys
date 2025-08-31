@@ -34,7 +34,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	k.DeleteFeeInfo(ctx)
 
 	// distribute LP rewards
-	err := k.ProcessLPRewardDistribution(cacheCtx)
+	err := k.ProcessLPRewardDistribution(ctx)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Failed to process lp rewards distribution: %s", err.Error()))
 	} else {
