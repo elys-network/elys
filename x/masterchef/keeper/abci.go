@@ -598,7 +598,7 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
+// InitStableStakePoolParams: create a stable stake pool information responding to the pool creation.
 func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	_, found := k.GetPoolInfo(ctx, poolId)
 	if !found {

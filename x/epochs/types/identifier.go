@@ -44,7 +44,7 @@ func ValidateEpochIdentifierInterface(i interface{}) error {
 	return nil
 }
 
-// ValidateEpochIdentifierInterface performs a stateless
+// ValidateEpochIdentifierString performs a stateless
 // validation of the epoch ID.
 func ValidateEpochIdentifierString(s string) error {
 	s = strings.TrimSpace(s)
