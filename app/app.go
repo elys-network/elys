@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -545,11 +546,7 @@ func (app *ElysApp) RegisterNodeService(clientCtx client.Context, config config.
 
 // GetMaccPerms returns a copy of the module account permissions
 func GetMaccPerms() map[string][]string {
-	dupMaccPerms := make(map[string][]string)
-	for k, v := range maccPerms {
-		dupMaccPerms[k] = v
-	}
-	return dupMaccPerms
+	return maps.Clone(maccPerms)
 }
 
 // SimulationManager returns the app SimulationManager
