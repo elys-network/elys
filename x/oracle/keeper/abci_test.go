@@ -103,11 +103,11 @@ func (suite *KeeperTestSuite) TestEndBlock() {
 		return ethPriceData[i].Timestamp < ethPriceData[j].Timestamp
 	})
 
-	allPrices := suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "BTC")
+	allPrices := suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "BTC", true)
 	suite.Require().Equal(1, len(allPrices))
 	suite.Require().Equal(btcPriceData[len(btcPriceData)-1], allPrices[0])
 
-	allPrices = suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "ETH")
+	allPrices = suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "ETH", true)
 	suite.Require().Equal(1, len(allPrices))
 	suite.Require().Equal(ethPriceData[len(ethPriceData)-1], allPrices[0])
 }

@@ -156,7 +156,7 @@ func (suite *KeeperTestSuite) TestGetAllAssetPrice() {
 	for _, price := range priceData {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
 	}
-	allPrices := suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "BTC")
+	allPrices := suite.app.OracleKeeper.GetAllAssetPrice(suite.ctx, "BTC", true)
 	suite.Require().Equal(len(priceData), len(allPrices))
 }
 

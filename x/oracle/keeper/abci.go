@@ -10,7 +10,7 @@ func (k Keeper) EndBlock(ctx sdk.Context) {
 	assetInfos := k.GetAllAssetInfo(ctx)
 
 	for _, info := range assetInfos {
-		allAssetPrice := k.GetAllAssetPrice(ctx, info.Display)
+		allAssetPrice := k.GetAllAssetPrice(ctx, info.Display, true)
 		total := len(allAssetPrice)
 
 		// Need to sort it because order fetched from GetAllAssetPrice will not be in ascending order - depending on source
