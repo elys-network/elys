@@ -1,0 +1,4 @@
+- name: Clean Go build cache
+  run: |
+    go clean -cache -modcache -testcache || true
+    rm -rf /root/.cache/go-build /tmp/*
