@@ -142,7 +142,7 @@ func (k Keeper) GetAllAssetPrice(ctx sdk.Context, asset string, endBlocker bool)
 }
 
 func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, bool) {
-	if ctx.BlockHeight() > _startHeight && ctx.BlockHeight() <= _endHeight {
+	if ctx.BlockHeight() > _startHeight && ctx.BlockHeight() <= _endHeight && !pricesMap[asset].IsNil() {
 		return pricesMap[asset], true
 	} else {
 		// try out elys source
