@@ -77,12 +77,15 @@ func (app *ElysApp) setUpgradeHandler() {
 			)
 			if ctx.ChainID() == "elysicstestnet-1" {
 				sender = sdk.MustAccAddressFromBech32("elys1jeqlq99ustyug8rxgsrtmf3awzl83x535v3svykfwkkkr7049wxqgdt6ss")
-				amount = sdk.NewCoins(sdk.NewInt64Coin("ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9", 100000000), sdk.NewInt64Coin("uelys", 1000000000))
+				//amount = sdk.NewCoins(sdk.NewInt64Coin("ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9", 100000000), sdk.NewInt64Coin("uelys", 1000000000))
+				amount = sdk.NewCoins()
 			}
 			cacheCtx, write := ctx.CacheContext()
-			err := app.BankKeeper.SendCoins(cacheCtx, sender, receiver, amount)
-			if err == nil {
-				write()
+			if !amount.IsZero() {
+				err := app.BankKeeper.SendCoins(cacheCtx, sender, receiver, amount)
+				if err == nil {
+					write()
+				}
 			}
 
 			return vm, vmErr
