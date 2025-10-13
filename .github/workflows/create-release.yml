@@ -19,6 +19,12 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag }}
 
+      - name: Clean Go build cache
+        run: |
+          go clean -cache -modcache -testcache || true
+          rm -rf /root/.cache/go-build /tmp/* || true
+          sudo apt-get clean || true
+
       - name: Make release
         run: |
           sudo rm -rf dist
