@@ -22,7 +22,7 @@ import (
 func (k Keeper) BeginBlocker(ctx sdk.Context) error {
 	params := k.parameterKeeper.GetParams(ctx)
 	// convert balances in taker address to elys and burn them
-	if ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 && params.EnableTakerFeeSwap {
+	if params.EnableTakerFeeSwap && params.TakerFeeCollectionInterval > 0 && ctx.BlockHeight()%int64(params.TakerFeeCollectionInterval) == 0 {
 		k.ProcessTakerFee(ctx)
 	}
 	return nil
@@ -244,11 +244,14 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			Quo(edenDenomPrice)
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
+		newEdenAllocatedForPoolAmount := newEdenAllocatedForPool.Dec().TruncateInt()
 		if pool.EnableEdenRewards {
 			newEdenAllocatedForPool = poolShareEdenEnable.Mul(osmomath.BigDecFromSDKInt(lpsEdenAmount))
 			newEdenAllocatedForPool = osmomath.MinBigDec(newEdenAllocatedForPool, poolMaxEdenAmount)
-			if newEdenAllocatedForPool.IsPositive() {
-				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.Dec().TruncateInt())})
+
+			newEdenAllocatedForPoolAmount = newEdenAllocatedForPool.Dec().TruncateInt()
+			if newEdenAllocatedForPoolAmount.IsPositive() {
+				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPoolAmount)})
 				if err != nil {
 					return err
 				}
@@ -270,8 +273,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		k.AddEdenInfo(ctx, newEdenAllocatedForPool)
 
 		// Distribute Eden
-		if pool.EnableEdenRewards {
-			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.Dec().TruncateInt())
+		if pool.EnableEdenRewards && newEdenAllocatedForPoolAmount.IsPositive() {
+			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPoolAmount)
 		}
 		// Distribute Gas fees + Dex rewards (USDC)
 		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).Dec().TruncateInt())
