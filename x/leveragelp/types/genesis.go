@@ -37,7 +37,7 @@ func (gs GenesisState) Validate() error {
 	positionIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.PositionList {
-		key := GetPositionKey(sdk.MustAccAddressFromBech32(elem.Address), elem.Id)
+		key := GetPositionKey(elem.AmmPoolId, sdk.MustAccAddressFromBech32(elem.Address), elem.Id)
 		index := string(key)
 		if _, ok := positionIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for pool")

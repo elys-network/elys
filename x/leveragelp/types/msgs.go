@@ -139,8 +139,14 @@ func (msg *MsgAddPool) ValidateBasic() error {
 	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.PoolMaxLeverageRatio, "PoolMaxLeverageRatio"); err != nil {
 		return err
 	}
+	if err = utils.CheckLegacyDecNilAndNegative(msg.Pool.AdlTriggerRatio, "AdlTriggerRatio"); err != nil {
+		return err
+	}
 	if !msg.Pool.PoolMaxLeverageRatio.GT(math.LegacyZeroDec()) || !msg.Pool.PoolMaxLeverageRatio.LT(math.LegacyOneDec()) {
 		return errors.New("invalid pool max leverage ratio")
+	}
+	if msg.Pool.AdlTriggerRatio.LT(msg.Pool.PoolMaxLeverageRatio) {
+		return errors.New("adl trigger ratio must be greater than max leverage ratio")
 	}
 	return nil
 }

@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -10,9 +9,9 @@ import (
 )
 
 // RemovePool removes a pool from the store
-func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
+func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(index))
+	store.Delete(types.PoolKey(poolId))
 }
 
 // GetAllPools returns all pool
@@ -38,11 +37,6 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(types.PoolKey(pool.AmmPoolId), b)
 }
 
-func (k Keeper) DeletePool(ctx sdk.Context, poolId uint64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(poolId))
-}
-
 // GetPool returns a pool from its index
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
@@ -56,62 +50,4 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
-}
-
-func (k Keeper) SetLeveragedAmount(ctx sdk.Context) {
-	pools := k.GetAllPools(ctx)
-	for _, pool := range pools {
-		ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-		if !found {
-			continue
-		}
-		for _, asset := range ammPool.PoolAssets {
-			pool.AssetLeverageAmounts = append(pool.AssetLeverageAmounts, &types.AssetLeverageAmount{
-				Denom:           asset.Token.Denom,
-				LeveragedAmount: sdkmath.ZeroInt(),
-			})
-		}
-		k.SetPool(ctx, pool)
-	}
-
-	iterator := k.GetPositionIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		pool, found := k.GetPool(ctx, position.AmmPoolId)
-		if !found {
-			continue
-		}
-		pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, position.LeveragedLpAmount, true)
-		k.SetPool(ctx, pool)
-	}
-}
-
-func (k Keeper) V21Migration(ctx sdk.Context) {
-	pool, found := k.GetPool(ctx, 2)
-	if !found {
-		return
-	}
-	pool.LeveragedLpAmount = sdkmath.NewInt(0)
-	k.SetPool(ctx, pool)
-
-	iterator := k.GetPositionIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		if position.AmmPoolId == 2 {
-			pool, found := k.GetPool(ctx, position.AmmPoolId)
-			if !found {
-				continue
-			}
-
-			pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(position.LeveragedLpAmount)
-			pool.Health = k.CalculatePoolHealth(ctx, &pool)
-			k.SetPool(ctx, pool)
-		}
-	}
 }

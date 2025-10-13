@@ -5,6 +5,6 @@ import (
 )
 
 func (m Migrator) V11Migration(ctx sdk.Context) error {
-	m.keeper.MigratePositionHealth(ctx)
+	//m.keeper.MigratePositionHealth(ctx)
 	return nil
 }

@@ -276,27 +276,25 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 }
 
 func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
-	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	positions := k.leveragelp.GetPositionsForAddress(ctx, user)
 	totalValue := osmomath.ZeroBigDec()
 	totalBorrow := osmomath.ZeroBigDec()
 	netValue := osmomath.ZeroBigDec()
-	if err == nil {
-		for _, position := range positions {
-			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
-			if !found {
-				continue
-			}
-			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
-			amount := position.GetBigDecLeveragedLpAmount()
-			totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
-			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
-			collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
-			liab := debt.GetBigDecTotalLiablities()
-			totalBorrow = totalBorrow.Add(liab.Mul(collateralDenomPrice))
+	for _, position := range positions {
+		pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+		if !found {
+			continue
 		}
-		netValue = totalValue.Sub(totalBorrow)
+		info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+		amount := position.GetBigDecLeveragedLpAmount()
+		totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
+		// USD value of debt
+		debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+		collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+		liab := debt.GetBigDecTotalLiablities()
+		totalBorrow = totalBorrow.Add(liab.Mul(collateralDenomPrice))
 	}
+	netValue = totalValue.Sub(totalBorrow)
 	return totalValue, totalBorrow, netValue
 }
 

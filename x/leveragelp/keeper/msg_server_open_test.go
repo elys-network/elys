@@ -84,6 +84,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 			AmmPoolId:            poolId,
 			LeverageMax:          sdkmath.LegacyMustNewDecFromStr("10"),
 			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.9999"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &addPoolMsg)
@@ -176,7 +177,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "pool does not exist",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6"))
+				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"), sdkmath.LegacyMustNewDecFromStr("0.6"), sdkmath.LegacyMustNewDecFromStr("0.8"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				suite.SetMaxOpenPositions(20)
@@ -209,7 +210,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "asset not found in amm pool",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2, sdkmath.LegacyNewDec(60), sdkmath.LegacyMustNewDecFromStr("0.6"))
+				pool := types.NewPool(2, sdkmath.LegacyNewDec(60), sdkmath.LegacyMustNewDecFromStr("0.6"), sdkmath.LegacyMustNewDecFromStr("0.8"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				amm_pool := ammtypes.Pool{PoolId: 2, Address: ammtypes.NewPoolAddress(2).String(), TotalShares: sdk.Coin{Amount: sdkmath.NewInt(100)}}
 				suite.app.AmmKeeper.SetPool(suite.ctx, amm_pool)

@@ -58,6 +58,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 			AmmPoolId:            poolId,
 			LeverageMax:          sdkmath.LegacyNewDec(10),
 			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.99"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.9999"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
@@ -112,6 +113,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 				Creator:  addresses[0].String(),
 				Position: 2,
 				Price:    sdkmath.LegacyOneDec().MulInt64(10),
+				PoolId:   1,
 			},
 			expectErr:    true,
 			expectErrMsg: types.ErrPositionDoesNotExist.Error(),
@@ -128,6 +130,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 				Creator:  addresses[0].String(),
 				Position: 1,
 				Price:    sdkmath.LegacyOneDec().MulInt64(10),
+				PoolId:   1,
 			},
 			expectErr:    false,
 			expectErrMsg: "",
@@ -137,7 +140,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
 			},
 			postValidateFunc: func() {
-				position, found := suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, addresses[0], 1)
+				position, found := suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, 1, addresses[0], 1)
 				suite.Require().True(found)
 				suite.Require().Equal(position.StopLossPrice, sdkmath.LegacyOneDec().MulInt64(10))
 			},

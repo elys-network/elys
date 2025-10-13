@@ -220,6 +220,7 @@ func TestMsgAddPool(t *testing.T) {
 				msg.Authority = sample.AccAddress()
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(3)
 				msg.Pool.PoolMaxLeverageRatio = sdkmath.LegacyOneDec().QuoInt64(3)
+				msg.Pool.AdlTriggerRatio = sdkmath.LegacyOneDec().QuoInt64(3)
 			},
 			errMsg: "",
 		},
@@ -252,6 +253,24 @@ func TestMsgAddPool(t *testing.T) {
 				msg.Pool.LeverageMax = sdkmath.LegacyOneDec()
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
+		},
+		{
+			name: "Adl trigger is negative",
+			setter: func() {
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(3)
+				msg.Pool.AdlTriggerRatio = sdkmath.LegacyOneDec().MulInt64(-1)
+
+			},
+			errMsg: "AdlTriggerRatio is negative",
+		},
+		{
+			name: "Adl trigger is less than leverage ratio",
+			setter: func() {
+				msg.Pool.AdlTriggerRatio = sdkmath.LegacyOneDec().QuoInt64(4)
+				msg.Pool.PoolMaxLeverageRatio = sdkmath.LegacyOneDec().QuoInt64(3)
+
+			},
+			errMsg: "adl trigger ratio must be greater than max leverage ratio",
 		},
 	}
 	for _, tt := range tests {

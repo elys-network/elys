@@ -170,7 +170,6 @@ func (suite *KeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
@@ -190,7 +189,6 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price.Dec(),
-			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})

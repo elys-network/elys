@@ -5,6 +5,6 @@ import (
 )
 
 func (m Migrator) V21Migration(ctx sdk.Context) error {
-	m.keeper.V21Migration(ctx)
+	//m.keeper.V21Migration(ctx)
 	return nil
 }

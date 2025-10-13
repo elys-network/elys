@@ -11,7 +11,7 @@ import (
 func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		// It is possible that this pool haven't been enabled
+		// It is possible that this pool hasn't been enabled
 		return nil
 	}
 	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
@@ -26,6 +26,10 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 		}
 	}
 
+	// Check for division by zero
+	if ammPool.TotalShares.Amount.IsZero() {
+		return fmt.Errorf("amm pool %d has zero total shares", ammPool.PoolId)
+	}
 	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	maxRatio := leveragePool.MaxLeveragelpRatio.Add(params.ExitBuffer)
@@ -43,16 +47,34 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
+	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		// It is possible that this pool hasn't been enabled
+		return nil
+	}
+	k.UpdatePoolHealth(ctx, &leveragePool)
 	return nil
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
+	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		// It is possible that this pool hasn't been enabled
+		return nil
+	}
+	k.UpdatePoolHealth(ctx, &leveragePool)
 	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
+	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		// It is possible that this pool hasn't been enabled
+		return nil
+	}
+	k.UpdatePoolHealth(ctx, &leveragePool)
 	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 

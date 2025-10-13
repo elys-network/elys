@@ -59,8 +59,10 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	enablePoolMsg := types.MsgAddPool{
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
-			AmmPoolId:   1,
-			LeverageMax: sdkmath.LegacyNewDec(10),
+			AmmPoolId:            1,
+			LeverageMax:          sdkmath.LegacyNewDec(10),
+			PoolMaxLeverageRatio: sdkmath.LegacyMustNewDecFromStr("0.35"),
+			AdlTriggerRatio:      sdkmath.LegacyMustNewDecFromStr("0.37"),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
@@ -123,7 +125,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	})
 	suite.Require().NoError(err)
-	position2, err := k.GetPosition(suite.ctx, position.GetOwnerAddress(), position.Id)
+	position2, err := k.GetPosition(suite.ctx, 1, position.GetOwnerAddress(), position.Id)
 	suite.Require().NoError(err)
 	suite.Require().Equal(position2.Address, addr.String())
 	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")

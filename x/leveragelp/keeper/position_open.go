@@ -18,13 +18,11 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64)
 		return nil, types.ErrLeverageTooSmall
 	}
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
-	position.Id = k.GetPositionCount(ctx) + 1
 	position.StopLossPrice = msg.StopLossPrice
 	position.BorrowPoolId = borrowPool
-	k.SetPositionCount(ctx, position.Id)
 
-	openCount := k.GetOpenPositionCount(ctx)
-	k.SetOpenPositionCount(ctx, openCount+1)
+	// Use atomic increment to prevent race conditions
+	position.Id = k.IncrementPositionCounter(ctx, position.AmmPoolId)
 
 	// Call the function to process the open long logic.
 	return k.ProcessOpenLong(ctx, position, msg.AmmPoolId, msg)
@@ -57,12 +55,14 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 
 	}
 
-	event := sdk.NewEvent(types.EventOpen,
+	event := sdk.NewEvent(types.EventOpenConsolidate,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("poolId", strconv.FormatUint(position.AmmPoolId, 10)),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("leverage_lp_amount", position.LeveragedLpAmount.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 
@@ -108,7 +108,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// Update the pool health.
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
-	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, shares, true)
+	pool.UpdateAssetLeveragedAmount(position.Collateral.Denom, shares, true)
 	k.UpdatePoolHealth(ctx, &pool)
 
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
