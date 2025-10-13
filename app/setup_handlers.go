@@ -108,7 +108,7 @@ func (app *ElysApp) setUpgradeStore() {
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{"vaults"},
 		}
-		if upgradeInfo.Name == "v6.6.0-rc0" {
+		if upgradeInfo.Name == "v6.6.0-rc0" || upgradeInfo.Name == "v6.6-rc0" {
 			storeUpgrades = storetypes.StoreUpgrades{
 				// Added: []string{ratelimittypes.StoreKey},
 				//Renamed: []storetypes.StoreRename{},
