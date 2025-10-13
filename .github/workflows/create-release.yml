@@ -22,8 +22,9 @@ jobs:
       - name: Clean Go build cache
         run: |
           go clean -cache -modcache -testcache || true
-          rm -rf /root/.cache/go-build /tmp/* || true
-          sudo apt-get clean || true
+          rm -rf ~/.cache/go-build || true
+          rm -rf $(go env GOCACHE) || true
+          rm -rf $(go env GOMODCACHE) || true
 
       - name: Make release
         run: |
