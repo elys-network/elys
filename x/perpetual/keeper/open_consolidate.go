@@ -96,7 +96,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		}
 	}
 
-	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, true); err != nil {
+	if err = k.CheckLowPoolHealthAndMinimumCustody(ctx, poolId, msg.Position); err != nil {
 		return nil, err
 	}
 
