@@ -106,7 +106,14 @@ func (app *ElysApp) setUpgradeStore() {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{ratelimittypes.StoreKey},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{ratelimittypes.StoreKey},
+			//Deleted: []string{"vaults"},
+		}
+		if upgradeInfo.Name == "v6.6.0-rc0" {
+			storeUpgrades = storetypes.StoreUpgrades{
+				// Added: []string{ratelimittypes.StoreKey},
+				//Renamed: []storetypes.StoreRename{},
+				Deleted: []string{"vaults"},
+			}
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
