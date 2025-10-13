@@ -38,6 +38,8 @@ builds:
     binary: elysd
     hooks:
       pre:
+        - go clean -cache -modcache -testcache || true
+        - sudo apt clean
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=oa64-clang
@@ -67,6 +69,8 @@ builds:
     binary: elysd
     hooks:
       pre:
+        - go clean -cache -modcache -testcache || true
+        - sudo apt clean
         - wget -O /lib/libwasmvm_muslc.x86_64.a https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a
         - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.x86_64.a" | sha256sum -c
         - cp /lib/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.a
@@ -106,6 +110,8 @@ builds:
     binary: elysd
     hooks:
       pre:
+        - go clean -cache -modcache -testcache || true
+        - sudo apt clean
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/libwasmvm_muslc.aarch64.a
     goos:
       - linux
