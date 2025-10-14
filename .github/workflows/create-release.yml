@@ -6,6 +6,13 @@ on:
       - v*
   # Add this manual trigger
   workflow_dispatch:
+    # Add an input field for the tag or branch name
+    inputs:
+      git-ref:
+        description: 'The git ref (tag, branch, or commit SHA) to run on'
+        required: true
+        default: 'main' # The default value
+
 
 permissions:
   contents: write
