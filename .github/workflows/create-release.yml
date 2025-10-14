@@ -13,6 +13,13 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     steps:
+      - name: Clean up Docker
+        run: |
+          docker system prune -af
+      - name: Clean Go cache
+        run: |
+          go clean -cache
+
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
