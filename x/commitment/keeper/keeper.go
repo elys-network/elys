@@ -16,7 +16,7 @@ import (
 	ptypes "github.com/elys-network/elys/v7/x/parameter/types"
 )
 
-// Interface declearation
+// Interface declaration
 type CommitmentKeeperI interface {
 	// Iterate all commitments
 	IterateCommitments(sdk.Context, func(types.Commitments) (stop bool))
