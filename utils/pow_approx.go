@@ -37,7 +37,7 @@ func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 			break
 		}
 		if n > powIterationLimit {
-			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Exp for: %s", powIterationLimit, x.String())
+			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while computing Exp for: %s", powIterationLimit, x.String())
 		}
 	}
 
@@ -96,7 +96,7 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 		}
 
 		if n > powIterationLimit {
-			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Ln for: %s", powIterationLimit, x.String())
+			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while computing Ln for: %s", powIterationLimit, x.String())
 		}
 
 		yPower = yPower.Mul(y)

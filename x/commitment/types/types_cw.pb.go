@@ -694,7 +694,7 @@ type ValidatorDetail struct {
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Voting power percentage for this validator.
 	VotingPower cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=voting_power,json=votingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"voting_power"`
-	// Comission percentage for the validator.
+	// Commission percentage for the validator.
 	Commission cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=commission,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"commission"`
 	// The staked amount the user has w/ this validator
 	// Only available if there's some and if address.
@@ -790,7 +790,7 @@ type StakingValidator struct {
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Voting power percentage for this validator.
 	VotingPower cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=voting_power,json=votingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"voting_power"`
-	// Comission percentage for the validator.
+	// Commission percentage for the validator.
 	Commission cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=commission,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"commission"`
 }
 
