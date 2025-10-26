@@ -83,7 +83,6 @@ func TestCmdPerformActionJoinPool(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
 				tc.vaultId,
@@ -174,7 +173,6 @@ func TestCmdPerformActionExitPool(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
 				tc.vaultId,
@@ -272,7 +270,6 @@ func TestCmdPerformActionSwapByDenom(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
 				tc.vaultId,
