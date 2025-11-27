@@ -26,6 +26,26 @@ jobs:
           rm -rf $(go env GOCACHE) || true
           rm -rf $(go env GOMODCACHE) || true
 
+      - name: Hacky Disk Space Cleanup
+        run: |
+          # 1. Delete large pre-installed packages (frees ~10-12 GB)
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/lib/jvm
+
+          # 2. Clean apt cache (frees ~200 MB)
+          sudo apt-get clean
+
+          # 3. Remove docker images (frees ~3 GB)
+          docker system prune -a -f
+
+          # 4. Check space
+          df -h
+
       - name: Make release
         run: |
           sudo rm -rf dist
