@@ -169,13 +169,13 @@ func (suite *KeeperTestSuite) TestClosePositionsOnADL() {
 	leveragePool, found = suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
 	suite.Require().True(found)
 
-	err = suite.app.LeveragelpKeeper.ClosePositionsOnADL(suite.ctx, leveragePool)
+	err = suite.app.LeveragelpKeeper.AutoClosePositions(suite.ctx, leveragePool)
 	suite.Require().NoError(err)
 
 	leveragePool, found = suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
 	suite.Require().True(found)
 
-	err = suite.app.LeveragelpKeeper.ClosePositionsOnADL(suite.ctx, leveragePool)
+	err = suite.app.LeveragelpKeeper.AutoClosePositions(suite.ctx, leveragePool)
 	suite.Require().NoError(err)
 
 }

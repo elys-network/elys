@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"slices"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -14,16 +14,17 @@ import (
 	stabletypes "github.com/elys-network/elys/v6/x/stablestake/types"
 )
 
-func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	enabledPools := k.GetParams(ctx).EnabledPools
-	found := slices.Contains(enabledPools, msg.AmmPoolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
-	}
-
-	return k.Keeper.Open(ctx, msg)
+func (k msgServer) Open(_ context.Context, _ *types.MsgOpen) (*types.MsgOpenResponse, error) {
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//
+	//enabledPools := k.GetParams(ctx).EnabledPools
+	//found := slices.Contains(enabledPools, msg.AmmPoolId)
+	//if !found {
+	//	return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	//}
+	//
+	//return k.Keeper.Open(ctx, msg)
+	return nil, errors.New("cannot open leveraged lp position")
 }
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
