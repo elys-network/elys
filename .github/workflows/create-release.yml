@@ -26,7 +26,7 @@ jobs:
           rm -rf $(go env GOCACHE) || true
           rm -rf $(go env GOMODCACHE) || true
 
-      - name: Hacky Disk Space Cleanup
+      - name: Disk Space Cleanup
         run: |
           # 1. Delete large pre-installed packages (frees ~10-12 GB)
           sudo rm -rf /usr/share/dotnet
