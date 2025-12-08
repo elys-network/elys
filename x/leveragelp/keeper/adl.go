@@ -53,7 +53,7 @@ func (k Keeper) AutoClosePositions(ctx sdk.Context, leveragePool types.Pool) err
 
 	pageReq := &query.PageRequest{
 		Limit:      100,
-		CountTotal: true,
+		CountTotal: false,
 	}
 
 	positions, _, err := k.GetPositionsForPool(ctx, leveragePool.AmmPoolId, pageReq)
