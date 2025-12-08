@@ -48,54 +48,13 @@ func (k Keeper) GetAllADLCounter(ctx sdk.Context) []types.ADLCounter {
 }
 
 func (k Keeper) AutoClosePositions(ctx sdk.Context, leveragePool types.Pool) error {
-	// closing ratio = (current ratio - max leverage) / current ratio
-	// we use max leverage instead of adl trigger ratio because then this whole thing will be asymptotic and
-	// process will never end. adl trigger stops that by being higher
-	//ammPool, err := k.GetAmmPool(ctx, leveragePool.AmmPoolId)
-	//if err != nil {
-	//	return err
-	//}
-
-	// Check for division by zero
-	//if ammPool.TotalShares.Amount.IsZero() {
-	//	return fmt.Errorf("amm pool %d has zero total shares", leveragePool.AmmPoolId)
-	//}
-	//currentLeverageRatio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
-	//
-	//if currentLeverageRatio.LTE(leveragePool.AdlTriggerRatio) {
-	//	return nil
-	//}
-	//closingRatio := currentLeverageRatio.Sub(leveragePool.MaxLeveragelpRatio).Quo(currentLeverageRatio)
-	//if closingRatio.IsZero() || closingRatio.IsNegative() {
-	//	err := fmt.Errorf("closing ratio is <= 0 for pool while triggering adl for pool id %d", leveragePool.AmmPoolId)
-	//	ctx.Logger().Error(err.Error())
-	//	return err
-	//}
-	//
-	//if closingRatio.GT(math.LegacyOneDec()) {
-	//	closingRatio = math.LegacyOneDec()
-	//}
 
 	closingRatio := math.LegacyOneDec()
 
-	params := k.GetParams(ctx)
-
 	pageReq := &query.PageRequest{
-		Limit:      uint64(params.NumberPerBlock),
+		Limit:      100,
 		CountTotal: true,
 	}
-	//adlCounter := k.GetADLCounter(ctx, leveragePool.AmmPoolId)
-	//if len(adlCounter.NextKey) != 0 {
-	//	pageReq.Key = adlCounter.NextKey
-	//} else {
-	//	pageReq.Offset = 0
-	//}
-	//totalOpen := k.GetPositionCounter(ctx, leveragePool.AmmPoolId).TotalOpen
-	//if adlCounter.Counter+uint64(params.NumberPerBlock) >= totalOpen {
-	//	adlCounter.Counter = 0
-	//} else {
-	//	adlCounter.Counter += uint64(params.NumberPerBlock)
-	//}
 
 	positions, _, err := k.GetPositionsForPool(ctx, leveragePool.AmmPoolId, pageReq)
 	if err != nil {
@@ -103,20 +62,16 @@ func (k Keeper) AutoClosePositions(ctx sdk.Context, leveragePool types.Pool) err
 		return err
 	}
 
-	//if adlCounter.Counter == 0 {
-	//	adlCounter.NextKey = nil
-	//} else {
-	//	adlCounter.NextKey = pageResponse.NextKey
-	//}
-	//k.SetADLCounter(ctx, adlCounter)
-
 	for _, position := range positions {
-		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &leveragePool, closingRatio, false)
+		cacheCtx, writeCache := ctx.CacheContext()
+		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(cacheCtx, &position, &leveragePool, closingRatio, false)
 		if err != nil {
-			ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
-			return err
+			ctx.Logger().Error(errorsmod.Wrap(err, "error executing auto close").Error())
+			continue
+		} else {
+			writeCache()
+			k.EmitCloseEvent(ctx, "auto_close", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue)
 		}
-		k.EmitCloseEvent(ctx, "auto_close", position, finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue)
 	}
 	return nil
 }
