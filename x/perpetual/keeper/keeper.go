@@ -158,7 +158,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	} else {
 		totalAmount = liabilitiesInCollateral
 	}
-	_, err = k.SendFeesToPoolRevenueAndTakerCollectionOnOpen(ctx, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
+	_, err = k.SendFeesToPoolRevenueAndTakerCollection(ctx, true, senderAddress, mtp.Address, totalAmount, mtp.CollateralAsset, ammPool, &totalPerpFees, totalAmount)
 	if err != nil {
 		return types.PerpetualFees{}, err
 	}
@@ -315,7 +315,7 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 // Send fees to pool revenue and taker collection addresses
 // Fee is swapped from pool revenue address and then transferred to masterchef module for distribution
 // Fee sent to taker collection address is swapped and burnt
-func (k Keeper) SendFeesToPoolRevenueAndTakerCollectionOnOpen(ctx sdk.Context, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
+func (k Keeper) SendFeesToPoolRevenueAndTakerCollection(ctx sdk.Context, onOpen bool, senderAddress sdk.AccAddress, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
 	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
 	if err != nil {
 		return math.ZeroInt(), err
@@ -338,9 +338,17 @@ func (k Keeper) SendFeesToPoolRevenueAndTakerCollectionOnOpen(ctx sdk.Context, s
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
 		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
 		perpFees.PerpFees = perpFees.PerpFees.Add(sendToMasterchefCoin)
-		err := k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
-		if err != nil {
-			return math.ZeroInt(), err
+		if onOpen {
+			err = k.bankKeeper.SendCoins(ctx, senderAddress, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
+			if err != nil {
+				return math.ZeroInt(), err
+			}
+		} else {
+			// senderAddress is same as amm pool address
+			err = k.SendFromAmmPool(ctx, ammPool, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
+			if err != nil {
+				return math.ZeroInt(), err
+			}
 		}
 
 		err = k.amm.OnCollectFee(ctx, *ammPool, sdk.NewCoins(sendToMasterchefCoin))
@@ -357,60 +365,19 @@ func (k Keeper) SendFeesToPoolRevenueAndTakerCollectionOnOpen(ctx sdk.Context, s
 		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
 		perpFees.TakerFees = perpFees.TakerFees.Add(sendToTakerCollectionCoin)
 
-		err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
-		if err != nil {
-			return math.ZeroInt(), err
-		}
-	}
-	return sendToMasterchef.Add(sendToTakerCollection), nil
-}
-
-func (k Keeper) SendFeesToPoolRevenueAndTakerCollectionOnClose(ctx sdk.Context, tierAddressStr string, liabilitiesInCollateral math.Int, collateralDenom string, ammPool *ammtypes.Pool, perpFees *types.PerpetualFees, maxTotalFees math.Int) (math.Int, error) {
-	tierAddress, err := sdk.AccAddressFromBech32(tierAddressStr)
-	if err != nil {
-		return math.ZeroInt(), err
-	}
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, tierAddress)
-	params := k.GetParams(ctx)
-	perpetualFee := ammtypes.ApplyDiscount(params.GetBigDecPerpetualSwapFee(), tier.GetBigDecDiscount())
-	perpsTakersFee := k.GetParams(ctx).GetBigDecTakerFees()
-	sendToMasterchef := perpetualFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
-	sendToTakerCollection := perpsTakersFee.Dec().Mul(math.LegacyNewDecFromInt(liabilitiesInCollateral)).TruncateInt()
-	totalCalcFees := sendToMasterchef.Add(sendToTakerCollection)
-
-	if maxTotalFees.GT(math.ZeroInt()) && totalCalcFees.GT(maxTotalFees) {
-		// scale down the fees to maxTotalFees
-		sendToMasterchef = maxTotalFees.Mul(sendToMasterchef).Quo(totalCalcFees)
-		sendToTakerCollection = maxTotalFees.Mul(sendToTakerCollection).Quo(totalCalcFees)
-	}
-
-	if sendToMasterchef.IsPositive() {
-		rebalanceTreasury := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
-		sendToMasterchefCoin := sdk.NewCoin(collateralDenom, sendToMasterchef)
-		perpFees.PerpFees = perpFees.PerpFees.Add(sendToMasterchefCoin)
-		err = k.SendFromAmmPool(ctx, ammPool, rebalanceTreasury, sdk.NewCoins(sendToMasterchefCoin))
-		if err != nil {
-			return math.ZeroInt(), err
+		if onOpen {
+			err = k.bankKeeper.SendCoins(ctx, senderAddress, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
+			if err != nil {
+				return math.ZeroInt(), err
+			}
+		} else {
+			// senderAddress is same as amm pool address
+			err = k.SendFromAmmPool(ctx, ammPool, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
+			if err != nil {
+				return math.ZeroInt(), err
+			}
 		}
 
-		err = k.amm.OnCollectFee(ctx, *ammPool, sdk.NewCoins(sendToMasterchefCoin))
-		if err != nil {
-			return math.ZeroInt(), err
-		}
-	}
-
-	if sendToTakerCollection.IsPositive() {
-		takerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
-		if err != nil {
-			return math.ZeroInt(), err
-		}
-		sendToTakerCollectionCoin := sdk.NewCoin(collateralDenom, sendToTakerCollection)
-		perpFees.TakerFees = perpFees.TakerFees.Add(sendToTakerCollectionCoin)
-
-		err = k.SendFromAmmPool(ctx, ammPool, takerAddress, sdk.NewCoins(sendToTakerCollectionCoin))
-		if err != nil {
-			return math.ZeroInt(), err
-		}
 	}
 	return sendToMasterchef.Add(sendToTakerCollection), nil
 }
