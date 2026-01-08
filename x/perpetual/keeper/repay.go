@@ -10,12 +10,8 @@ import (
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
 func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio math.LegacyDec, baseCurrency string, perpFees *types.PerpetualFees, repayAmount math.Int) error {
 	if returnAmount.IsPositive() {
-		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
-		if err != nil {
-			return err
-		}
 		// send fees to masterchef and taker collection address
-		totalFees, err := k.SendFeesToPoolRevenueAndTakerCollection(ctx, ammPoolAddr, mtp.Address, repayAmount, mtp.CustodyAsset, ammPool, perpFees, returnAmount)
+		totalFees, err := k.SendFeesToPoolRevenueAndTakerCollectionOnClose(ctx, mtp.Address, repayAmount, mtp.CustodyAsset, ammPool, perpFees, returnAmount)
 		if err != nil {
 			return err
 		}
