@@ -35,7 +35,7 @@ jobs:
           extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
-          NODE=https://rpc.testnet.elys.network:443
+          NODE=https://elys-testnet-rpc.publicnode.com:443
           OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
           # import proposers key
@@ -55,7 +55,7 @@ jobs:
           echo "current version: ${ELYS_VERSION}"
           echo "upgrade_version: $upgrade_version"
 
-          GOV_ID=127
+          GOV_ID=128
 
           # vote on proposal
           ${ELYSD} tx gov vote $GOV_ID yes --from=proposer1 $OPTIONS
