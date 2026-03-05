@@ -66,7 +66,7 @@ func (k Keeper) AutoClosePositions(ctx sdk.Context, leveragePool types.Pool) err
 		cacheCtx, writeCache := ctx.CacheContext()
 		finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, slippageValue, swapFeeValue, takerFeeValue, weightBreakingFeeValue, err := k.CheckHealthStopLossThenRepayAndClose(cacheCtx, &position, &leveragePool, closingRatio, false)
 		if err != nil {
-			ctx.Logger().Error(errorsmod.Wrap(err, "error executing auto close").Error())
+			//ctx.Logger().Error(errorsmod.Wrap(err, "error executing auto close").Error())
 			continue
 		} else {
 			writeCache()
