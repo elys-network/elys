@@ -39,6 +39,10 @@ const (
 	ParamsKey = "Params/value/"
 )
 
+var (
+	LastProcessedKeyPrefix = []byte{0x06}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
@@ -125,4 +129,8 @@ func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte
 	// We prefix with address bytes here so that SwapRequest becomes deterministically random to prevent MEV attacks.
 	// We do not add address length prefix here, as 32 bytes address might suffer as then they always will be in the end
 	return append(prefix, append(sender, sdk.Uint64ToBigEndian(index)...)...)
+}
+
+func GetLastProcessedKey(poolId uint64) []byte {
+	return append(LastProcessedKeyPrefix, sdk.Uint64ToBigEndian(poolId)...)
 }

@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"bytes"
+	"cosmossdk.io/math"
 	"encoding/json"
+	commitmenttypes "github.com/elys-network/elys/v6/x/commitment/types"
 	"strings"
 	"time"
 
@@ -181,6 +184,70 @@ func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
 	}
 }
 
+func (k Keeper) CloseLpPositions(ctx sdk.Context) {
+	pools := k.GetAllPool(ctx)
+	msgServerImp := NewMsgServerImpl(k)
+	for _, pool := range pools {
+		denom := types.GetPoolShareDenom(pool.PoolId)
+		startAddr := k.GetLastProccessed(ctx, pool.PoolId)
+
+		count := 0
+		var list []commitmenttypes.Commitments
+		var lastProcessedAddr sdk.AccAddress
+
+		k.GetCommitmentKeeper().IterateCommitmentsFromAddress(ctx, startAddr, func(commitment commitmenttypes.Commitments) (stop bool) {
+			currentAddr, err := sdk.AccAddressFromBech32(commitment.Creator)
+			if err != nil {
+				return false // Skip invalid addresses
+			}
+
+			if startAddr != nil && bytes.Equal(startAddr, currentAddr) {
+				return false
+			}
+
+			count++
+			lastProcessedAddr = currentAddr
+
+			// Filter logic
+			for _, v := range commitment.CommittedTokens {
+				if v.Denom == denom {
+					list = append(list, commitment)
+					break
+				}
+			}
+
+			if count == 100 {
+				return true
+			}
+			return false
+		})
+
+		for _, commitment := range list {
+			amount := math.ZeroInt()
+			for _, v := range commitment.CommittedTokens {
+				if v.Denom == denom {
+					amount = v.Amount
+					break
+				}
+			}
+
+			if amount.IsPositive() && amount.GT(math.OneInt()) {
+				cacheCtx, write := ctx.CacheContext()
+				_, err := msgServerImp.ExitPool(cacheCtx, types.NewMsgExitPool(commitment.Creator, pool.PoolId, sdk.Coins{}, amount.QuoRaw(2)))
+				if err == nil {
+					write()
+				}
+			}
+		}
+
+		if count == 100 {
+			k.SetLastProccessed(ctx, pool.PoolId, lastProcessedAddr)
+		} else {
+			k.DeleteLastProccessed(ctx, pool.PoolId)
+		}
+	}
+}
+
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
@@ -190,28 +257,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		bz, _ := json.Marshal(msgs)
 		k.Logger(ctx).Debug("Executed swap requests: " + string(bz))
 	}
-
-	// Set amm and accounted pools in oracle kv store
-	// TODO this is being used for price feeder, migrate to query in price feeder and the remove this
-	//ammPools := k.GetAllPool(ctx)
-	//for _, ammPool := range ammPools {
-	//	if ammPool.PoolParams.UseOracle {
-	//		oraclePool := oracletypes.Pool{
-	//			PoolId: ammPool.PoolId,
-	//		}
-	//
-	//		oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
-	//		for _, poolAsset := range ammPool.PoolAssets {
-	//			oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
-	//				Token:                  poolAsset.Token,
-	//				Weight:                 poolAsset.Weight,
-	//				ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
-	//			})
-	//		}
-	//		oraclePool.PoolAssets = oraclePoolAssets
-	//		k.oracleKeeper.SetPool(ctx, oraclePool)
-	//	}
-	//}
 
 	k.ClearOutdatedSlippageTrack(ctx)
 }
