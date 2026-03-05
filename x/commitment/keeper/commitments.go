@@ -125,6 +125,35 @@ func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments t
 	}
 }
 
+func (k Keeper) IterateCommitmentsFromAddress(
+	ctx sdk.Context,
+	startAddr sdk.AccAddress,
+	handlerFn func(commitments types.Commitments) (stop bool),
+) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	var startKey []byte
+	if len(startAddr) != 0 {
+		startKey = types.GetCommitmentsKey(startAddr)
+	} else {
+		startKey = types.CommitmentsKeyPrefix
+	}
+
+	endKey := storetypes.PrefixEndBytes(types.CommitmentsKeyPrefix)
+
+	iterator := store.Iterator(startKey, endKey)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var commitments types.Commitments
+		k.cdc.MustUnmarshal(iterator.Value(), &commitments)
+
+		if handlerFn(commitments) {
+			break
+		}
+	}
+}
+
 // NumberOfCommitments returns total number of commitment items
 func (k Keeper) TotalNumberOfCommitments(ctx sdk.Context) int64 {
 	params := k.GetParams(ctx)

@@ -19,6 +19,8 @@ var (
 	ParamKeyPrefix    = []byte{0x03}
 	AmmPoolKeyPrefix  = []byte{0x04}
 	PoolPrefixKey     = []byte{0x05}
+
+	LastProcessedKeyPrefix = []byte{0x06}
 )
 
 func GetDebtKey(owner sdk.AccAddress, poolId uint64) []byte {
@@ -35,4 +37,8 @@ func GetInterestKey(poolId uint64) []byte {
 
 func GetAmmPoolKey(id uint64) []byte {
 	return append(AmmPoolKeyPrefix, sdk.Uint64ToBigEndian(id)...)
+}
+
+func GetLastProcessedKey(poolId uint64) []byte {
+	return append(LastProcessedKeyPrefix, sdk.Uint64ToBigEndian(poolId)...)
 }

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
 	"cosmossdk.io/core/store"
 
@@ -70,4 +71,31 @@ func (k *Keeper) SetHooks(eh types.StableStakeHooks) *Keeper {
 	k.hooks = eh
 
 	return k
+}
+
+func (k *Keeper) GetCommitmentKeeper() *commitmentkeeper.Keeper {
+	return k.commitmentKeeper
+}
+
+func (k *Keeper) GetLastProccessed(ctx sdk.Context, id uint64) sdk.AccAddress {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetLastProcessedKey(id)
+	bz := kvStore.Get(key)
+	if bz != nil {
+		return sdk.AccAddress(bz)
+	} else {
+		return nil
+	}
+}
+
+func (k *Keeper) SetLastProccessed(ctx sdk.Context, id uint64, addr sdk.AccAddress) {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetLastProcessedKey(id)
+	kvStore.Set(key, addr)
+}
+
+func (k *Keeper) DeleteLastProccessed(ctx sdk.Context, id uint64) {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetLastProcessedKey(id)
+	kvStore.Delete(key)
 }
