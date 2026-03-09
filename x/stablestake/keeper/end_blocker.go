@@ -11,7 +11,7 @@ import (
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	allPools := k.GetAllPools(ctx)
 	msgServerImp := NewMsgServerImpl(k)
-
+	maxCount := 50
 	for _, pool := range allPools {
 		denom := types.GetShareDenomForPool(pool.Id)
 		startAddr := k.GetLastProccessed(ctx, pool.Id)
@@ -41,7 +41,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				}
 			}
 
-			if count == 100 {
+			if count == maxCount {
 				return true
 			}
 			return false
@@ -65,7 +65,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			}
 		}
 
-		if count == 100 {
+		if count == maxCount {
 			k.SetLastProccessed(ctx, pool.Id, lastProcessedAddr)
 		} else {
 			k.DeleteLastProccessed(ctx, pool.Id)

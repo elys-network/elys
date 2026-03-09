@@ -187,7 +187,11 @@ func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
 func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 	pools := k.GetAllPool(ctx)
 	msgServerImp := NewMsgServerImpl(k)
+	maxCount := 50
 	for _, pool := range pools {
+		if !pool.PoolParams.UseOracle {
+			continue
+		}
 		denom := types.GetPoolShareDenom(pool.PoolId)
 		startAddr := k.GetLastProccessed(ctx, pool.PoolId)
 
@@ -216,7 +220,7 @@ func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 				}
 			}
 
-			if count == 100 {
+			if count == maxCount {
 				return true
 			}
 			return false
@@ -240,7 +244,7 @@ func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 			}
 		}
 
-		if count == 100 {
+		if count == maxCount {
 			k.SetLastProccessed(ctx, pool.PoolId, lastProcessedAddr)
 		} else {
 			k.DeleteLastProccessed(ctx, pool.PoolId)
