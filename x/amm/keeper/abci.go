@@ -186,8 +186,16 @@ func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
 
 func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 	pools := k.GetAllPool(ctx)
-	msgServerImp := NewMsgServerImpl(k)
 	maxCount := 50
+
+	gasMeter := ctx.BlockGasMeter()
+	maxBlockGas := gasMeter.Limit()
+	safeGasThreshold := uint64(0)
+
+	if maxBlockGas > 0 {
+		safeGasThreshold = maxBlockGas * 2 / 5
+	}
+
 	for _, pool := range pools {
 		if !pool.PoolParams.UseOracle {
 			continue
@@ -195,24 +203,30 @@ func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 		denom := types.GetPoolShareDenom(pool.PoolId)
 		startAddr := k.GetLastProccessed(ctx, pool.PoolId)
 
-		count := 0
+		scannedCount := 0
 		var list []commitmenttypes.Commitments
-		var lastProcessedAddr sdk.AccAddress
+		var lastScannedAddr sdk.AccAddress // NEW: Track the furthest we've looked
 
 		k.GetCommitmentKeeper().IterateCommitmentsFromAddress(ctx, startAddr, func(commitment commitmenttypes.Commitments) (stop bool) {
+			if maxBlockGas > 0 && gasMeter.GasConsumed() > safeGasThreshold {
+				return true
+			}
+
 			currentAddr, err := sdk.AccAddressFromBech32(commitment.Creator)
 			if err != nil {
-				return false // Skip invalid addresses
+				k.Logger(ctx).Error("Invalid creator address in commitments skipped", "creator", commitment.Creator)
+				scannedCount++
+				return scannedCount >= maxCount
 			}
+
+			lastScannedAddr = currentAddr
 
 			if startAddr != nil && bytes.Equal(startAddr, currentAddr) {
 				return false
 			}
 
-			count++
-			lastProcessedAddr = currentAddr
+			scannedCount++
 
-			// Filter logic
 			for _, v := range commitment.CommittedTokens {
 				if v.Denom == denom {
 					list = append(list, commitment)
@@ -220,13 +234,18 @@ func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 				}
 			}
 
-			if count == maxCount {
-				return true
-			}
-			return false
+			return scannedCount >= maxCount
 		})
 
+		var lastSuccessfullyProcessed sdk.AccAddress = startAddr
+		gasExceeded := false
+
 		for _, commitment := range list {
+			if maxBlockGas > 0 && gasMeter.GasConsumed() > safeGasThreshold {
+				gasExceeded = true
+				break
+			}
+
 			amount := math.ZeroInt()
 			for _, v := range commitment.CommittedTokens {
 				if v.Denom == denom {
@@ -236,18 +255,54 @@ func (k Keeper) CloseLpPositions(ctx sdk.Context) {
 			}
 
 			if amount.IsPositive() && amount.GT(math.OneInt()) {
-				cacheCtx, write := ctx.CacheContext()
-				_, err := msgServerImp.ExitPool(cacheCtx, types.NewMsgExitPool(commitment.Creator, pool.PoolId, sdk.Coins{}, amount.QuoRaw(2)))
-				if err == nil {
-					write()
-				}
+				func() {
+					defer func() {
+						if r := recover(); r != nil {
+							k.Logger(ctx).Error("Panic recovered during ExitPool in EndBlocker", "poolId", pool.PoolId, "creator", commitment.Creator, "panic", r)
+						}
+					}()
+
+					cacheCtx, write := ctx.CacheContext()
+					exitCoins, _, _, _, _, err := k.ExitPool(cacheCtx, sdk.MustAccAddressFromBech32(commitment.Creator), pool.PoolId, amount.QuoRaw(2), sdk.Coins{}, "", false, true)
+
+					if err == nil {
+						write()
+						ctx.EventManager().EmitEvents(sdk.Events{
+							sdk.NewEvent(
+								"force_lp_close",
+								sdk.NewAttribute("user", commitment.Creator),
+								sdk.NewAttribute("amount", amount.QuoRaw(2).String()),
+								sdk.NewAttribute("exitCoins", exitCoins.String()),
+							),
+						})
+					} else {
+						k.Logger(ctx).Error("ExitPool failed gracefully", "poolId", pool.PoolId, "creator", commitment.Creator, "err", err)
+					}
+				}()
+			}
+
+			lastSuccessfullyProcessed, _ = sdk.AccAddressFromBech32(commitment.Creator)
+		}
+
+		if gasExceeded {
+			// If we hit the gas limit mid-list, save the last item we executed so we pick up exactly here next block.
+			if lastSuccessfullyProcessed != nil && !bytes.Equal(startAddr, lastSuccessfullyProcessed) {
+				k.SetLastProccessed(ctx, pool.PoolId, lastSuccessfullyProcessed)
+			}
+		} else {
+			// We finished the list successfully (or the list was empty).
+			if scannedCount < maxCount {
+				// We reached the absolute end of the KVStore for this pool.
+				k.DeleteLastProccessed(ctx, pool.PoolId)
+			} else if lastScannedAddr != nil {
+				// We hit the 50 item limit. Save the furthest address we scanned so we start there next time.
+				k.SetLastProccessed(ctx, pool.PoolId, lastScannedAddr)
 			}
 		}
 
-		if count == maxCount {
-			k.SetLastProccessed(ctx, pool.PoolId, lastProcessedAddr)
-		} else {
-			k.DeleteLastProccessed(ctx, pool.PoolId)
+		if gasExceeded || (maxBlockGas > 0 && gasMeter.GasConsumed() > safeGasThreshold) {
+			k.Logger(ctx).Info("Gas safety threshold reached, pausing CloseLpPositions until next block")
+			return
 		}
 	}
 }

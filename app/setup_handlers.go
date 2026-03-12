@@ -62,7 +62,24 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
-			return vm, vmErr
+			if vmErr != nil {
+				app.Logger().Error("Failed to run migrations", "err", vmErr)
+				return vm, vmErr // Stop execution immediately if migrations fail!
+			}
+
+			params, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
+			if err != nil {
+				app.Logger().Error("Failed to fetch consensus params during upgrade", "err", err)
+				return vm, err
+			}
+			params.Block.MaxGas = 200_000_000
+
+			err = app.ConsensusParamsKeeper.ParamsStore.Set(ctx, params)
+			if err != nil {
+				return nil, err
+			}
+
+			return vm, nil
 		},
 	)
 }
