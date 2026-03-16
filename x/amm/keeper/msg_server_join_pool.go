@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
@@ -20,28 +20,31 @@ import (
 // Balancer: TokensInMaxs provided as the argument must either contain no tokens or containing all assets in the pool.
 // * For the case of a not containing tokens, we simply perform calculation of sharesOut and needed amount of tokens for joining the pool
 func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*types.MsgJoinPoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//
+	//sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//neededLp, sharesOut, err := k.Keeper.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareAmountOut, msg.MaxAmountsIn)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//ctx.EventManager().EmitEvents(sdk.Events{
+	//	sdk.NewEvent(
+	//		sdk.EventTypeMessage,
+	//		sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+	//		sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+	//	),
+	//})
+	//
+	//return &types.MsgJoinPoolResponse{
+	//	ShareAmountOut: sharesOut,
+	//	TokenIn:        neededLp,
+	//}, nil
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return nil, err
-	}
+	return nil, fmt.Errorf("not allowed")
 
-	neededLp, sharesOut, err := k.Keeper.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareAmountOut, msg.MaxAmountsIn)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-		),
-	})
-
-	return &types.MsgJoinPoolResponse{
-		ShareAmountOut: sharesOut,
-		TokenIn:        neededLp,
-	}, nil
 }
