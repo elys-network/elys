@@ -122,6 +122,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "shows migration receipt",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
 				},
+				{
+					RpcMethod: "MigrationReceiptPaginated",
+					Use:       "migration-receipt-all",
+					Short:     "shows all migration receipt",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

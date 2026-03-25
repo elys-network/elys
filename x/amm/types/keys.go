@@ -43,7 +43,7 @@ var (
 	LastProcessedKeyPrefix = []byte{0x06}
 
 	MigrationQueuePrefix   = []byte{0x07}
-	MigrationHistoryPrefix = []byte{0x08}
+	MigrationReceiptPrefix = []byte{0x08}
 )
 
 func KeyPrefix(p string) []byte {

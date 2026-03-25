@@ -49,6 +49,7 @@ type QueryClient interface {
 	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(ctx context.Context, in *QueryWeightAndSlippageFeeRequest, opts ...grpc.CallOption) (*QueryWeightAndSlippageFeeResponse, error)
 	MigrationReceipt(ctx context.Context, in *QueryMigrationReceipt, opts ...grpc.CallOption) (*QueryMigrationReceiptResponse, error)
+	MigrationReceiptPaginated(ctx context.Context, in *QueryMigrationReceiptPaginated, opts ...grpc.CallOption) (*QueryMigrationReceiptPaginatedResponse, error)
 }
 
 type queryClient struct {
@@ -212,6 +213,15 @@ func (c *queryClient) MigrationReceipt(ctx context.Context, in *QueryMigrationRe
 	return out, nil
 }
 
+func (c *queryClient) MigrationReceiptPaginated(ctx context.Context, in *QueryMigrationReceiptPaginated, opts ...grpc.CallOption) (*QueryMigrationReceiptPaginatedResponse, error) {
+	out := new(QueryMigrationReceiptPaginatedResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Query/MigrationReceiptPaginated", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -247,6 +257,7 @@ type QueryServer interface {
 	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error)
 	MigrationReceipt(context.Context, *QueryMigrationReceipt) (*QueryMigrationReceiptResponse, error)
+	MigrationReceiptPaginated(context.Context, *QueryMigrationReceiptPaginated) (*QueryMigrationReceiptPaginatedResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -304,6 +315,9 @@ func (UnimplementedQueryServer) WeightAndSlippageFee(context.Context, *QueryWeig
 }
 func (UnimplementedQueryServer) MigrationReceipt(context.Context, *QueryMigrationReceipt) (*QueryMigrationReceiptResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MigrationReceipt not implemented")
+}
+func (UnimplementedQueryServer) MigrationReceiptPaginated(context.Context, *QueryMigrationReceiptPaginated) (*QueryMigrationReceiptPaginatedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MigrationReceiptPaginated not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -624,6 +638,24 @@ func _Query_MigrationReceipt_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_MigrationReceiptPaginated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMigrationReceiptPaginated)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MigrationReceiptPaginated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.amm.Query/MigrationReceiptPaginated",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MigrationReceiptPaginated(ctx, req.(*QueryMigrationReceiptPaginated))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -698,6 +730,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MigrationReceipt",
 			Handler:    _Query_MigrationReceipt_Handler,
+		},
+		{
+			MethodName: "MigrationReceiptPaginated",
+			Handler:    _Query_MigrationReceiptPaginated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

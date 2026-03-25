@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/v6/x/amm/types"
@@ -41,4 +44,31 @@ func (k Keeper) MigrationReceipt(goCtx context.Context, req *types.QueryMigratio
 	}
 
 	return &types.QueryMigrationReceiptResponse{Value: k.GetMigrationReceipt(ctx, addr)}, nil
+}
+
+func (k Keeper) MigrationReceiptPaginated(goCtx context.Context, req *types.QueryMigrationReceiptPaginated) (*types.QueryMigrationReceiptPaginatedResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var list []types.BalanceMigrationReceipt
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	accountedPoolStore := prefix.NewStore(store, types.MigrationReceiptPrefix)
+
+	pageRes, err := query.Paginate(accountedPoolStore, req.Pagination, func(key []byte, value []byte) error {
+		var res types.BalanceMigrationReceipt
+		if err := k.cdc.Unmarshal(value, &res); err != nil {
+			return err
+		}
+
+		list = append(list, res)
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryMigrationReceiptPaginatedResponse{List: list, Pagination: pageRes}, nil
 }

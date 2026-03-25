@@ -142,7 +142,7 @@ func (k Keeper) SetMigrationReceipt(ctx sdk.Context, receipt types.BalanceMigrat
 	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	addr, _ := sdk.AccAddressFromBech32(receipt.Address)
 
-	key := append(types.MigrationHistoryPrefix, addr.Bytes()...)
+	key := append(types.MigrationReceiptPrefix, addr.Bytes()...)
 	value := k.cdc.MustMarshal(&receipt)
 
 	kvStore.Set(key, value)
@@ -151,7 +151,7 @@ func (k Keeper) SetMigrationReceipt(ctx sdk.Context, receipt types.BalanceMigrat
 func (k Keeper) GetMigrationReceipt(ctx sdk.Context, addr sdk.AccAddress) types.BalanceMigrationReceipt {
 	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
-	key := append(types.MigrationHistoryPrefix, addr.Bytes()...)
+	key := append(types.MigrationReceiptPrefix, addr.Bytes()...)
 	bz := kvStore.Get(key)
 
 	var receipt types.BalanceMigrationReceipt

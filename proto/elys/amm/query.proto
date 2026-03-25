@@ -114,6 +114,11 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/amm/migration-receipt/{address}";
   }
+
+  rpc MigrationReceiptPaginated(QueryMigrationReceiptPaginated)
+      returns (QueryMigrationReceiptPaginatedResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/migration-receipt";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -436,4 +441,13 @@ message QueryMigrationReceipt {
 
 message QueryMigrationReceiptResponse {
   BalanceMigrationReceipt value = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryMigrationReceiptPaginated {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryMigrationReceiptPaginatedResponse {
+  repeated BalanceMigrationReceipt list = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
