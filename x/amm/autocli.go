@@ -116,6 +116,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Example:        "elysd q amm weight-and-slippage-fee 1 2022-01-01",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "date"}},
 				},
+				{
+					RpcMethod:      "MigrationReceipt",
+					Use:            "migration-receipt [address]",
+					Short:          "shows a pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

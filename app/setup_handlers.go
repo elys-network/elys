@@ -67,17 +67,7 @@ func (app *ElysApp) setUpgradeHandler() {
 				return vm, vmErr // Stop execution immediately if migrations fail!
 			}
 
-			params, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
-			if err != nil {
-				app.Logger().Error("Failed to fetch consensus params during upgrade", "err", err)
-				return vm, err
-			}
-			params.Block.MaxGas = 200_000_000
-
-			err = app.ConsensusParamsKeeper.ParamsStore.Set(ctx, params)
-			if err != nil {
-				return nil, err
-			}
+			app.AmmKeeper.BuildMigrationQueue(ctx)
 
 			return vm, nil
 		},

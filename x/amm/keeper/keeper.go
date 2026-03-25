@@ -118,3 +118,45 @@ func (k *Keeper) DeleteLastProccessed(ctx sdk.Context, id uint64) {
 	key := types.GetLastProcessedKey(id)
 	kvStore.Delete(key)
 }
+
+func (k Keeper) SetAddressInMigrationQueue(ctx sdk.Context, addr sdk.AccAddress) {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := append(types.MigrationQueuePrefix, addr.Bytes()...)
+	kvStore.Set(key, []byte{1})
+}
+
+// RemoveAddressFromMigrationQueue deletes the account from the queue once processed.
+func (k Keeper) RemoveAddressFromMigrationQueue(ctx sdk.Context, addr sdk.AccAddress) {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := append(types.MigrationQueuePrefix, addr.Bytes()...)
+	kvStore.Delete(key)
+}
+
+// GetMigrationQueueIterator returns an iterator over all queued addresses.
+func (k Keeper) GetMigrationQueueIterator(ctx sdk.Context) storetypes.Iterator {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(kvStore, types.MigrationQueuePrefix)
+}
+
+func (k Keeper) SetMigrationReceipt(ctx sdk.Context, receipt types.BalanceMigrationReceipt) {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	addr, _ := sdk.AccAddressFromBech32(receipt.Address)
+
+	key := append(types.MigrationHistoryPrefix, addr.Bytes()...)
+	value := k.cdc.MustMarshal(&receipt)
+
+	kvStore.Set(key, value)
+}
+
+func (k Keeper) GetMigrationReceipt(ctx sdk.Context, addr sdk.AccAddress) types.BalanceMigrationReceipt {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	key := append(types.MigrationHistoryPrefix, addr.Bytes()...)
+	bz := kvStore.Get(key)
+
+	var receipt types.BalanceMigrationReceipt
+	if bz != nil {
+		k.cdc.MustUnmarshal(bz, &receipt)
+	}
+	return receipt
+}

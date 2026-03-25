@@ -28,3 +28,17 @@ func (k Keeper) WeightAndSlippageFee(goCtx context.Context, req *types.QueryWeig
 
 	return &types.QueryWeightAndSlippageFeeResponse{Value: k.GetWeightAndSlippageFee(ctx, req.PoolId, req.Date).Amount}, nil
 }
+
+func (k Keeper) MigrationReceipt(goCtx context.Context, req *types.QueryMigrationReceipt) (*types.QueryMigrationReceiptResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &types.QueryMigrationReceiptResponse{Value: k.GetMigrationReceipt(ctx, addr)}, nil
+}

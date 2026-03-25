@@ -48,6 +48,7 @@ type QueryClient interface {
 	SwapEstimationByDenom(ctx context.Context, in *QuerySwapEstimationByDenomRequest, opts ...grpc.CallOption) (*QuerySwapEstimationByDenomResponse, error)
 	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(ctx context.Context, in *QueryWeightAndSlippageFeeRequest, opts ...grpc.CallOption) (*QueryWeightAndSlippageFeeResponse, error)
+	MigrationReceipt(ctx context.Context, in *QueryMigrationReceipt, opts ...grpc.CallOption) (*QueryMigrationReceiptResponse, error)
 }
 
 type queryClient struct {
@@ -202,6 +203,15 @@ func (c *queryClient) WeightAndSlippageFee(ctx context.Context, in *QueryWeightA
 	return out, nil
 }
 
+func (c *queryClient) MigrationReceipt(ctx context.Context, in *QueryMigrationReceipt, opts ...grpc.CallOption) (*QueryMigrationReceiptResponse, error) {
+	out := new(QueryMigrationReceiptResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Query/MigrationReceipt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -236,6 +246,7 @@ type QueryServer interface {
 	SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error)
 	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error)
+	MigrationReceipt(context.Context, *QueryMigrationReceipt) (*QueryMigrationReceiptResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -290,6 +301,9 @@ func (UnimplementedQueryServer) SwapEstimationByDenom(context.Context, *QuerySwa
 }
 func (UnimplementedQueryServer) WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WeightAndSlippageFee not implemented")
+}
+func (UnimplementedQueryServer) MigrationReceipt(context.Context, *QueryMigrationReceipt) (*QueryMigrationReceiptResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MigrationReceipt not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -592,6 +606,24 @@ func _Query_WeightAndSlippageFee_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_MigrationReceipt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMigrationReceipt)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MigrationReceipt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.amm.Query/MigrationReceipt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MigrationReceipt(ctx, req.(*QueryMigrationReceipt))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -662,6 +694,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WeightAndSlippageFee",
 			Handler:    _Query_WeightAndSlippageFee_Handler,
+		},
+		{
+			MethodName: "MigrationReceipt",
+			Handler:    _Query_MigrationReceipt_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

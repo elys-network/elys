@@ -2682,6 +2682,612 @@ func (x *fastReflection_QueryEarnPoolResponse) ProtoMethods() *protoiface.Method
 	}
 }
 
+var _ protoreflect.List = (*_BalanceMigrationReceipt_2_list)(nil)
+
+type _BalanceMigrationReceipt_2_list struct {
+	list *[]*v1beta11.Coin
+}
+
+func (x *_BalanceMigrationReceipt_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_BalanceMigrationReceipt_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_BalanceMigrationReceipt_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_BalanceMigrationReceipt_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_BalanceMigrationReceipt_2_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_BalanceMigrationReceipt_2_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_BalanceMigrationReceipt_2_list) NewElement() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_BalanceMigrationReceipt_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_BalanceMigrationReceipt                protoreflect.MessageDescriptor
+	fd_BalanceMigrationReceipt_address        protoreflect.FieldDescriptor
+	fd_BalanceMigrationReceipt_transfer       protoreflect.FieldDescriptor
+	fd_BalanceMigrationReceipt_transferHeight protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_amm_types_proto_init()
+	md_BalanceMigrationReceipt = File_elys_amm_types_proto.Messages().ByName("BalanceMigrationReceipt")
+	fd_BalanceMigrationReceipt_address = md_BalanceMigrationReceipt.Fields().ByName("address")
+	fd_BalanceMigrationReceipt_transfer = md_BalanceMigrationReceipt.Fields().ByName("transfer")
+	fd_BalanceMigrationReceipt_transferHeight = md_BalanceMigrationReceipt.Fields().ByName("transferHeight")
+}
+
+var _ protoreflect.Message = (*fastReflection_BalanceMigrationReceipt)(nil)
+
+type fastReflection_BalanceMigrationReceipt BalanceMigrationReceipt
+
+func (x *BalanceMigrationReceipt) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_BalanceMigrationReceipt)(x)
+}
+
+func (x *BalanceMigrationReceipt) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_amm_types_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_BalanceMigrationReceipt_messageType fastReflection_BalanceMigrationReceipt_messageType
+var _ protoreflect.MessageType = fastReflection_BalanceMigrationReceipt_messageType{}
+
+type fastReflection_BalanceMigrationReceipt_messageType struct{}
+
+func (x fastReflection_BalanceMigrationReceipt_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_BalanceMigrationReceipt)(nil)
+}
+func (x fastReflection_BalanceMigrationReceipt_messageType) New() protoreflect.Message {
+	return new(fastReflection_BalanceMigrationReceipt)
+}
+func (x fastReflection_BalanceMigrationReceipt_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_BalanceMigrationReceipt
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_BalanceMigrationReceipt) Descriptor() protoreflect.MessageDescriptor {
+	return md_BalanceMigrationReceipt
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_BalanceMigrationReceipt) Type() protoreflect.MessageType {
+	return _fastReflection_BalanceMigrationReceipt_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_BalanceMigrationReceipt) New() protoreflect.Message {
+	return new(fastReflection_BalanceMigrationReceipt)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_BalanceMigrationReceipt) Interface() protoreflect.ProtoMessage {
+	return (*BalanceMigrationReceipt)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_BalanceMigrationReceipt) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_BalanceMigrationReceipt_address, value) {
+			return
+		}
+	}
+	if len(x.Transfer) != 0 {
+		value := protoreflect.ValueOfList(&_BalanceMigrationReceipt_2_list{list: &x.Transfer})
+		if !f(fd_BalanceMigrationReceipt_transfer, value) {
+			return
+		}
+	}
+	if x.TransferHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TransferHeight)
+		if !f(fd_BalanceMigrationReceipt_transferHeight, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_BalanceMigrationReceipt) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.address":
+		return x.Address != ""
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		return len(x.Transfer) != 0
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		return x.TransferHeight != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_BalanceMigrationReceipt) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.address":
+		x.Address = ""
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		x.Transfer = nil
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		x.TransferHeight = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_BalanceMigrationReceipt) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		if len(x.Transfer) == 0 {
+			return protoreflect.ValueOfList(&_BalanceMigrationReceipt_2_list{})
+		}
+		listValue := &_BalanceMigrationReceipt_2_list{list: &x.Transfer}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		value := x.TransferHeight
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_BalanceMigrationReceipt) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.address":
+		x.Address = value.Interface().(string)
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		lv := value.List()
+		clv := lv.(*_BalanceMigrationReceipt_2_list)
+		x.Transfer = *clv.list
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		x.TransferHeight = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_BalanceMigrationReceipt) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		if x.Transfer == nil {
+			x.Transfer = []*v1beta11.Coin{}
+		}
+		value := &_BalanceMigrationReceipt_2_list{list: &x.Transfer}
+		return protoreflect.ValueOfList(value)
+	case "elys.amm.BalanceMigrationReceipt.address":
+		panic(fmt.Errorf("field address of message elys.amm.BalanceMigrationReceipt is not mutable"))
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		panic(fmt.Errorf("field transferHeight of message elys.amm.BalanceMigrationReceipt is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_BalanceMigrationReceipt) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.amm.BalanceMigrationReceipt.address":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.BalanceMigrationReceipt.transfer":
+		list := []*v1beta11.Coin{}
+		return protoreflect.ValueOfList(&_BalanceMigrationReceipt_2_list{list: &list})
+	case "elys.amm.BalanceMigrationReceipt.transferHeight":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.BalanceMigrationReceipt"))
+		}
+		panic(fmt.Errorf("message elys.amm.BalanceMigrationReceipt does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_BalanceMigrationReceipt) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.amm.BalanceMigrationReceipt", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_BalanceMigrationReceipt) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_BalanceMigrationReceipt) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_BalanceMigrationReceipt) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_BalanceMigrationReceipt) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*BalanceMigrationReceipt)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Transfer) > 0 {
+			for _, e := range x.Transfer {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.TransferHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.TransferHeight))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*BalanceMigrationReceipt)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.TransferHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TransferHeight))
+			i--
+			dAtA[i] = 0x18
+		}
+		if len(x.Transfer) > 0 {
+			for iNdEx := len(x.Transfer) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Transfer[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x12
+			}
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*BalanceMigrationReceipt)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: BalanceMigrationReceipt: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: BalanceMigrationReceipt: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Transfer", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Transfer = append(x.Transfer, &v1beta11.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Transfer[len(x.Transfer)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TransferHeight", wireType)
+				}
+				x.TransferHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TransferHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -2991,6 +3597,57 @@ func (x *QueryEarnPoolResponse) GetPools() []*EarnPool {
 	return nil
 }
 
+type BalanceMigrationReceipt struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address        string           `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Transfer       []*v1beta11.Coin `protobuf:"bytes,2,rep,name=transfer,proto3" json:"transfer,omitempty"`
+	TransferHeight uint64           `protobuf:"varint,3,opt,name=transferHeight,proto3" json:"transferHeight,omitempty"`
+}
+
+func (x *BalanceMigrationReceipt) Reset() {
+	*x = BalanceMigrationReceipt{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_amm_types_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BalanceMigrationReceipt) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BalanceMigrationReceipt) ProtoMessage() {}
+
+// Deprecated: Use BalanceMigrationReceipt.ProtoReflect.Descriptor instead.
+func (*BalanceMigrationReceipt) Descriptor() ([]byte, []int) {
+	return file_elys_amm_types_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *BalanceMigrationReceipt) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *BalanceMigrationReceipt) GetTransfer() []*v1beta11.Coin {
+	if x != nil {
+		return x.Transfer
+	}
+	return nil
+}
+
+func (x *BalanceMigrationReceipt) GetTransferHeight() uint64 {
+	if x != nil {
+		return x.TransferHeight
+	}
+	return 0
+}
+
 var File_elys_amm_types_proto protoreflect.FileDescriptor
 
 var file_elys_amm_types_proto_rawDesc = []byte{
@@ -3089,24 +3746,38 @@ var file_elys_amm_types_proto_rawDesc = []byte{
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2e, 0x0a, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73,
 	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
 	0x6d, 0x2e, 0x45, 0x61, 0x72, 0x6e, 0x50, 0x6f, 0x6f, 0x6c, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
-	0x52, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x2a, 0x7b, 0x0a, 0x0a, 0x46, 0x69, 0x6c, 0x74, 0x65,
-	0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f,
-	0x41, 0x4c, 0x4c, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x10, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f,
-	0x50, 0x45, 0x52, 0x50, 0x45, 0x54, 0x55, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x13, 0x46,
-	0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f, 0x46, 0x49, 0x58, 0x45, 0x44, 0x5f, 0x57, 0x45, 0x49, 0x47,
-	0x48, 0x54, 0x10, 0x02, 0x12, 0x19, 0x0a, 0x15, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f, 0x44,
-	0x59, 0x4e, 0x41, 0x4d, 0x49, 0x43, 0x5f, 0x57, 0x45, 0x49, 0x47, 0x48, 0x54, 0x10, 0x03, 0x12,
-	0x13, 0x0a, 0x0f, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f, 0x4c, 0x45, 0x56, 0x45, 0x52, 0x41,
-	0x47, 0x45, 0x10, 0x04, 0x42, 0x89, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42, 0x0a, 0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d,
-	0x6d, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41,
-	0x6d, 0x6d, 0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02, 0x14,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d, 0x6d,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0xde, 0x01, 0x0a, 0x17, 0x42, 0x61, 0x6c, 0x61,
+	0x6e, 0x63, 0x65, 0x4d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x63, 0x65,
+	0x69, 0x70, 0x74, 0x12, 0x32, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x67, 0x0a, 0x08, 0x74, 0x72, 0x61, 0x6e, 0x73,
+	0x66, 0x65, 0x72, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x08, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72,
+	0x12, 0x26, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x48, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66,
+	0x65, 0x72, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x2a, 0x7b, 0x0a, 0x0a, 0x46, 0x69, 0x6c, 0x74,
+	0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52,
+	0x5f, 0x41, 0x4c, 0x4c, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x10, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52,
+	0x5f, 0x50, 0x45, 0x52, 0x50, 0x45, 0x54, 0x55, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x13,
+	0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f, 0x46, 0x49, 0x58, 0x45, 0x44, 0x5f, 0x57, 0x45, 0x49,
+	0x47, 0x48, 0x54, 0x10, 0x02, 0x12, 0x19, 0x0a, 0x15, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f,
+	0x44, 0x59, 0x4e, 0x41, 0x4d, 0x49, 0x43, 0x5f, 0x57, 0x45, 0x49, 0x47, 0x48, 0x54, 0x10, 0x03,
+	0x12, 0x13, 0x0a, 0x0f, 0x46, 0x49, 0x4c, 0x54, 0x45, 0x52, 0x5f, 0x4c, 0x45, 0x56, 0x45, 0x52,
+	0x41, 0x47, 0x45, 0x10, 0x04, 0x42, 0x89, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42, 0x0a, 0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x76, 0x36, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
+	0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e,
+	0x41, 0x6d, 0x6d, 0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02,
+	0x14, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d,
+	0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3122,28 +3793,30 @@ func file_elys_amm_types_proto_rawDescGZIP() []byte {
 }
 
 var file_elys_amm_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_elys_amm_types_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_elys_amm_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_elys_amm_types_proto_goTypes = []interface{}{
-	(FilterType)(0),               // 0: elys.amm.FilterType
-	(*QueryEarnPoolRequest)(nil),  // 1: elys.amm.QueryEarnPoolRequest
-	(*EarnPool)(nil),              // 2: elys.amm.EarnPool
-	(*QueryEarnPoolResponse)(nil), // 3: elys.amm.QueryEarnPoolResponse
-	(*v1beta1.PageRequest)(nil),   // 4: cosmos.base.query.v1beta1.PageRequest
-	(*PoolAsset)(nil),             // 5: elys.amm.PoolAsset
-	(*v1beta11.Coin)(nil),         // 6: cosmos.base.v1beta1.Coin
+	(FilterType)(0),                 // 0: elys.amm.FilterType
+	(*QueryEarnPoolRequest)(nil),    // 1: elys.amm.QueryEarnPoolRequest
+	(*EarnPool)(nil),                // 2: elys.amm.EarnPool
+	(*QueryEarnPoolResponse)(nil),   // 3: elys.amm.QueryEarnPoolResponse
+	(*BalanceMigrationReceipt)(nil), // 4: elys.amm.BalanceMigrationReceipt
+	(*v1beta1.PageRequest)(nil),     // 5: cosmos.base.query.v1beta1.PageRequest
+	(*PoolAsset)(nil),               // 6: elys.amm.PoolAsset
+	(*v1beta11.Coin)(nil),           // 7: cosmos.base.v1beta1.Coin
 }
 var file_elys_amm_types_proto_depIdxs = []int32{
 	0, // 0: elys.amm.QueryEarnPoolRequest.filter_type:type_name -> elys.amm.FilterType
-	4, // 1: elys.amm.QueryEarnPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	5, // 2: elys.amm.EarnPool.assets:type_name -> elys.amm.PoolAsset
-	6, // 3: elys.amm.EarnPool.reward_coins:type_name -> cosmos.base.v1beta1.Coin
-	6, // 4: elys.amm.EarnPool.total_shares:type_name -> cosmos.base.v1beta1.Coin
+	5, // 1: elys.amm.QueryEarnPoolRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	6, // 2: elys.amm.EarnPool.assets:type_name -> elys.amm.PoolAsset
+	7, // 3: elys.amm.EarnPool.reward_coins:type_name -> cosmos.base.v1beta1.Coin
+	7, // 4: elys.amm.EarnPool.total_shares:type_name -> cosmos.base.v1beta1.Coin
 	2, // 5: elys.amm.QueryEarnPoolResponse.pools:type_name -> elys.amm.EarnPool
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	7, // 6: elys.amm.BalanceMigrationReceipt.transfer:type_name -> cosmos.base.v1beta1.Coin
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_elys_amm_types_proto_init() }
@@ -3189,6 +3862,18 @@ func file_elys_amm_types_proto_init() {
 				return nil
 			}
 		}
+		file_elys_amm_types_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BalanceMigrationReceipt); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -3196,7 +3881,7 @@ func file_elys_amm_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_amm_types_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
