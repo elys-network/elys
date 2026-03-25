@@ -59,8 +59,7 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 				break
 			}
 
-			addrBytes := iterator.Key()[1:]
-			currentAddress := sdk.AccAddress(addrBytes)
+			currentAddress := sdk.AccAddress(iterator.Value())
 
 			balances := k.bankKeeper.GetAllBalances(ctx, currentAddress)
 			transferTokens := sdk.Coins{}

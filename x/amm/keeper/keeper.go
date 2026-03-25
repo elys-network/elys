@@ -122,7 +122,7 @@ func (k *Keeper) DeleteLastProccessed(ctx sdk.Context, id uint64) {
 func (k Keeper) SetAddressInMigrationQueue(ctx sdk.Context, addr sdk.AccAddress) {
 	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := append(types.MigrationQueuePrefix, addr.Bytes()...)
-	kvStore.Set(key, []byte{1})
+	kvStore.Set(key, addr)
 }
 
 // RemoveAddressFromMigrationQueue deletes the account from the queue once processed.
