@@ -51,7 +51,7 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 
 	func() {
 		iterator := k.GetMigrationQueueIterator(ctx)
-		defer iterator.Close() // Guarantees closure even if the loop panics
+		defer iterator.Close()
 
 		for ; iterator.Valid(); iterator.Next() {
 			if maxBlockGas > 0 && gasMeter.GasConsumed() > safeGasThreshold {
@@ -71,7 +71,6 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 				}
 			}
 
-			// FIX 1: Track if the transfer was actually successful
 			transferSuccess := false
 
 			if !transferTokens.Empty() {
