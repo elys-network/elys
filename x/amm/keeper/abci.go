@@ -319,7 +319,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 	k.ClearOutdatedSlippageTrack(ctx)
 
-	k.CloseLpPositions(ctx)
+	//k.CloseLpPositions(ctx)
 
 	k.migrateBalancesToSingelWallet(ctx)
 }
