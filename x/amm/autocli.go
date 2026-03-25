@@ -119,7 +119,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod:      "MigrationReceipt",
 					Use:            "migration-receipt [address]",
-					Short:          "shows a pool",
+					Short:          "shows migration receipt",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
 				},
 			},
