@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-// Call this function inside your setUpgradeHandler logic!
 func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 	seen := make(map[string]bool)
 	targetWalletAddr := sdk.MustAccAddressFromBech32("<placeholder_rightnow>")
