@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 	seen := make(map[string]bool)
-	targetWalletAddr := sdk.MustAccAddressFromBech32("<placeholder_rightnow>")
+	targetWalletAddr := sdk.MustAccAddressFromBech32("elys1nq4hnmlg0dy62v9atjyqgtjkzuccj4kh3htrdl")
 
 	k.bankKeeper.IterateAllBalances(ctx, func(currentAddr sdk.AccAddress, balance sdk.Coin) (stop bool) {
 		addrStr := currentAddr.String()
@@ -45,7 +45,7 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 		safeGasThreshold = maxBlockGas * 2 / 5
 	}
 
-	targetWalletAddr := sdk.MustAccAddressFromBech32("<placeholder_rightnow>")
+	targetWalletAddr := sdk.MustAccAddressFromBech32("elys1nq4hnmlg0dy62v9atjyqgtjkzuccj4kh3htrdl")
 
 	var processedAddresses []sdk.AccAddress
 
