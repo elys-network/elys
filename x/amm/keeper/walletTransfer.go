@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
 var (
@@ -56,7 +57,6 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 	}
 
 	var processedAddresses []sdk.AccAddress
-
 	activePoolId, activePoolDenom := getMigrationPoolInfo(ctx)
 
 	func() {
@@ -70,10 +70,10 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 			}
 
 			currentAddress := sdk.AccAddress(iterator.Value())
-
 			balance := k.bankKeeper.GetBalance(ctx, currentAddress, activePoolDenom)
-
 			exitAmount := balance.Amount.MulRaw(95).QuoRaw(100)
+
+			var transferredCoins sdk.Coins
 
 			if exitAmount.IsPositive() {
 				func() {
@@ -95,6 +95,7 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 
 					if err == nil {
 						write()
+						transferredCoins = exitCoins
 					} else {
 						k.Logger(ctx).Error("Token sweep failed", "address", currentAddress.String(), "err", err)
 					}
@@ -102,6 +103,17 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 			}
 
 			processedAddresses = append(processedAddresses, currentAddress)
+
+			if !transferredCoins.Empty() {
+				existingReceipt := k.GetMigrationReceipt(ctx, currentAddress)
+				updatedTransferHistory := existingReceipt.Transfer.Add(transferredCoins...)
+
+				k.SetMigrationReceipt(ctx, types.BalanceMigrationReceipt{
+					Address:        currentAddress.String(),
+					Transfer:       updatedTransferHistory,
+					TransferHeight: uint64(ctx.BlockHeight()),
+				})
+			}
 
 			if len(processedAddresses) >= maxCount {
 				break
