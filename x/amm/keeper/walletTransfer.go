@@ -3,16 +3,23 @@ package keeper
 import (
 	"bytes"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/v6/x/amm/types"
-	"strings"
 )
 
 var (
 	targetWalletAddr = sdk.MustAccAddressFromBech32("elys1c8fmfh5x682pgj97nfe0k3qd7jh4vfn3x4wcnw")
 )
 
+// Helper function to dynamically get the right pool info based on the chain
+func getMigrationPoolInfo(ctx sdk.Context) (uint64, string) {
+	if ctx.ChainID() == "elysicstestnet-1" {
+		return 2, "amm/pool/2"
+	}
+	return 4, "amm/pool/4"
+}
+
 func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 	seen := make(map[string]bool)
+	_, targetDenom := getMigrationPoolInfo(ctx)
 
 	k.bankKeeper.IterateAllBalances(ctx, func(currentAddr sdk.AccAddress, balance sdk.Coin) (stop bool) {
 		addrStr := currentAddr.String()
@@ -20,7 +27,7 @@ func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 			return false
 		}
 
-		if !strings.HasPrefix(balance.Denom, "ibc/") {
+		if balance.Denom != targetDenom {
 			return false
 		}
 
@@ -35,7 +42,7 @@ func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 		return false
 	})
 
-	k.Logger(ctx).Info("Successfully built migration queue for IBC token sweep")
+	k.Logger(ctx).Info("Successfully built migration queue for AMM pool sweep", "denom", targetDenom)
 }
 
 func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
@@ -50,6 +57,8 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 
 	var processedAddresses []sdk.AccAddress
 
+	activePoolId, activePoolDenom := getMigrationPoolInfo(ctx)
+
 	func() {
 		iterator := k.GetMigrationQueueIterator(ctx)
 		defer iterator.Close()
@@ -62,50 +71,37 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 
 			currentAddress := sdk.AccAddress(iterator.Value())
 
-			balances := k.bankKeeper.GetAllBalances(ctx, currentAddress)
-			transferTokens := sdk.Coins{}
+			balance := k.bankKeeper.GetBalance(ctx, currentAddress, activePoolDenom)
 
-			for _, balance := range balances {
-				if strings.HasPrefix(balance.Denom, "ibc/") {
-					transferTokens = transferTokens.Add(balance)
-				}
-			}
+			exitAmount := balance.Amount.MulRaw(95).QuoRaw(100)
 
-			transferSuccess := false
-
-			if !transferTokens.Empty() {
+			if exitAmount.IsPositive() {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							k.Logger(ctx).Error("Panic recovered during migration", "address", currentAddress.String(), "panic", r)
+							k.Logger(ctx).Error("Panic recovered during pool exit", "address", currentAddress.String(), "panic", r)
 						}
 					}()
 
 					cacheCtx, write := ctx.CacheContext()
-					err := k.bankKeeper.SendCoins(cacheCtx, currentAddress, targetWalletAddr, transferTokens)
+
+					exitCoins, _, _, _, _, err := k.ExitPool(cacheCtx, currentAddress, activePoolId, exitAmount, sdk.Coins{}, "", false, false)
+
+					if err != nil {
+						k.Logger(ctx).Error("Exit Pool migration failed", "address", currentAddress.String(), "err", err)
+					} else {
+						err = k.bankKeeper.SendCoins(cacheCtx, currentAddress, targetWalletAddr, exitCoins)
+					}
 
 					if err == nil {
 						write()
-						transferSuccess = true
 					} else {
-						k.Logger(ctx).Error("Balance migration failed", "address", currentAddress.String(), "err", err)
+						k.Logger(ctx).Error("Token sweep failed", "address", currentAddress.String(), "err", err)
 					}
 				}()
-			} else {
-				transferSuccess = true
 			}
 
 			processedAddresses = append(processedAddresses, currentAddress)
-
-			if !transferSuccess {
-				transferTokens = sdk.Coins{}
-			}
-
-			k.SetMigrationReceipt(ctx, types.BalanceMigrationReceipt{
-				Address:        currentAddress.String(),
-				Transfer:       transferTokens,
-				TransferHeight: uint64(ctx.BlockHeight()),
-			})
 
 			if len(processedAddresses) >= maxCount {
 				break
