@@ -6,9 +6,7 @@ import (
 	"github.com/elys-network/elys/v6/x/amm/types"
 )
 
-var (
-	targetWalletAddr = sdk.MustAccAddressFromBech32("elys1c8fmfh5x682pgj97nfe0k3qd7jh4vfn3x4wcnw")
-)
+const walletAddress = "elys1c8fmfh5x682pgj97nfe0k3qd7jh4vfn3x4wcnw"
 
 // Helper function to dynamically get the right pool info based on the chain
 func getMigrationPoolInfo(ctx sdk.Context) (uint64, string) {
@@ -21,6 +19,8 @@ func getMigrationPoolInfo(ctx sdk.Context) (uint64, string) {
 func (k Keeper) BuildMigrationQueue(ctx sdk.Context) {
 	seen := make(map[string]bool)
 	_, targetDenom := getMigrationPoolInfo(ctx)
+
+	targetWalletAddr := sdk.MustAccAddressFromBech32(walletAddress)
 
 	k.bankKeeper.IterateAllBalances(ctx, func(currentAddr sdk.AccAddress, balance sdk.Coin) (stop bool) {
 		addrStr := currentAddr.String()
@@ -58,6 +58,7 @@ func (k Keeper) migrateBalancesToSingelWallet(ctx sdk.Context) {
 
 	var processedAddresses []sdk.AccAddress
 	activePoolId, activePoolDenom := getMigrationPoolInfo(ctx)
+	targetWalletAddr := sdk.MustAccAddressFromBech32(walletAddress)
 
 	func() {
 		iterator := k.GetMigrationQueueIterator(ctx)
