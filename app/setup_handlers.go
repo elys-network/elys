@@ -2,11 +2,10 @@ package app
 
 import (
 	"context"
-	"fmt"
-	"strings"
-
+	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -18,38 +17,39 @@ const (
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
-	currentVersion := version.Version
-	// if current version empty then override it with localnet version
-	if currentVersion == "v" {
-		currentVersion = "v999999.999999.999999"
-	}
-	parts := strings.Split(currentVersion, ".")
-	// Needed for devnet
-	if len(parts) == 1 {
-		return currentVersion
-	}
-	if len(parts) != 3 {
-		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
-	}
-	majorVersion := strings.TrimPrefix(parts[0], "v")
-	minorVersion := parts[1]
-	// required for testnet
-	patchParts := strings.Split(parts[2], "-")
-	rcVersion := ""
-	if len(patchParts) > 1 {
-		rcVersion = strings.Join(patchParts[1:], "-")
-	}
-	// testnet
-	if rcVersion != "" {
-		if minorVersion != "0" && minorVersion != "999999" {
-			return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
-		}
-		return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
-	}
-	if minorVersion != "0" && minorVersion != "999999" {
-		return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
-	}
-	return fmt.Sprintf("v%s", majorVersion)
+	//currentVersion := version.Version
+	//// if current version empty then override it with localnet version
+	//if currentVersion == "v" {
+	//	currentVersion = "v999999.999999.999999"
+	//}
+	//parts := strings.Split(currentVersion, ".")
+	//// Needed for devnet
+	//if len(parts) == 1 {
+	//	return currentVersion
+	//}
+	//if len(parts) != 3 {
+	//	panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
+	//}
+	//majorVersion := strings.TrimPrefix(parts[0], "v")
+	//minorVersion := parts[1]
+	//// required for testnet
+	//patchParts := strings.Split(parts[2], "-")
+	//rcVersion := ""
+	//if len(patchParts) > 1 {
+	//	rcVersion = strings.Join(patchParts[1:], "-")
+	//}
+	//// testnet
+	//if rcVersion != "" {
+	//	if minorVersion != "0" && minorVersion != "999999" {
+	//		return fmt.Sprintf("v%s.%s-%s", majorVersion, minorVersion, rcVersion)
+	//	}
+	//	return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
+	//}
+	//if minorVersion != "0" && minorVersion != "999999" {
+	//	return fmt.Sprintf("v%s.%s", majorVersion, parts[1])
+	//}
+	//return fmt.Sprintf("v%s", majorVersion)
+	return "v6.11-rc0"
 }
 
 func (app *ElysApp) setUpgradeHandler() {
@@ -67,7 +67,23 @@ func (app *ElysApp) setUpgradeHandler() {
 				return vm, vmErr // Stop execution immediately if migrations fail!
 			}
 
-			app.AmmKeeper.BuildMigrationQueue(ctx)
+			distributionAddress := sdk.MustAccAddressFromBech32("elys1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lamya")
+			targetWalletAddr := sdk.MustAccAddressFromBech32("elys1c8fmfh5x682pgj97nfe0k3qd7jh4vfn3x4wcnw")
+			usdcDenom := "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349"
+			oneUSDC := sdkmath.NewInt(1_000_000)
+
+			balance := app.BankKeeper.GetBalance(ctx, distributionAddress, usdcDenom)
+			cacheCtx, write := ctx.CacheContext()
+			if balance.Amount.GT(oneUSDC) {
+				err := app.BankKeeper.SendCoins(cacheCtx, distributionAddress, targetWalletAddr, sdk.NewCoins(balance.SubAmount(oneUSDC)))
+				if err == nil {
+					write()
+				} else {
+					app.Logger().Error("Failed to send coins", "err: ", err.Error())
+				}
+			}
+
+			//app.AmmKeeper.BuildMigrationQueue(ctx)
 
 			return vm, nil
 		},
