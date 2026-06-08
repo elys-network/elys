@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strings"
 
@@ -67,7 +68,21 @@ func (app *ElysApp) setUpgradeHandler() {
 				return vm, vmErr // Stop execution immediately if migrations fail!
 			}
 
-			app.AmmKeeper.BuildMigrationQueue(ctx)
+			distributionAddress := sdk.MustAccAddressFromBech32("elys1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lamya")
+			targetWalletAddr := sdk.MustAccAddressFromBech32("elys1c8fmfh5x682pgj97nfe0k3qd7jh4vfn3x4wcnw")
+			usdcDenom := "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349"
+			oneUSDC := sdkmath.NewInt(1_000_000)
+
+			balance := app.BankKeeper.GetBalance(ctx, distributionAddress, usdcDenom)
+			cacheCtx, write := ctx.CacheContext()
+			if balance.Amount.GT(oneUSDC) {
+				err := app.BankKeeper.SendCoins(cacheCtx, distributionAddress, targetWalletAddr, sdk.NewCoins(balance.SubAmount(oneUSDC)))
+				if err == nil {
+					write()
+				} else {
+					app.Logger().Error("Failed to send coins", "err: ", err.Error())
+				}
+			}
 
 			return vm, nil
 		},
